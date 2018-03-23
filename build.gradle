@@ -1,9 +1,10 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.2.30'
     id 'org.jetbrains.kotlin.plugin.spring' version '1.2.30'
+    id "org.jetbrains.kotlin.plugin.noarg" version "1.2.30"
     id 'org.springframework.boot' version '2.0.0.RELEASE'
     id 'io.spring.dependency-management' version '1.0.4.RELEASE'
-    id 'com.github.sherter.google-java-format' version '0.6'
+    //id 'com.github.sherter.google-java-format' version '0.6'
     id 'war'
 }
 
@@ -38,6 +39,10 @@ ext {
     springCloudVersion = 'Finchley.M8'
 }
 
+noArg {
+    annotation("com.yoloo.server.core.util.NoArg")
+}
+
 configurations.all {
     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     exclude group: 'org.slf4j', module: 'jul-to-slf4j'
@@ -53,7 +58,7 @@ dependencies {
     // App Engine
     implementation 'com.google.appengine:appengine-api-1.0-sdk:+'
 
-    implementation 'com.googlecode.objectify:objectify:6.0b1'
+    implementation 'com.googlecode.objectify:objectify:5.1.22'
 
     compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
 
@@ -69,10 +74,12 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.21'
 
+    implementation 'com.google.guava:guava:24.1-jre'
+
     //providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
 
     // Testing
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 dependencyManagement {

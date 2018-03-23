@@ -16,6 +16,8 @@ public class Jsr310Translators {
    * @param translators Objectify translators list.
    */
   public static void addTo(Translators translators) {
-
+    translators.add(new OffsetDateTimeDateTranslatorFactory());
+    translators.add(new ZonedDateTimeDateTranslatorFactory());
+    translators.add(new LocalDateDateTranslatorFactory());
   }
 }
