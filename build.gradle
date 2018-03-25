@@ -1,7 +1,7 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.2.30'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.30'
-    id "org.jetbrains.kotlin.plugin.noarg" version "1.2.30"
+    id 'org.jetbrains.kotlin.jvm' version '1.2.31'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.31'
+    id "org.jetbrains.kotlin.plugin.noarg" version "1.2.31"
     id 'org.springframework.boot' version '2.0.0.RELEASE'
     id 'io.spring.dependency-management' version '1.0.4.RELEASE'
     //id 'com.github.sherter.google-java-format' version '0.6'
@@ -55,17 +55,19 @@ kotlin {
 }
 
 dependencies {
+    implementation project(':objectify')
+
     // App Engine
-    implementation 'com.google.appengine:appengine-api-1.0-sdk:+'
+    implementation 'com.google.appengine:appengine-api-1.0-sdk:1.9.63'
 
     implementation 'com.googlecode.objectify:objectify:5.1.22'
 
     compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
 
     // Spring Boot
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    //implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    //implementation 'org.springframework.boot:spring-boot-starter-cache'
     //implementation 'org.springframework.cloud:spring-cloud-starter-oauth2'
 
     // Kotlin
@@ -75,6 +77,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.21'
 
     implementation 'com.google.guava:guava:24.1-jre'
+    implementation 'org.hibernate.validator:hibernate-validator:6.0.8.Final'
 
     //providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
 
