@@ -21,7 +21,7 @@ public interface ObjectifyProxy {
    *
    * @return Objectify instance.
    */
-  default Objectify ofy() {
+  static Objectify ofy() {
     return ObjectifyService.ofy();
   }
 
@@ -31,7 +31,7 @@ public interface ObjectifyProxy {
    *
    * @return The Objectify instance factory.
    */
-  default ObjectifyFactory factory() {
+  static ObjectifyFactory factory() {
     return ObjectifyService.factory();
   }
 

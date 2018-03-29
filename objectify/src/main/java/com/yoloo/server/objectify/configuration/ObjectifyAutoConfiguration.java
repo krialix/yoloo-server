@@ -11,11 +11,9 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.CollectionUtils;
+import org.springframework.context.annotation.DependsOn;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Automatic objectify configuration.
@@ -40,19 +38,20 @@ public class ObjectifyAutoConfiguration {
   /**
    * @return Register the default {@link ObjectifyProxy}.
    */
+  @DependsOn("ofyFilter")
   @Bean
   public ObjectifyProxy ofy() {
     ObjectifyProxy objectify = new ObjectifyProxy() {
     };
 
-    registerTranslators(objectify.factory().getTranslators());
-    registerEntities(objectify.factory());
+    registerTranslators(ObjectifyProxy.factory().getTranslators());
+    registerEntities(ObjectifyProxy.factory());
 
     return objectify;
   }
 
-  @Bean
-  public FilterRegistrationBean<ObjectifyFilter> someFilterRegistration() {
+  @Bean("ofyFilter")
+  public FilterRegistrationBean<ObjectifyFilter> objectifyFilterRegistration() {
     FilterRegistrationBean<ObjectifyFilter> registration = new FilterRegistrationBean<>();
     registration.setFilter(new ObjectifyFilter());
     return registration;
@@ -76,7 +75,7 @@ public class ObjectifyAutoConfiguration {
    * Gather all the {@link ObjectifyConfigurer} beans registered with the container.
    * These will be used to configure the beans created here.
    *
-   * @param configurers Registered {@link ObjectifyConfigurer} list.
+   * @param {@link ObjectifyConfigurer} list.
    */
   private Collection<ObjectifyConfigurer> getConfigurerImplementations(ApplicationContext context) {
     return context.getBeansOfType(ObjectifyConfigurer.class).values();

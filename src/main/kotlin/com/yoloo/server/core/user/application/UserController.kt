@@ -1,7 +1,7 @@
 package com.yoloo.server.core.user.application
 
-import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.core.user.domain.model.*
+import com.yoloo.server.objectify.configuration.ObjectifyProxy.ofy
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -24,7 +24,7 @@ class UserController {
             displayName = UserDisplayName(displayName = "Yasin Sinan Kayacan"),
             avatarUrl = "",
             locale = Locale.ENGLISH,
-            userMeta = UserMeta(password = "", lastKnownIP = ""),
+            userMeta = UserMeta(password = "", lastKnownIP = "", fcmToken = ""),
             email = Email("y.kayacan@emakina.com.tr"),
             scopes = setOf("user:read", "user:write"),
             birthDate = LocalDate.now(),
