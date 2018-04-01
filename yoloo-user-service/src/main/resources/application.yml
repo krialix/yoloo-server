@@ -1,0 +1,5 @@
+spring:
+  jmx:
+    enabled: false
+  messages:
+    basename: validation-errors

@@ -1,14 +1,7 @@
 package com.yoloo.server.objectify.configuration;
 
 import com.googlecode.objectify.impl.translate.TranslatorFactory;
-import com.googlecode.objectify.impl.translate.opt.BigDecimalLongTranslatorFactory;
-import com.yoloo.server.objectify.translate.time.LocalDateDateTranslatorFactory;
-import com.yoloo.server.objectify.translate.time.LocalDateTimeDateTranslatorFactory;
-import com.yoloo.server.objectify.translate.time.OffsetDateTimeDateTranslatorFactory;
-import com.yoloo.server.objectify.translate.time.ZonedDateTimeDateTranslatorFactory;
-import org.springframework.context.annotation.Configuration;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -37,21 +30,5 @@ public interface ObjectifyConfigurer {
    */
   default Collection<Class<?>> registerObjectifyEntities() {
     return Collections.emptyList();
-  }
-
-  @Configuration
-  class DefaultObjectifyConfigurer implements ObjectifyConfigurer {
-
-    @Override
-    public Collection<TranslatorFactory<?, ?>> registerObjectifyTranslators() {
-      return Arrays.asList(
-          new LocalDateDateTranslatorFactory(),
-          new LocalDateTimeDateTranslatorFactory(),
-          new ZonedDateTimeDateTranslatorFactory(),
-          new OffsetDateTimeDateTranslatorFactory(),
-
-          new BigDecimalLongTranslatorFactory()
-      );
-    }
   }
 }
