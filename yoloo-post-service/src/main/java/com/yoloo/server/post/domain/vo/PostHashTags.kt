@@ -4,8 +4,4 @@ import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.util.NoArg
 
 @NoArg
-data class PostOwner(
-    @Index var userId: String,
-
-    var avatarUrl: String
-)
+data class PostHashTags(@Index var values: Set<String>)

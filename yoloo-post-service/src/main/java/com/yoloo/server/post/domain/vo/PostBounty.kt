@@ -1,5 +1,13 @@
 package com.yoloo.server.post.domain.vo
 
+import com.googlecode.objectify.annotation.Index
+import com.googlecode.objectify.condition.IfNotZero
+import com.yoloo.server.common.util.NoArg
 import javax.validation.constraints.PositiveOrZero
 
-data class PostBounty(@field:PositiveOrZero var value: Int)
+@NoArg
+data class PostBounty(
+    @field:PositiveOrZero
+    @Index(IfNotZero::class)
+    var value: Int = 0
+)
