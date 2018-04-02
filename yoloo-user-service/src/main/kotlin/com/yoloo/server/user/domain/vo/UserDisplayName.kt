@@ -5,7 +5,7 @@ import javax.validation.Valid
 
 @NoArg
 data class UserDisplayName @Valid constructor(
-    private var displayName: String,
+    var value: String,
 
-    private var slug: String = displayName.toLowerCase().replace(" ", "")
+    var slug: String = value.toLowerCase().replace(" ", "")
 )

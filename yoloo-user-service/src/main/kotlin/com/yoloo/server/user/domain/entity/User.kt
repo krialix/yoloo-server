@@ -1,4 +1,4 @@
-package com.yoloo.server.user.domain.model
+package com.yoloo.server.user.domain.entity
 
 import com.fasterxml.uuid.Generators
 import com.googlecode.objectify.annotation.Entity
@@ -17,18 +17,18 @@ import javax.validation.Valid
 @Entity
 data class User constructor(
     @Id
-    private var id: String = Generators.timeBasedGenerator().generate().toString().replace("-", ""),
+    var id: String = Generators.timeBasedGenerator().generate().toString().replace("-", ""),
 
     @field:Valid
-    private var userPrimaryData: UserPrimaryData,
+    var userPrimaryData: UserPrimaryData,
 
     @field:Valid
-    private var userSecondaryData: UserSecondaryData,
+    var userSecondaryData: UserSecondaryData,
 
     @field:Valid
-    private var countData: UserCountData = UserCountData(),
+    var countData: UserCountData = UserCountData(),
 
-    private var userFilterData: UserFilterData = UserFilterData()
+    var userFilterData: UserFilterData = UserFilterData()
 ) : Validatable, Keyable<User> {
 
     @OnSave

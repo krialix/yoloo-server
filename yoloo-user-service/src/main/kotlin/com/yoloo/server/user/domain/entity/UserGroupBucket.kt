@@ -1,4 +1,4 @@
-package com.yoloo.server.user.domain.model
+package com.yoloo.server.user.domain.entity
 
 import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id

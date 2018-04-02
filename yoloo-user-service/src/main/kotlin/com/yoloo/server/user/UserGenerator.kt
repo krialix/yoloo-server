@@ -1,6 +1,6 @@
 package com.yoloo.server.user
 
-import com.yoloo.server.user.domain.model.*
+import com.yoloo.server.user.domain.entity.User
 import com.yoloo.server.user.domain.vo.Email
 import com.yoloo.server.user.domain.vo.UserDisplayName
 import com.yoloo.server.user.domain.vo.UserPrimaryData
@@ -13,7 +13,7 @@ object UserGenerator {
         return (1..5).map {
             User(
                 userPrimaryData = UserPrimaryData(
-                    displayName = UserDisplayName(displayName = "Demo $it"),
+                    displayName = UserDisplayName(value = "Demo $it"),
                     email = Email("demo$it@demo.com"),
                     avatarUrl = "",
                     fcmToken = "",

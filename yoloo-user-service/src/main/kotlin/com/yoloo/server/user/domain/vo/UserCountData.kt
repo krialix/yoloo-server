@@ -6,11 +6,11 @@ import javax.validation.constraints.PositiveOrZero
 @NoArg
 data class UserCountData(
     @field:PositiveOrZero
-    private var postCount: Int = 0,
+    var postCount: Int = 0,
 
     @field:PositiveOrZero
-    private var commentCount: Int = 0,
+    var commentCount: Int = 0,
 
     @field:PositiveOrZero
-    private var coinCount: Int = 0
+    var coinCount: Int = 0
 )
