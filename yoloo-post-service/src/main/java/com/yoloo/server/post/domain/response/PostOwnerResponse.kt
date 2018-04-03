@@ -1,7 +1,6 @@
 package com.yoloo.server.post.domain.response
 
-import com.github.jasminb.jsonapi.annotations.Id
-import com.github.jasminb.jsonapi.annotations.Type
+import com.jianglibo.tojsonapi.reflect.JsonapiResource
 
-@Type("user")
-data class PostOwnerResponse(@Id val id: String, val displayName: String, val avatarUrl: String, val self: Boolean)
+@JsonapiResource(type = "user")
+data class PostOwnerResponse(var id: String, var displayName: String, var avatarUrl: String, var self: Boolean)

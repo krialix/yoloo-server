@@ -1,24 +1,23 @@
 package com.yoloo.server.post.application
 
-import com.github.jasminb.jsonapi.JSONAPIDocument
-import com.github.jasminb.jsonapi.ResourceConverter
+import com.jianglibo.tojsonapi.structure.JsonapiDocumentBuilder
+import com.jianglibo.tojsonapi.structure.OffsetlimitPager
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.domain.entity.Post
 import com.yoloo.server.post.domain.response.PostOwnerResponse
 import com.yoloo.server.post.domain.response.PostResponse
 import com.yoloo.server.post.domain.vo.*
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-
-
 
 @RequestMapping("/api/v1")
 @RestController
 class PostControllerV1 {
 
     @GetMapping("/posts")
-    fun listPosts(): JSONAPIDocument<PostResponse> {
+    fun listPosts(): ResponseEntity<Map<String, Any>> {
         val list = ofy().load().type(Post::class.java)
             .limit(2)
             .list()
@@ -36,9 +35,10 @@ class PostControllerV1 {
                 )
             }.toList()
 
-        val converter = ResourceConverter(PostResponse::class.java, PostOwnerResponse::class.java)
-        val bytes = converter.writeDocumentCollection(JSONAPIDocument(list))
-        return converter.readDocument(bytes, PostResponse::class.java)
+        val pager = OffsetlimitPager("offset", "limit")
+        val documentBuilder = JsonapiDocumentBuilder(pager)
+        val jad = documentBuilder.buildListResource(list, 2, "http://localhost:8080/api/v1")
+        return ResponseEntity.ok(jad.asMap())
     }
 
     @GetMapping("/posts2")

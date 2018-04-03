@@ -1,18 +1,19 @@
 package com.yoloo.server.post.domain.response
 
-import com.github.jasminb.jsonapi.annotations.Id
-import com.github.jasminb.jsonapi.annotations.Relationship
-import com.github.jasminb.jsonapi.annotations.Type
+import com.jianglibo.tojsonapi.reflect.JsonapiRelation
+import com.jianglibo.tojsonapi.reflect.JsonapiResource
 
-@Type("post")
+@JsonapiResource(type = "posts")
 data class PostResponse(
-    @Id
-    val id: String,
+    var id: String,
 
-    @Relationship("user")
-    val owner: PostOwnerResponse,
+    @JsonapiRelation(
+        targetResourceClass = PostOwnerResponse::class,
+        relationType = JsonapiRelation.JsonapiRelationType.SINGLE
+    )
+    var owner: PostOwnerResponse,
 
-    val title: String/*,
+    var title: String/*,
 
     val content: String,
 
