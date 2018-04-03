@@ -7,5 +7,7 @@ import com.yoloo.server.common.util.NoArg
 data class PostOwner(
     @Index var userId: String,
 
+    var displayName: String,
+
     var avatarUrl: String
 )

@@ -8,5 +8,5 @@ data class PostTopic(
     @Index
     var topicId: String,
 
-    var topicDisplayName: String
+    var displayName: String
 )
