@@ -45,6 +45,10 @@ kotlin {
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', includes: ['*.jar'])
+
+    implementation files('libs/jsonapi.jar')
+
     implementation project(':common')
     implementation project(':objectify')
 

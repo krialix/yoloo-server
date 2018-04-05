@@ -1,21 +1,39 @@
 package com.yoloo.server.post.domain.response
 
-import com.jianglibo.tojsonapi.reflect.JsonapiRelation
-import com.jianglibo.tojsonapi.reflect.JsonapiResource
+import com.fasterxml.jackson.annotation.JsonIgnore
+import org.dialectic.jsonapi.ResourceLinkage
+import org.dialectic.jsonapi.links.ResourceLinks
+import org.dialectic.jsonapi.relationship.Relationship
+import org.dialectic.jsonapi.relationship.Relationships
+import org.dialectic.jsonapi.resource.Resource
+import java.time.LocalDateTime
 
-@JsonapiResource(type = "posts")
 data class PostResponse(
+    @JsonIgnore
     var id: String,
 
-    @JsonapiRelation(
-        targetResourceClass = PostOwnerResponse::class,
-        relationType = JsonapiRelation.JsonapiRelationType.SINGLE
-    )
-    var owner: PostOwnerResponse,
+    @JsonIgnore
+    var ownerId: String,
 
-    var title: String/*,
+    var title: String,
 
     val content: String,
 
-    val createdAt: LocalDateTime*/
-)
+    val createdAt: LocalDateTime
+) : Resource {
+    override fun getJsonApiDataId(): String {
+        return id
+    }
+
+    override fun getJsonApiDataType(): String {
+        return "posts"
+    }
+
+    override fun getLinks(): ResourceLinks {
+        return ResourceLinks.self("http://localhost:8085/api/v1/posts/$id")
+    }
+
+    override fun getRelationships(): Relationships {
+        return Relationships.of(Relationship.create("owner", ResourceLinkage.toOne(ownerId, "users")))
+    }
+}

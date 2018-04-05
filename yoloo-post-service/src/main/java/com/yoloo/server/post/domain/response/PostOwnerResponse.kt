@@ -1,6 +1,21 @@
 package com.yoloo.server.post.domain.response
 
-import com.jianglibo.tojsonapi.reflect.JsonapiResource
+import com.fasterxml.jackson.annotation.JsonIgnore
+import org.dialectic.jsonapi.resource.Resource
 
-@JsonapiResource(type = "user")
-data class PostOwnerResponse(var id: String, var displayName: String, var avatarUrl: String, var self: Boolean)
+data class PostOwnerResponse(
+    @JsonIgnore
+    var id: String,
+    var displayName: String,
+    var avatarUrl: String,
+    var self: Boolean
+) : Resource {
+    override fun getJsonApiDataId(): String {
+        return id
+    }
+
+    override fun getJsonApiDataType(): String {
+        return "users"
+    }
+
+}

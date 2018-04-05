@@ -1,44 +1,78 @@
 package com.yoloo.server.post.application
 
-import com.jianglibo.tojsonapi.structure.JsonapiDocumentBuilder
-import com.jianglibo.tojsonapi.structure.OffsetlimitPager
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.domain.entity.Post
 import com.yoloo.server.post.domain.response.PostOwnerResponse
 import com.yoloo.server.post.domain.response.PostResponse
 import com.yoloo.server.post.domain.vo.*
+import org.dialectic.jsonapi.links.ResourceLinks
+import org.dialectic.jsonapi.response.DataResponse
+import org.dialectic.jsonapi.response.JsonApiResponse
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/api/v1")
 @RestController
 class PostControllerV1 {
 
+    @GetMapping("/posts/{postId}", produces = ["application/vnd.api+json"], consumes = ["application/vnd.api+json"])
+    @ResponseStatus(HttpStatus.OK)
+    fun getPost(@PathVariable("postId") postId: String): DataResponse<PostResponse> {
+        val post = ofy().load().type(Post::class.java).id(postId).now()
+
+        val postResponse = PostResponse(
+            id = post.id,
+            ownerId = post.owner.userId,
+            title = post.title.value,
+            content = post.content.value,
+            createdAt = post.createdAt
+        )
+
+        val postOwnerResponse = PostOwnerResponse(
+            id = post.owner.userId,
+            displayName = post.owner.displayName,
+            avatarUrl = post.owner.avatarUrl,
+            self = false
+        )
+
+        return JsonApiResponse.singleDataResponse(postResponse)
+            .withLinks<DataResponse<PostResponse>>(ResourceLinks.self("http://localhost:8085/api/v1/posts/$postId"))
+            .withIncludedResources(postOwnerResponse)
+    }
+
     @GetMapping("/posts")
-    fun listPosts(): ResponseEntity<Map<String, Any>> {
-        val list = ofy().load().type(Post::class.java)
+    fun listPosts(): ResponseEntity<DataResponse<PostResponse>> {
+        val postOwnerResponses = mutableListOf<PostOwnerResponse>()
+        val postResponses = mutableListOf<PostResponse>()
+
+        ofy().load().type(Post::class.java)
             .limit(2)
             .list()
-            .asSequence()
-            .map {
-                PostResponse(
+            .forEach {
+                val postResponse = PostResponse(
                     id = it.id,
-                    owner = PostOwnerResponse(
-                        id = it.owner.userId,
-                        displayName = it.owner.displayName,
-                        avatarUrl = it.owner.avatarUrl,
-                        self = false
-                    ),
-                    title = it.title.value
+                    ownerId = it.owner.userId,
+                    title = it.title.value,
+                    content = it.content.value,
+                    createdAt = it.createdAt
                 )
-            }.toList()
+                postResponses.add(postResponse)
 
-        val pager = OffsetlimitPager("offset", "limit")
-        val documentBuilder = JsonapiDocumentBuilder(pager)
-        val jad = documentBuilder.buildListResource(list, 2, "http://localhost:8080/api/v1")
-        return ResponseEntity.ok(jad.asMap())
+                val postOwnerResponse = PostOwnerResponse(
+                    id = it.owner.userId,
+                    displayName = it.owner.displayName,
+                    avatarUrl = it.owner.avatarUrl,
+                    self = false
+                )
+                postOwnerResponses.add(postOwnerResponse)
+            }
+
+        val response = JsonApiResponse.multiDataResponse<PostResponse>(postResponses)
+            .withLinks<DataResponse<PostResponse>>(ResourceLinks.self("http://localhost:8085/api/v1/posts"))
+            .withIncludedResources<DataResponse<PostResponse>, PostOwnerResponse>(postOwnerResponses)
+
+        return ResponseEntity.ok(response)
     }
 
     @GetMapping("/posts2")
