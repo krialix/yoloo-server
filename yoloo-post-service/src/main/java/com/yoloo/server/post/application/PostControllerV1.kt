@@ -2,21 +2,22 @@ package com.yoloo.server.post.application
 
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.domain.entity.Post
+import com.yoloo.server.post.domain.request.PostRequest
 import com.yoloo.server.post.domain.response.PostOwnerResponse
 import com.yoloo.server.post.domain.response.PostResponse
 import com.yoloo.server.post.domain.vo.*
 import org.dialectic.jsonapi.links.ResourceLinks
 import org.dialectic.jsonapi.response.DataResponse
-import org.dialectic.jsonapi.response.JsonApiResponse
+import org.dialectic.jsonapi.response.JsonApi
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1", produces = ["application/vnd.api+json"]/*, consumes = ["application/vnd.api+json"]*/)
 @RestController
 class PostControllerV1 {
 
-    @GetMapping("/posts/{postId}", produces = ["application/vnd.api+json"], consumes = ["application/vnd.api+json"])
+    @GetMapping("/posts/{postId}")
     @ResponseStatus(HttpStatus.OK)
     fun getPost(@PathVariable("postId") postId: String): DataResponse<PostResponse> {
         val post = ofy().load().type(Post::class.java).id(postId).now()
@@ -36,13 +37,12 @@ class PostControllerV1 {
             self = false
         )
 
-        return JsonApiResponse.singleDataResponse(postResponse)
-            .withLinks<DataResponse<PostResponse>>(ResourceLinks.self("http://localhost:8085/api/v1/posts/$postId"))
-            .withIncludedResources(postOwnerResponse)
+        return JsonApi.data(postResponse).withIncludedResources(postOwnerResponse)
     }
 
     @GetMapping("/posts")
-    fun listPosts(): ResponseEntity<DataResponse<PostResponse>> {
+    @ResponseStatus(HttpStatus.OK)
+    fun listPosts(): DataResponse<PostResponse> {
         val postOwnerResponses = mutableListOf<PostOwnerResponse>()
         val postResponses = mutableListOf<PostResponse>()
 
@@ -68,11 +68,9 @@ class PostControllerV1 {
                 postOwnerResponses.add(postOwnerResponse)
             }
 
-        val response = JsonApiResponse.multiDataResponse<PostResponse>(postResponses)
-            .withLinks<DataResponse<PostResponse>>(ResourceLinks.self("http://localhost:8085/api/v1/posts"))
-            .withIncludedResources<DataResponse<PostResponse>, PostOwnerResponse>(postOwnerResponses)
-
-        return ResponseEntity.ok(response)
+        return JsonApi.data(postResponses)
+            .withLinks(ResourceLinks.self("http://localhost:8085/api/v1/posts34"))
+            .withIncludedResources(postOwnerResponses)
     }
 
     @GetMapping("/posts2")
@@ -87,5 +85,10 @@ class PostControllerV1 {
                 content = PostContent.create("lorem impsum")
             )
         }.let { ofy().save().entities(it).now() }
+    }
+
+    @PostMapping("/posts5")
+    fun insertPost(@Valid @RequestBody postRequest: PostRequest) {
+
     }
 }

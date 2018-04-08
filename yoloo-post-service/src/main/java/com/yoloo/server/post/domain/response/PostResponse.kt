@@ -2,7 +2,6 @@ package com.yoloo.server.post.domain.response
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.dialectic.jsonapi.ResourceLinkage
-import org.dialectic.jsonapi.links.ResourceLinks
 import org.dialectic.jsonapi.relationship.Relationship
 import org.dialectic.jsonapi.relationship.Relationships
 import org.dialectic.jsonapi.resource.Resource
@@ -27,10 +26,6 @@ data class PostResponse(
 
     override fun getJsonApiDataType(): String {
         return "posts"
-    }
-
-    override fun getLinks(): ResourceLinks {
-        return ResourceLinks.self("http://localhost:8085/api/v1/posts/$id")
     }
 
     override fun getRelationships(): Relationships {

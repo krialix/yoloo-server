@@ -14,7 +14,7 @@ object UserGenerator {
             User(
                 userPrimaryData = UserPrimaryData(
                     displayName = UserDisplayName(value = "Demo $it"),
-                    email = Email("demo$it@demo.com"),
+                    email = Email("demo$it@demo..com"),
                     avatarUrl = "",
                     fcmToken = "",
                     scopes = setOf("user:read", "user:write"),

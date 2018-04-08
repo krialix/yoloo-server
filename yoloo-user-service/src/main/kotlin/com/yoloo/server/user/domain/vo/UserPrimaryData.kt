@@ -9,7 +9,6 @@ import javax.validation.constraints.Pattern
 
 @NoArg
 data class UserPrimaryData(
-    @field:Valid
     var displayName: UserDisplayName,
 
     @field:Valid

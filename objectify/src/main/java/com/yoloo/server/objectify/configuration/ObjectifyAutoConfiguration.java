@@ -43,7 +43,13 @@ public class ObjectifyAutoConfiguration {
     this.configurers = getConfigurerImplementations(context);
   }
 
-  /** @return Register the default {@link ObjectifyProxy}. */
+  @Bean("ofyFilter")
+  public FilterRegistrationBean<ObjectifyFilter> objectifyFilterRegistration() {
+    FilterRegistrationBean<ObjectifyFilter> registration = new FilterRegistrationBean<>();
+    registration.setFilter(new ObjectifyFilter());
+    return registration;
+  }
+
   @DependsOn("ofyFilter")
   @Bean
   public ObjectifyProxy ofy() {
@@ -53,13 +59,6 @@ public class ObjectifyAutoConfiguration {
     registerEntities(ObjectifyProxy.factory());
 
     return objectify;
-  }
-
-  @Bean("ofyFilter")
-  public FilterRegistrationBean<ObjectifyFilter> objectifyFilterRegistration() {
-    FilterRegistrationBean<ObjectifyFilter> registration = new FilterRegistrationBean<>();
-    registration.setFilter(new ObjectifyFilter());
-    return registration;
   }
 
   private void registerTranslators(Translators translators) {

@@ -1,4 +1,4 @@
-package com.yoloo.server.core
+package com.yoloo.server
 
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -3,9 +3,9 @@
     <application>yoloo-eu2</application>
     <runtime>java8</runtime>
     <threadsafe>true</threadsafe>
-    <sessions-enabled>true</sessions-enabled>
+    <!--<sessions-enabled>true</sessions-enabled>-->
 
-    <!--<system-properties>
-        <property name="java.util.logging.config.file" value="WEB-INF/classes/logging.properties"/>
-    </system-properties>-->
+    <system-properties>
+        <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+    </system-properties>
 </appengine-web-app>
