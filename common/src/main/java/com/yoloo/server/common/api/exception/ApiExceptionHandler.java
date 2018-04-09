@@ -3,11 +3,8 @@ package com.yoloo.server.common.api.exception;
 import org.dialectic.jsonapi.error.Error;
 import org.dialectic.jsonapi.error.ErrorResponse;
 import org.dialectic.jsonapi.response.JsonApi;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.NoSuchMessageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeException;
@@ -28,26 +25,11 @@ import static java.util.stream.Collectors.toList;
 @ControllerAdvice
 class ApiExceptionHandler {
 
-  private static final Logger log = LoggerFactory.getLogger(ApiExceptionHandler.class);
-
   private final MessageSource messageSource;
 
   @Autowired
   ApiExceptionHandler(MessageSource messageSource) {
     this.messageSource = messageSource;
-  }
-
-  private static String getI18NMessage(
-      MessageSource messageSource, String code, Object[] args, Locale locale) {
-    String message;
-    try {
-      message = messageSource.getMessage(code, args, locale);
-    } catch (NoSuchMessageException e) {
-      log.error("Couldn't find any message for {} code under {} locale", code, locale);
-      message = messageSource.getMessage("error.default.message_not_found", args, locale);
-    }
-
-    return message;
   }
 
   @ExceptionHandler(ServiceException.class)
@@ -80,7 +62,11 @@ class ApiExceptionHandler {
                     Error.builder()
                         .applicationErrorCode(objectError.getDefaultMessage())
                         .httpStatusCode(HttpStatus.BAD_REQUEST.toString())
-                        .detail(messageSource.getMessage(objectError, locale))
+                        .detail(
+                            messageSource.getMessage(
+                                objectError.getDefaultMessage(),
+                                objectError.getArguments(),
+                                locale))
                         .build())
             .collect(toList());
 

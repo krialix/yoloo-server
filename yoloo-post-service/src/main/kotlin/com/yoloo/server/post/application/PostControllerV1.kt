@@ -6,14 +6,13 @@ import com.yoloo.server.post.domain.request.PostRequest
 import com.yoloo.server.post.domain.response.PostOwnerResponse
 import com.yoloo.server.post.domain.response.PostResponse
 import com.yoloo.server.post.domain.vo.*
-import org.dialectic.jsonapi.links.ResourceLinks
 import org.dialectic.jsonapi.response.DataResponse
 import org.dialectic.jsonapi.response.JsonApi
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
-@RequestMapping("/api/v1", produces = ["application/vnd.api+json"]/*, consumes = ["application/vnd.api+json"]*/)
+@RequestMapping("/api/v1", produces = ["application/vnd.api+json"], consumes = ["application/vnd.api+json"])
 @RestController
 class PostControllerV1 {
 
@@ -41,7 +40,6 @@ class PostControllerV1 {
     }
 
     @GetMapping("/posts")
-    @ResponseStatus(HttpStatus.OK)
     fun listPosts(): DataResponse<PostResponse> {
         val postOwnerResponses = mutableListOf<PostOwnerResponse>()
         val postResponses = mutableListOf<PostResponse>()
@@ -68,12 +66,10 @@ class PostControllerV1 {
                 postOwnerResponses.add(postOwnerResponse)
             }
 
-        return JsonApi.data(postResponses)
-            .withLinks(ResourceLinks.self("http://localhost:8085/api/v1/posts34"))
-            .withIncludedResources(postOwnerResponses)
+        return JsonApi.data(postResponses).withIncludedResources(postOwnerResponses)
     }
 
-    @GetMapping("/posts2")
+    @PostMapping("/posts")
     fun insertPost() {
         (1..5).map {
             Post(

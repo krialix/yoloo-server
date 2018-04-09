@@ -11,14 +11,13 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 
 /**
- * Provides a non-static access alternative to the {@link ObjectifyService}.
- * Using the objectify proxy bean in tandem with the {@link ObjectifyAutoConfiguration} mechanism ensures that any calls to Objectify will occur after all
- * entities, translators, etc have been registered.
+ * Provides a non-static access alternative to the {@link ObjectifyService}. Using the objectify
+ * proxy bean in tandem with the {@link ObjectifyAutoConfiguration} mechanism ensures that any calls
+ * to Objectify will occur after all entities, translators, etc have been registered.
  */
 public interface ObjectifyProxy {
   /**
-   * Get an objectify instance.
-   * Equivalent to calling {@link ObjectifyService#ofy()}
+   * Get an objectify instance. Equivalent to calling {@link ObjectifyService#ofy()}
    *
    * @return Objectify instance.
    */
@@ -27,8 +26,7 @@ public interface ObjectifyProxy {
   }
 
   /**
-   * Get the Objectify instance factory.
-   * Equivalent to calling {@link ObjectifyService#factory()}
+   * Get the Objectify instance factory. Equivalent to calling {@link ObjectifyService#factory()}
    *
    * @return The Objectify instance factory.
    */
@@ -37,8 +35,8 @@ public interface ObjectifyProxy {
   }
 
   /**
-   * Register an entity class with Objectify.
-   * Equivalent to calling {@link ObjectifyService#register(Class)}
+   * Register an entity class with Objectify. Equivalent to calling {@link
+   * ObjectifyService#register(Class)}
    *
    * @param clazz The entity class to register.
    */
@@ -47,8 +45,8 @@ public interface ObjectifyProxy {
   }
 
   /**
-   * Register a collection of entity classes with Objectify.
-   * Equivalent to calling {@link ObjectifyService#register(Class)}.
+   * Register a collection of entity classes with Objectify. Equivalent to calling {@link
+   * ObjectifyService#register(Class)}.
    *
    * @param classes The entity classes to register.
    */
@@ -57,8 +55,8 @@ public interface ObjectifyProxy {
   }
 
   /**
-   * Register a collection of entity classes with Objectify.
-   * Equivalent to calling {@link ObjectifyService#register(Class)}.
+   * Register a collection of entity classes with Objectify. Equivalent to calling {@link
+   * ObjectifyService#register(Class)}.
    *
    * @param classes The entity classes to register.
    */
@@ -67,12 +65,12 @@ public interface ObjectifyProxy {
   }
 
   /**
-   * Runs one unit of work, making the root Objectify context available.
-   * This does not start a transaction, but it makes the static ofy() method return an appropriate object.
-   * Equivalent to calling {@link ObjectifyService#run(Work)}.
+   * Runs one unit of work, making the root Objectify context available. This does not start a
+   * transaction, but it makes the static ofy() method return an appropriate object. Equivalent to
+   * calling {@link ObjectifyService#run(Work)}.
    *
    * @param work Unit of work.
-   * @param <R>  Result type.
+   * @param <R> Result type.
    * @return Result of running unit of work.
    */
   default <R> R run(Work<R> work) {
@@ -80,12 +78,12 @@ public interface ObjectifyProxy {
   }
 
   /**
-   * Runs one unit of work, making the root Objectify context available.
-   * This does not start a transaction, but it makes the static ofy() method return an appropriate object.
-   * Equivalent to calling {@link ObjectifyService#run(Work)}.
+   * Runs one unit of work, making the root Objectify context available. This does not start a
+   * transaction, but it makes the static ofy() method return an appropriate object. Equivalent to
+   * calling {@link ObjectifyService#run(Work)}.
    *
    * @param work Unit of work.
-   * @param <R>  Result type.
+   * @param <R> Result type.
    * @return Result of running unit of work.
    */
   default <R> R run(Supplier<R> work) {
@@ -93,22 +91,25 @@ public interface ObjectifyProxy {
   }
 
   /**
-   * Runs one unit of work, making the root Objectify context available.
-   * This does not start a transaction, but it makes the static ofy() method return an appropriate object.
-   * Equivalent to calling {@link ObjectifyService#run(Work)}.
+   * Runs one unit of work, making the root Objectify context available. This does not start a
+   * transaction, but it makes the static ofy() method return an appropriate object. Equivalent to
+   * calling {@link ObjectifyService#run(Work)}.
    *
    * @param work Unit of work.
    */
   default void run(Runnable work) {
-    run((Work<Void>) () -> {
-      work.run();
-      return null;
-    });
+    run(
+        (Work<Void>)
+            () -> {
+              work.run();
+              return null;
+            });
   }
 
   /**
-   * An alternative to {@link #run(Work)} which is somewhat easier to use with testing (ie, @Before and @After) frameworks.
-   * You must {@link Closeable#close()} the return value at the end of the request in a finally block.
+   * An alternative to {@link #run(Work)} which is somewhat easier to use with testing (ie, @Before
+   * and @After) frameworks. You must {@link Closeable#close()} the return value at the end of the
+   * request in a finally block.
    *
    * @return Closeable used to close the unit of work.
    */

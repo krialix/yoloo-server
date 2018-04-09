@@ -5,4 +5,4 @@ import com.yoloo.server.common.util.NoArg
 import javax.validation.constraints.Email
 
 @NoArg
-data class Email(@field:Email(message = "users.error.invalid.email") @Index var value: String)
+data class Email(@field:Email(message = "user.invalid.email") @Index var value: String)

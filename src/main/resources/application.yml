@@ -1,3 +1,3 @@
 spring:
   messages:
-    basename: classpath:i18n/messages
+    basename: i18n/user-service-messages, i18n/post-service-messages
