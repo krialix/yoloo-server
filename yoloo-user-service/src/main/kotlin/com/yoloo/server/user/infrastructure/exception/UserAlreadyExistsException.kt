@@ -1,6 +1,5 @@
 package com.yoloo.server.user.infrastructure.exception
 
-import com.yoloo.server.common.api.exception.ServiceException
-import org.springframework.http.HttpStatus
+import com.yoloo.server.common.api.exception.ConflictException
 
-class UserAlreadyExistsException : ServiceException("users-1", HttpStatus.CONFLICT)
+class UserAlreadyExistsException : ConflictException("users-1")

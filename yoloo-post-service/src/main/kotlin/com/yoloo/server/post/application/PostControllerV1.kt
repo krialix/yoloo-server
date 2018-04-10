@@ -18,10 +18,11 @@ class PostControllerV1 @Autowired constructor(val postCollectionResponseMapper: 
 
     @GetMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
     fun getPost(@PathVariable("postId") postId: String): DataResponse<PostResponse> {
-        val post = ofy().load().type(Post::class.java).id(postId).now() ?: throw NotFoundException("post.not-found")
+        val post = ofy().load().type(Post::class.java).id(postId).now()
 
-        if (post.isDeleted()) {
+        if (post == null || post.isDeleted()) {
             throw NotFoundException("post.not-found")
         }
 

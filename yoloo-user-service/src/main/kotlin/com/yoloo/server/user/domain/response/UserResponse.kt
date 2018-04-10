@@ -1,14 +1,15 @@
 package com.yoloo.server.user.domain.response
 
-import org.springframework.hateoas.ResourceSupport
+import com.yoloo.server.common.util.NoArg
 import java.time.LocalDateTime
 
+@NoArg
 data class UserResponse(
-    val id: String,
-    val displayName: String,
-    val avatarUrl: String,
-    val email: String,
-    val createdAt: LocalDateTime,
-    val bio: String?,
-    val website: String?
-) : ResourceSupport()
+    var id: String,
+    var displayName: String,
+    var avatarUrl: String,
+    var email: String,
+    var createdAt: LocalDateTime,
+    var bio: String?,
+    var website: String?
+)
