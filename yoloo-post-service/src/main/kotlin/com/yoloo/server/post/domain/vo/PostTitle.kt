@@ -4,4 +4,4 @@ import com.yoloo.server.common.util.NoArg
 import javax.validation.constraints.Max
 
 @NoArg
-data class PostTitle(@field:Max(200) var value: String)
+data class PostTitle(@field:Max(value = 120, message = "post.invalid.title") var value: String)

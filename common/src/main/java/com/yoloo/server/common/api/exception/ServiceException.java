@@ -2,7 +2,7 @@ package com.yoloo.server.common.api.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class ServiceException extends RuntimeException {
+public abstract class ServiceException extends RuntimeException {
 
   private final String applicationErrorCode;
   private final HttpStatus httpStatus;

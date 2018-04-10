@@ -1,5 +1,6 @@
-package com.yoloo.server.common.api.exception;
+package com.yoloo.server.common.api.handler;
 
+import com.yoloo.server.common.api.exception.ServiceException;
 import org.dialectic.jsonapi.error.Error;
 import org.dialectic.jsonapi.error.ErrorResponse;
 import org.dialectic.jsonapi.response.JsonApi;
@@ -25,6 +26,8 @@ import static java.util.stream.Collectors.toList;
 @ControllerAdvice
 class ApiExceptionHandler {
 
+  private static final String UNKNOWN_ERROR_CODE = "unknown error code";
+
   private final MessageSource messageSource;
 
   @Autowired
@@ -40,7 +43,9 @@ class ApiExceptionHandler {
         Error.builder()
             .applicationErrorCode(ex.getApplicationErrorCode())
             .httpStatusCode(ex.getHttpStatus().toString())
-            .detail(messageSource.getMessage(ex.getApplicationErrorCode(), null, locale))
+            .detail(
+                messageSource.getMessage(
+                    ex.getApplicationErrorCode(), null, UNKNOWN_ERROR_CODE, locale))
             .build();
 
     return ResponseEntity.status(ex.getHttpStatus()).body(JsonApi.error(error));
@@ -66,6 +71,7 @@ class ApiExceptionHandler {
                             messageSource.getMessage(
                                 objectError.getDefaultMessage(),
                                 objectError.getArguments(),
+                                UNKNOWN_ERROR_CODE,
                                 locale))
                         .build())
             .collect(toList());
@@ -86,7 +92,10 @@ class ApiExceptionHandler {
                         .httpStatusCode(HttpStatus.BAD_REQUEST.toString())
                         .detail(
                             messageSource.getMessage(
-                                cv.getMessage(), cv.getExecutableParameters(), locale))
+                                cv.getMessageTemplate(),
+                                cv.getExecutableParameters(),
+                                UNKNOWN_ERROR_CODE,
+                                locale))
                         .build())
             .collect(toList());
 
