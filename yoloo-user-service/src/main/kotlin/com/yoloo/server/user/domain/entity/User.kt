@@ -2,6 +2,7 @@ package com.yoloo.server.user.domain.entity
 
 import com.fasterxml.uuid.Generators
 import com.googlecode.objectify.annotation.*
+import com.googlecode.objectify.condition.IfNotNull
 import com.googlecode.objectify.condition.IfNull
 import com.yoloo.server.common.mixins.Keyable
 import com.yoloo.server.common.mixins.Validatable
@@ -48,7 +49,7 @@ data class User constructor(
     var updatedAt: LocalDateTime = createdAt,
 
     @IgnoreSave(IfNull::class)
-    @Index
+    @Index(IfNotNull::class)
     var deletedAt: LocalDateTime? = null,
 
     var locale: Locale,
@@ -66,7 +67,21 @@ data class User constructor(
     @field:Valid
     var countData: UserCountData = UserCountData(),
 
-    var userFilterData: UserFilterData = UserFilterData()
+    var userFilterData: UserFilterData = UserFilterData(),
+
+    // Fields are used for mapping
+
+    @Ignore
+    var followingCount: Int = 0,
+
+    @Ignore
+    var followerCount: Int = 0,
+
+    @Ignore
+    var self: Boolean = false,
+
+    @Ignore
+    var following: Boolean = false
 ) : Validatable, Keyable<User> {
 
     @OnSave
