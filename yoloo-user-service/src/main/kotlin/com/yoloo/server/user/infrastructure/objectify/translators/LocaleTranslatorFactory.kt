@@ -1,4 +1,4 @@
-package com.yoloo.server.user.domain.objectify.translators
+package com.yoloo.server.user.infrastructure.objectify.translators
 
 import com.yoloo.server.objectify.translators.AbstractSimpleTranslatorFactory
 import java.util.*

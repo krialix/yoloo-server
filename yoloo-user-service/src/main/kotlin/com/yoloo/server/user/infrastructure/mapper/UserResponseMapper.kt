@@ -4,7 +4,9 @@ import com.yoloo.server.common.Mapper
 import com.yoloo.server.user.domain.entity.User
 import com.yoloo.server.user.domain.response.UserCountResponse
 import com.yoloo.server.user.domain.response.UserResponse
+import org.springframework.stereotype.Component
 
+@Component
 class UserResponseMapper : Mapper<User, UserResponse> {
 
     override fun apply(user: User): UserResponse {

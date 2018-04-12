@@ -1,4 +1,4 @@
-package com.yoloo.server.user.domain.objectify.translators
+package com.yoloo.server.user.infrastructure.objectify.translators
 
 import com.google.appengine.api.datastore.Blob
 import com.yoloo.server.objectify.translators.AbstractSimpleTranslatorFactory
