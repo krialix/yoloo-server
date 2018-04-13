@@ -5,7 +5,7 @@ import org.dialectic.jsonapi.response.DataResponse
 
 interface ListFollowersUseCaseContract {
 
-    data class Request(val userId: String)
+    data class Request(val userId: String, val limit: Int, val cursor: String?)
 
     data class Response(val response: DataResponse<FollowerResponse>)
 }

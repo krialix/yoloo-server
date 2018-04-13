@@ -9,6 +9,7 @@ data class FollowerResponse(
     val displayName: String,
     val avatarUrl: String
 ) : Resource {
+
     override fun getJsonApiDataId(): String {
         return id
     }

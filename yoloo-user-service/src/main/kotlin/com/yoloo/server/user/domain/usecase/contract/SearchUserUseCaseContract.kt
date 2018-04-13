@@ -5,7 +5,7 @@ import org.dialectic.jsonapi.response.DataResponse
 
 interface SearchUserUseCaseContract {
 
-    data class Request(val query: String)
+    data class Request(val query: String, val limit: Int, val cursor: String?)
 
     data class Response(val response: DataResponse<SearchUserResponse>)
 }

@@ -19,7 +19,11 @@ class UserResponseMapper : Mapper<User, UserResponse> {
             avatarUrl = user.avatarUrl,
             email = user.email.value,
             website = user.website,
-            count = UserCountResponse(followers = user.followerCount, followings = user.followingCount),
+            count = UserCountResponse(
+                posts = user.countData.postCount,
+                followers = user.followerCount,
+                followings = user.followingCount
+            ),
             countryIsoCode = user.locale.language
         )
     }
