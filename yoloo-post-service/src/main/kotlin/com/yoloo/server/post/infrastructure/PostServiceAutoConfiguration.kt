@@ -25,7 +25,7 @@ class PostServiceAutoConfiguration {
     }
 
     @Bean
-    fun asyncMemcacheService(): AsyncMemcacheService? {
+    fun asyncMemcacheService(): AsyncMemcacheService {
         return MemcacheServiceFactory.getAsyncMemcacheService()
     }
 

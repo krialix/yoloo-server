@@ -1,31 +1,46 @@
 package com.yoloo.server.user.domain.usecase.impl
 
-import com.google.appengine.api.memcache.MemcacheService
+import com.google.appengine.api.datastore.Cursor
 import com.yoloo.server.common.Mapper
-import com.yoloo.server.user.domain.entity.User
-import com.yoloo.server.user.domain.response.FollowerResponse
+import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.yoloo.server.user.domain.entity.Relationship
+import com.yoloo.server.user.domain.response.RelationshipResponse
 import com.yoloo.server.user.domain.usecase.ListFollowersUseCase
 import com.yoloo.server.user.domain.usecase.contract.ListFollowersUseCaseContract
+import org.dialectic.jsonapi.links.PaginationLinks
 import org.dialectic.jsonapi.response.JsonApi
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 class ListFollowersUseCaseImpl @Autowired constructor(
-    private val followerResponseMapper: Mapper<User, FollowerResponse>,
-    private val memcacheService: MemcacheService
+    private val relationshipMapper: Mapper<Relationship, RelationshipResponse>
 ) : ListFollowersUseCase {
 
     override fun execute(request: ListFollowersUseCaseContract.Request): ListFollowersUseCaseContract.Response {
-        val userId = request.userId
+        var query = ofy()
+            .load()
+            .type(Relationship::class.java)
+            .filter(Relationship.TO_ID, request.userId)
+            .orderKey(true)
 
-        if (request.cursor == null) {
-            memcacheService.get("")
-        }
-        // TODO implement db logic
+        query = request.cursor?.let { query.startAt(Cursor.fromWebSafeString(it)) }
 
-        val data = JsonApi.data(emptyList<FollowerResponse>())
+        query = query.limit(DEFAULT_LIST_LIMIT)
 
-        return ListFollowersUseCaseContract.Response(data)
+        val iterator = query.iterator()
+
+        val data = iterator.asSequence().map(relationshipMapper::apply).toList()
+
+        val cursor = iterator.cursor.toWebSafeString()
+
+        val response =
+            JsonApi.data(data).withLinks(PaginationLinks.links(null, null, cursor, null))
+
+        return ListFollowersUseCaseContract.Response(response)
+    }
+
+    companion object {
+        const val DEFAULT_LIST_LIMIT = 50
     }
 }

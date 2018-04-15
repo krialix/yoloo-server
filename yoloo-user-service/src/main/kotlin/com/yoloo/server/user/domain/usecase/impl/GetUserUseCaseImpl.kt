@@ -1,6 +1,5 @@
 package com.yoloo.server.user.domain.usecase.impl
 
-import com.googlecode.objectify.Key
 import com.yoloo.server.common.Mapper
 import com.yoloo.server.common.api.exception.NotFoundException
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
@@ -18,10 +17,9 @@ class GetUserUseCaseImpl @Autowired constructor(
 ) : GetUserUseCase {
 
     override fun execute(request: GetUserUseCaseContract.Request): GetUserUseCaseContract.Response {
-        val key = Key.create(User::class.java, request.userId)
-        val user = ofy().load().key(key).now()
+        val user = ofy().load().type(User::class.java).id(request.userId).now()
 
-        if (user == null || user.isDeleted()) {
+        if (user == null || !user.enabled) {
             throw NotFoundException("user.error.not-found")
         }
 

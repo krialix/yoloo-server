@@ -1,24 +1,24 @@
 package com.yoloo.server.user.domain.entity
 
-import com.fasterxml.uuid.Generators
 import com.googlecode.objectify.annotation.*
-import com.googlecode.objectify.condition.IfNotNull
-import com.googlecode.objectify.condition.IfNull
+import com.googlecode.objectify.condition.IfTrue
 import com.yoloo.server.common.mixins.Keyable
 import com.yoloo.server.common.mixins.Validatable
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.util.RegexUtil
 import com.yoloo.server.user.domain.vo.*
+import com.yoloo.server.user.infrastructure.util.IdGenerator
 import java.time.LocalDateTime
 import java.util.*
 import javax.validation.Valid
 import javax.validation.constraints.Pattern
 
+@Cache
 @NoArg
 @Entity
 data class User constructor(
     @Id
-    var id: String = Generators.timeBasedGenerator().generate().toString().replace("-", ""),
+    var id: String = IdGenerator.timestampUUID(),
 
     var displayName: UserDisplayName,
 
@@ -40,6 +40,7 @@ data class User constructor(
 
     var locked: Boolean = false,
 
+    @Index(IfTrue::class)
     var enabled: Boolean = true,
 
     var scopes: Set<String>,
@@ -48,8 +49,6 @@ data class User constructor(
 
     var updatedAt: LocalDateTime = createdAt,
 
-    @IgnoreSave(IfNull::class)
-    @Index(IfNotNull::class)
     var deletedAt: LocalDateTime? = null,
 
     var locale: Locale,
@@ -87,9 +86,5 @@ data class User constructor(
     @OnSave
     override fun validate() {
         super.validate()
-    }
-
-    fun isDeleted(): Boolean {
-        return deletedAt != null
     }
 }

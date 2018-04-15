@@ -1,6 +1,5 @@
 package com.yoloo.server.user.domain.usecase.impl
 
-import com.googlecode.objectify.Key
 import com.yoloo.server.common.api.exception.NotFoundException
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.domain.entity.User
@@ -12,10 +11,9 @@ import org.springframework.stereotype.Service
 class PatchUserUseCaseImpl : PatchUserUseCase {
 
     override fun execute(request: PatchUserUseCaseContract.Request) {
-        val userKey = Key.create(User::class.java, request.userId)
-        val user = ofy().load().key(userKey).now()
+        val user = ofy().load().type(User::class.java).id(request.userId).now()
 
-        if (user == null || user.isDeleted()) {
+        if (user == null || !user.enabled) {
             throw NotFoundException("user.error.not-found")
         }
 

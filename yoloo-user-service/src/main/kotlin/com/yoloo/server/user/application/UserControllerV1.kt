@@ -4,12 +4,16 @@ import com.yoloo.server.common.util.RestMediaType
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.UserGenerator
 import com.yoloo.server.user.domain.request.PatchUserRequest
-import com.yoloo.server.user.domain.response.FollowerResponse
-import com.yoloo.server.user.domain.response.FollowingResponse
 import com.yoloo.server.user.domain.response.SearchUserResponse
 import com.yoloo.server.user.domain.response.UserResponse
-import com.yoloo.server.user.domain.usecase.*
-import com.yoloo.server.user.domain.usecase.contract.*
+import com.yoloo.server.user.domain.usecase.DeleteUserUseCase
+import com.yoloo.server.user.domain.usecase.GetUserUseCase
+import com.yoloo.server.user.domain.usecase.PatchUserUseCase
+import com.yoloo.server.user.domain.usecase.SearchUserUseCase
+import com.yoloo.server.user.domain.usecase.contract.DeleteUserUseCaseContract
+import com.yoloo.server.user.domain.usecase.contract.GetUserUseCaseContract
+import com.yoloo.server.user.domain.usecase.contract.PatchUserUseCaseContract
+import com.yoloo.server.user.domain.usecase.contract.SearchUserUseCaseContract
 import org.dialectic.jsonapi.response.DataResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -24,8 +28,6 @@ import javax.validation.Valid
 )
 class UserControllerV1 @Autowired constructor(
     private val getUserUseCase: GetUserUseCase,
-    private val listFollowersUseCase: ListFollowersUseCase,
-    private val listFollowingsUseCase: ListFollowingsUseCase,
     private val searchUserUseCase: SearchUserUseCase,
     private val deleteUserUseCase: DeleteUserUseCase,
     private val patchUserUseCase: PatchUserUseCase
@@ -61,28 +63,6 @@ class UserControllerV1 @Autowired constructor(
     @ResponseBody
     fun deleteUser(@PathVariable("userId") userId: String) {
         deleteUserUseCase.execute(DeleteUserUseCaseContract.Request(userId))
-    }
-
-    @GetMapping("/{userId}/followers")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    fun listFollowers(
-        @PathVariable("userId") userId: String,
-        @RequestParam(value = "limit", required = false, defaultValue = "20") limit: Int,
-        @RequestParam(value = "cursor", required = false) cursor: String?
-    ): DataResponse<FollowerResponse> {
-        return listFollowersUseCase.execute(ListFollowersUseCaseContract.Request(userId, limit, cursor)).response
-    }
-
-    @GetMapping("/{userId}/followings")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    fun listFollowings(
-        @PathVariable("userId") userId: String,
-        @RequestParam(value = "limit", required = false, defaultValue = "20") limit: Int,
-        @RequestParam(value = "cursor", required = false) cursor: String?
-    ): DataResponse<FollowingResponse> {
-        return listFollowingsUseCase.execute(ListFollowingsUseCaseContract.Request(userId, limit, cursor)).response
     }
 
     @GetMapping("/search", params = ["q"])
