@@ -46,7 +46,7 @@ data class PostResponse(
     }
 
     override fun getRelationships(): Relationships {
-        return Relationships.of(Relationship.create("owner", ResourceLinkage.toOne(ownerId, "users")))
+        return Relationships.of(Relationship.create("author", ResourceLinkage.toOne(ownerId, "users")))
     }
 
     companion object {
@@ -57,7 +57,7 @@ data class PostResponse(
                 approvedCommentId = post.approvedCommentId?.value,
                 topic = PostTopicResponse(id = post.topic.topicId, displayName = post.topic.displayName),
                 bounty = post.bounty!!.value,
-                ownerId = post.owner.userId,
+                ownerId = post.author.userId,
                 tags = post.tags.map { it.value },
                 title = post.title.value,
                 content = post.content.value,

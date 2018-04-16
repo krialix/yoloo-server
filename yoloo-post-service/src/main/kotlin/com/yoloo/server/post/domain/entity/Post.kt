@@ -1,11 +1,11 @@
 package com.yoloo.server.post.domain.entity
 
-import com.fasterxml.uuid.Generators
 import com.googlecode.objectify.annotation.*
 import com.googlecode.objectify.condition.IfNull
 import com.yoloo.server.common.mixins.Keyable
 import com.yoloo.server.common.mixins.Validatable
 import com.yoloo.server.common.util.NoArg
+import com.yoloo.server.common.util.TimestampIdGenerator
 import com.yoloo.server.post.domain.vo.*
 import java.time.LocalDateTime
 import javax.validation.Valid
@@ -15,9 +15,9 @@ import javax.validation.Valid
 @Entity
 data class Post(
     @Id
-    var id: String = Generators.timeBasedGenerator().generate().toString().replace("-", ""),
+    var id: String = TimestampIdGenerator.generateId(),
 
-    var owner: PostOwner,
+    var author: Author,
 
     @field:Valid
     var title: PostTitle,

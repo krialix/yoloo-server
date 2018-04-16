@@ -2,4 +2,4 @@ include 'objectify'
 include 'common'
 include 'yoloo-post-service'
 include 'yoloo-user-service'
-
+include 'repackaged.cuckoo-filter'

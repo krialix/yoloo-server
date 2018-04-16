@@ -1,7 +1,7 @@
 package com.yoloo.server.post.domain.response
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.yoloo.server.post.domain.vo.PostOwner
+import com.yoloo.server.post.domain.vo.Author
 import org.dialectic.jsonapi.resource.Resource
 
 data class PostOwnerResponse(
@@ -11,6 +11,7 @@ data class PostOwnerResponse(
     var avatarUrl: String,
     var self: Boolean
 ) : Resource {
+
     override fun getJsonApiDataId(): String {
         return id
     }
@@ -20,7 +21,7 @@ data class PostOwnerResponse(
     }
 
     companion object {
-        fun of(owner: PostOwner, self: Boolean): PostOwnerResponse {
+        fun of(owner: Author, self: Boolean): PostOwnerResponse {
             return PostOwnerResponse(
                 id = owner.userId,
                 displayName = owner.displayName,

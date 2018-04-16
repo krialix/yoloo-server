@@ -51,8 +51,6 @@ dependencies {
     // App Engine
     implementation 'com.google.appengine:appengine-api-1.0-sdk:1.9.63'
 
-    implementation 'com.googlecode.objectify:objectify:5.1.22'
-
     // Spring Boot
     //implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -69,9 +67,7 @@ dependencies {
 
     // Util
     implementation 'org.hibernate.validator:hibernate-validator:6.0.9.Final'
-    implementation 'com.fasterxml.uuid:java-uuid-generator:3.1.5'
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
-    implementation 'com.flipkart.zjsonpatch:zjsonpatch:0.4.4'
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

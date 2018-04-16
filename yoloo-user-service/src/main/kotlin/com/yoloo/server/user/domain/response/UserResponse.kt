@@ -1,5 +1,6 @@
 package com.yoloo.server.user.domain.response
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.yoloo.server.common.util.NoArg
 import org.dialectic.jsonapi.resource.Resource
 
@@ -14,8 +15,11 @@ data class UserResponse(
     val bio: String?,
     val website: String?,
     val count: UserCountResponse,
-    val countryIsoCode: String
+    val countryIsoCode: String,
+    @JsonIgnore
+    val subscribedGroups: List<UserGroupResponse>
 ) : Resource {
+
     override fun getJsonApiDataId(): String {
         return id
     }

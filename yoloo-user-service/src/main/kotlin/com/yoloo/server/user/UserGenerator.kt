@@ -1,6 +1,7 @@
 package com.yoloo.server.user
 
 import com.yoloo.server.user.domain.entity.User
+import com.yoloo.server.user.domain.vo.AvatarUrl
 import com.yoloo.server.user.domain.vo.Email
 import com.yoloo.server.user.domain.vo.UserDisplayName
 import java.util.*
@@ -12,7 +13,7 @@ object UserGenerator {
             User(
                 displayName = UserDisplayName(value = "Demo $it"),
                 email = Email("demo$it@demo.com"),
-                avatarUrl = "",
+                avatarUrl = AvatarUrl(""),
                 fcmToken = "",
                 scopes = setOf("user:read", "user:write"),
                 lastKnownIP = "127.0.0.1",

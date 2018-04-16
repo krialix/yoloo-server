@@ -16,7 +16,7 @@ class PostCollectionResponseMapper :
 
         posts.forEach {
             data.add(PostResponse.of(it))
-            resources.add(PostOwnerResponse.of(it.owner, false))
+            resources.add(PostOwnerResponse.of(it.author, false))
         }
 
         return JsonApi.data(data).withIncludedResources(resources)

@@ -47,15 +47,11 @@ kotlin {
 dependencies {
     implementation fileTree(dir: 'libs', includes: ['*.jar'])
 
-    implementation files('libs/jsonapi.jar')
-
     implementation project(':common')
     implementation project(':objectify')
 
     // App Engine
     implementation 'com.google.appengine:appengine-api-1.0-sdk:1.9.63'
-
-    implementation 'com.googlecode.objectify:objectify:5.1.22'
 
     // Spring Boot
     //implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -71,7 +67,6 @@ dependencies {
 
     // Util
     implementation 'org.hibernate.validator:hibernate-validator:6.0.8.Final'
-    implementation 'com.fasterxml.uuid:java-uuid-generator:3.1.5'
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
 
     // Testing

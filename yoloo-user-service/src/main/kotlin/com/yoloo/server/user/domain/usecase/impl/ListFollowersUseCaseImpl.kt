@@ -3,8 +3,8 @@ package com.yoloo.server.user.domain.usecase.impl
 import com.google.appengine.api.datastore.Cursor
 import com.yoloo.server.common.Mapper
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
-import com.yoloo.server.user.domain.entity.Relationship
-import com.yoloo.server.user.domain.response.RelationshipResponse
+import com.yoloo.server.relationship.domain.entity.Relationship
+import com.yoloo.server.relationship.domain.response.RelationshipResponse
 import com.yoloo.server.user.domain.usecase.ListFollowersUseCase
 import com.yoloo.server.user.domain.usecase.contract.ListFollowersUseCaseContract
 import org.dialectic.jsonapi.links.PaginationLinks

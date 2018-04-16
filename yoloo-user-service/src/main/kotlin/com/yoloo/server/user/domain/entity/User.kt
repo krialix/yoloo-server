@@ -6,8 +6,8 @@ import com.yoloo.server.common.mixins.Keyable
 import com.yoloo.server.common.mixins.Validatable
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.util.RegexUtil
+import com.yoloo.server.common.util.TimestampIdGenerator
 import com.yoloo.server.user.domain.vo.*
-import com.yoloo.server.user.infrastructure.util.IdGenerator
 import java.time.LocalDateTime
 import java.util.*
 import javax.validation.Valid
@@ -18,16 +18,16 @@ import javax.validation.constraints.Pattern
 @Entity
 data class User constructor(
     @Id
-    var id: String = IdGenerator.timestampUUID(),
+    var id: String = TimestampIdGenerator.generateId(),
 
     var displayName: UserDisplayName,
 
     @field:Valid
     var email: Email,
 
-    var avatarUrl: String,
+    var avatarUrl: AvatarUrl,
 
-    var password: String? = null,
+    var password: Password? = null,
 
     @field:Pattern(regexp = RegexUtil.IP_REGEXP, message = "users-4")
     var lastKnownIP: String,
@@ -69,12 +69,6 @@ data class User constructor(
     var userFilterData: UserFilterData = UserFilterData(),
 
     // Fields are used for mapping
-
-    @Ignore
-    var followingCount: Int = 0,
-
-    @Ignore
-    var followerCount: Int = 0,
 
     @Ignore
     var self: Boolean = false,

@@ -44,7 +44,7 @@ class PostControllerV1 @Autowired constructor(val postCollectionResponseMapper: 
     fun insertPost() {
         (1..5).map {
             Post(
-                owner = PostOwner(userId = "userId$it", displayName = "user$it", avatarUrl = ""),
+                author = Author(userId = "userId$it", displayName = "user$it", avatarUrl = ""),
                 title = PostTitle("title$it"),
                 topic = PostTopic(topicId = "topicId$it", displayName = "topic$it"),
                 tags = setOf(PostTag("tag")),

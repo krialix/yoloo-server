@@ -18,14 +18,15 @@ dependencies {
     implementation fileTree(dir: 'libs', includes: ['*.jar'])
 
     api files('libs/jsonapi.jar')
+    api 'com.googlecode.objectify:objectify:5.1.22'
+    api 'com.google.firebase:firebase-admin:5.9.0'
 
     implementation 'org.slf4j:slf4j-api:1.8.0-beta2'
     implementation 'javax.validation:validation-api:2.0.1.Final'
 
-    api 'com.google.firebase:firebase-admin:5.9.0'
+    implementation 'com.fasterxml.uuid:java-uuid-generator:3.1.5'
 
     compileOnly 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'com.googlecode.objectify:objectify:5.1.22'
     compileOnly 'com.google.appengine:appengine-api-1.0-sdk:1.9.63'
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'

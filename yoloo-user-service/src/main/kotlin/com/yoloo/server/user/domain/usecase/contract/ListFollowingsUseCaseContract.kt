@@ -1,6 +1,6 @@
 package com.yoloo.server.user.domain.usecase.contract
 
-import com.yoloo.server.user.domain.response.RelationshipResponse
+import com.yoloo.server.relationship.domain.response.RelationshipResponse
 import org.dialectic.jsonapi.response.DataResponse
 
 interface ListFollowingsUseCaseContract {
