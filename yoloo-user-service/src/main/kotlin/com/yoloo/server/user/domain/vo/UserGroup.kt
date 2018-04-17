@@ -4,4 +4,4 @@ import com.yoloo.server.common.mixins.Keyable
 import com.yoloo.server.common.util.NoArg
 
 @NoArg
-data class UserGroup(var groupId: String, var groupImageUrl: String, var displayName: String) : Keyable<UserGroup>
+data class UserGroup(var id: String, var imageUrl: String, var displayName: String) : Keyable<UserGroup>

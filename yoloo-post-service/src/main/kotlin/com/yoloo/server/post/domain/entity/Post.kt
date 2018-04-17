@@ -46,7 +46,16 @@ data class Post(
 
     @Index
     @IgnoreSave(IfNull::class)
-    var deletedAt: LocalDateTime? = null
+    var deletedAt: LocalDateTime? = null,
+
+    @Ignore
+    var voteDir: Int = 0,
+
+    @Ignore
+    var voteCount: Int = 0,
+
+    @Ignore
+    var commentCount: Int = 0
 ) : Keyable<Post>, Validatable {
 
     @OnSave

@@ -1,24 +1,29 @@
 package com.yoloo.server.user
 
+import com.yoloo.server.common.util.TimestampIdGenerator
 import com.yoloo.server.user.domain.entity.User
-import com.yoloo.server.user.domain.vo.AvatarUrl
-import com.yoloo.server.user.domain.vo.Email
-import com.yoloo.server.user.domain.vo.UserDisplayName
+import com.yoloo.server.user.domain.vo.*
 import java.util.*
 
 object UserGenerator {
 
-    fun generate(): List<User> {
+    fun generateUsers(): List<*> {
         return (1..5).map {
             User(
                 displayName = UserDisplayName(value = "Demo $it"),
                 email = Email("demo$it@demo.com"),
-                avatarUrl = AvatarUrl(""),
-                fcmToken = "",
+                image = AvatarImage(""),
+                fcmToken = UUID.randomUUID().toString(),
                 scopes = setOf("user:read", "user:write"),
-                lastKnownIP = "127.0.0.1",
-                locale = Locale.ENGLISH,
-                countryIsoCode = "en"
+                lastKnownIP = IP("127.0.0.1"),
+                locale = UserLocale(language = Locale.ENGLISH.language, country = "en_US"),
+                subscribedGroups = (1..3).map {
+                    UserGroup(
+                        id = TimestampIdGenerator.generateId(),
+                        imageUrl = "",
+                        displayName = "group-$it"
+                    )
+                }
             )
         }
     }

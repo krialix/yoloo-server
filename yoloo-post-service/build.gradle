@@ -45,8 +45,6 @@ kotlin {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', includes: ['*.jar'])
-
     implementation project(':common')
     implementation project(':objectify')
 

@@ -1,14 +1,6 @@
 package com.yoloo.server.user.domain.response
 
-import org.dialectic.jsonapi.resource.Resource
+import com.yoloo.server.common.util.NoArg
 
-data class UserGroupResponse(val id: String, val displayName: String, val imageUrl: String) : Resource {
-
-    override fun getJsonApiDataId(): String {
-        return id
-    }
-
-    override fun getJsonApiDataType(): String {
-        return "groups"
-    }
-}
+@NoArg
+data class UserGroupResponse(val id: String, val displayName: String, val imageUrl: String)

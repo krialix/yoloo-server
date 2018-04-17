@@ -1,11 +1,11 @@
 package com.yoloo.server.user.domain.usecase.contract
 
+import com.yoloo.server.common.response.attachment.CollectionResponse
 import com.yoloo.server.user.domain.response.SearchUserResponse
-import org.dialectic.jsonapi.response.DataResponse
 
 interface SearchUserUseCaseContract {
 
-    data class Request(val query: String, val limit: Int, val cursor: String?)
+    data class Request(val query: String, val cursor: String?)
 
-    data class Response(val response: DataResponse<SearchUserResponse>)
+    data class Response(val response: CollectionResponse<SearchUserResponse>)
 }

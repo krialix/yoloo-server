@@ -7,6 +7,6 @@ public class TimestampIdGenerator {
   private TimestampIdGenerator() {}
 
   public static String generateId() {
-    return Generators.timeBasedGenerator().generate().toString().replace(" ", "");
+    return Generators.timeBasedGenerator().generate().toString().replace("-", "");
   }
 }

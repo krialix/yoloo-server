@@ -5,7 +5,7 @@ import com.googlecode.objectify.annotation.Id
 import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.mixins.Keyable
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.user.domain.vo.AvatarUrl
+import com.yoloo.server.user.domain.vo.AvatarImage
 import com.yoloo.server.user.domain.vo.UserDisplayName
 
 @NoArg
@@ -22,7 +22,7 @@ data class Relationship(
 
     var displayName: UserDisplayName,
 
-    var avatarUrl: AvatarUrl
+    var avatarImage: AvatarImage
 ) : Keyable<Relationship> {
 
     companion object {

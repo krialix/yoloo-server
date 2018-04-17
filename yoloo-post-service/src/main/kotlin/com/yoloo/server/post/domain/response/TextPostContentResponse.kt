@@ -2,10 +2,7 @@ package com.yoloo.server.post.domain.response
 
 import java.time.LocalDateTime
 
-data class PostResponse(
-    val id: String,
-    val type: String,
-    val author: AuthorResponse,
+data class TextPostContentResponse(
     val title: String,
     val content: String,
     val topic: PostTopicResponse,
@@ -14,6 +11,5 @@ data class PostResponse(
     val bounty: Int,
     val count: PostCountResponse,
     val voteDir: Int,
-    val attachments: List<PostAttachmentResponse>,
     val createdAt: LocalDateTime
-)
+) : PostContentResponse

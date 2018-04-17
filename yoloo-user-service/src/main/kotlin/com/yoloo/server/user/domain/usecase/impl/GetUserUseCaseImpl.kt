@@ -2,39 +2,33 @@ package com.yoloo.server.user.domain.usecase.impl
 
 import com.google.appengine.api.memcache.MemcacheService
 import com.googlecode.objectify.Key
-import com.yoloo.server.common.Mapper
 import com.yoloo.server.common.api.exception.NotFoundException
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.domain.entity.User
-import com.yoloo.server.user.domain.entity.UserGroupBucket
-import com.yoloo.server.user.domain.response.UserResponse
 import com.yoloo.server.user.domain.usecase.GetUserUseCase
 import com.yoloo.server.user.domain.usecase.contract.GetUserUseCaseContract
+import com.yoloo.server.user.infrastructure.mapper.UserResponseMapper
 import net.cinnom.nanocuckoo.NanoCuckooFilter
-import org.dialectic.jsonapi.response.JsonApi
+import org.apache.http.auth.BasicUserPrincipal
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 class GetUserUseCaseImpl @Autowired constructor(
-    private val userResponseMapper: Mapper<User, UserResponse>,
+    private val userResponseMapper: UserResponseMapper,
     private val memcacheService: MemcacheService
 ) : GetUserUseCase {
 
     override fun execute(request: GetUserUseCaseContract.Request): GetUserUseCaseContract.Response {
         val userId = request.userId
         val userKey = Key.create(User::class.java, userId)
-        val subscribedGroupBucketKey = UserGroupBucket.createNamespaceKey(userId)
-        val map = ofy().load().keys(userKey, subscribedGroupBucketKey) as Map<*, *>
-
-        val user = map[userKey] as User?
-        val userGroupBucket = map[subscribedGroupBucketKey] as UserGroupBucket
+        val user = ofy().load().key(userKey).now()
 
         if (user == null || !user.enabled) {
             throw NotFoundException("user.error.not-found")
         }
 
-        val requesterId = request.principal.name
+        val requesterId = request.principal?.name ?: BasicUserPrincipal("d9a37d25-422a-11e8-b84e-f108b6a390b8").name
 
         val cacheIds = listOf(
             "counter_follower:$userId",
@@ -54,11 +48,7 @@ class GetUserUseCaseImpl @Autowired constructor(
         user.following = followerCuckooFilter.contains(requesterId)
         user.self = requesterId == userId
 
-        val response = userResponseMapper.apply(user)
-        // TODO implement user group mapper
-        userGroupBucket.userGroups
-
-        val data = JsonApi.data(response).withIncludedResources()
+        val data = userResponseMapper.apply(user)
 
         return GetUserUseCaseContract.Response(data)
     }

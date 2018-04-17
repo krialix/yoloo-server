@@ -5,13 +5,10 @@ import com.googlecode.objectify.condition.IfTrue
 import com.yoloo.server.common.mixins.Keyable
 import com.yoloo.server.common.mixins.Validatable
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.common.util.RegexUtil
 import com.yoloo.server.common.util.TimestampIdGenerator
 import com.yoloo.server.user.domain.vo.*
 import java.time.LocalDateTime
-import java.util.*
 import javax.validation.Valid
-import javax.validation.constraints.Pattern
 
 @Cache
 @NoArg
@@ -22,15 +19,17 @@ data class User constructor(
 
     var displayName: UserDisplayName,
 
+    var url: Url? = null,
+
     @field:Valid
     var email: Email,
 
-    var avatarUrl: AvatarUrl,
+    var image: AvatarImage,
 
     var password: Password? = null,
 
-    @field:Pattern(regexp = RegexUtil.IP_REGEXP, message = "users-4")
-    var lastKnownIP: String,
+    @field:Valid
+    var lastKnownIP: IP,
 
     var fcmToken: String,
 
@@ -51,15 +50,13 @@ data class User constructor(
 
     var deletedAt: LocalDateTime? = null,
 
-    var locale: Locale,
+    var locale: UserLocale,
 
     var onlineStatus: OnlineStatus = OnlineStatus.ONLINE,
 
-    var countryIsoCode: String,
+    var about: About? = null,
 
-    var bio: String? = null,
-
-    var website: String? = null,
+    var website: Url? = null,
 
     var lastPostTime: LocalDateTime? = null,
 
@@ -67,6 +64,8 @@ data class User constructor(
     var countData: UserCountData = UserCountData(),
 
     var userFilterData: UserFilterData = UserFilterData(),
+
+    var subscribedGroups: List<UserGroup>,
 
     // Fields are used for mapping
 

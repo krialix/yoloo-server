@@ -5,5 +5,5 @@ import java.security.Principal
 
 interface PatchUserUseCaseContract {
 
-    data class Request(val principal: Principal, val userId: String, val patchUserRequest: PatchUserRequest)
+    data class Request(val principal: Principal?, val userId: String, val patchUserRequest: PatchUserRequest)
 }

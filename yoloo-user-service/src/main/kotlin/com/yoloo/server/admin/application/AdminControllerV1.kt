@@ -1,18 +1,18 @@
 package com.yoloo.server.admin.application
 
-import com.yoloo.server.common.util.RestMediaType
 import com.yoloo.server.admin.domain.usecase.DeleteUserUseCase
 import com.yoloo.server.admin.domain.usecase.contract.DeleteUserUseCaseContract
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
 
 @RestController
 @RequestMapping(
     "/api/v1/admin",
-    produces = [RestMediaType.APPLICATION_API_JSON_VND_VALUE],
-    consumes = [RestMediaType.APPLICATION_API_JSON_VND_VALUE]
+    produces = [MediaType.APPLICATION_JSON_UTF8_VALUE],
+    consumes = [MediaType.APPLICATION_JSON_UTF8_VALUE]
 )
 class AdminControllerV1 @Autowired constructor(
     private val deleteUserUseCase: DeleteUserUseCase

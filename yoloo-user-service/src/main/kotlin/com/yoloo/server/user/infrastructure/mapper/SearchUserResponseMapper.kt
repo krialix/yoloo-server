@@ -9,6 +9,6 @@ import org.springframework.stereotype.Component
 class SearchUserResponseMapper : Mapper<User, SearchUserResponse> {
 
     override fun apply(user: User): SearchUserResponse {
-        return SearchUserResponse(id = user.id, displayName = user.displayName.value, avatarUrl = user.avatarUrl.value)
+        return SearchUserResponse(id = user.id, displayName = user.displayName.value, avatarUrl = user.image.value)
     }
 }

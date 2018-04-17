@@ -1,56 +1,45 @@
 package com.yoloo.server.post.application
 
-import com.yoloo.server.common.api.exception.NotFoundException
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.domain.entity.Post
 import com.yoloo.server.post.domain.response.PostResponse
+import com.yoloo.server.post.domain.usecase.GetPostUseCase
+import com.yoloo.server.post.domain.usecase.contract.GetPostUseCaseContract
 import com.yoloo.server.post.domain.vo.*
-import com.yoloo.server.post.infrastructure.mapper.PostCollectionResponseMapper
-import org.dialectic.jsonapi.response.DataResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
-import java.util.*
+import java.security.Principal
 
-@RequestMapping("/api/v1/posts", produces = ["application/vnd.api+json"], consumes = ["application/vnd.api+json"])
+@RequestMapping(
+    "/api/v1/posts",
+    produces = [MediaType.APPLICATION_JSON_UTF8_VALUE],
+    consumes = [MediaType.APPLICATION_JSON_UTF8_VALUE]
+)
 @RestController
-class PostControllerV1 @Autowired constructor(val postCollectionResponseMapper: PostCollectionResponseMapper) {
+class PostControllerV1 @Autowired constructor(val getPostUseCase: GetPostUseCase) {
 
     @GetMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    fun getPost(@PathVariable("postId") postId: String): DataResponse<PostResponse> {
-        val post = ofy().load().type(Post::class.java).id(postId).now()
-
-        if (post == null || post.isDeleted()) {
-            throw NotFoundException("post.not-found")
-        }
-
-        return postCollectionResponseMapper.apply(Collections.singletonList(post))
-    }
-
-    @GetMapping
-    fun listPosts(): DataResponse<PostResponse> {
-        val list = ofy().load().type(Post::class.java)
-            .iterable()
-            .asSequence()
-            .filter { !it.isDeleted() }
-            .toList()
-
-        return postCollectionResponseMapper.apply(list)
+    fun getPost(principal: Principal?, @PathVariable("postId") postId: String): PostResponse {
+        return getPostUseCase.execute(GetPostUseCaseContract.Request(principal, postId)).response
     }
 
     @PostMapping
-    fun insertPost() {
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    fun insertPost(principal: Principal?) {
         (1..5).map {
             Post(
-                author = Author(userId = "userId$it", displayName = "user$it", avatarUrl = ""),
-                title = PostTitle("title$it"),
+                author = Author(id = "id$it", displayName = "user$it", avatarUrl = ""),
+                title = PostTitle("title-deneme-$it"),
                 topic = PostTopic(topicId = "topicId$it", displayName = "topic$it"),
                 tags = setOf(PostTag("tag")),
                 type = PostType.TEXT,
-                content = PostContent.create("lorem impsum")
+                content = PostContent("lorem impsum")
             )
-        }.let { ofy().save().entities(it).now() }
+        }.let { ofy().save().entities(it) }
     }
 }

@@ -56,7 +56,7 @@ class InsertRelationshipUseCaseImpl(private val memcacheService: MemcacheService
             fromId = fromId,
             toId = toId,
             displayName = toUser.displayName,
-            avatarUrl = toUser.avatarUrl
+            avatarImage = toUser.image
         )
 
         ofy().save().entity(relationship)
