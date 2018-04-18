@@ -9,7 +9,7 @@ import com.yoloo.server.common.util.TimestampIdGenerator
 import com.yoloo.server.post.domain.vo.*
 import java.time.LocalDateTime
 import javax.validation.Valid
-import javax.validation.constraints.Max
+import javax.validation.constraints.Size
 
 @NoArg
 @Cache
@@ -36,7 +36,7 @@ data class Post(
     @field:Valid
     var topic: PostTopic,
 
-    @field:Max(10)
+    @field:Size(max = 10)
     @Index
     var tags: Set<@JvmSuppressWildcards PostTag>,
 

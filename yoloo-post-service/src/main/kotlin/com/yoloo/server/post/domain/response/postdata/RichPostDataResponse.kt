@@ -1,5 +1,8 @@
-package com.yoloo.server.post.domain.response
+package com.yoloo.server.post.domain.response.postdata
 
+import com.yoloo.server.post.domain.response.PostAttachmentResponse
+import com.yoloo.server.post.domain.response.PostCountResponse
+import com.yoloo.server.post.domain.response.PostTopicResponse
 import java.time.LocalDateTime
 
 data class RichPostDataResponse(
