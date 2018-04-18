@@ -43,12 +43,14 @@ class GetUserUseCaseImpl @Autowired constructor(
         val followerCuckooFilter =
             values["filter_follower:$userId"] as NanoCuckooFilter? ?: user.userFilterData.followersFilter
 
-        user.countData.followerCount = followerCount
-        user.countData.followingCount = followingCount
-        user.following = followerCuckooFilter.contains(requesterId)
-        user.self = requesterId == userId
-
-        val data = userResponseMapper.apply(user)
+        val data = userResponseMapper.apply(
+            user, mutableMapOf(
+                "followerCount" to followerCount,
+                "followingCount" to followingCount,
+                "following" to followerCuckooFilter.contains(requesterId),
+                "self" to (requesterId == userId)
+            )
+        )
 
         return GetUserUseCaseContract.Response(data)
     }

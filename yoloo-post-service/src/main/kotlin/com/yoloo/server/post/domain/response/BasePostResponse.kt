@@ -4,5 +4,5 @@ abstract class BasePostResponse(
     val id: String,
     val type: String,
     val author: AuthorResponse,
-    val content: PostContentResponse
+    val data: PostDataResponse
 )

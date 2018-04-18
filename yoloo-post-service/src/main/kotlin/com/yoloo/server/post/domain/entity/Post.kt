@@ -9,6 +9,7 @@ import com.yoloo.server.common.util.TimestampIdGenerator
 import com.yoloo.server.post.domain.vo.*
 import java.time.LocalDateTime
 import javax.validation.Valid
+import javax.validation.constraints.Max
 
 @NoArg
 @Cache
@@ -17,7 +18,11 @@ data class Post(
     @Id
     var id: String = TimestampIdGenerator.generateId(),
 
+    var type: PostType,
+
     var author: Author,
+
+    var groupInfo: GroupInfo,
 
     @field:Valid
     var title: PostTitle,
@@ -31,10 +36,9 @@ data class Post(
     @field:Valid
     var topic: PostTopic,
 
+    @field:Max(10)
     @Index
     var tags: Set<@JvmSuppressWildcards PostTag>,
-
-    var type: PostType,
 
     var permissions: Set<@JvmSuppressWildcards PostPermission> = PostPermission.defaultPermissions(),
 
@@ -42,20 +46,13 @@ data class Post(
 
     var attachments: List<@JvmSuppressWildcards PostAttachment>? = emptyList(),
 
+    var buddyRequestInfo: BuddyRequestInfo? = null,
+
     var createdAt: LocalDateTime = LocalDateTime.now(),
 
     @Index
     @IgnoreSave(IfNull::class)
-    var deletedAt: LocalDateTime? = null,
-
-    @Ignore
-    var voteDir: Int = 0,
-
-    @Ignore
-    var voteCount: Int = 0,
-
-    @Ignore
-    var commentCount: Int = 0
+    var deletedAt: LocalDateTime? = null
 ) : Keyable<Post>, Validatable {
 
     @OnSave

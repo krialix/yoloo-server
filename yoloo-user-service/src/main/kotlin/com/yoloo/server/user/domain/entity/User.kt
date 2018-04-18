@@ -65,15 +65,7 @@ data class User constructor(
 
     var userFilterData: UserFilterData = UserFilterData(),
 
-    var subscribedGroups: List<UserGroup>,
-
-    // Fields are used for mapping
-
-    @Ignore
-    var self: Boolean = false,
-
-    @Ignore
-    var following: Boolean = false
+    var subscribedGroups: List<UserGroup>
 ) : Validatable, Keyable<User> {
 
     @OnSave

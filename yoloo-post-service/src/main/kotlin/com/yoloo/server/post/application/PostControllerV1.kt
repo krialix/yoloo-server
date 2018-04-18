@@ -1,5 +1,6 @@
 package com.yoloo.server.post.application
 
+import com.yoloo.server.common.util.TimestampIdGenerator
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.domain.entity.Post
 import com.yoloo.server.post.domain.response.PostResponse
@@ -35,6 +36,7 @@ class PostControllerV1 @Autowired constructor(val getPostUseCase: GetPostUseCase
             Post(
                 author = Author(id = "id$it", displayName = "user$it", avatarUrl = ""),
                 title = PostTitle("title-deneme-$it"),
+                groupInfo = GroupInfo(TimestampIdGenerator.generateId(), "test"),
                 topic = PostTopic(topicId = "topicId$it", displayName = "topic$it"),
                 tags = setOf(PostTag("tag")),
                 type = PostType.TEXT,
