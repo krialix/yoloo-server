@@ -6,7 +6,7 @@ import com.yoloo.server.common.api.exception.NotFoundException
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.domain.entity.Post
 import com.yoloo.server.post.domain.usecase.GetPostUseCase
-import com.yoloo.server.post.domain.usecase.contract.GetPostUseCaseContract
+import com.yoloo.server.post.domain.usecase.contract.GetPostContract
 import com.yoloo.server.post.infrastructure.mapper.PostResponseMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -17,7 +17,7 @@ class GetPostUseCaseImpl @Autowired constructor(
     private val memcacheService: MemcacheService
 ) : GetPostUseCase {
 
-    override fun execute(request: GetPostUseCaseContract.Request): GetPostUseCaseContract.Response {
+    override fun execute(request: GetPostContract.Request): GetPostContract.Response {
         val postKey = Key.create(Post::class.java, request.postId)
         val post = ofy().load().key(postKey).now()
 
@@ -25,8 +25,8 @@ class GetPostUseCaseImpl @Autowired constructor(
             throw NotFoundException("post.not-found")
         }
 
-        val response = postResponseMapper.apply(post)
+        val response = postResponseMapper.apply(post, mutableMapOf("voteDir" to 1))
 
-        return GetPostUseCaseContract.Response(response)
+        return GetPostContract.Response(response)
     }
 }

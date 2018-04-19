@@ -17,7 +17,7 @@ repositories {
 dependencies {
     implementation fileTree(dir: 'libs', includes: ['*.jar'])
 
-    api files('libs/jsonapi.jar')
+    //api files('libs/jsonapi.jar')
     api 'com.googlecode.objectify:objectify:5.1.22'
     api 'com.google.firebase:firebase-admin:5.9.0'
 

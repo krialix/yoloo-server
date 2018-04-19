@@ -20,6 +20,32 @@ public class CollectionResponse<T> {
     return new Builder<>();
   }
 
+  public String getNextPageToken() {
+    return nextPageToken;
+  }
+
+  public String getPrevPageToken() {
+    return prevPageToken;
+  }
+
+  public Collection<T> getData() {
+    return data;
+  }
+
+  @Override
+  public String toString() {
+    return "CollectionResponse{"
+        + "nextPageToken='"
+        + nextPageToken
+        + '\''
+        + ", prevPageToken='"
+        + prevPageToken
+        + '\''
+        + ", data="
+        + data
+        + '}';
+  }
+
   public static class Builder<T> {
     private String nextPageToken;
     private String prevPageToken;

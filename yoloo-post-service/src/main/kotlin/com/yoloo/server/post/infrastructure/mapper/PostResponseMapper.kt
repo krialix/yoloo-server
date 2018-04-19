@@ -9,13 +9,16 @@ import com.yoloo.server.post.domain.response.postdata.RichPostDataResponse
 import com.yoloo.server.post.domain.response.postdata.SponsoredPostDataResponse
 import com.yoloo.server.post.domain.response.postdata.TextPostDataResponse
 import com.yoloo.server.post.domain.vo.PostType
+import com.yoloo.server.post.domain.vo.postdata.RichPostData
+import com.yoloo.server.post.domain.vo.postdata.SponsoredPostData
+import com.yoloo.server.post.domain.vo.postdata.TextPostData
 import org.springframework.stereotype.Component
 
 @Component
 class PostResponseMapper : Mapper<Post, PostResponse> {
 
     override fun apply(from: Post, payload: MutableMap<String, Any>): PostResponse {
-        val postDataResponse = when (from.type) {
+        val dataResponse = when (from.type) {
             PostType.TEXT -> mapToTextPostDataResponse(from, payload)
             PostType.ATTACHMENT -> mapToRichPostDataResponse(from, payload)
             PostType.SPONSORED -> mapToSponsoredPostDataResponse(from)
@@ -32,40 +35,19 @@ class PostResponseMapper : Mapper<Post, PostResponse> {
                 image = SimpleAttachmentResponse(from.author.avatarUrl),
                 self = from.author.self
             ),
-            data = postDataResponse
-        )
-
-        /*return PostResponseOld(
-            id = from.id,
-            type = from.type.name.toLowerCase(),
-            author = AuthorResponse(
-                id = from.author.id,
-                displayName = from.author.displayName,
-                url = from.author.url,
-                image = SimpleAttachmentResponse(from.author.avatarUrl),
-                self = from.author.self
-            ),
-            approvedCommentId = from.approvedCommentId?.value,
-            topic = PostTopicResponse(id = from.topic.topicId, displayName = from.topic.displayName),
-            bounty = from.bounty?.value ?: 0,
-            tags = from.tags.map { it.value },
-            title = from.title.value,
             content = from.content.value,
-            attachments = from.attachments?.map { PostAttachmentResponse(it.url) } ?: emptyList(),
-            count = PostCountResponse(payload["voteCount"] as Int, payload["commentCount"] as Int),
-            voteDir = payload["voteDir"] as Int,
-            createdAt = from.createdAt
-        )*/
+            data = dataResponse
+        )
     }
 
     private fun mapToTextPostDataResponse(from: Post, payload: MutableMap<String, Any>): PostDataResponse {
+        val data = from.data as TextPostData
         return TextPostDataResponse(
-            title = from.title.value,
-            content = from.content.value,
-            topic = PostTopicResponse(id = from.topic.topicId, displayName = from.topic.displayName),
-            tags = from.tags.map { it.value },
-            approvedCommentId = from.approvedCommentId?.value,
-            bounty = from.bounty?.value ?: 0,
+            title = data.title.value,
+            topic = PostTopicResponse(id = data.topic.topicId, displayName = data.topic.displayName),
+            tags = data.tags.map { it.value },
+            approvedCommentId = data.approvedCommentId?.value,
+            bounty = data.bounty?.value ?: 0,
             count = PostCountResponse(
                 payload.getOrDefault("voteCount", 0) as Int,
                 payload.getOrDefault("commentCount", 0) as Int
@@ -76,28 +58,28 @@ class PostResponseMapper : Mapper<Post, PostResponse> {
     }
 
     private fun mapToRichPostDataResponse(from: Post, payload: MutableMap<String, Any>): PostDataResponse {
+        val data = from.data as RichPostData
         return RichPostDataResponse(
-            title = from.title.value,
-            content = from.content.value,
-            topic = PostTopicResponse(id = from.topic.topicId, displayName = from.topic.displayName),
-            tags = from.tags.map { it.value },
-            approvedCommentId = from.approvedCommentId?.value,
-            bounty = from.bounty?.value ?: 0,
+            title = data.title.value,
+            topic = PostTopicResponse(id = data.topic.topicId, displayName = data.topic.displayName),
+            tags = data.tags.map { it.value },
+            approvedCommentId = data.approvedCommentId?.value,
+            bounty = data.bounty?.value ?: 0,
             count = PostCountResponse(
                 payload.getOrDefault("voteCount", 0) as Int,
                 payload.getOrDefault("commentCount", 0) as Int
             ),
             voteDir = payload.getOrDefault("voteDir", 0) as Int,
             createdAt = from.createdAt,
-            attachments = from.attachments?.map { PostAttachmentResponse(it.url) } ?: emptyList()
+            attachments = data.attachments.map { PostAttachmentResponse(it.url) }
         )
     }
 
     private fun mapToSponsoredPostDataResponse(from: Post): PostDataResponse {
+        val data = from.data as SponsoredPostData
         return SponsoredPostDataResponse(
-            title = from.title.value,
-            content = from.content.value,
-            attachments = from.attachments?.map { PostAttachmentResponse(it.url) } ?: emptyList()
+            title = data.title.value,
+            attachments = data.attachments?.map { PostAttachmentResponse(it.url) } ?: emptyList()
         )
     }
 }

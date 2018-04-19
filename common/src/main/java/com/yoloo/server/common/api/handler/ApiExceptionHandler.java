@@ -1,14 +1,14 @@
 package com.yoloo.server.common.api.handler;
 
+import com.yoloo.server.common.api.error.Error;
+import com.yoloo.server.common.api.error.ErrorResponse;
 import com.yoloo.server.common.api.exception.ServiceException;
-import org.dialectic.jsonapi.error.Error;
-import org.dialectic.jsonapi.error.ErrorResponse;
-import org.dialectic.jsonapi.response.JsonApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -48,7 +48,7 @@ class ApiExceptionHandler {
                     ex.getApplicationErrorCode(), null, UNKNOWN_ERROR_CODE, locale))
             .build();
 
-    return ResponseEntity.status(ex.getHttpStatus()).body(JsonApi.error(error));
+    return ResponseEntity.status(ex.getHttpStatus()).body(new ErrorResponse<>(error));
   }
 
   /**
@@ -76,7 +76,7 @@ class ApiExceptionHandler {
                         .build())
             .collect(toList());
 
-    return ResponseEntity.badRequest().body(JsonApi.error(apiErrors));
+    return ResponseEntity.badRequest().body(new ErrorResponse<>(apiErrors));
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
@@ -99,10 +99,10 @@ class ApiExceptionHandler {
                         .build())
             .collect(toList());
 
-    return ResponseEntity.badRequest().body(JsonApi.error(apiErrors));
+    return ResponseEntity.badRequest().body(new ErrorResponse<>(apiErrors));
   }
 
-  @ExceptionHandler(HttpMediaTypeException.class)
+  @ExceptionHandler({HttpMediaTypeException.class, HttpRequestMethodNotSupportedException.class})
   public ResponseEntity<ErrorResponse<Error>> handleMediaTypeExceptions() {
     Error error =
         Error.builder()
@@ -111,6 +111,7 @@ class ApiExceptionHandler {
             .detail(HttpStatus.UNSUPPORTED_MEDIA_TYPE.getReasonPhrase())
             .build();
 
-    return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(JsonApi.error(error));
+    return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+        .body(new ErrorResponse<>(error));
   }
 }

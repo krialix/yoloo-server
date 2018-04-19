@@ -23,7 +23,7 @@ class ListFollowersUseCaseImpl @Autowired constructor(
             .filter(Relationship.TO_ID, request.userId)
             .orderKey(true)
 
-        query = request.cursor?.let { query.startAt(Cursor.fromWebSafeString(it)) }
+        request.cursor?.let { query = query.startAt(Cursor.fromWebSafeString(it)) }
 
         query = query.limit(DEFAULT_LIST_LIMIT)
 

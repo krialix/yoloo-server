@@ -7,7 +7,6 @@ import java.time.LocalDateTime
 
 data class RichPostDataResponse(
     override var title: String,
-    override var content: String,
     override var topic: PostTopicResponse,
     override var tags: List<String>,
     override var approvedCommentId: String?,
@@ -16,4 +15,4 @@ data class RichPostDataResponse(
     override var voteDir: Int,
     override var createdAt: LocalDateTime,
     val attachments: List<PostAttachmentResponse>
-) : TextPostDataResponse(title, content, topic, tags, approvedCommentId, bounty, count, voteDir, createdAt)
+) : TextPostDataResponse(title, topic, tags, approvedCommentId, bounty, count, voteDir, createdAt)

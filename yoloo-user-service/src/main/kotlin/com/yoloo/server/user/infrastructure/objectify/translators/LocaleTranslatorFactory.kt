@@ -7,12 +7,12 @@ class LocaleTranslatorFactory : AbstractSimpleTranslatorFactory<Locale, String>(
 
     override fun createTranslator(): SimpleTranslator<Locale, String> {
         return object : SimpleTranslator<Locale, String> {
-            override fun loadValue(datastoreValue: String?): Locale {
+            override fun loadValue(datastoreValue: String): Locale {
                 return Locale.forLanguageTag(datastoreValue)
             }
 
-            override fun saveValue(pojoValue: Locale?): String {
-                return pojoValue.toString()
+            override fun saveValue(pojoValue: Locale): String {
+                return pojoValue.toLanguageTag()
             }
         }
     }

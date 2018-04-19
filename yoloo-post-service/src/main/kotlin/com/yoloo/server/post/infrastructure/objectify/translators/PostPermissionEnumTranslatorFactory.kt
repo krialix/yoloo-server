@@ -1,4 +1,4 @@
-package com.yoloo.server.post.domain.objectify.translators
+package com.yoloo.server.post.infrastructure.objectify.translators
 
 import com.yoloo.server.objectify.translators.AbstractSimpleTranslatorFactory
 import com.yoloo.server.post.domain.vo.PostPermission

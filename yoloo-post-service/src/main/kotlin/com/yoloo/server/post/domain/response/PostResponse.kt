@@ -8,5 +8,6 @@ data class PostResponse(
     val id: String,
     val type: String,
     val author: AuthorResponse,
+    val content: String,
     val data: PostDataResponse
 )
