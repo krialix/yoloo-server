@@ -1,5 +1,4 @@
 include 'objectify'
 include 'common'
-include 'yoloo-post-service'
-include 'yoloo-user-service'
-include 'repackaged.cuckoo-filter'
+include 'service.post'
+include 'service.user'
