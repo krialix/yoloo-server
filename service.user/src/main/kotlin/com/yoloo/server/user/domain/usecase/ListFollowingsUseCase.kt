@@ -1,6 +1,6 @@
 package com.yoloo.server.user.domain.usecase
 
 import com.yoloo.server.common.usecase.UseCase
-import com.yoloo.server.user.domain.usecase.contract.ListFollowingsUseCaseContract
+import com.yoloo.server.user.domain.usecase.contract.ListFollowingsContract
 
-interface ListFollowingsUseCase : UseCase<ListFollowingsUseCaseContract.Request, ListFollowingsUseCaseContract.Response>
+interface ListFollowingsUseCase : UseCase<ListFollowingsContract.Request, ListFollowingsContract.Response>

@@ -4,7 +4,7 @@ import com.google.appengine.api.memcache.MemcacheService
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.relationship.domain.entity.Relationship
 import com.yoloo.server.relationship.domain.usecase.DeleteRelationshipUseCase
-import com.yoloo.server.relationship.domain.usecase.contract.DeleteRelationshipUseCaseContract
+import com.yoloo.server.relationship.domain.usecase.contract.DeleteRelationshipContract
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.stereotype.Service
 
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 class DeleteRelationshipUseCaseImpl(private val memcacheService: MemcacheService) :
     DeleteRelationshipUseCase {
 
-    override fun execute(request: DeleteRelationshipUseCaseContract.Request) {
+    override fun execute(request: DeleteRelationshipContract.Request) {
         val userId = request.userId
         val requesterId = request.principal.name
 

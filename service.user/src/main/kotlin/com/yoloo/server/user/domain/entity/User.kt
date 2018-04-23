@@ -21,12 +21,16 @@ data class User constructor(
 
     var url: Url? = null,
 
+    var providerId: String? = null,
+
     @field:Valid
     var email: Email,
 
     var image: AvatarImage,
 
     var password: Password? = null,
+
+    var gender: Gender,
 
     @field:Valid
     var lastKnownIP: IP,

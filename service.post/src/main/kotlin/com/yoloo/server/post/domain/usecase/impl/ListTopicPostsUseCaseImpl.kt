@@ -22,7 +22,7 @@ class ListTopicPostsUseCaseImpl @Autowired constructor(
         var query = ofy()
             .load()
             .type(Post::class.java)
-            .filter("data.topic.topicId", request.topicId)
+            .filter("data.group.id", request.topicId)
             .orderKey(true)
 
         request.cursor?.let { query = query.startAt(Cursor.fromWebSafeString(it)) }

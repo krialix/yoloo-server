@@ -44,7 +44,7 @@ class PostResponseMapper : Mapper<Post, PostResponse> {
         val data = from.data as TextPostData
         return TextPostDataResponse(
             title = data.title.value,
-            topic = PostTopicResponse(id = data.topic.topicId, displayName = data.topic.displayName),
+            topic = PostTopicResponse(id = data.group.id, displayName = data.group.displayName),
             tags = data.tags.map { it.value },
             approvedCommentId = data.approvedCommentId?.value,
             bounty = data.bounty?.value ?: 0,
@@ -61,7 +61,7 @@ class PostResponseMapper : Mapper<Post, PostResponse> {
         val data = from.data as RichPostData
         return RichPostDataResponse(
             title = data.title.value,
-            topic = PostTopicResponse(id = data.topic.topicId, displayName = data.topic.displayName),
+            topic = PostTopicResponse(id = data.group.id, displayName = data.group.displayName),
             tags = data.tags.map { it.value },
             approvedCommentId = data.approvedCommentId?.value,
             bounty = data.bounty?.value ?: 0,

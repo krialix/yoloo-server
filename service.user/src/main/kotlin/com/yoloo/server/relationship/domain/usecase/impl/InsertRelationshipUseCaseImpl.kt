@@ -6,7 +6,7 @@ import com.yoloo.server.common.util.TimestampIdGenerator
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.relationship.domain.entity.Relationship
 import com.yoloo.server.relationship.domain.usecase.InsertRelationshipUseCase
-import com.yoloo.server.relationship.domain.usecase.contract.InsertRelationshipUseCaseContract
+import com.yoloo.server.relationship.domain.usecase.contract.InsertRelationshipContract
 import com.yoloo.server.user.domain.entity.User
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.stereotype.Service
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
 class InsertRelationshipUseCaseImpl(private val memcacheService: MemcacheService) :
     InsertRelationshipUseCase {
 
-    override fun execute(request: InsertRelationshipUseCaseContract.Request) {
+    override fun execute(request: InsertRelationshipContract.Request) {
         val id = TimestampIdGenerator.generateId()
         val fromId = request.principal.name
         val toId = request.userId

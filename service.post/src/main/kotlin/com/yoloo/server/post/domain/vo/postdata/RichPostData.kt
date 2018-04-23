@@ -9,7 +9,7 @@ import com.yoloo.server.post.domain.vo.*
 open class RichPostData(
     override var title: PostTitle,
 
-    override var topic: PostTopic,
+    override var group: PostGroup,
 
     override var tags: Set<@JvmSuppressWildcards PostTag>,
 
@@ -18,4 +18,4 @@ open class RichPostData(
     override var bounty: PostBounty? = null,
 
     open var attachments: List<@JvmSuppressWildcards PostAttachment>
-) : TextPostData(title, topic, tags, approvedCommentId, bounty)
+) : TextPostData(title, group, tags, approvedCommentId, bounty)

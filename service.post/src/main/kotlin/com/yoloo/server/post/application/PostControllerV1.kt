@@ -46,7 +46,7 @@ class PostControllerV1 @Autowired constructor(
                     author = Author(id = "id$it", displayName = "user$it", avatarUrl = ""),
                     data = TextPostData(
                         title = PostTitle("title-deneme-$it"),
-                        topic = PostTopic(topicId = "topicId$it", displayName = "topic$it"),
+                        group = PostGroup(id = "id$it", displayName = "group$it"),
                         tags = setOf(PostTag("tag"))
                     ),
                     content = PostContent("lorem impsum")
@@ -55,7 +55,7 @@ class PostControllerV1 @Autowired constructor(
                     author = Author(id = "id$it", displayName = "user$it", avatarUrl = ""),
                     data = RichPostData(
                         title = PostTitle("title-deneme-$it"),
-                        topic = PostTopic(topicId = "topicId$it", displayName = "topic$it"),
+                        group = PostGroup(id = "id$it", displayName = "group$it"),
                         tags = setOf(PostTag("tag")),
                         attachments = listOf(
                             PostAttachment("/hello", "http://hello.jpg"),
@@ -80,7 +80,7 @@ class PostControllerV1 @Autowired constructor(
                 author = Author(id = "id$it", displayName = "user$it", avatarUrl = ""),
                 data = BuddyPostData(
                     title = PostTitle("title-deneme-$it"),
-                    topic = PostTopic(topicId = "topicId$it", displayName = "topic$it"),
+                    group = PostGroup(id = "id$it", displayName = "group$it"),
                     tags = setOf(PostTag("tag")),
                     buddyRequestInfo = BuddyRequestInfo(
                         Range(1, 3),
@@ -95,7 +95,7 @@ class PostControllerV1 @Autowired constructor(
                     author = Author(id = "id$it", displayName = "user$it", avatarUrl = ""),
                     data = TextPostData(
                         title = PostTitle("title-deneme-$it"),
-                        topic = PostTopic(topicId = "topicId$it", displayName = "topic$it"),
+                        group = PostGroup(id = "id$it", displayName = "group$it"),
                         tags = setOf(PostTag("tag"))
                     ),
                     content = PostContent("lorem impsum")
@@ -104,12 +104,12 @@ class PostControllerV1 @Autowired constructor(
         }.let { ofy().save().entities(it) }
     }
 
-    @GetMapping("/topics/{topicId}")
+    @GetMapping("/topics/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     fun listTopicPosts(
         principal: Principal?,
-        @PathVariable("topicId") topicId: String,
+        @PathVariable("id") topicId: String,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CollectionResponse<PostResponse> {
         return listTopicPostsUseCase.execute(ListTopicPostsContract.Request(principal, topicId, cursor)).response

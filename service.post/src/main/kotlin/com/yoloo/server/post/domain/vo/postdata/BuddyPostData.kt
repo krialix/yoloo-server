@@ -9,7 +9,7 @@ import com.yoloo.server.post.domain.vo.*
 data class BuddyPostData(
     override var title: PostTitle,
 
-    override var topic: PostTopic,
+    override var group: PostGroup,
 
     override var tags: Set<@JvmSuppressWildcards PostTag>,
 
@@ -20,4 +20,4 @@ data class BuddyPostData(
     override var attachments: List<@JvmSuppressWildcards PostAttachment> = emptyList(),
 
     var buddyRequestInfo: BuddyRequestInfo
-) : RichPostData(title, topic, tags, approvedCommentId, bounty, attachments)
+) : RichPostData(title, group, tags, approvedCommentId, bounty, attachments)

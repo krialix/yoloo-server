@@ -4,14 +4,14 @@ import com.yoloo.server.common.api.exception.NotFoundException
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.domain.entity.User
 import com.yoloo.server.admin.domain.usecase.DeleteUserUseCase
-import com.yoloo.server.admin.domain.usecase.contract.DeleteUserUseCaseContract
+import com.yoloo.server.admin.domain.usecase.contract.DeleteUserContract
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
 class DeleteUserUseCaseImpl : DeleteUserUseCase {
 
-    override fun execute(request: DeleteUserUseCaseContract.Request) {
+    override fun execute(request: DeleteUserContract.Request) {
         val user = ofy().load().type(User::class.java).id(request.userId).now()
 
         if (user == null || !user.enabled) {

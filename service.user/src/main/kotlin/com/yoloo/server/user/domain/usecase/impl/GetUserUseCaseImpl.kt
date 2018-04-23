@@ -6,7 +6,7 @@ import com.yoloo.server.common.api.exception.NotFoundException
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.domain.entity.User
 import com.yoloo.server.user.domain.usecase.GetUserUseCase
-import com.yoloo.server.user.domain.usecase.contract.GetUserUseCaseContract
+import com.yoloo.server.user.domain.usecase.contract.GetUserContract
 import com.yoloo.server.user.infrastructure.mapper.UserResponseMapper
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.apache.http.auth.BasicUserPrincipal
@@ -19,7 +19,7 @@ class GetUserUseCaseImpl @Autowired constructor(
     private val memcacheService: MemcacheService
 ) : GetUserUseCase {
 
-    override fun execute(request: GetUserUseCaseContract.Request): GetUserUseCaseContract.Response {
+    override fun execute(request: GetUserContract.Request): GetUserContract.Response {
         val userId = request.userId
         val userKey = Key.create(User::class.java, userId)
         val user = ofy().load().key(userKey).now()
@@ -52,6 +52,6 @@ class GetUserUseCaseImpl @Autowired constructor(
             )
         )
 
-        return GetUserUseCaseContract.Response(data)
+        return GetUserContract.Response(data)
     }
 }

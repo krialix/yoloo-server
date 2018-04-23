@@ -1,6 +1,6 @@
 package com.yoloo.server.user.domain.usecase
 
 import com.yoloo.server.common.usecase.UseCase
-import com.yoloo.server.user.domain.usecase.contract.PatchUserUseCaseContract
+import com.yoloo.server.user.domain.usecase.contract.PatchUserContract
 
-interface PatchUserUseCase : UseCase<PatchUserUseCaseContract.Request, Unit>
+interface PatchUserUseCase : UseCase<PatchUserContract.Request, Unit>

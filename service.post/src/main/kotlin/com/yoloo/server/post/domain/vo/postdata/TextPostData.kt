@@ -16,7 +16,7 @@ open class TextPostData(
     open var title: PostTitle,
 
     @field:Valid
-    open var topic: PostTopic,
+    open var group: PostGroup,
 
     @field:Size(max = 10)
     @Index

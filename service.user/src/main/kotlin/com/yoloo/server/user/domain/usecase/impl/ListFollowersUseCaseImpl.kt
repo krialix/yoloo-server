@@ -7,7 +7,7 @@ import com.yoloo.server.relationship.domain.entity.Relationship
 import com.yoloo.server.relationship.domain.response.RelationshipResponse
 import com.yoloo.server.relationship.infrastructure.mapper.RelationshipResponseMapper
 import com.yoloo.server.user.domain.usecase.ListFollowersUseCase
-import com.yoloo.server.user.domain.usecase.contract.ListFollowersUseCaseContract
+import com.yoloo.server.user.domain.usecase.contract.ListFollowersContract
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -16,7 +16,7 @@ class ListFollowersUseCaseImpl @Autowired constructor(
     private val relationshipMapper: RelationshipResponseMapper
 ) : ListFollowersUseCase {
 
-    override fun execute(request: ListFollowersUseCaseContract.Request): ListFollowersUseCaseContract.Response {
+    override fun execute(request: ListFollowersContract.Request): ListFollowersContract.Response {
         var query = ofy()
             .load()
             .type(Relationship::class.java)
@@ -39,7 +39,7 @@ class ListFollowersUseCaseImpl @Autowired constructor(
             .nextPageToken(cursor)
             .build()
 
-        return ListFollowersUseCaseContract.Response(response)
+        return ListFollowersContract.Response(response)
     }
 
     companion object {

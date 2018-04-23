@@ -4,12 +4,12 @@ import com.yoloo.server.common.response.attachment.CollectionResponse
 import com.yoloo.server.relationship.domain.response.RelationshipResponse
 import com.yoloo.server.relationship.domain.usecase.DeleteRelationshipUseCase
 import com.yoloo.server.relationship.domain.usecase.InsertRelationshipUseCase
-import com.yoloo.server.relationship.domain.usecase.contract.DeleteRelationshipUseCaseContract
-import com.yoloo.server.relationship.domain.usecase.contract.InsertRelationshipUseCaseContract
+import com.yoloo.server.relationship.domain.usecase.contract.DeleteRelationshipContract
+import com.yoloo.server.relationship.domain.usecase.contract.InsertRelationshipContract
 import com.yoloo.server.user.domain.usecase.ListFollowersUseCase
 import com.yoloo.server.user.domain.usecase.ListFollowingsUseCase
-import com.yoloo.server.user.domain.usecase.contract.ListFollowersUseCaseContract
-import com.yoloo.server.user.domain.usecase.contract.ListFollowingsUseCaseContract
+import com.yoloo.server.user.domain.usecase.contract.ListFollowersContract
+import com.yoloo.server.user.domain.usecase.contract.ListFollowingsContract
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -33,14 +33,14 @@ class RelationshipControllerV1 @Autowired constructor(
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     fun insertRelationship(principal: Principal, @PathVariable("userId") userId: String) {
-        insertRelationshipUseCase.execute(InsertRelationshipUseCaseContract.Request(principal, userId))
+        insertRelationshipUseCase.execute(InsertRelationshipContract.Request(principal, userId))
     }
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     fun deleteRelationship(principal: Principal, @PathVariable("userId") userId: String) {
-        deleteRelationshipUseCase.execute(DeleteRelationshipUseCaseContract.Request(principal, userId))
+        deleteRelationshipUseCase.execute(DeleteRelationshipContract.Request(principal, userId))
     }
 
     @GetMapping("/{userId}/followers")
@@ -50,7 +50,7 @@ class RelationshipControllerV1 @Autowired constructor(
         @PathVariable("userId") userId: String,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CollectionResponse<RelationshipResponse> {
-        return listFollowersUseCase.execute(ListFollowersUseCaseContract.Request(userId, cursor)).response
+        return listFollowersUseCase.execute(ListFollowersContract.Request(userId, cursor)).response
     }
 
     @GetMapping("/{userId}/followings")
@@ -60,6 +60,6 @@ class RelationshipControllerV1 @Autowired constructor(
         @PathVariable("userId") userId: String,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CollectionResponse<RelationshipResponse> {
-        return listFollowingsUseCase.execute(ListFollowingsUseCaseContract.Request(userId, cursor)).response
+        return listFollowingsUseCase.execute(ListFollowingsContract.Request(userId, cursor)).response
     }
 }

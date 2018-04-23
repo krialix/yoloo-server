@@ -1,9 +1,10 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm'
-    id 'org.jetbrains.kotlin.plugin.spring'
+    id 'org.jetbrains.kotlin.jvm' version '1.2.40'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.40'
     id 'org.jetbrains.kotlin.plugin.noarg' version '1.2.40'
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
+    id 'org.springframework.boot' version '2.0.1.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.5.RELEASE'
+    id 'war'
 }
 
 group 'com.yoloo.server'
@@ -39,17 +40,22 @@ kotlin {
     }
 }
 
+configurations.all {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    exclude group: 'org.slf4j', module: 'jul-to-slf4j'
+}
+
 dependencies {
     implementation project(':common')
     implementation project(':objectify')
 
     // App Engine
     implementation 'com.google.appengine:appengine-api-1.0-sdk:1.9.63'
+    compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
 
     // Spring Boot
     //implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 
     //implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -57,7 +63,7 @@ dependencies {
 
     // Kotlin
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jre8'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.21'
 
