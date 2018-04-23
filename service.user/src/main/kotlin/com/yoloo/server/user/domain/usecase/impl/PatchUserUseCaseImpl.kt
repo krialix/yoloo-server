@@ -5,9 +5,9 @@ import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.domain.entity.User
 import com.yoloo.server.user.domain.usecase.PatchUserUseCase
 import com.yoloo.server.user.domain.usecase.contract.PatchUserContract
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 
-@Service
+@Component
 class PatchUserUseCaseImpl : PatchUserUseCase {
 
     override fun execute(request: PatchUserContract.Request) {

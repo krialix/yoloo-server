@@ -9,9 +9,9 @@ import com.yoloo.server.post.domain.usecase.GetPostUseCase
 import com.yoloo.server.post.domain.usecase.contract.GetPostContract
 import com.yoloo.server.post.infrastructure.mapper.PostResponseMapper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 
-@Service
+@Component
 class GetPostUseCaseImpl @Autowired constructor(
     private val postResponseMapper: PostResponseMapper,
     private val memcacheService: MemcacheService

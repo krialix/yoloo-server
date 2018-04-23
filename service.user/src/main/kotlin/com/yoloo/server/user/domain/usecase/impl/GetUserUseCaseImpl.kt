@@ -11,9 +11,9 @@ import com.yoloo.server.user.infrastructure.mapper.UserResponseMapper
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.apache.http.auth.BasicUserPrincipal
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 
-@Service
+@Component
 class GetUserUseCaseImpl @Autowired constructor(
     private val userResponseMapper: UserResponseMapper,
     private val memcacheService: MemcacheService

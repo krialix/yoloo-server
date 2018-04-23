@@ -1,14 +1,14 @@
 package com.yoloo.server.admin.domain.usecase.impl
 
+import com.yoloo.server.admin.domain.usecase.DeleteUserUseCase
+import com.yoloo.server.admin.domain.usecase.contract.DeleteUserContract
 import com.yoloo.server.common.api.exception.NotFoundException
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.domain.entity.User
-import com.yoloo.server.admin.domain.usecase.DeleteUserUseCase
-import com.yoloo.server.admin.domain.usecase.contract.DeleteUserContract
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
-@Service
+@Component
 class DeleteUserUseCaseImpl : DeleteUserUseCase {
 
     override fun execute(request: DeleteUserContract.Request) {

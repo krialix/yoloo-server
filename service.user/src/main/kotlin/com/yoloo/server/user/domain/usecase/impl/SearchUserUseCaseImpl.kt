@@ -6,9 +6,9 @@ import com.yoloo.server.user.domain.usecase.SearchUserUseCase
 import com.yoloo.server.user.domain.usecase.contract.SearchUserContract
 import com.yoloo.server.user.infrastructure.mapper.SearchUserResponseMapper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 
-@Service
+@Component
 class SearchUserUseCaseImpl @Autowired constructor(
     private val searchUserResponseMapper: SearchUserResponseMapper
 ) : SearchUserUseCase {

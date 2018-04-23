@@ -10,9 +10,9 @@ import com.yoloo.server.post.domain.usecase.ListTopicPostsUseCase
 import com.yoloo.server.post.domain.usecase.contract.ListTopicPostsContract
 import com.yoloo.server.post.infrastructure.mapper.PostResponseMapper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 
-@Service
+@Component
 class ListTopicPostsUseCaseImpl @Autowired constructor(
     private val postResponseMapper: PostResponseMapper,
     private val memcacheService: MemcacheService

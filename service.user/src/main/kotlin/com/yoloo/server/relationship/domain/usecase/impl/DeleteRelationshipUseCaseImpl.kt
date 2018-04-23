@@ -6,9 +6,9 @@ import com.yoloo.server.relationship.domain.entity.Relationship
 import com.yoloo.server.relationship.domain.usecase.DeleteRelationshipUseCase
 import com.yoloo.server.relationship.domain.usecase.contract.DeleteRelationshipContract
 import net.cinnom.nanocuckoo.NanoCuckooFilter
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 
-@Service
+@Component
 class DeleteRelationshipUseCaseImpl(private val memcacheService: MemcacheService) :
     DeleteRelationshipUseCase {
 

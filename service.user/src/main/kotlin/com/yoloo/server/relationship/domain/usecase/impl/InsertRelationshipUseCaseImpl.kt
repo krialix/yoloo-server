@@ -9,9 +9,9 @@ import com.yoloo.server.relationship.domain.usecase.InsertRelationshipUseCase
 import com.yoloo.server.relationship.domain.usecase.contract.InsertRelationshipContract
 import com.yoloo.server.user.domain.entity.User
 import net.cinnom.nanocuckoo.NanoCuckooFilter
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 
-@Service
+@Component
 class InsertRelationshipUseCaseImpl(private val memcacheService: MemcacheService) :
     InsertRelationshipUseCase {
 

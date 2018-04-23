@@ -9,9 +9,9 @@ import com.yoloo.server.relationship.infrastructure.mapper.RelationshipResponseM
 import com.yoloo.server.user.domain.usecase.ListFollowersUseCase
 import com.yoloo.server.user.domain.usecase.contract.ListFollowersContract
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 
-@Service
+@Component
 class ListFollowersUseCaseImpl @Autowired constructor(
     private val relationshipMapper: RelationshipResponseMapper
 ) : ListFollowersUseCase {
