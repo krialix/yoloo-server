@@ -1,17 +1,11 @@
 package com.yoloo.server.post.application
 
 import com.yoloo.server.common.response.attachment.CollectionResponse
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
-import com.yoloo.server.post.domain.entity.Post
 import com.yoloo.server.post.domain.response.PostResponse
 import com.yoloo.server.post.domain.usecase.GetPostUseCase
 import com.yoloo.server.post.domain.usecase.ListTopicPostsUseCase
 import com.yoloo.server.post.domain.usecase.contract.GetPostContract
 import com.yoloo.server.post.domain.usecase.contract.ListTopicPostsContract
-import com.yoloo.server.post.domain.vo.*
-import com.yoloo.server.post.domain.vo.postdata.RichPostData
-import com.yoloo.server.post.domain.vo.postdata.SponsoredPostData
-import com.yoloo.server.post.domain.vo.postdata.TextPostData
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -40,7 +34,7 @@ class PostControllerV1 @Autowired constructor(
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     fun insertPost(principal: Principal?) {
-        (1..5).map {
+        /*(1..5).map {
             return@map when (it) {
                 1, 2 -> Post(
                     author = Author(id = "id$it", displayName = "user$it", avatarUrl = ""),
@@ -76,7 +70,7 @@ class PostControllerV1 @Autowired constructor(
                     content = PostContent("lorem impsum")
 
                 )
-            /*5 -> Post(
+            *//*5 -> Post(
                 author = Author(id = "id$it", displayName = "user$it", avatarUrl = ""),
                 data = BuddyPostData(
                     title = PostTitle("title-deneme-$it"),
@@ -90,7 +84,7 @@ class PostControllerV1 @Autowired constructor(
                 ),
                 type = PostType.BUDDY,
                 content = PostContent("lorem impsum")
-            )*/
+            )*//*
                 else -> Post(
                     author = Author(id = "id$it", displayName = "user$it", avatarUrl = ""),
                     data = TextPostData(
@@ -101,7 +95,7 @@ class PostControllerV1 @Autowired constructor(
                     content = PostContent("lorem impsum")
                 )
             }
-        }.let { ofy().save().entities(it) }
+        }.let { ofy().save().entities(it) }*/
     }
 
     @GetMapping("/topics/{id}")

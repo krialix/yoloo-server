@@ -5,7 +5,6 @@ import com.googlecode.objectify.condition.IfNull
 import com.yoloo.server.common.mixins.Keyable
 import com.yoloo.server.common.mixins.Validatable
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.common.util.TimestampIdGenerator
 import com.yoloo.server.post.domain.vo.Author
 import com.yoloo.server.post.domain.vo.PostContent
 import com.yoloo.server.post.domain.vo.PostPermission
@@ -19,7 +18,7 @@ import javax.validation.Valid
 @Entity
 data class Post(
     @Id
-    var id: String = TimestampIdGenerator.generateId(),
+    var id: Long,
 
     var author: Author,
 

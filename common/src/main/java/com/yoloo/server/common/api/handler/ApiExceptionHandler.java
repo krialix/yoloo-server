@@ -3,6 +3,8 @@ package com.yoloo.server.common.api.handler;
 import com.yoloo.server.common.api.error.Error;
 import com.yoloo.server.common.api.error.ErrorResponse;
 import com.yoloo.server.common.api.exception.ServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,8 @@ import static java.util.stream.Collectors.toList;
 @ControllerAdvice
 class ApiExceptionHandler {
 
+  private static final Logger log = LoggerFactory.getLogger(ApiExceptionHandler.class);
+
   private static final String UNKNOWN_ERROR_CODE = "unknown error code";
 
   private final MessageSource messageSource;
@@ -41,7 +45,6 @@ class ApiExceptionHandler {
 
     Error error =
         Error.builder()
-            .applicationErrorCode(ex.getApplicationErrorCode())
             .httpStatusCode(ex.getHttpStatus().toString())
             .detail(
                 messageSource.getMessage(
@@ -65,14 +68,9 @@ class ApiExceptionHandler {
             .map(
                 objectError ->
                     Error.builder()
-                        .applicationErrorCode(objectError.getDefaultMessage())
                         .httpStatusCode(HttpStatus.BAD_REQUEST.toString())
-                        .detail(
-                            messageSource.getMessage(
-                                objectError.getDefaultMessage(),
-                                objectError.getArguments(),
-                                UNKNOWN_ERROR_CODE,
-                                locale))
+                        .detail(objectError.getDefaultMessage())
+                        .title(objectError.toString())
                         .build())
             .collect(toList());
 
@@ -88,7 +86,6 @@ class ApiExceptionHandler {
             .map(
                 cv ->
                     Error.builder()
-                        .applicationErrorCode(cv.getMessage())
                         .httpStatusCode(HttpStatus.BAD_REQUEST.toString())
                         .detail(
                             messageSource.getMessage(
@@ -106,7 +103,6 @@ class ApiExceptionHandler {
   public ResponseEntity<ErrorResponse<Error>> handleMediaTypeExceptions() {
     Error error =
         Error.builder()
-            .applicationErrorCode("demo")
             .httpStatusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.toString())
             .detail(HttpStatus.UNSUPPORTED_MEDIA_TYPE.getReasonPhrase())
             .build();
@@ -114,4 +110,19 @@ class ApiExceptionHandler {
     return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
         .body(new ErrorResponse<>(error));
   }
+
+  /*@ExceptionHandler(Exception.class)
+  public ResponseEntity<ErrorResponse<Error>> handleException(Exception e) {
+    log.info("TYPE: {}", e.getCause());
+
+    Error error =
+        Error.builder()
+            .applicationErrorCode("demo")
+            .httpStatusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.toString())
+            .detail(HttpStatus.UNSUPPORTED_MEDIA_TYPE.getReasonPhrase())
+            .build();
+
+    return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+        .body(new ErrorResponse<>(error));
+  }*/
 }

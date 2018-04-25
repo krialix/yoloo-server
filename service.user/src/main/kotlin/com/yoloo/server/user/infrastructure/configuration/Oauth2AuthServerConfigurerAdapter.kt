@@ -1,4 +1,4 @@
-package com.yoloo.server.user.infrastructure.config
+package com.yoloo.server.user.infrastructure.configuration
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration

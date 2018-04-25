@@ -12,10 +12,15 @@ targetCompatibility = 1.8
 
 repositories {
     jcenter()
+    maven{
+        url "https://krialix.github.io/maven-artifactory/"
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', includes: ['*.jar'])
+
+    api 'com.yoloo.tools:uid-generator:1.0.0'
 
     //api files('libs/jsonapi.jar')
     api 'com.googlecode.objectify:objectify:5.1.22'

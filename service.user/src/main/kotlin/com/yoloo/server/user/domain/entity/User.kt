@@ -5,7 +5,6 @@ import com.googlecode.objectify.condition.IfTrue
 import com.yoloo.server.common.mixins.Keyable
 import com.yoloo.server.common.mixins.Validatable
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.common.util.TimestampIdGenerator
 import com.yoloo.server.user.domain.vo.*
 import java.time.LocalDateTime
 import javax.validation.Valid
@@ -15,13 +14,13 @@ import javax.validation.Valid
 @Entity
 data class User constructor(
     @Id
-    var id: String = TimestampIdGenerator.generateId(),
+    var id: Long,
 
     var displayName: UserDisplayName,
 
     var url: Url? = null,
 
-    var providerId: String? = null,
+    var provider: SocialProvider,
 
     @field:Valid
     var email: Email,

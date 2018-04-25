@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component
 @Component
 class UserResponseMapper : Mapper<User, UserResponse> {
 
-    override fun apply(from: User, payload: MutableMap<String, Any>): UserResponse {
+    override fun apply(from: User, payload: Map<String, Any>): UserResponse {
         return UserResponse(
-            id = from.id,
+            id = from.key.toWebSafeString(),
             url = from.url?.value,
             displayName = from.displayName.value,
             self = payload["self"] as Boolean,

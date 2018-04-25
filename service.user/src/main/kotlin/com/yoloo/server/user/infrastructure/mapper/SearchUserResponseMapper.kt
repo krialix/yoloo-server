@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component
 class SearchUserResponseMapper : Mapper<User, SearchUserResponse> {
 
     override fun apply(from: User, payload: MutableMap<String, Any>): SearchUserResponse {
-        return SearchUserResponse(id = from.id, displayName = from.displayName.value, avatarUrl = from.image.value)
+        return SearchUserResponse(
+            id = from.key.toWebSafeString(),
+            displayName = from.displayName.value,
+            avatarUrl = from.image.value
+        )
     }
 }

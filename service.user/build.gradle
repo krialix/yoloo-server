@@ -28,6 +28,9 @@ compileTestKotlin {
 
 repositories {
     jcenter()
+    maven{
+        url "https://krialix.github.io/maven-artifactory/"
+    }
 }
 
 noArg {

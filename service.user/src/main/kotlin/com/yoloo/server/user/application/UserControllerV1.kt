@@ -43,7 +43,7 @@ class UserControllerV1 @Autowired constructor(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    fun insertUser(@RequestBody request: InsertUserRequest): UserResponse {
+    fun insertUser(@RequestBody @Valid request: InsertUserRequest): UserResponse {
         return insertUserUseCase.execute(InsertUserContract.Request(request)).response
     }
 

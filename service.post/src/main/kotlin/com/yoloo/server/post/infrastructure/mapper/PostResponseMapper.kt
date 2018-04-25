@@ -26,7 +26,7 @@ class PostResponseMapper : Mapper<Post, PostResponse> {
         }
 
         return PostResponse(
-            id = from.id,
+            id = from.key.toWebSafeString(),
             type = from.type.name.toLowerCase(),
             author = AuthorResponse(
                 id = from.author.id,
