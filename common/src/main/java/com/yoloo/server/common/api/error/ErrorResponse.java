@@ -8,20 +8,28 @@ import java.util.Collections;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ErrorResponse<T extends Error> {
+public class ErrorResponse {
 
-  @JsonProperty private final List<T> errors;
+  @JsonProperty private final List<Error> errors;
+
+  @JsonProperty("path")
+  private final String path;
 
   @JsonCreator
-  public ErrorResponse(@JsonProperty("errors") List<T> errors) {
+  public ErrorResponse(@JsonProperty("errors") List<Error> errors, String path) {
     this.errors = errors;
+    this.path = path;
   }
 
-  public ErrorResponse(T error) {
-    this(Collections.singletonList(error));
+  public ErrorResponse(Error error, String path) {
+    this(Collections.singletonList(error), path);
   }
 
-  public List<T> getErrors() {
+  public List<Error> getErrors() {
     return this.errors;
+  }
+
+  public String getPath() {
+    return path;
   }
 }

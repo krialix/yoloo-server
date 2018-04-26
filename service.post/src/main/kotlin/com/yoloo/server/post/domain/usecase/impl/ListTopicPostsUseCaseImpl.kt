@@ -2,7 +2,7 @@ package com.yoloo.server.post.domain.usecase.impl
 
 import com.google.appengine.api.datastore.Cursor
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.common.response.attachment.CollectionResponse
+import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.domain.entity.Post
 import com.yoloo.server.post.domain.response.PostResponse

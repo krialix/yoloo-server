@@ -7,7 +7,7 @@ import com.yoloo.server.comment.domain.usecase.ListCommentsUseCase
 import com.yoloo.server.comment.domain.usecase.contract.ListCommentsContract
 import com.yoloo.server.comment.infrastructure.mapper.CommentResponseMapper
 import com.yoloo.server.common.api.exception.BadRequestException
-import com.yoloo.server.common.response.attachment.CollectionResponse
+import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.domain.entity.Post
 import org.springframework.stereotype.Service

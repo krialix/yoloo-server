@@ -1,6 +1,6 @@
 package com.yoloo.server.user.application
 
-import com.yoloo.server.common.response.attachment.CollectionResponse
+import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.user.domain.request.InsertUserRequest
 import com.yoloo.server.user.domain.request.PatchUserRequest
 import com.yoloo.server.user.domain.response.SearchUserResponse

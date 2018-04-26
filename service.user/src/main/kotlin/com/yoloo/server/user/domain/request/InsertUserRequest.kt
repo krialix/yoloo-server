@@ -18,26 +18,26 @@ data class InsertUserRequest(
 
     val token: String?,
 
-    @field:NotNull(message = "user.register.empty.providerType")
+    @field:NotNull
     val providerType: ProviderType?,
 
-    @field:NotBlank(message = "user.register.empty.displayName")
+    @field:NotBlank
     val displayName: String?,
 
-    @field:Email(message = "email.invalid")
+    @field:Email
     val email: String?,
 
     val password: String?,
 
-    @field:NotBlank(message = "user.register.empty.locale")
+    @field:NotBlank
     val locale: String?,
 
-    @field:NotBlank(message = "user.register.empty.gender")
+    @field:NotBlank
     val gender: String?,
 
-    @field:NotBlank(message = "user.register.empty.lastKnownIP")
+    @field:NotBlank
     val lastKnownIP: String?,
 
-    @field:NotBlank(message = "user.register.empty.fcmToken")
+    @field:NotBlank
     val fcmToken: String?
 )

@@ -1,151 +1,92 @@
 package com.yoloo.server.common.api.error;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Objects;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Error {
-  @JsonProperty("id")
-  private String id;
-
-  @JsonProperty("links")
-  private ErrorLink links;
 
   @JsonProperty("status")
-  private String httpStatusCode;
+  private int status;
 
-  @JsonProperty("code")
-  private String applicationErrorCode;
+  @JsonProperty("error")
+  private String error;
 
-  @JsonProperty("title")
-  private String title;
+  @JsonProperty("message")
+  private String message;
 
-  @JsonProperty("detail")
-  private String detail;
+  @JsonProperty("field")
+  private String field;
 
-  @JsonProperty("source")
-  private ErrorSource source;
+  @JsonProperty("rejectedValue")
+  private Object rejectedValue;
 
-  private Error() {}
-
-  private Error(
-      String id,
-      ErrorLink links,
-      String httpStatusCode,
-      String applicationErrorCode,
-      String title,
-      String detail,
-      ErrorSource source) {
-    this.id = id;
-    this.links = links;
-    this.httpStatusCode = httpStatusCode;
-    this.applicationErrorCode = applicationErrorCode;
-    this.title = title;
-    this.detail = detail;
-    this.source = source;
+  private Error(Builder builder) {
+    this.status = builder.status;
+    this.error = builder.error;
+    this.message = builder.message;
+    this.field = builder.field;
+    this.rejectedValue = builder.rejectedValue;
   }
 
-  public static ErrorBuilder builder() {
-    return new ErrorBuilder();
+  public static Builder builder() {
+    return new Builder();
   }
 
-  public String getId() {
-    return this.id;
+  public int getStatus() {
+    return status;
   }
 
-  public ErrorLink getLinks() {
-    return this.links;
+  public String getError() {
+    return error;
   }
 
-  public String getHttpStatusCode() {
-    return this.httpStatusCode;
+  public String getMessage() {
+    return message;
   }
 
-  public String getApplicationErrorCode() {
-    return this.applicationErrorCode;
+  public String getField() {
+    return field;
   }
 
-  public String getTitle() {
-    return this.title;
+  public Object getRejectedValue() {
+    return rejectedValue;
   }
 
-  public String getDetail() {
-    return this.detail;
-  }
+  public static class Builder {
+    private int status;
+    private String error;
+    private String message;
+    private String field;
+    private Object rejectedValue;
 
-  public ErrorSource getSource() {
-    return this.source;
-  }
+    Builder() {}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Error error = (Error) o;
-    return Objects.equals(id, error.id)
-        && Objects.equals(links, error.links)
-        && Objects.equals(httpStatusCode, error.httpStatusCode)
-        && Objects.equals(applicationErrorCode, error.applicationErrorCode)
-        && Objects.equals(title, error.title)
-        && Objects.equals(detail, error.detail)
-        && Objects.equals(source, error.source);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, links, httpStatusCode, applicationErrorCode, title, detail, source);
-  }
-
-  public static class ErrorBuilder {
-    private String id;
-    private ErrorLink links;
-    private String httpStatusCode;
-    private String applicationErrorCode;
-    private String title;
-    private String detail;
-    private ErrorSource source;
-
-    ErrorBuilder() {}
-
-    public ErrorBuilder id(String id) {
-      this.id = id;
+    public Builder status(int status) {
+      this.status = status;
       return this;
     }
 
-    public ErrorBuilder links(ErrorLink links) {
-      this.links = links;
+    public Builder error(String error) {
+      this.error = error;
       return this;
     }
 
-    public ErrorBuilder httpStatusCode(String httpStatusCode) {
-      this.httpStatusCode = httpStatusCode;
+    public Builder message(String message) {
+      this.message = message;
       return this;
     }
 
-    public ErrorBuilder applicationErrorCode(String applicationErrorCode) {
-      this.applicationErrorCode = applicationErrorCode;
+    public Builder field(String field) {
+      this.field = field;
       return this;
     }
 
-    public ErrorBuilder title(String title) {
-      this.title = title;
-      return this;
-    }
-
-    public ErrorBuilder detail(String detail) {
-      this.detail = detail;
-      return this;
-    }
-
-    public ErrorBuilder source(ErrorSource source) {
-      this.source = source;
+    public Builder rejectedValue(Object rejectedValue) {
+      this.rejectedValue = rejectedValue;
       return this;
     }
 
     public Error build() {
-      return new Error(id, links, httpStatusCode, applicationErrorCode, title, detail, source);
+      return new Error(this);
     }
   }
 }

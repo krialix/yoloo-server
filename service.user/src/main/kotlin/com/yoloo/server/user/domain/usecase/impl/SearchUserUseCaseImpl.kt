@@ -1,6 +1,6 @@
 package com.yoloo.server.user.domain.usecase.impl
 
-import com.yoloo.server.common.response.attachment.CollectionResponse
+import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.user.domain.response.SearchUserResponse
 import com.yoloo.server.user.domain.usecase.SearchUserUseCase
 import com.yoloo.server.user.domain.usecase.contract.SearchUserContract

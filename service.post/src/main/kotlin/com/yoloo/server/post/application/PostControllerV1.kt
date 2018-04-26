@@ -1,6 +1,6 @@
 package com.yoloo.server.post.application
 
-import com.yoloo.server.common.response.attachment.CollectionResponse
+import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.post.domain.response.PostResponse
 import com.yoloo.server.post.domain.usecase.GetPostUseCase
 import com.yoloo.server.post.domain.usecase.ListTopicPostsUseCase

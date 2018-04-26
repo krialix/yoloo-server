@@ -1,6 +1,6 @@
 package com.yoloo.server.user.domain.usecase.contract
 
-import com.yoloo.server.common.response.attachment.CollectionResponse
+import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.relationship.domain.response.RelationshipResponse
 
 interface ListFollowersContract {

@@ -1,7 +1,7 @@
 package com.yoloo.server.user.domain.usecase.impl
 
 import com.google.appengine.api.datastore.Cursor
-import com.yoloo.server.common.response.attachment.CollectionResponse
+import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.relationship.domain.entity.Relationship
 import com.yoloo.server.relationship.domain.response.RelationshipResponse

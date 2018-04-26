@@ -1,7 +1,7 @@
 package com.yoloo.server.comment.domain.usecase.contract
 
 import com.yoloo.server.comment.domain.response.CommentResponse
-import com.yoloo.server.common.response.attachment.CollectionResponse
+import com.yoloo.server.common.response.CollectionResponse
 import java.security.Principal
 
 class ListCommentsContract {

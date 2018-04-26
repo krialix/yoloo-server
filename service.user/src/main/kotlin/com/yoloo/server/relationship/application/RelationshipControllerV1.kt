@@ -1,6 +1,6 @@
 package com.yoloo.server.relationship.application
 
-import com.yoloo.server.common.response.attachment.CollectionResponse
+import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.relationship.domain.response.RelationshipResponse
 import com.yoloo.server.relationship.domain.usecase.DeleteRelationshipUseCase
 import com.yoloo.server.relationship.domain.usecase.InsertRelationshipUseCase

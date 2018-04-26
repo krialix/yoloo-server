@@ -28,25 +28,16 @@ compileTestKotlin {
 
 repositories {
     jcenter()
-    maven{
-        url "https://krialix.github.io/maven-artifactory/"
-    }
 }
 
 noArg {
     annotation("com.yoloo.server.common.util.NoArg")
 }
 
-kotlin {
-    experimental {
-        coroutines 'enable'
-    }
-}
-
-configurations.all {
+/*configurations.all {
     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     exclude group: 'org.slf4j', module: 'jul-to-slf4j'
-}
+}*/
 
 dependencies {
     implementation project(':common')
@@ -60,15 +51,12 @@ dependencies {
     //implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    //implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.0.RELEASE'
 
     // Kotlin
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    implementation 'org.jetbrains.kotlin:kotlin-reflect'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.21'
 
     // Util
     implementation 'org.hibernate.validator:hibernate-validator:6.0.9.Final'

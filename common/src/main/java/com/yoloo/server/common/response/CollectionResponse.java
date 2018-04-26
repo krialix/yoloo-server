@@ -1,4 +1,4 @@
-package com.yoloo.server.common.response.attachment;
+package com.yoloo.server.common.response;
 
 import java.util.Collection;
 
