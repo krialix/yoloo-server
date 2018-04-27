@@ -28,16 +28,19 @@ compileTestKotlin {
 
 repositories {
     jcenter()
+    maven{
+        url "https://krialix.github.io/maven-artifactory/"
+    }
 }
 
 noArg {
     annotation("com.yoloo.server.common.util.NoArg")
 }
 
-/*configurations.all {
+configurations.all {
     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     exclude group: 'org.slf4j', module: 'jul-to-slf4j'
-}*/
+}
 
 dependencies {
     implementation project(':common')

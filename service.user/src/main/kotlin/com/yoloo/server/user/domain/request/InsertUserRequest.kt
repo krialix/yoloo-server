@@ -1,27 +1,29 @@
 package com.yoloo.server.user.domain.request
 
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.user.infrastructure.social.ProviderType
-import javax.validation.constraints.Email
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.NotNull
+import com.yoloo.server.common.validation.constraints.Conditional
+import com.yoloo.server.common.validation.constraints.NullOrNotBlank
+import org.hibernate.validator.constraints.UniqueElements
+import javax.validation.constraints.*
 
+@Conditional(selected = "providerType", values = ["yoloo"], required = ["displayName", "email", "password"])
 @NoArg
 data class InsertUserRequest(
     @field:NotBlank
     val clientId: String?,
 
+    @field:UniqueElements
     @field:NotNull
     @field:NotEmpty
     var subscribedGroupIds: List<String>?,
 
     val token: String?,
 
+    @field:Pattern(regexp = "(yoloo|google|facebook)", message = "must match with yoloo, google or facebook")
     @field:NotNull
-    val providerType: ProviderType?,
+    val providerType: String?,
 
-    @field:NotBlank
+    @field:NullOrNotBlank
     val displayName: String?,
 
     @field:Email
@@ -32,7 +34,8 @@ data class InsertUserRequest(
     @field:NotBlank
     val locale: String?,
 
-    @field:NotBlank
+    @field:Pattern(regexp = "(male|female)", message = "must match with either male or female")
+    @field:NotNull
     val gender: String?,
 
     @field:NotBlank

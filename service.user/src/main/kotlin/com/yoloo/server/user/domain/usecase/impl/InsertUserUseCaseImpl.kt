@@ -9,6 +9,7 @@ import com.yoloo.server.user.domain.usecase.InsertUserUseCase
 import com.yoloo.server.user.domain.usecase.contract.InsertUserContract
 import com.yoloo.server.user.domain.vo.*
 import com.yoloo.server.user.infrastructure.mapper.UserResponseMapper
+import com.yoloo.server.user.infrastructure.social.ProviderType
 import com.yoloo.server.user.infrastructure.social.RequestPayload
 import com.yoloo.server.user.infrastructure.social.provider.UserInfoProviderFactory
 import com.yoloo.server.user.infrastructure.util.groupinfo.GroupInfoFetcher
@@ -27,7 +28,8 @@ class InsertUserUseCaseImpl(
     override fun execute(request: InsertUserContract.Request): InsertUserContract.Response {
         val userRequest = request.insertUserRequest
 
-        val userInfoProvider = userInfoProviderFactory.create(userRequest.providerType!!)
+        val providerType = ProviderType.valueOf(userRequest.providerType!!.toUpperCase())
+        val userInfoProvider = userInfoProviderFactory.create(providerType)
         val requestPayload = createRequestPayload(userRequest)
         val userInfo = userInfoProvider.getUserInfo(requestPayload)
 

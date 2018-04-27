@@ -12,24 +12,16 @@ public class ErrorResponse {
 
   @JsonProperty private final List<Error> errors;
 
-  @JsonProperty("path")
-  private final String path;
-
   @JsonCreator
-  public ErrorResponse(@JsonProperty("errors") List<Error> errors, String path) {
+  public ErrorResponse(@JsonProperty("errors") List<Error> errors) {
     this.errors = errors;
-    this.path = path;
   }
 
-  public ErrorResponse(Error error, String path) {
-    this(Collections.singletonList(error), path);
+  public ErrorResponse(Error error) {
+    this(Collections.singletonList(error));
   }
 
   public List<Error> getErrors() {
     return this.errors;
-  }
-
-  public String getPath() {
-    return path;
   }
 }
