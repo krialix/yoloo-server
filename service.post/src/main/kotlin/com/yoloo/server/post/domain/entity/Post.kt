@@ -2,8 +2,8 @@ package com.yoloo.server.post.domain.entity
 
 import com.googlecode.objectify.annotation.*
 import com.googlecode.objectify.condition.IfNull
-import com.yoloo.server.common.mixins.Keyable
-import com.yoloo.server.common.mixins.Validatable
+import com.yoloo.server.common.shared.Keyable
+import com.yoloo.server.common.shared.Validatable
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.post.domain.vo.Author
 import com.yoloo.server.post.domain.vo.PostContent

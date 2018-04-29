@@ -1,7 +1,7 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.2.40'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.40'
-    id 'org.jetbrains.kotlin.plugin.noarg' version '1.2.40'
+    id 'org.jetbrains.kotlin.jvm' version '1.2.41'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.41'
+    id 'org.jetbrains.kotlin.plugin.noarg' version '1.2.41'
     id 'org.springframework.boot' version '2.0.1.RELEASE'
     id 'io.spring.dependency-management' version '1.0.5.RELEASE'
     id 'war'
@@ -42,12 +42,14 @@ configurations.all {
     exclude group: 'org.slf4j', module: 'jul-to-slf4j'
 }
 
+final APP_ENGINE_VERSION = '1.9.63'
+
 dependencies {
     implementation project(':common')
     implementation project(':objectify')
 
     // App Engine
-    implementation 'com.google.appengine:appengine-api-1.0-sdk:1.9.63'
+    implementation "com.google.appengine:appengine-api-1.0-sdk:$APP_ENGINE_VERSION"
     compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
 
     // Spring Boot
@@ -64,7 +66,13 @@ dependencies {
     // Util
     implementation 'org.hibernate.validator:hibernate-validator:6.0.9.Final'
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
+    implementation 'com.github.ben-manes.caffeine:caffeine:2.6.2'
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.2.41'
+    testImplementation 'com.google.truth:truth:0.37'
+    testImplementation "com.google.appengine:appengine-api-stubs:$APP_ENGINE_VERSION"
+    testImplementation "com.google.appengine:appengine-testing:$APP_ENGINE_VERSION"
+    testImplementation "com.google.appengine:appengine-tools-sdk:$APP_ENGINE_VERSION"
 }

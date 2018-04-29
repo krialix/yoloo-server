@@ -6,8 +6,8 @@ import com.googlecode.objectify.annotation.Index
 import com.googlecode.objectify.annotation.OnSave
 import com.yoloo.server.comment.domain.vo.CommentContent
 import com.yoloo.server.comment.domain.vo.PostId
-import com.yoloo.server.common.mixins.Keyable
-import com.yoloo.server.common.mixins.Validatable
+import com.yoloo.server.common.shared.Keyable
+import com.yoloo.server.common.shared.Validatable
 import com.yoloo.server.common.shared.Likeable
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.util.TimestampIdGenerator

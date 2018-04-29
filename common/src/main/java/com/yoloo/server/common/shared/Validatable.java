@@ -1,4 +1,4 @@
-package com.yoloo.server.common.mixins;
+package com.yoloo.server.common.shared;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;

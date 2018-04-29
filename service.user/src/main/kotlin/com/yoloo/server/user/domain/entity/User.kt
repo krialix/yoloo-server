@@ -1,9 +1,11 @@
 package com.yoloo.server.user.domain.entity
 
-import com.googlecode.objectify.annotation.*
+import com.googlecode.objectify.annotation.Cache
+import com.googlecode.objectify.annotation.Entity
+import com.googlecode.objectify.annotation.Id
+import com.googlecode.objectify.annotation.Index
 import com.googlecode.objectify.condition.IfTrue
-import com.yoloo.server.common.mixins.Keyable
-import com.yoloo.server.common.mixins.Validatable
+import com.yoloo.server.common.shared.BaseEntity
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.user.domain.vo.*
 import java.time.LocalDateTime
@@ -13,8 +15,7 @@ import javax.validation.Valid
 @NoArg
 @Entity
 data class User constructor(
-    @Id
-    var id: Long,
+    @Id var id: Long,
 
     var displayName: UserDisplayName,
 
@@ -47,10 +48,6 @@ data class User constructor(
 
     var scopes: Set<String>,
 
-    var createdAt: LocalDateTime = LocalDateTime.now(),
-
-    var updatedAt: LocalDateTime = createdAt,
-
     var deletedAt: LocalDateTime? = null,
 
     var locale: UserLocale,
@@ -69,10 +66,4 @@ data class User constructor(
     var userFilterData: UserFilterData = UserFilterData(),
 
     var subscribedGroups: List<UserGroup>
-) : Validatable, Keyable<User> {
-
-    @OnSave
-    override fun validate() {
-        super.validate()
-    }
-}
+) : BaseEntity<Long, User>(1)
