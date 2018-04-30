@@ -6,10 +6,7 @@ import com.yoloo.server.relationship.domain.usecase.DeleteRelationshipUseCase
 import com.yoloo.server.relationship.domain.usecase.InsertRelationshipUseCase
 import com.yoloo.server.relationship.domain.usecase.contract.DeleteRelationshipContract
 import com.yoloo.server.relationship.domain.usecase.contract.InsertRelationshipContract
-import com.yoloo.server.user.domain.usecase.ListFollowersUseCase
-import com.yoloo.server.user.domain.usecase.ListFollowingsUseCase
-import com.yoloo.server.user.domain.usecase.contract.ListFollowersContract
-import com.yoloo.server.user.domain.usecase.contract.ListFollowingsContract
+import com.yoloo.server.user.domain.usecase.ListRelationshipUseCase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -25,8 +22,7 @@ import java.security.Principal
 class RelationshipControllerV1 @Autowired constructor(
     private val insertRelationshipUseCase: InsertRelationshipUseCase,
     private val deleteRelationshipUseCase: DeleteRelationshipUseCase,
-    private val listFollowersUseCase: ListFollowersUseCase,
-    private val listFollowingsUseCase: ListFollowingsUseCase
+    private val listRelationshipUseCase: ListRelationshipUseCase
 ) {
 
     @PutMapping("/{userId}")
@@ -47,19 +43,33 @@ class RelationshipControllerV1 @Autowired constructor(
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     fun listFollowers(
+        principal: Principal?,
         @PathVariable("userId") userId: String,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CollectionResponse<RelationshipResponse> {
-        return listFollowersUseCase.execute(ListFollowersContract.Request(userId, cursor)).response
+        return listRelationshipUseCase.execute(
+            ListRelationshipUseCase.Request(
+                ListRelationshipUseCase.Type.FOLLOWER,
+                userId,
+                cursor
+            )
+        )
     }
 
     @GetMapping("/{userId}/followings")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     fun listFollowings(
+        principal: Principal?,
         @PathVariable("userId") userId: String,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CollectionResponse<RelationshipResponse> {
-        return listFollowingsUseCase.execute(ListFollowingsContract.Request(userId, cursor)).response
+        return listRelationshipUseCase.execute(
+            ListRelationshipUseCase.Request(
+                ListRelationshipUseCase.Type.FOLLOWING,
+                userId,
+                cursor
+            )
+        )
     }
 }

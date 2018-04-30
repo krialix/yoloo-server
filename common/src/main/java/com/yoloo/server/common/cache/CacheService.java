@@ -2,6 +2,7 @@ package com.yoloo.server.common.cache;
 
 import com.google.appengine.api.memcache.MemcacheServiceException;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collection;
 import java.util.Map;
@@ -29,8 +30,9 @@ public interface CacheService {
   }
 
   // Sync
-  default <T> T get(Object key) {
-    return (T) quietGet(getAsync(key));
+  @Nullable
+  default Object get(Object key) {
+    return quietGet(getAsync(key));
   }
 
   default <T> Map<T, Object> getAll(Collection<T> keys) {

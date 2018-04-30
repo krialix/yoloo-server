@@ -1,8 +1,8 @@
-package com.yoloo.server.user.domain.request
+package com.yoloo.server.user.domain.requestpayload
 
 import javax.validation.constraints.Email
 
-data class PatchUserRequest(
+data class PatchUserPayload(
     @field:Email
     var email: String?,
 

@@ -1,4 +1,4 @@
-package com.yoloo.server.user.domain.request
+package com.yoloo.server.user.domain.requestpayload
 
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.validation.constraints.Conditional
@@ -8,7 +8,7 @@ import javax.validation.constraints.*
 
 @Conditional(selected = "providerType", values = ["yoloo"], required = ["displayName", "email", "password"])
 @NoArg
-data class InsertUserRequest(
+data class InsertUserPayload(
     @field:NotBlank
     val clientId: String?,
 
@@ -16,6 +16,9 @@ data class InsertUserRequest(
     @field:NotNull
     @field:NotEmpty
     var subscribedGroupIds: List<String>?,
+
+    @field:UniqueElements
+    var followedUserIds: List<String>?,
 
     val token: String?,
 

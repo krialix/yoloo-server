@@ -65,5 +65,14 @@ data class User constructor(
 
     var userFilterData: UserFilterData = UserFilterData(),
 
-    var subscribedGroups: List<UserGroup>
+    var subscribedGroups: List<UserGroup>,
+
+    // Extra fields for easy mapping
+    val self: Boolean = false,
+
+    val following: Boolean = false,
+
+    val followerCount: Long = 0L,
+
+    val followingCount: Long = 0L
 ) : BaseEntity<Long, User>(1)

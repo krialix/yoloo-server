@@ -1,31 +1,31 @@
 package com.yoloo.server.user.infrastructure.mapper
 
-import com.yoloo.server.common.util.Mapper
 import com.yoloo.server.user.domain.entity.User
 import com.yoloo.server.user.domain.response.LocaleResponse
 import com.yoloo.server.user.domain.response.UserCountResponse
 import com.yoloo.server.user.domain.response.UserGroupResponse
 import com.yoloo.server.user.domain.response.UserResponse
 import org.springframework.stereotype.Component
+import java.util.function.Function
 
 @Component
-class UserResponseMapper : Mapper<User, UserResponse> {
+class UserResponseMapper : Function<User, UserResponse> {
 
-    override fun apply(from: User, payload: Map<String, Any>): UserResponse {
+    override fun apply(from: User): UserResponse {
         return UserResponse(
             id = from.key.toWebSafeString(),
             url = from.url?.value,
             displayName = from.displayName.value,
-            self = payload["self"] as Boolean,
-            following = payload["following"] as Boolean,
+            self = from.self,
+            following = from.following,
             about = from.about?.value,
             avatarUrl = from.image.value,
             email = from.email.value,
             website = from.website?.value,
             count = UserCountResponse(
                 posts = from.countData.postCount,
-                followers = payload["followerCount"] as Long,
-                followings = payload["followingCount"] as Long
+                followers = from.followerCount,
+                followings = from.followingCount
             ),
             locale = LocaleResponse(language = from.locale.language, country = from.locale.country),
             subscribedGroups = from.subscribedGroups

@@ -2,6 +2,7 @@ package com.yoloo.server.common.cache;
 
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.appengine.api.memcache.AsyncMemcacheService;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
+@Primary
 @Component
 public class DefaultCacheService implements CacheService {
 
