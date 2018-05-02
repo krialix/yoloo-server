@@ -25,30 +25,31 @@ class GetUserUseCase @Autowired constructor(
         val userKey = Key.create(User::class.java, userId)
         var user = ofy().load().key(userKey).now()
 
-        if (user == null || !user.enabled) {
+        if (user == null || !user.account.enabled) {
             throw NotFoundException("user.error.not-found")
         }
 
         val requesterId = request.principal?.name ?: BasicUserPrincipal("d9a37d25-422a-11e8-b84e-f108b6a390b8").name
 
-        val cacheIds = listOf(
-            "counter_follower:$userId",
-            "counter_following:$userId",
-            "filter_follower:$userId"
-        )
+        val cacheIds = listOf("c_follower:$userId", "c_following:$userId", "f_follower:$userId")
 
         val values = memcacheService.getAll(cacheIds)
 
-        val followerCount = values["counter_follower:$userId"] as Long? ?: user.countData.followerCount
-        val followingCount = values["counter_following:$userId"] as Long? ?: user.countData.followingCount
+        val followerCount = values["c_follower:$userId"] as Long? ?: user.profile.countData.followerCount
+        val followingCount = values["c_following:$userId"] as Long? ?: user.profile.countData.followingCount
         val followerCuckooFilter =
-            values["filter_follower:$userId"] as NanoCuckooFilter? ?: user.userFilterData.followersFilter
+            values["f_follower:$userId"] as NanoCuckooFilter? ?: user.userFilterData.followersFilter
 
         user = user.copy(
             self = requesterId == userId,
             following = followerCuckooFilter.contains(requesterId),
-            followerCount = followerCount,
-            followingCount = followingCount)
+            profile = user.profile.copy(
+                countData = user.profile.countData.copy(
+                    followerCount = followerCount,
+                    followingCount = followingCount
+                )
+            )
+        )
 
         return userResponseMapper.apply(user)
     }

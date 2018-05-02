@@ -1,6 +1,7 @@
 package com.yoloo.server.user.domain.entity
 
 import com.google.common.truth.Truth.assertThat
+import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory
 import com.yoloo.server.user.domain.vo.*
 import com.yoloo.server.user.infrastructure.objectify.translators.CuckooFilterTranslatorFactory
@@ -32,33 +33,37 @@ class UserTest {
     fun createNewUser_AllFieldsValid_ShouldEqualWhenLoadedFromDb() {
         val original = User(
             id = 1,
-            displayName = UserDisplayName("name", "name"),
-            url = Url("http://url.com"),
-            provider = SocialProvider("2", ProviderType.FACEBOOK),
-            email = Email("test@test.com"),
-            image = AvatarImage("http://url.com"),
-            gender = Gender.MALE,
-            lastKnownIP = IP("127.0.0.1"),
-            fcmToken = "providerIdToken",
-            subscribedGroups = listOf(UserGroup(1L, "http://g1.com", "g1Name")),
-            locale = UserLocale("en", "EN"),
-            scopes = setOf("scope1", "scope2")
+            profile = Profile(
+                displayName = UserDisplayName("name"),
+                image = AvatarImage(Url("http://url.com")),
+                gender = Gender.MALE,
+                locale = UserLocale("en", "EN")
+            ),
+            account = Account(
+                username = Username("username"),
+                provider = SocialProvider("2", ProviderType.FACEBOOK),
+                email = Email("test@test.com"),
+                lastKnownIP = IP("127.0.0.1"),
+                fcmToken = "providerIdToken",
+                scopes = setOf("scope1", "scope2")
+            ),
+            subscribedGroups = listOf(UserGroup(1L, "http://g1.com", "g1Name"))
         )
 
         val loaded = ofy().saveClearLoad(original)
 
         assertThat(original.id).isEqualTo(loaded.id)
-        assertThat(original.displayName).isEqualTo(loaded.displayName)
-        assertThat(original.url).isEqualTo(loaded.url)
-        assertThat(original.provider).isEqualTo(loaded.provider)
-        assertThat(original.email).isEqualTo(loaded.email)
-        assertThat(original.image).isEqualTo(loaded.image)
-        assertThat(original.gender).isEqualTo(loaded.gender)
-        assertThat(original.lastKnownIP).isEqualTo(loaded.lastKnownIP)
-        assertThat(original.fcmToken).isEqualTo(loaded.fcmToken)
+        assertThat(original.profile.displayName).isEqualTo(loaded.profile.displayName)
+        assertThat(original.profile.image.url).isEqualTo(loaded.profile.image.url)
+        assertThat(original.profile.image).isEqualTo(loaded.profile.image)
+        assertThat(original.profile.gender).isEqualTo(loaded.profile.gender)
+        assertThat(original.profile.locale).isEqualTo(loaded.profile.locale)
+        assertThat(original.account.provider).isEqualTo(loaded.account.provider)
+        assertThat(original.account.email).isEqualTo(loaded.account.email)
+        assertThat(original.account.lastKnownIP).isEqualTo(loaded.account.lastKnownIP)
+        assertThat(original.account.fcmToken).isEqualTo(loaded.account.fcmToken)
+        assertThat(original.account.scopes).isEqualTo(loaded.account.scopes)
         assertThat(original.subscribedGroups).isEqualTo(loaded.subscribedGroups)
-        assertThat(original.locale).isEqualTo(loaded.locale)
-        assertThat(original.scopes).isEqualTo(loaded.scopes)
 
         assertThat(loaded.userFilterData).isNotNull()
         assertThat(loaded.createdAt).isNotNull()
@@ -69,17 +74,21 @@ class UserTest {
     fun updateUser_updatedAtGenerated_ShouldUpdatedAtNotNull() {
         val original = User(
             id = 1,
-            displayName = UserDisplayName("name", "name"),
-            url = Url("http://url.com"),
-            provider = SocialProvider("2", ProviderType.FACEBOOK),
-            email = Email("test@test.com"),
-            image = AvatarImage("http://url.com"),
-            gender = Gender.MALE,
-            lastKnownIP = IP("127.0.0.1"),
-            fcmToken = "providerIdToken",
-            subscribedGroups = listOf(UserGroup(1L, "http://g1.com", "g1Name")),
-            locale = UserLocale("en", "EN"),
-            scopes = setOf("scope1", "scope2")
+            profile = Profile(
+                displayName = UserDisplayName("name"),
+                image = AvatarImage(Url("http://url.com")),
+                gender = Gender.MALE,
+                locale = UserLocale("en", "EN")
+            ),
+            account = Account(
+                username = Username("username"),
+                provider = SocialProvider("2", ProviderType.FACEBOOK),
+                email = Email("test@test.com"),
+                lastKnownIP = IP("127.0.0.1"),
+                fcmToken = "providerIdToken",
+                scopes = setOf("scope1", "scope2")
+            ),
+            subscribedGroups = listOf(UserGroup(1L, "http://g1.com", "g1Name"))
         )
 
         val loaded = ofy().saveClearLoad(original)

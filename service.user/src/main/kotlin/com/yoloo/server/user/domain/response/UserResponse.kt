@@ -5,7 +5,7 @@ import com.yoloo.server.common.util.NoArg
 @NoArg
 data class UserResponse(
     val id: String,
-    val url: String?,
+    val profileUrl: String?,
     val displayName: String,
     val self: Boolean,
     val following: Boolean,

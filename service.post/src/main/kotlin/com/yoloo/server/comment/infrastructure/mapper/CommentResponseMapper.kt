@@ -16,7 +16,7 @@ class CommentResponseMapper : Mapper<Comment, CommentResponse> {
             author = AuthorResponse(
                 id = from.author.id,
                 displayName = from.author.displayName,
-                url = from.author.url,
+                url = from.author.url?.value,
                 image = SimpleAttachmentResponse(from.author.avatarUrl),
                 self = from.author.self
             ),

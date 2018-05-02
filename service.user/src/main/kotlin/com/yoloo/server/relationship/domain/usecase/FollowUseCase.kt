@@ -21,7 +21,7 @@ class FollowUseCase(private val memcacheService: MemcacheService) : UseCase<Foll
 
         val toUser = ofy().load().type(User::class.java).id(toId).now()
 
-        if (toUser == null || !toUser.enabled) {
+        if (toUser == null || !toUser.account.enabled) {
             throw NotFoundException("user.error.not-found")
         }
 
@@ -54,8 +54,8 @@ class FollowUseCase(private val memcacheService: MemcacheService) : UseCase<Foll
             id = id,
             fromId = fromId,
             toId = toId,
-            displayName = toUser.displayName,
-            avatarImage = toUser.image
+            displayName = toUser.profile.displayName,
+            avatarImage = toUser.profile.image
         )
 
         ofy().save().entity(relationship)

@@ -14,14 +14,14 @@ class PatchUserUseCase : UseCase<PatchUserUseCase.Request, Unit> {
     override fun execute(request: Request) {
         val user = ofy().load().type(User::class.java).id(request.userId).now()
 
-        if (user == null || !user.enabled) {
+        if (user == null || !user.account.enabled) {
             throw NotFoundException("user.error.not-found")
         }
 
         val payload = request.payload
 
-        payload.displayName?.let { user.displayName.value = it }
-        payload.email?.let { user.email.value = it }
+        payload.displayName?.let { user.profile.displayName.value = it }
+        payload.email?.let { user.account.email.value = it }
 
         ofy().save().entity(user)
     }

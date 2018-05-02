@@ -1,6 +1,7 @@
 package com.yoloo.server.post.domain.entity
 
 import com.googlecode.objectify.annotation.*
+import com.googlecode.objectify.condition.IfNotNull
 import com.googlecode.objectify.condition.IfNull
 import com.yoloo.server.common.shared.Keyable
 import com.yoloo.server.common.shared.Validatable
@@ -25,18 +26,19 @@ data class Post(
     @field:Valid
     var data: PostData,
 
-    var type: PostType = getPostType(data),
-
-    var permissions: Set<@JvmSuppressWildcards PostPermission> = PostPermission.defaultPermissions(),
+    var permissions: Set<@JvmSuppressWildcards PostPermission> = PostPermission.default(),
 
     var content: PostContent,
 
     var createdAt: LocalDateTime = LocalDateTime.now(),
 
-    @Index
+    @Index(IfNotNull::class)
     @IgnoreSave(IfNull::class)
     var deletedAt: LocalDateTime? = null
 ) : Keyable<Post>, Validatable {
+
+    val type: PostType
+        get() = getPostType(data)
 
     @OnSave
     override fun validate() {

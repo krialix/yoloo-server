@@ -4,7 +4,7 @@ import com.googlecode.objectify.annotation.OnSave;
 
 import java.time.LocalDateTime;
 
-public abstract class BaseEntity<ID, Type> implements Validatable, Keyable<Type> {
+public abstract class BaseEntity<Type> implements Validatable, Keyable<Type> {
 
   protected LocalDateTime createdAt;
   protected LocalDateTime updatedAt;

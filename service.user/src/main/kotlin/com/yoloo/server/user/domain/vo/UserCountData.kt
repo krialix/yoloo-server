@@ -12,9 +12,6 @@ data class UserCountData(
     var commentCount: Int = 0,
 
     @field:PositiveOrZero
-    var coinCount: Int = 0,
-
-    @field:PositiveOrZero
     var followingCount: Long = 0,
 
     @field:PositiveOrZero

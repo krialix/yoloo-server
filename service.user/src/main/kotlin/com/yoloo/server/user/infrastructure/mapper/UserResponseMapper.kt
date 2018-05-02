@@ -14,16 +14,20 @@ class UserResponseMapper : Function<User, UserResponse> {
     override fun apply(from: User): UserResponse {
         return UserResponse(
             id = from.key.toWebSafeString(),
-            url = from.url?.value,
-            displayName = from.displayName.value,
+            profileUrl = from.profile.profileUrl?.value,
+            displayName = from.profile.displayName.value,
+            about = from.profile.about?.value,
+            avatarUrl = from.profile.image.url.value,
+            website = from.profile.websiteUrl?.value,
+            locale = LocaleResponse(from.profile.locale.language, from.profile.locale.country),
+            email = from.account.email.value,
+            count = UserCountResponse(
+                from.profile.countData.postCount,
+                from.profile.countData.followerCount,
+                from.profile.countData.followingCount
+            ),
             self = from.self,
             following = from.following,
-            about = from.about?.value,
-            avatarUrl = from.image.value,
-            email = from.email.value,
-            website = from.website?.value,
-            count = UserCountResponse(from.countData.postCount, from.followerCount, from.followingCount),
-            locale = LocaleResponse(from.locale.language, from.locale.country),
             subscribedGroups = from.subscribedGroups.map { UserGroupResponse(it.id, it.displayName, it.imageUrl) }
         )
     }

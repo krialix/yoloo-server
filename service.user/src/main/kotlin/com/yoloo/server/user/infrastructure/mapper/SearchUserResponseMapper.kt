@@ -11,8 +11,8 @@ class SearchUserResponseMapper : Mapper<User, SearchUserResponse> {
     override fun apply(from: User, payload: MutableMap<String, Any>): SearchUserResponse {
         return SearchUserResponse(
             id = from.key.toWebSafeString(),
-            displayName = from.displayName.value,
-            avatarUrl = from.image.value
+            displayName = from.profile.displayName.value,
+            avatarUrl = from.profile.image.url.value
         )
     }
 }

@@ -12,7 +12,7 @@ class RelationshipResponseMapper : Mapper<Relationship, RelationshipResponse> {
         return RelationshipResponse(
             id = from.id,
             displayName = from.displayName.value,
-            avatarUrl = from.avatarImage.value
+            avatarUrl = from.avatarImage.url.value
         )
     }
 }

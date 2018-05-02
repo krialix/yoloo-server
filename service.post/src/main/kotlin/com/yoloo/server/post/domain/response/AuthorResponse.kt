@@ -5,8 +5,8 @@ import com.yoloo.server.common.util.NoArg
 
 @NoArg
 data class AuthorResponse(
-    val id: String,
-    var self: Boolean,
+    val id: Long,
+    val self: Boolean,
     val displayName: String,
     val url: String?,
     val image: AttachmentResponse

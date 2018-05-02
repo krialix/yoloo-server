@@ -6,7 +6,7 @@ enum class PostPermission {
     ALLOW_COMMENT_VOTING;
 
     companion object {
-        fun defaultPermissions(): Set<PostPermission> {
+        fun default(): Set<PostPermission> {
             return setOf(
                 ALLOW_COMMENTING,
                 ALLOW_VOTING,
