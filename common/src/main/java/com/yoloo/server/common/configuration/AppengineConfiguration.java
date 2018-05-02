@@ -44,4 +44,9 @@ public class AppengineConfiguration {
   public Queue getNotificationQueue() {
     return QueueFactory.getQueue("notification-queue");
   }
+
+  @Bean("refresh-feed-queue")
+  public Queue ferRefreshFeedQueue() {
+    return QueueFactory.getQueue("refresh-feed-queue");
+  }
 }

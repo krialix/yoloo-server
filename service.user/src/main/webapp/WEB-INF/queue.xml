@@ -4,4 +4,13 @@
         <name>counter-queue</name>
         <mode>pull</mode>
     </queue>
+    <queue>
+        <name>notification-queue</name>
+        <mode>pull</mode>
+    </queue>
+    <queue>
+        <name>refresh-feed-queue</name>
+        <rate>100/s</rate>
+        <bucket-size>40</bucket-size>
+    </queue>
 </queue-entries>

@@ -19,6 +19,8 @@ data class User constructor(
 
     var displayName: UserDisplayName,
 
+    var username: Username,
+
     var url: Url? = null,
 
     var provider: SocialProvider,

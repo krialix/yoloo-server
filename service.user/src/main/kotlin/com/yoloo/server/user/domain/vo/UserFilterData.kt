@@ -5,8 +5,6 @@ import net.cinnom.nanocuckoo.NanoCuckooFilter
 
 @NoArg
 data class UserFilterData(
-    var subscribedGroupsFilter: NanoCuckooFilter = NanoCuckooFilter.Builder(32).build(),
-
     var postsFilter: NanoCuckooFilter = NanoCuckooFilter.Builder(32).build(),
 
     var commentsFilter: NanoCuckooFilter = NanoCuckooFilter.Builder(32).build(),

@@ -32,4 +32,9 @@ public class DefaultCacheService implements CacheService {
   public <T> Future<Map<T, Object>> getAllAsync(Collection<T> keys) {
     return null;
   }
+
+  @Override
+  public Future<Void> putAllAsync(Map<?, ?> value) {
+    return null;
+  }
 }

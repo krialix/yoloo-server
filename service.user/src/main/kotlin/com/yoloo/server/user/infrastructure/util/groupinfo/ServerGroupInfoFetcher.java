@@ -12,27 +12,31 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Profile("!dev")
 @Component
 public class ServerGroupInfoFetcher implements GroupInfoFetcher {
 
   private final URLFetchService urlFetchService;
+  private final ObjectMapper objectMapper;
 
   public ServerGroupInfoFetcher(URLFetchService urlFetchService) {
     this.urlFetchService = urlFetchService;
+    this.objectMapper = new ObjectMapper();
   }
 
   @NotNull
   @Override
-  public List<UserGroup> fetch(@NotNull Collection<String> ids) throws IOException {
-    String idsString = ids.stream().collect(Collectors.joining(","));
-    ObjectMapper mapper = new ObjectMapper();
+  public List<UserGroup> fetch(@NotNull Collection<Long> ids) {
+    try {
+      HTTPResponse response = urlFetchService.fetch(new URL(""));
+      return objectMapper.readValue(response.getContent(), new TypeReference<List<UserGroup>>() {});
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
-    HTTPResponse response = urlFetchService.fetch(new URL(""));
-
-    return mapper.readValue(response.getContent(), new TypeReference<List<UserGroup>>() {});
+    return Collections.emptyList();
   }
 }

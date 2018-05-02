@@ -218,11 +218,7 @@ class ApiExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   private Error buildError(HttpStatus status, String message) {
-    return Error.builder()
-        .status(status.value())
-        .error(status.getReasonPhrase())
-        .message(message)
-        .build();
+    return Error.builder().error(status.getReasonPhrase()).message(message).build();
   }
 
   @Override

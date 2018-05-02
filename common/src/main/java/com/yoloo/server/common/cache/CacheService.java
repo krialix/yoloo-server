@@ -5,6 +5,7 @@ import com.google.appengine.api.memcache.MemcacheServiceException;
 import javax.annotation.Nullable;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -39,8 +40,22 @@ public interface CacheService {
     return quietGet(getAllAsync(keys));
   }
 
+  default void put(Object key, Object value) {
+    putAll(Collections.singletonMap(key, value));
+  }
+
+  default void putAll(Map<?, ?> value) {
+    quietGet(putAllAsync(value));
+  }
+
   // Async
   Future<Object> getAsync(Object key);
 
   <T> Future<Map<T, Object>> getAllAsync(Collection<T> keys);
+
+  default Future<Void> putAsync(Object key, Object value) {
+    return putAllAsync(Collections.singletonMap(key, value));
+  }
+
+  Future<Void> putAllAsync(Map<?, ?> value);
 }

@@ -1,21 +1,20 @@
-package com.yoloo.server.relationship.domain.usecase.impl
+package com.yoloo.server.relationship.domain.usecase
 
 import com.google.appengine.api.memcache.MemcacheService
 import com.yoloo.server.common.api.exception.NotFoundException
+import com.yoloo.server.common.usecase.UseCase
 import com.yoloo.server.common.util.TimestampIdGenerator
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.relationship.domain.entity.Relationship
-import com.yoloo.server.relationship.domain.usecase.InsertRelationshipUseCase
-import com.yoloo.server.relationship.domain.usecase.contract.InsertRelationshipContract
 import com.yoloo.server.user.domain.entity.User
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.stereotype.Component
+import java.security.Principal
 
 @Component
-class InsertRelationshipUseCaseImpl(private val memcacheService: MemcacheService) :
-    InsertRelationshipUseCase {
+class FollowUseCase(private val memcacheService: MemcacheService) : UseCase<FollowUseCase.Request, Unit> {
 
-    override fun execute(request: InsertRelationshipContract.Request) {
+    override fun execute(request: Request) {
         val id = TimestampIdGenerator.generateId()
         val fromId = request.principal.name
         val toId = request.userId
@@ -61,4 +60,6 @@ class InsertRelationshipUseCaseImpl(private val memcacheService: MemcacheService
 
         ofy().save().entity(relationship)
     }
+
+    class Request(val principal: Principal, val userId: String)
 }

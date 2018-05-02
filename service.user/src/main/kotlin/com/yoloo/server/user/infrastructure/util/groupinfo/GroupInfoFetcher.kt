@@ -6,5 +6,5 @@ import java.io.IOException
 interface GroupInfoFetcher {
 
     @Throws(IOException::class)
-    fun fetch(ids: Collection<String>): List<UserGroup>
+    fun fetch(ids: Collection<Long>): List<UserGroup>
 }

@@ -2,10 +2,8 @@ package com.yoloo.server.relationship.application
 
 import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.relationship.domain.response.RelationshipResponse
-import com.yoloo.server.relationship.domain.usecase.DeleteRelationshipUseCase
-import com.yoloo.server.relationship.domain.usecase.InsertRelationshipUseCase
-import com.yoloo.server.relationship.domain.usecase.contract.DeleteRelationshipContract
-import com.yoloo.server.relationship.domain.usecase.contract.InsertRelationshipContract
+import com.yoloo.server.relationship.domain.usecase.FollowUseCase
+import com.yoloo.server.relationship.domain.usecase.UnfollowUseCase
 import com.yoloo.server.user.domain.usecase.ListRelationshipUseCase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -15,28 +13,28 @@ import java.security.Principal
 
 @RestController
 @RequestMapping(
-    "/api/v1/users/relationships",
+    "/api/v1/relationships",
     produces = [MediaType.APPLICATION_JSON_UTF8_VALUE],
     consumes = [MediaType.APPLICATION_JSON_UTF8_VALUE]
 )
 class RelationshipControllerV1 @Autowired constructor(
-    private val insertRelationshipUseCase: InsertRelationshipUseCase,
-    private val deleteRelationshipUseCase: DeleteRelationshipUseCase,
+    private val followUseCase: FollowUseCase,
+    private val unfollowUseCase: UnfollowUseCase,
     private val listRelationshipUseCase: ListRelationshipUseCase
 ) {
 
-    @PutMapping("/{userId}")
+    @PutMapping("/follow/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    fun insertRelationship(principal: Principal, @PathVariable("userId") userId: String) {
-        insertRelationshipUseCase.execute(InsertRelationshipContract.Request(principal, userId))
+    fun follow(principal: Principal, @PathVariable("userId") userId: String) {
+        followUseCase.execute(FollowUseCase.Request(principal, userId))
     }
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/unfollow/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    fun deleteRelationship(principal: Principal, @PathVariable("userId") userId: String) {
-        deleteRelationshipUseCase.execute(DeleteRelationshipContract.Request(principal, userId))
+    fun unfollow(principal: Principal, @PathVariable("userId") userId: String) {
+        unfollowUseCase.execute(UnfollowUseCase.Request(principal, userId))
     }
 
     @GetMapping("/{userId}/followers")

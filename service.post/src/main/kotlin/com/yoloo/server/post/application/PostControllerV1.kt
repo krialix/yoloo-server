@@ -3,9 +3,7 @@ package com.yoloo.server.post.application
 import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.post.domain.response.PostResponse
 import com.yoloo.server.post.domain.usecase.GetPostUseCase
-import com.yoloo.server.post.domain.usecase.ListTopicPostsUseCase
-import com.yoloo.server.post.domain.usecase.contract.GetPostContract
-import com.yoloo.server.post.domain.usecase.contract.ListTopicPostsContract
+import com.yoloo.server.post.domain.usecase.ListGroupFeedUseCase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -20,14 +18,14 @@ import java.security.Principal
 @RestController
 class PostControllerV1 @Autowired constructor(
     private val getPostUseCase: GetPostUseCase,
-    private val listTopicPostsUseCase: ListTopicPostsUseCase
+    private val listGroupFeedUseCase: ListGroupFeedUseCase
 ) {
 
     @GetMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     fun getPost(principal: Principal?, @PathVariable("postId") postId: String): PostResponse {
-        return getPostUseCase.execute(GetPostContract.Request(principal, postId)).response
+        return getPostUseCase.execute(GetPostUseCase.Request(principal, postId))
     }
 
     @PostMapping
@@ -106,6 +104,6 @@ class PostControllerV1 @Autowired constructor(
         @PathVariable("id") topicId: String,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CollectionResponse<PostResponse> {
-        return listTopicPostsUseCase.execute(ListTopicPostsContract.Request(principal, topicId, cursor)).response
+        return listGroupFeedUseCase.execute(ListGroupFeedUseCase.Request(principal, topicId, cursor))
     }
 }

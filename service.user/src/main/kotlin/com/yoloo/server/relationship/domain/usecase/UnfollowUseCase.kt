@@ -1,18 +1,17 @@
-package com.yoloo.server.relationship.domain.usecase.impl
+package com.yoloo.server.relationship.domain.usecase
 
 import com.google.appengine.api.memcache.MemcacheService
+import com.yoloo.server.common.usecase.UseCase
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.relationship.domain.entity.Relationship
-import com.yoloo.server.relationship.domain.usecase.DeleteRelationshipUseCase
-import com.yoloo.server.relationship.domain.usecase.contract.DeleteRelationshipContract
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.stereotype.Component
+import java.security.Principal
 
 @Component
-class DeleteRelationshipUseCaseImpl(private val memcacheService: MemcacheService) :
-    DeleteRelationshipUseCase {
+class UnfollowUseCase(private val memcacheService: MemcacheService) : UseCase<UnfollowUseCase.Request, Unit> {
 
-    override fun execute(request: DeleteRelationshipContract.Request) {
+    override fun execute(request: Request) {
         val userId = request.userId
         val requesterId = request.principal.name
 
@@ -51,4 +50,6 @@ class DeleteRelationshipUseCaseImpl(private val memcacheService: MemcacheService
 
         ofy().delete().key(relationshipKey)
     }
+
+    class Request(val principal: Principal, val userId: String)
 }

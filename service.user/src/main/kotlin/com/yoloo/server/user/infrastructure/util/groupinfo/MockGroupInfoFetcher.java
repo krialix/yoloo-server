@@ -15,7 +15,7 @@ public class MockGroupInfoFetcher implements GroupInfoFetcher {
 
   @NotNull
   @Override
-  public List<UserGroup> fetch(@NotNull Collection<String> ids) {
+  public List<UserGroup> fetch(@NotNull Collection<Long> ids) {
     return ids.stream().map(id -> new UserGroup(id, "image", "name")).collect(Collectors.toList());
   }
 }

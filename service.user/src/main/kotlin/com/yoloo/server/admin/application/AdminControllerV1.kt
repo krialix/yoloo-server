@@ -1,7 +1,6 @@
 package com.yoloo.server.admin.application
 
 import com.yoloo.server.admin.domain.usecase.DeleteUserUseCase
-import com.yoloo.server.admin.domain.usecase.contract.DeleteUserContract
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -22,6 +21,6 @@ class AdminControllerV1 @Autowired constructor(
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     fun deleteUser(principal: Principal, @PathVariable("userId") userId: String) {
-        deleteUserUseCase.execute(DeleteUserContract.Request(principal, userId))
+        deleteUserUseCase.execute(DeleteUserUseCase.Request(principal, userId))
     }
 }

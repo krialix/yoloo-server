@@ -1,25 +1,25 @@
-package com.yoloo.server.post.domain.usecase.impl
+package com.yoloo.server.post.domain.usecase
 
 import com.google.appengine.api.datastore.Cursor
 import com.google.appengine.api.memcache.MemcacheService
 import com.yoloo.server.common.response.CollectionResponse
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.yoloo.server.common.usecase.UseCase
+import com.yoloo.server.objectify.ObjectifyProxy
 import com.yoloo.server.post.domain.entity.Post
 import com.yoloo.server.post.domain.response.PostResponse
-import com.yoloo.server.post.domain.usecase.ListTopicPostsUseCase
-import com.yoloo.server.post.domain.usecase.contract.ListTopicPostsContract
 import com.yoloo.server.post.infrastructure.mapper.PostResponseMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.security.Principal
 
 @Component
-class ListTopicPostsUseCaseImpl @Autowired constructor(
+class ListGroupFeedUseCase @Autowired constructor(
     private val postResponseMapper: PostResponseMapper,
     private val memcacheService: MemcacheService
-) : ListTopicPostsUseCase {
+) : UseCase<ListGroupFeedUseCase.Request, CollectionResponse<PostResponse>> {
 
-    override fun execute(request: ListTopicPostsContract.Request): ListTopicPostsContract.Response {
-        var query = ofy()
+    override fun execute(request: Request): CollectionResponse<PostResponse> {
+        var query = ObjectifyProxy.ofy()
             .load()
             .type(Post::class.java)
             .filter("data.group.id", request.topicId)
@@ -34,12 +34,13 @@ class ListTopicPostsUseCaseImpl @Autowired constructor(
             .map { postResponseMapper.apply(it) }
             .toList()
 
-        val response = CollectionResponse.builder<PostResponse>()
+        return CollectionResponse.builder<PostResponse>()
             .data(data)
             .prevPageToken(request.cursor)
             .nextPageToken(iterator.cursor.toWebSafeString())
             .build()
-
-        return ListTopicPostsContract.Response(response)
     }
+
+
+    class Request(val principal: Principal?, val topicId: String, val cursor: String?)
 }

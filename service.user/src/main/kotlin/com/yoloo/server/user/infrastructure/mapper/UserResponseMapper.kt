@@ -22,14 +22,9 @@ class UserResponseMapper : Function<User, UserResponse> {
             avatarUrl = from.image.value,
             email = from.email.value,
             website = from.website?.value,
-            count = UserCountResponse(
-                posts = from.countData.postCount,
-                followers = from.followerCount,
-                followings = from.followingCount
-            ),
-            locale = LocaleResponse(language = from.locale.language, country = from.locale.country),
-            subscribedGroups = from.subscribedGroups
-                .map { UserGroupResponse(id = it.id, displayName = it.displayName, imageUrl = it.imageUrl) }
+            count = UserCountResponse(from.countData.postCount, from.followerCount, from.followingCount),
+            locale = LocaleResponse(from.locale.language, from.locale.country),
+            subscribedGroups = from.subscribedGroups.map { UserGroupResponse(it.id, it.displayName, it.imageUrl) }
         )
     }
 }

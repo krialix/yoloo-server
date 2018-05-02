@@ -39,8 +39,8 @@ class UserTest {
             image = AvatarImage("http://url.com"),
             gender = Gender.MALE,
             lastKnownIP = IP("127.0.0.1"),
-            fcmToken = "token",
-            subscribedGroups = listOf(UserGroup("g1", "http://g1.com", "g1Name")),
+            fcmToken = "providerIdToken",
+            subscribedGroups = listOf(UserGroup(1L, "http://g1.com", "g1Name")),
             locale = UserLocale("en", "EN"),
             scopes = setOf("scope1", "scope2")
         )
@@ -76,8 +76,8 @@ class UserTest {
             image = AvatarImage("http://url.com"),
             gender = Gender.MALE,
             lastKnownIP = IP("127.0.0.1"),
-            fcmToken = "token",
-            subscribedGroups = listOf(UserGroup("g1", "http://g1.com", "g1Name")),
+            fcmToken = "providerIdToken",
+            subscribedGroups = listOf(UserGroup(1L, "http://g1.com", "g1Name")),
             locale = UserLocale("en", "EN"),
             scopes = setOf("scope1", "scope2")
         )

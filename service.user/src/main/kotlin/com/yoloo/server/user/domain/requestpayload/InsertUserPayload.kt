@@ -2,11 +2,10 @@ package com.yoloo.server.user.domain.requestpayload
 
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.validation.constraints.Conditional
-import com.yoloo.server.common.validation.constraints.NullOrNotBlank
 import org.hibernate.validator.constraints.UniqueElements
 import javax.validation.constraints.*
 
-@Conditional(selected = "providerType", values = ["yoloo"], required = ["displayName", "email", "password"])
+@Conditional(selected = "providerType", values = ["yoloo"], required = ["password"])
 @NoArg
 data class InsertUserPayload(
     @field:NotBlank
@@ -15,20 +14,28 @@ data class InsertUserPayload(
     @field:UniqueElements
     @field:NotNull
     @field:NotEmpty
-    var subscribedGroupIds: List<String>?,
+    var subscribedGroupIds: List<Long>?,
 
     @field:UniqueElements
-    var followedUserIds: List<String>?,
+    var followedUserIds: List<Long>?,
 
-    val token: String?,
+    val providerIdToken: String?,
 
     @field:Pattern(regexp = "(yoloo|google|facebook)", message = "must match with yoloo, google or facebook")
     @field:NotNull
     val providerType: String?,
 
-    @field:NullOrNotBlank
+    @field:NotBlank
     val displayName: String?,
 
+    @field:Pattern(
+        regexp = "^([a-z0-9_](?:(?:[a-z0-9_]|(?:\\.(?!\\.)))(?:[a-z0-9_]))?){3,28}",
+        message = "username is invalid"
+    )
+    @field:NotBlank
+    val username: String?,
+
+    @field:NotBlank
     @field:Email
     val email: String?,
 

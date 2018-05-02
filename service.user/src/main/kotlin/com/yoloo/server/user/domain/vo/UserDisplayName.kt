@@ -3,8 +3,4 @@ package com.yoloo.server.user.domain.vo
 import com.yoloo.server.common.util.NoArg
 
 @NoArg
-data class UserDisplayName(
-    var value: String,
-
-    var slug: String = value.toLowerCase().replace(" ", "")
-)
+data class UserDisplayName(var value: String)

@@ -6,7 +6,5 @@ import com.yoloo.server.common.util.NoArg
 data class UserInfo(
     val providerId: String?,
     val providerType: ProviderType,
-    val email: String,
-    val picture: String,
-    val displayName: String
+    val picture: String
 )
