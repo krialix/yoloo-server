@@ -37,12 +37,6 @@ noArg {
     annotation("com.yoloo.server.common.util.NoArg")
 }
 
-kotlin {
-    experimental {
-        coroutines 'enable'
-    }
-}
-
 configurations.all {
     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     exclude group: 'org.slf4j', module: 'jul-to-slf4j'
@@ -67,7 +61,6 @@ dependencies {
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.21'
 
     // Util
     implementation 'org.hibernate.validator:hibernate-validator:6.0.9.Final'

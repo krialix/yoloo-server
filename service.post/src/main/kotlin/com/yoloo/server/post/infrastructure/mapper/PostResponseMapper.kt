@@ -31,8 +31,7 @@ class PostResponseMapper : Mapper<Post, PostResponse> {
             author = AuthorResponse(
                 id = from.author.id,
                 displayName = from.author.displayName,
-                url = from.author.url?.value,
-                image = SimpleAttachmentResponse(from.author.avatarUrl),
+                image = SimpleAttachmentResponse(from.author.avatar.url.value),
                 self = from.author.self
             ),
             content = from.content.value,
@@ -44,7 +43,7 @@ class PostResponseMapper : Mapper<Post, PostResponse> {
         val data = from.data as TextPostData
         return TextPostDataResponse(
             title = data.title.value,
-            topic = PostTopicResponse(id = data.group.id, displayName = data.group.displayName),
+            group = PostGroupResponse(id = data.group.id, displayName = data.group.displayName),
             tags = data.tags.map { it.value },
             approvedCommentId = data.approvedCommentId?.value,
             bounty = data.bounty?.value ?: 0,
@@ -61,7 +60,7 @@ class PostResponseMapper : Mapper<Post, PostResponse> {
         val data = from.data as RichPostData
         return RichPostDataResponse(
             title = data.title.value,
-            topic = PostTopicResponse(id = data.group.id, displayName = data.group.displayName),
+            group = PostGroupResponse(id = data.group.id, displayName = data.group.displayName),
             tags = data.tags.map { it.value },
             approvedCommentId = data.approvedCommentId?.value,
             bounty = data.bounty?.value ?: 0,

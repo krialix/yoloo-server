@@ -6,10 +6,10 @@ import java.time.LocalDateTime
 
 @NoArg
 data class CommentResponse(
-    val id: String,
+    val id: Long,
     val author: AuthorResponse,
     val content: String,
     val approved: Boolean,
-    val likeCount: Int,
+    val voteCount: Int,
     val createdAt: LocalDateTime
 )

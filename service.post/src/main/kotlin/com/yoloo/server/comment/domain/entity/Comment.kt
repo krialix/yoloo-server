@@ -7,10 +7,9 @@ import com.googlecode.objectify.annotation.OnSave
 import com.yoloo.server.comment.domain.vo.CommentContent
 import com.yoloo.server.comment.domain.vo.PostId
 import com.yoloo.server.common.shared.Keyable
-import com.yoloo.server.common.shared.Validatable
 import com.yoloo.server.common.shared.Likeable
+import com.yoloo.server.common.shared.Validatable
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.common.util.TimestampIdGenerator
 import com.yoloo.server.post.domain.entity.Post
 import com.yoloo.server.post.domain.vo.Author
 import java.time.LocalDateTime
@@ -18,7 +17,7 @@ import java.time.LocalDateTime
 @NoArg
 @Entity
 data class Comment(
-    @Id var id: String = TimestampIdGenerator.generateId(),
+    @Id var id: Long,
 
     @Index var postId: PostId,
 
@@ -33,7 +32,7 @@ data class Comment(
     var createdAt: LocalDateTime = LocalDateTime.now()
 ) : Likeable, Keyable<Post>, Validatable {
 
-    override fun getLikeabkeId(): String {
+    override fun getLikeabkeId(): Long {
         return id
     }
 

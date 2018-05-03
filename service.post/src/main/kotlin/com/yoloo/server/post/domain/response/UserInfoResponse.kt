@@ -6,6 +6,7 @@ import com.yoloo.server.common.util.NoArg
 data class UserInfoResponse(
     val id: Long,
     val self: Boolean,
-    val username: String,
-    val image: String
+    val displayName: String,
+    val image: String,
+    val verified: Boolean
 )

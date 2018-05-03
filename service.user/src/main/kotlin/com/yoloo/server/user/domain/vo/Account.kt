@@ -7,8 +7,6 @@ import java.time.LocalDateTime
 
 @NoArg
 data class Account(
-    var username: Username,
-
     var provider: SocialProvider,
 
     var email: Email,

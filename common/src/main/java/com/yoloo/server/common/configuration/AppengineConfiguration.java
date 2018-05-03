@@ -35,9 +35,14 @@ public class AppengineConfiguration {
     return QueueFactory.getDefaultQueue();
   }
 
-  @Bean("counter-queue")
-  public Queue getCounterQueue() {
-    return QueueFactory.getQueue("counter-queue");
+  @Bean("subscription-queue")
+  public Queue getSubscriptionQueue() {
+    return QueueFactory.getQueue("subscription-queue");
+  }
+
+  @Bean("relationship-queue")
+  public Queue getRelationshipQueue() {
+    return QueueFactory.getQueue("relationship-queue");
   }
 
   @Bean("notification-queue")

@@ -5,8 +5,8 @@ import com.googlecode.objectify.annotation.Id
 import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.shared.Keyable
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.user.domain.vo.AvatarImage
-import com.yoloo.server.user.domain.vo.UserDisplayName
+import com.yoloo.server.common.vo.AvatarImage
+import com.yoloo.server.user.domain.vo.DisplayName
 
 @NoArg
 @Entity
@@ -20,7 +20,7 @@ data class Relationship(
     @Index
     var toId: String,
 
-    var displayName: UserDisplayName,
+    var displayName: DisplayName,
 
     var avatarImage: AvatarImage
 ) : Keyable<Relationship> {

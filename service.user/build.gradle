@@ -66,7 +66,6 @@ dependencies {
     // Util
     implementation 'org.hibernate.validator:hibernate-validator:6.0.9.Final'
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
-    implementation 'com.github.ben-manes.caffeine:caffeine:2.6.2'
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

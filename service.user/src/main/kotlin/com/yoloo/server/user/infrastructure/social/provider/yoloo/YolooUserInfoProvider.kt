@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 @Component
 class YolooUserInfoProvider : UserInfoProvider {
 
-    override fun getUserInfo(token: String): UserInfo {
+    override fun getUserInfo(token: String?): UserInfo {
         return UserInfo(providerId = null, providerType = ProviderType.YOLOO, picture = DEFAULT_USER_IMAGE)
     }
 

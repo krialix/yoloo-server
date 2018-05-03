@@ -10,17 +10,17 @@ import javax.validation.constraints.NotNull
 data class PostRequest(
 
     @field:NotNull(message = "post.title.null")
-    var title: String,
+    var title: String?,
 
     @field:NotBlank(message = "post.content.null")
     @field:Min(value = 100, message = "post.content.invalid")
-    var content: String,
+    var content: String?,
 
     @field:NotBlank(message = "post.groupId.null")
-    var groupId: String,
+    var groupId: Long?,
 
     @field:NotEmpty(message = "post.tags.empty")
-    var tags: List<String>,
+    var tags: List<String>?,
 
-    var attachmentIds: List<String>
+    var attachmentIds: List<String>?
 )

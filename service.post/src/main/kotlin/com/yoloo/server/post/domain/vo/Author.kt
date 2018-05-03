@@ -3,7 +3,7 @@ package com.yoloo.server.post.domain.vo
 import com.googlecode.objectify.annotation.Ignore
 import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.common.vo.Url
+import com.yoloo.server.common.vo.AvatarImage
 
 @NoArg
 data class Author(
@@ -12,9 +12,9 @@ data class Author(
 
     var displayName: String,
 
-    var avatarUrl: String,
+    var avatar: AvatarImage,
 
-    var url: Url? = null,
+    var verified: Boolean,
 
     @Ignore
     var self: Boolean = false

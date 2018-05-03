@@ -1,10 +1,7 @@
 package com.yoloo.server.user.infrastructure.mapper
 
 import com.yoloo.server.user.domain.entity.User
-import com.yoloo.server.user.domain.response.LocaleResponse
-import com.yoloo.server.user.domain.response.UserCountResponse
-import com.yoloo.server.user.domain.response.UserGroupResponse
-import com.yoloo.server.user.domain.response.UserResponse
+import com.yoloo.server.user.domain.response.*
 import org.springframework.stereotype.Component
 import java.util.function.Function
 
@@ -13,7 +10,7 @@ class UserResponseMapper : Function<User, UserResponse> {
 
     override fun apply(from: User): UserResponse {
         return UserResponse(
-            id = from.key.toWebSafeString(),
+            id = from.id,
             profileUrl = from.profile.profileUrl?.value,
             displayName = from.profile.displayName.value,
             about = from.profile.about?.value,
@@ -28,7 +25,8 @@ class UserResponseMapper : Function<User, UserResponse> {
             ),
             self = from.self,
             following = from.following,
-            subscribedGroups = from.subscribedGroups.map { UserGroupResponse(it.id, it.displayName, it.imageUrl) }
+            subscribedGroups = from.subscribedGroups.map { UserGroupResponse(it.id, it.displayName, it.imageUrl) },
+            spokenLanguages = from.profile.spokenLanguages.map { LanguageResponse(it.value) }
         )
     }
 }

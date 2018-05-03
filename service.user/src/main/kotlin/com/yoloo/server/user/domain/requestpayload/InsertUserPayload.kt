@@ -3,6 +3,7 @@ package com.yoloo.server.user.domain.requestpayload
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.validation.constraints.Conditional
 import org.hibernate.validator.constraints.UniqueElements
+import org.springframework.format.annotation.NumberFormat
 import javax.validation.constraints.*
 
 @Conditional(selected = "providerType", values = ["yoloo"], required = ["password"])
@@ -11,6 +12,7 @@ data class InsertUserPayload(
     @field:NotBlank
     val clientId: String?,
 
+    @field:NumberFormat
     @field:UniqueElements
     @field:NotNull
     @field:NotEmpty
@@ -27,13 +29,6 @@ data class InsertUserPayload(
 
     @field:NotBlank
     val displayName: String?,
-
-    @field:Pattern(
-        regexp = "^([a-z0-9_](?:(?:[a-z0-9_]|(?:\\.(?!\\.)))(?:[a-z0-9_]))?){3,28}",
-        message = "username is invalid"
-    )
-    @field:NotBlank
-    val username: String?,
 
     @field:NotBlank
     @field:Email

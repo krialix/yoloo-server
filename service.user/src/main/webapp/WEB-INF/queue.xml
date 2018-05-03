@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <queue-entries>
     <queue>
-        <name>counter-queue</name>
+        <name>subscription-queue</name>
+        <mode>pull</mode>
+    </queue>
+    <queue>
+        <name>relationship-queue</name>
         <mode>pull</mode>
     </queue>
     <queue>

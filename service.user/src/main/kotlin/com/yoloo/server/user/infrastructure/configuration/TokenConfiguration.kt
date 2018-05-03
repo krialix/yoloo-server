@@ -3,6 +3,8 @@ package com.yoloo.server.user.infrastructure.configuration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices
+import org.springframework.security.oauth2.provider.token.TokenEnhancer
 import org.springframework.security.oauth2.provider.token.TokenStore
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore
@@ -24,12 +26,12 @@ class TokenConfiguration {
         return JwtTokenStore(jwtAccessTokenConverter)
     }
 
-    /*@Bean
+    @Bean
     fun tokenServices(tokenStore: TokenStore, tokenEnhancer: TokenEnhancer): DefaultTokenServices {
         return DefaultTokenServices().apply {
             setTokenStore(tokenStore)
             setSupportRefreshToken(true)
             setTokenEnhancer(tokenEnhancer)
         }
-    }*/
+    }
 }

@@ -4,7 +4,7 @@ import com.yoloo.server.common.util.NoArg
 
 @NoArg
 data class UserResponse(
-    val id: String,
+    val id: Long,
     val profileUrl: String?,
     val displayName: String,
     val self: Boolean,
@@ -15,5 +15,6 @@ data class UserResponse(
     val website: String?,
     val count: UserCountResponse,
     val locale: LocaleResponse,
-    val subscribedGroups: List<UserGroupResponse>
+    val subscribedGroups: List<UserGroupResponse>,
+    val spokenLanguages: List<LanguageResponse>
 )

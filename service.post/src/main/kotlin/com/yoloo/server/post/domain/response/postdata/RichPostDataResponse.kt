@@ -2,12 +2,12 @@ package com.yoloo.server.post.domain.response.postdata
 
 import com.yoloo.server.post.domain.response.PostAttachmentResponse
 import com.yoloo.server.post.domain.response.PostCountResponse
-import com.yoloo.server.post.domain.response.PostTopicResponse
+import com.yoloo.server.post.domain.response.PostGroupResponse
 import java.time.LocalDateTime
 
 data class RichPostDataResponse(
     override var title: String,
-    override var topic: PostTopicResponse,
+    override var group: PostGroupResponse,
     override var tags: List<String>,
     override var approvedCommentId: String?,
     override var bounty: Int,
@@ -15,4 +15,4 @@ data class RichPostDataResponse(
     override var voteDir: Int,
     override var createdAt: LocalDateTime,
     val attachments: List<PostAttachmentResponse>
-) : TextPostDataResponse(title, topic, tags, approvedCommentId, bounty, count, voteDir, createdAt)
+) : TextPostDataResponse(title, group, tags, approvedCommentId, bounty, count, voteDir, createdAt)

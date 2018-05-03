@@ -16,13 +16,12 @@ class CommentResponseMapper : Mapper<Comment, CommentResponse> {
             author = AuthorResponse(
                 id = from.author.id,
                 displayName = from.author.displayName,
-                url = from.author.url?.value,
-                image = SimpleAttachmentResponse(from.author.avatarUrl),
+                image = SimpleAttachmentResponse(from.author.avatar.url.value),
                 self = from.author.self
             ),
             content = from.content.value,
             approved = from.approved,
-            likeCount = from.likeCount,
+            voteCount = from.likeCount,
             createdAt = from.createdAt
         )
     }

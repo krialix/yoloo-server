@@ -1,6 +1,7 @@
 package com.yoloo.server.user.domain.entity
 
 import com.google.common.truth.Truth.assertThat
+import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory
 import com.yoloo.server.user.domain.vo.*
@@ -34,13 +35,12 @@ class UserTest {
         val original = User(
             id = 1,
             profile = Profile(
-                displayName = UserDisplayName("name"),
+                displayName = DisplayName("name"),
                 image = AvatarImage(Url("http://url.com")),
                 gender = Gender.MALE,
                 locale = UserLocale("en", "EN")
             ),
             account = Account(
-                username = Username("username"),
                 provider = SocialProvider("2", ProviderType.FACEBOOK),
                 email = Email("test@test.com"),
                 lastKnownIP = IP("127.0.0.1"),
@@ -75,13 +75,12 @@ class UserTest {
         val original = User(
             id = 1,
             profile = Profile(
-                displayName = UserDisplayName("name"),
+                displayName = DisplayName("name"),
                 image = AvatarImage(Url("http://url.com")),
                 gender = Gender.MALE,
                 locale = UserLocale("en", "EN")
             ),
             account = Account(
-                username = Username("username"),
                 provider = SocialProvider("2", ProviderType.FACEBOOK),
                 email = Email("test@test.com"),
                 lastKnownIP = IP("127.0.0.1"),

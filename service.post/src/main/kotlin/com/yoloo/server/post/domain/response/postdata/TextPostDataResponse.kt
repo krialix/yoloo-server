@@ -1,12 +1,12 @@
 package com.yoloo.server.post.domain.response.postdata
 
 import com.yoloo.server.post.domain.response.PostCountResponse
-import com.yoloo.server.post.domain.response.PostTopicResponse
+import com.yoloo.server.post.domain.response.PostGroupResponse
 import java.time.LocalDateTime
 
 open class TextPostDataResponse(
     open var title: String,
-    open var topic: PostTopicResponse,
+    open var group: PostGroupResponse,
     open var tags: List<String>,
     open var approvedCommentId: String?,
     open var bounty: Int,

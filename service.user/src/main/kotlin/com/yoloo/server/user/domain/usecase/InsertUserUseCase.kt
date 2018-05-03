@@ -1,10 +1,11 @@
 package com.yoloo.server.user.domain.usecase
 
-import com.googlecode.objectify.Key
-import com.yoloo.server.common.cache.CacheService
+import com.google.appengine.api.memcache.MemcacheService
 import com.yoloo.server.common.id.LongIdGenerator
 import com.yoloo.server.common.usecase.UseCase
+import com.yoloo.server.common.util.Filters
 import com.yoloo.server.common.util.ServiceExceptions.checkConflict
+import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.domain.entity.User
@@ -31,16 +32,16 @@ class InsertUserUseCase(
     private val userInfoProviderFactory: UserInfoProviderFactory,
     private val groupInfoFetcher: GroupInfoFetcher,
     @Qualifier("cached") private val idGenerator: LongIdGenerator,
-    private val cacheService: CacheService,
+    private val memcacheService: MemcacheService,
     private val eventPublisher: ApplicationEventPublisher
 ) : UseCase<InsertUserUseCase.Request, UserResponse> {
 
     override fun execute(request: Request): UserResponse {
         val payload = request.payload
 
-        val filter = cacheService.get("f_user-exists") as NanoCuckooFilter
+        val filter = memcacheService.get(Filters.KEY_FILTER_USER_EMAIL) as NanoCuckooFilter
 
-        checkUserExists(filter, payload.email!!, payload.username!!)
+        checkUserExists(filter, payload.email!!)
 
         val providerType = ProviderType.valueOf(payload.providerType!!.toUpperCase())
         val userInfoProvider = userInfoProviderFactory.create(providerType)
@@ -48,19 +49,12 @@ class InsertUserUseCase(
         val subscribedGroupIds = payload.subscribedGroupIds!!
         val groups = groupInfoFetcher.fetch(subscribedGroupIds)
         val followedUserFcmTokens = getFollowedUserFcmTokens(payload.followedUserIds.orEmpty())
-
-        val user = User(
-            id = idGenerator.generateId(),
-            profile = createProfile(payload, userInfo),
-            account = createAccount(payload, userInfo),
-            subscribedGroups = groups,
-            self = true
-        )
+        val user = createUser(payload, userInfo, groups)
 
         ofy().transact {
             ofy().save().entity(user)
 
-            populateUserExistsFilter(filter, user.account.username.value, user.account.email.value)
+            addUserToExistsFilter(filter, user.account.email.value)
 
             publishGroupSubscriptionEvent(user)
             publishUserRelationshipEvent(followedUserFcmTokens)
@@ -70,9 +64,19 @@ class InsertUserUseCase(
         return userResponseMapper.apply(user)
     }
 
+    private fun createUser(payload: InsertUserPayload, userInfo: UserInfo, groups: List<UserGroup>): User {
+        return User(
+            id = idGenerator.generateId(),
+            profile = createProfile(payload, userInfo),
+            account = createAccount(payload, userInfo),
+            subscribedGroups = groups,
+            self = true
+        )
+    }
+
     private fun createProfile(payload: InsertUserPayload, userInfo: UserInfo): Profile {
         return Profile(
-            displayName = UserDisplayName(payload.displayName!!),
+            displayName = DisplayName(payload.displayName!!),
             image = AvatarImage(Url(userInfo.picture)),
             gender = Gender.valueOf(payload.gender!!.toUpperCase()),
             locale = UserLocale(Locale.ENGLISH.language, "en_US")
@@ -81,7 +85,6 @@ class InsertUserUseCase(
 
     private fun createAccount(payload: InsertUserPayload, userInfo: UserInfo): Account {
         return Account(
-            username = Username(payload.username!!),
             email = Email(payload.email!!),
             provider = SocialProvider(userInfo.providerId, userInfo.providerType),
             fcmToken = payload.fcmToken!!,
@@ -90,11 +93,10 @@ class InsertUserUseCase(
         )
     }
 
-    private fun populateUserExistsFilter(filter: NanoCuckooFilter, username: String, email: String) {
-        filter.insert(username)
+    private fun addUserToExistsFilter(filter: NanoCuckooFilter, email: String) {
         filter.insert(email)
 
-        cacheService.putAsync("filter-user-exists", filter)
+        memcacheService.put(Filters.KEY_FILTER_USER_EMAIL, filter)
     }
 
     private fun publishRefreshFeedEvent(subscribedGroupIds: List<Long>) {
@@ -108,9 +110,16 @@ class InsertUserUseCase(
     }
 
     private fun publishGroupSubscriptionEvent(user: User) {
-        val userInfo = GroupSubscriptionEvent.UserInfo(user.id, user.profile.displayName, user.profile.image)
-        val groupIds = user.subscribedGroups.map { it.id }
-        eventPublisher.publishEvent(GroupSubscriptionEvent(this, userInfo, groupIds))
+        eventPublisher.publishEvent(
+            GroupSubscriptionEvent(
+                this,
+                idGenerator.generateId(),
+                user.id,
+                user.profile.displayName,
+                user.profile.image,
+                user.subscribedGroups.map { it.id }
+            )
+        )
     }
 
     private fun getFollowedUserFcmTokens(userIds: List<Long>): List<String> {
@@ -120,28 +129,10 @@ class InsertUserUseCase(
         }
     }
 
-    private fun checkUserExists(filter: NanoCuckooFilter, email: String, username: String) {
-        val exists = filter.contains(email) || filter.contains(username)
+    private fun checkUserExists(filter: NanoCuckooFilter, email: String) {
+        val exists = filter.contains(email)
 
         checkConflict(!exists, "user.register.exists")
-    }
-
-    private fun getUserKeyByEmail(email: String): Key<User>? {
-        return ofy().load()
-            .type(User::class.java)
-            .filter("account.email.value", email)
-            .keys()
-            .first()
-            .now()
-    }
-
-    private fun getUserKeyByUsername(username: String): Key<User>? {
-        return ofy().load()
-            .type(User::class.java)
-            .filter("account.username.value", username)
-            .keys()
-            .first()
-            .now()
     }
 
     class Request(val payload: InsertUserPayload)

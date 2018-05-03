@@ -1,11 +1,13 @@
 package com.yoloo.server.common.api.error;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Error {
 
+  @JsonIgnore
   @JsonProperty("status")
   private int status;
 

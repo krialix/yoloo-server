@@ -3,7 +3,9 @@ package com.yoloo.server.common.vo;
 import java.util.Objects;
 
 public class Url {
-  private final String value;
+  private String value;
+
+  private Url() {}
 
   public Url(String value) {
     this.value = value;

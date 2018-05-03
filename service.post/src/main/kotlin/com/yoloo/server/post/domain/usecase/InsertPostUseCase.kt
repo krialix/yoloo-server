@@ -3,8 +3,11 @@ package com.yoloo.server.post.domain.usecase
 import com.yoloo.server.common.id.LongIdGenerator
 import com.yoloo.server.common.usecase.UseCase
 import com.yoloo.server.common.util.Fetcher
+import com.yoloo.server.common.vo.AvatarImage
+import com.yoloo.server.common.vo.Url
 import com.yoloo.server.post.domain.entity.Post
 import com.yoloo.server.post.domain.request.PostRequest
+import com.yoloo.server.post.domain.response.GroupInfoResponse
 import com.yoloo.server.post.domain.response.PostResponse
 import com.yoloo.server.post.domain.response.UserInfoResponse
 import com.yoloo.server.post.domain.vo.*
@@ -18,28 +21,35 @@ import java.security.Principal
 class InsertPostUseCase(
     private val postResponseMapper: PostResponseMapper,
     @Qualifier("cached") private val idGenerator: LongIdGenerator,
-    private val userInfoFetcher: Fetcher<UserInfoResponse>
+    private val userInfoFetcher: Fetcher<Long, UserInfoResponse>,
+    private val groupInfoFetcher: Fetcher<Long, GroupInfoResponse>
 ) : UseCase<InsertPostUseCase.Request, PostResponse> {
 
     override fun execute(request: Request): PostResponse {
         val userId = request.principal!!.name.toLong()
 
         val userInfoResponse = userInfoFetcher.fetch(userId)
-
-        // todo fetch groups
+        val groupInfoResponse = groupInfoFetcher.fetch(request.payload.groupId)
 
         val payload = request.payload
 
         val post = Post(
             id = idGenerator.generateId(),
-            author = Author(id = userId, displayName = "user", avatarUrl = ""),
-            data = TextPostData(
-                title = PostTitle(payload.title),
-                group = PostGroup(id = "id", displayName = "group"),
-                tags = payload.tags.map(::PostTag).toSet()
+            author = Author(
+                id = userId,
+                displayName = userInfoResponse.displayName,
+                avatar = AvatarImage(Url(userInfoResponse.image)),
+                verified = userInfoResponse.verified
             ),
-            content = PostContent(payload.content)
+            data = TextPostData(
+                title = PostTitle(payload.title!!),
+                group = PostGroup(groupInfoResponse.id, groupInfoResponse.displayName),
+                tags = payload.tags!!.map(::PostTag).toSet()
+            ),
+            content = PostContent(payload.content!!)
         )
+
+        // todo inc post count of the user
 
         return postResponseMapper.apply(post)
     }
