@@ -1,9 +1,9 @@
 package com.yoloo.server.user.domain.usecase
 
 import com.google.appengine.api.memcache.MemcacheService
-import com.googlecode.objectify.Key
-import com.yoloo.server.common.api.exception.NotFoundException
 import com.yoloo.server.common.usecase.UseCase
+import com.yoloo.server.common.util.Filters
+import com.yoloo.server.common.util.ServiceExceptions.checkNotFound
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.domain.entity.User
 import com.yoloo.server.user.domain.response.UserResponse
@@ -22,12 +22,12 @@ class GetUserUseCase @Autowired constructor(
 
     override fun execute(request: Request): UserResponse {
         val userId = request.userId
-        val userKey = Key.create(User::class.java, userId)
-        var user = ofy().load().key(userKey).now()
 
-        if (user == null || !user.account.enabled) {
-            throw NotFoundException("user.error.not-found")
-        }
+        val filter = memcacheService.get(Filters.KEY_FILTER_USERS) as NanoCuckooFilter
+
+        checkNotFound(filter.contains(userId) || !filter.contains("d:$userId"), "user.error.not-found")
+
+        var user = ofy().load().type(User::class.java).id(userId).now()
 
         val requesterId = request.principal?.name ?: BasicUserPrincipal("d9a37d25-422a-11e8-b84e-f108b6a390b8").name
 

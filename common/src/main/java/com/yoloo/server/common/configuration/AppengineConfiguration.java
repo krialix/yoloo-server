@@ -1,5 +1,6 @@
 package com.yoloo.server.common.configuration;
 
+import com.google.appengine.api.LifecycleManager;
 import com.google.appengine.api.memcache.AsyncMemcacheService;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
@@ -7,6 +8,8 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
+import com.yoloo.server.common.event.AppengineShutdownEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -53,5 +56,15 @@ public class AppengineConfiguration {
   @Bean("refresh-feed-queue")
   public Queue ferRefreshFeedQueue() {
     return QueueFactory.getQueue("refresh-feed-queue");
+  }
+
+  @Bean
+  public void dispatchAppengineLifecycleEvents(ApplicationEventPublisher eventPublisher) {
+    LifecycleManager.getInstance()
+        .setShutdownHook(
+            () -> {
+              LifecycleManager.getInstance().interruptAllRequests();
+              eventPublisher.publishEvent(new AppengineShutdownEvent(this));
+            });
   }
 }

@@ -1,7 +1,7 @@
 package com.yoloo.server.user.domain.vo
 
 import com.googlecode.objectify.annotation.Index
-import com.googlecode.objectify.condition.IfTrue
+import com.googlecode.objectify.condition.IfFalse
 import com.yoloo.server.common.util.NoArg
 import java.time.LocalDateTime
 
@@ -23,7 +23,7 @@ data class Account(
 
     var locked: Boolean = false,
 
-    @Index(IfTrue::class)
+    @Index(IfFalse::class)
     var enabled: Boolean = true,
 
     var scopes: Set<String>,

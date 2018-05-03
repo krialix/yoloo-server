@@ -14,7 +14,7 @@ import com.yoloo.server.user.domain.response.UserResponse
 import com.yoloo.server.user.domain.vo.*
 import com.yoloo.server.user.infrastructure.event.GroupSubscriptionEvent
 import com.yoloo.server.user.infrastructure.event.RefreshFeedEvent
-import com.yoloo.server.user.infrastructure.event.UserRelationshipEvent
+import com.yoloo.server.user.infrastructure.event.RelationshipEvent
 import com.yoloo.server.user.infrastructure.mapper.UserResponseMapper
 import com.yoloo.server.user.infrastructure.social.ProviderType
 import com.yoloo.server.user.infrastructure.social.UserInfo
@@ -39,25 +39,25 @@ class InsertUserUseCase(
     override fun execute(request: Request): UserResponse {
         val payload = request.payload
 
-        val filter = memcacheService.get(Filters.KEY_FILTER_USER_EMAIL) as NanoCuckooFilter
+        val filter = memcacheService.get(Filters.KEY_FILTER_USERS) as NanoCuckooFilter
 
-        checkUserExists(filter, payload.email!!)
+        checkConflict(!filter.contains(payload.email), "user.register.exists")
 
         val providerType = ProviderType.valueOf(payload.providerType!!.toUpperCase())
         val userInfoProvider = userInfoProviderFactory.create(providerType)
         val userInfo = userInfoProvider.getUserInfo(payload.providerIdToken)
         val subscribedGroupIds = payload.subscribedGroupIds!!
         val groups = groupInfoFetcher.fetch(subscribedGroupIds)
-        val followedUserFcmTokens = getFollowedUserFcmTokens(payload.followedUserIds.orEmpty())
+        val followedUserIdFcmTokenMap = getFollowedUserIdFcmTokenMap(payload.followedUserIds.orEmpty())
         val user = createUser(payload, userInfo, groups)
 
         ofy().transact {
             ofy().save().entity(user)
 
-            addUserToExistsFilter(filter, user.account.email.value)
+            addUserToExistsFilter(filter, user.account.email.value, user.id)
 
             publishGroupSubscriptionEvent(user)
-            publishUserRelationshipEvent(followedUserFcmTokens)
+            publishUserRelationshipEvent(user, followedUserIdFcmTokenMap)
             publishRefreshFeedEvent(subscribedGroupIds)
         }
 
@@ -93,46 +93,52 @@ class InsertUserUseCase(
         )
     }
 
-    private fun addUserToExistsFilter(filter: NanoCuckooFilter, email: String) {
+    private fun addUserToExistsFilter(filter: NanoCuckooFilter, email: String, userId: Long) {
         filter.insert(email)
+        filter.insert(userId)
 
-        memcacheService.put(Filters.KEY_FILTER_USER_EMAIL, filter)
+        memcacheService.put(Filters.KEY_FILTER_USERS, filter)
     }
 
     private fun publishRefreshFeedEvent(subscribedGroupIds: List<Long>) {
         eventPublisher.publishEvent(RefreshFeedEvent(this, subscribedGroupIds))
     }
 
-    private fun publishUserRelationshipEvent(followedUserFcmTokens: List<String>) {
-        if (followedUserFcmTokens.isNotEmpty()) {
-            eventPublisher.publishEvent(UserRelationshipEvent(this, followedUserFcmTokens))
-        }
-    }
-
-    private fun publishGroupSubscriptionEvent(user: User) {
-        eventPublisher.publishEvent(
-            GroupSubscriptionEvent(
+    private fun publishUserRelationshipEvent(user: User, map: Map<Long, String>) {
+        if (map.isNotEmpty()) {
+            val event = RelationshipEvent(
                 this,
                 idGenerator.generateId(),
                 user.id,
                 user.profile.displayName,
                 user.profile.image,
-                user.subscribedGroups.map { it.id }
+                map
             )
-        )
-    }
 
-    private fun getFollowedUserFcmTokens(userIds: List<Long>): List<String> {
-        return when {
-            userIds.isEmpty() -> emptyList()
-            else -> ofy().load().type(User::class.java).ids(userIds).values.map { it.account.fcmToken }
+            eventPublisher.publishEvent(event)
         }
     }
 
-    private fun checkUserExists(filter: NanoCuckooFilter, email: String) {
-        val exists = filter.contains(email)
+    private fun publishGroupSubscriptionEvent(user: User) {
+        val event = GroupSubscriptionEvent(
+            this,
+            idGenerator.generateId(),
+            user.id,
+            user.profile.displayName,
+            user.profile.image,
+            user.subscribedGroups.map { it.id }
+        )
 
-        checkConflict(!exists, "user.register.exists")
+        eventPublisher.publishEvent(event)
+    }
+
+    private fun getFollowedUserIdFcmTokenMap(userIds: List<Long>): Map<Long, String> {
+        return when {
+            userIds.isEmpty() -> emptyMap()
+            else -> ofy().load().type(User::class.java).ids(userIds).values.associateBy(
+                { it.id },
+                { it.account.fcmToken })
+        }
     }
 
     class Request(val payload: InsertUserPayload)

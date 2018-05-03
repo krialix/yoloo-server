@@ -18,7 +18,7 @@ class StartupApplicationListener(
         logger.info("APPLICATION PROPERTIES INITIALIZING...")
 
         val map = mapOf<Any, Any>(
-            Filters.KEY_FILTER_USER_EMAIL to NanoCuckooFilter.Builder(32).build(),
+            Filters.KEY_FILTER_USERS to NanoCuckooFilter.Builder(32).build(),
             "f_subscription:100" to NanoCuckooFilter.Builder(32).build()
         )
 
