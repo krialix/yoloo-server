@@ -1,4 +1,4 @@
-package com.yoloo.server.common.id;
+package com.yoloo.server.common.id.generator;
 
 @FunctionalInterface
 public interface StringIdGenerator extends IdGenerator {

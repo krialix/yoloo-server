@@ -1,7 +1,7 @@
 package com.yoloo.server.relationship.domain.usecase
 
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.common.usecase.UseCase
+import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.relationship.domain.entity.Relationship
 import net.cinnom.nanocuckoo.NanoCuckooFilter
@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component
 import java.security.Principal
 
 @Component
-class UnfollowUseCase(private val memcacheService: MemcacheService) : UseCase<UnfollowUseCase.Request, Unit> {
+class UnfollowUseCase(private val memcacheService: MemcacheService) :
+    UseCase<UnfollowUseCase.Request, Unit> {
 
     override fun execute(request: Request) {
         val userId = request.userId

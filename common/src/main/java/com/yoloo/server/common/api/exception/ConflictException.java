@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public class ConflictException extends ServiceException {
 
-  public ConflictException(String applicationErrorCode) {
-    super(applicationErrorCode, HttpStatus.CONFLICT);
+  public ConflictException(String message, Object... args) {
+    super(HttpStatus.CONFLICT, message, args);
   }
 }

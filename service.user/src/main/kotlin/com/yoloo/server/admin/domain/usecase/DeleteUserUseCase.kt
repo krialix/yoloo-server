@@ -1,7 +1,7 @@
 package com.yoloo.server.admin.domain.usecase
 
 import com.yoloo.server.common.api.exception.NotFoundException
-import com.yoloo.server.common.usecase.UseCase
+import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.domain.entity.User
 import org.springframework.stereotype.Component

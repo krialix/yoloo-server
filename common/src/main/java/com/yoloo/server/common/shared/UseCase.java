@@ -1,4 +1,4 @@
-package com.yoloo.server.common.usecase;
+package com.yoloo.server.common.shared;
 
 import javax.annotation.Nonnull;
 

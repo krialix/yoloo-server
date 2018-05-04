@@ -1,4 +1,4 @@
-package com.yoloo.server.common.id;
+package com.yoloo.server.common.id.generator;
 
 import com.yoloo.tools.impl.CachedUidGenerator;
 import org.springframework.stereotype.Component;

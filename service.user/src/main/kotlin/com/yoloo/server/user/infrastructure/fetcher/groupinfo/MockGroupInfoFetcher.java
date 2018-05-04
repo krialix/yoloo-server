@@ -1,4 +1,4 @@
-package com.yoloo.server.user.infrastructure.util.groupinfo;
+package com.yoloo.server.user.infrastructure.fetcher.groupinfo;
 
 import com.yoloo.server.user.domain.vo.UserGroup;
 import org.jetbrains.annotations.NotNull;

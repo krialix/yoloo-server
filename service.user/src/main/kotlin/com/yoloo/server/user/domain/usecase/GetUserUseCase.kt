@@ -1,7 +1,7 @@
 package com.yoloo.server.user.domain.usecase
 
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.common.usecase.UseCase
+import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.common.util.Filters
 import com.yoloo.server.common.util.ServiceExceptions.checkNotFound
 import com.yoloo.server.objectify.ObjectifyProxy.ofy

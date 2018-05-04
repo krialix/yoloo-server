@@ -9,7 +9,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 /** Utilities methods related to reflection. */
 public class TypeUtils {
 
-  public static <T> T instantiate(Class<? extends T> clazz) {
+  private static <T> T instantiate(Class<? extends T> clazz) {
     checkArgument(
         Modifier.isPublic(clazz.getModifiers()),
         "AppEngine's custom security manager won't let us reflectively access non-public types");

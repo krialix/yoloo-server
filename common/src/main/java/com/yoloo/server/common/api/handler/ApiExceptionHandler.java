@@ -5,6 +5,7 @@ import com.yoloo.server.common.api.error.ErrorResponse;
 import com.yoloo.server.common.api.exception.ServiceException;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.context.MessageSource;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
@@ -40,12 +41,20 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
-  @ExceptionHandler(ServiceException.class)
-  public ResponseEntity<Object> handleServiceExceptions(
-      ServiceException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-    Error error = buildError(ex.getHttpStatus(), ex.getMessage());
+  private final MessageSource messageSource;
 
-    return handleExceptionInternal(ex, new ErrorResponse(error), headers, status, request);
+  ApiExceptionHandler(MessageSource messageSource) {
+    this.messageSource = messageSource;
+  }
+
+  @ExceptionHandler(ServiceException.class)
+  public ResponseEntity<Object> handleServiceExceptions(ServiceException ex, WebRequest request) {
+    Error error =
+        buildError(
+            ex.getHttpStatus(),
+            messageSource.getMessage(ex.getMessage(), ex.getArgs(), request.getLocale()));
+
+    return handleExceptionInternal(ex, new ErrorResponse(error), null, ex.getHttpStatus(), request);
   }
 
   @Override
@@ -179,7 +188,6 @@ class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             .map(
                 objectError ->
                     Error.builder()
-                        .status(status.value())
                         .error(status.getReasonPhrase())
                         .message(objectError.getDefaultMessage())
                         .field(objectError.getField())

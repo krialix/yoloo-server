@@ -2,20 +2,23 @@ package com.yoloo.server.relationship.domain.usecase
 
 import com.google.appengine.api.memcache.MemcacheService
 import com.yoloo.server.common.api.exception.NotFoundException
-import com.yoloo.server.common.usecase.UseCase
-import com.yoloo.server.common.util.TimestampIdGenerator
+import com.yoloo.server.common.id.generator.LongIdGenerator
+import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.relationship.domain.entity.Relationship
 import com.yoloo.server.user.domain.entity.User
 import net.cinnom.nanocuckoo.NanoCuckooFilter
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import java.security.Principal
 
 @Component
-class FollowUseCase(private val memcacheService: MemcacheService) : UseCase<FollowUseCase.Request, Unit> {
+class FollowUseCase(
+    private val memcacheService: MemcacheService,
+    @Qualifier("cached") private val idGenerator: LongIdGenerator
+) : UseCase<FollowUseCase.Request, Unit> {
 
     override fun execute(request: Request) {
-        val id = TimestampIdGenerator.generateId()
         val fromId = request.principal.name
         val toId = request.userId
 
@@ -51,7 +54,7 @@ class FollowUseCase(private val memcacheService: MemcacheService) : UseCase<Foll
         memcacheService.putAll(updatedCache)
 
         val relationship = Relationship(
-            id = id,
+            id = idGenerator.generateId(),
             fromId = fromId,
             toId = toId,
             displayName = toUser.profile.displayName,

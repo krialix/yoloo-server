@@ -12,7 +12,7 @@ import com.yoloo.server.user.domain.vo.DisplayName
 @Entity
 data class Relationship(
     @Id
-    var id: String,
+    var id: Long,
 
     @Index
     var fromId: String,

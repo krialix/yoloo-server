@@ -1,15 +1,10 @@
 package com.yoloo.server.common.api.error;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Error {
-
-  @JsonIgnore
-  @JsonProperty("status")
-  private int status;
 
   @JsonProperty("error")
   private String error;
@@ -24,7 +19,6 @@ public class Error {
   private Object rejectedValue;
 
   private Error(Builder builder) {
-    this.status = builder.status;
     this.error = builder.error;
     this.message = builder.message;
     this.field = builder.field;
@@ -33,10 +27,6 @@ public class Error {
 
   public static Builder builder() {
     return new Builder();
-  }
-
-  public int getStatus() {
-    return status;
   }
 
   public String getError() {
@@ -56,18 +46,12 @@ public class Error {
   }
 
   public static class Builder {
-    private int status;
     private String error;
     private String message;
     private String field;
     private Object rejectedValue;
 
     Builder() {}
-
-    public Builder status(int status) {
-      this.status = status;
-      return this;
-    }
 
     public Builder error(String error) {
       this.error = error;

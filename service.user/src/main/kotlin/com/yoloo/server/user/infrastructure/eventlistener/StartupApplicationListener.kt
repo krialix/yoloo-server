@@ -1,7 +1,6 @@
 package com.yoloo.server.user.infrastructure.eventlistener
 
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.common.util.Filters
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -15,16 +14,15 @@ class StartupApplicationListener(
 ) : ApplicationListener<ContextRefreshedEvent> {
 
     override fun onApplicationEvent(event: ContextRefreshedEvent) {
-        logger.info("APPLICATION PROPERTIES INITIALIZING...")
+        logger.info("--- APPLICATION PROPERTIES INITIALIZING ---")
 
         val map = mapOf<Any, Any>(
-            Filters.KEY_FILTER_USERS to NanoCuckooFilter.Builder(32).build(),
             "f_subscription:100" to NanoCuckooFilter.Builder(32).build()
         )
 
         memcacheService.putAll(map)
 
-        logger.info("APPLICATION PROPERTIES INITIALIZED")
+        logger.info("--- APPLICATION PROPERTIES INITIALIZED ---")
     }
 
     companion object {

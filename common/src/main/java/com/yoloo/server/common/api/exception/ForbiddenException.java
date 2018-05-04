@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public class ForbiddenException extends ServiceException {
 
-  public ForbiddenException(String applicationErrorCode) {
-    super(applicationErrorCode, HttpStatus.FORBIDDEN);
+  public ForbiddenException(String message, Object... args) {
+    super(HttpStatus.FORBIDDEN, message, args);
   }
 }

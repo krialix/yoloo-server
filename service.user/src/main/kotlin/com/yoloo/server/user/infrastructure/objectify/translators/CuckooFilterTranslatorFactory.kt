@@ -26,7 +26,6 @@ class CuckooFilterTranslatorFactory :
                 val bytes = byteOutputStream.toByteArray()
                 return Blob(bytes)
             }
-
         }
     }
 }

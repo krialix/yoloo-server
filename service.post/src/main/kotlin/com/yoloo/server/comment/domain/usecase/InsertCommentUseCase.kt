@@ -7,8 +7,8 @@ import com.yoloo.server.comment.domain.vo.CommentContent
 import com.yoloo.server.comment.domain.vo.PostId
 import com.yoloo.server.comment.infrastructure.mapper.CommentResponseMapper
 import com.yoloo.server.common.api.exception.ForbiddenException
-import com.yoloo.server.common.id.LongIdGenerator
-import com.yoloo.server.common.usecase.UseCase
+import com.yoloo.server.common.id.generator.LongIdGenerator
+import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.common.util.Fetcher
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url

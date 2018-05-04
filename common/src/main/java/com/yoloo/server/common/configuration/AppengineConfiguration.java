@@ -9,6 +9,7 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import com.yoloo.server.common.event.AppengineShutdownEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,16 @@ import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class AppengineConfiguration {
+
+  @Autowired
+  public AppengineConfiguration(ApplicationEventPublisher eventPublisher) {
+    LifecycleManager.getInstance()
+        .setShutdownHook(
+            () -> {
+              LifecycleManager.getInstance().interruptAllRequests();
+              eventPublisher.publishEvent(new AppengineShutdownEvent(this));
+            });
+  }
 
   @Bean
   public URLFetchService urlFetchService() {
@@ -56,15 +67,5 @@ public class AppengineConfiguration {
   @Bean("refresh-feed-queue")
   public Queue ferRefreshFeedQueue() {
     return QueueFactory.getQueue("refresh-feed-queue");
-  }
-
-  @Bean
-  public void dispatchAppengineLifecycleEvents(ApplicationEventPublisher eventPublisher) {
-    LifecycleManager.getInstance()
-        .setShutdownHook(
-            () -> {
-              LifecycleManager.getInstance().interruptAllRequests();
-              eventPublisher.publishEvent(new AppengineShutdownEvent(this));
-            });
   }
 }

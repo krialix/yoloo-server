@@ -3,14 +3,13 @@ package com.yoloo.server.common.response;
 import java.util.Collection;
 
 public class CollectionResponse<T> {
-
   private String nextPageToken;
   private String prevPageToken;
   private Collection<T> data;
 
   private CollectionResponse() {}
 
-  public CollectionResponse(Builder<T> builder) {
+  private CollectionResponse(Builder<T> builder) {
     this.nextPageToken = builder.nextPageToken;
     this.prevPageToken = builder.prevPageToken;
     this.data = builder.data;

@@ -1,4 +1,4 @@
-package com.yoloo.server.user.infrastructure.util.groupinfo
+package com.yoloo.server.user.infrastructure.fetcher.groupinfo
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper

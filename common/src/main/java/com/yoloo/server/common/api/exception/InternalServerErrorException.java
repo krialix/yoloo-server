@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public class InternalServerErrorException extends ServiceException {
 
-  public InternalServerErrorException(String applicationErrorCode) {
-    super(applicationErrorCode, HttpStatus.INTERNAL_SERVER_ERROR);
+  public InternalServerErrorException(String message, Object... args) {
+    super(HttpStatus.INTERNAL_SERVER_ERROR, message, args);
   }
 }

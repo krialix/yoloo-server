@@ -1,7 +1,7 @@
 package com.yoloo.server.user.domain.usecase
 
 import com.yoloo.server.common.response.CollectionResponse
-import com.yoloo.server.common.usecase.UseCase
+import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.user.domain.response.SearchUserResponse
 import com.yoloo.server.user.infrastructure.mapper.SearchUserResponseMapper
 import org.springframework.stereotype.Component
