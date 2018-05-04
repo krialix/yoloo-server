@@ -15,10 +15,10 @@ data class Relationship(
     var id: Long,
 
     @Index
-    var fromId: String,
+    var fromId: Long,
 
     @Index
-    var toId: String,
+    var toId: Long,
 
     var displayName: DisplayName,
 

@@ -19,7 +19,7 @@ class FollowUseCase(
 ) : UseCase<FollowUseCase.Request, Unit> {
 
     override fun execute(request: Request) {
-        val fromId = request.principal.name
+        val fromId = request.principal.name.toLong()
         val toId = request.userId
 
         val toUser = ofy().load().type(User::class.java).id(toId).now()
@@ -64,5 +64,5 @@ class FollowUseCase(
         ofy().save().entity(relationship)
     }
 
-    class Request(val principal: Principal, val userId: String)
+    class Request(val principal: Principal, val userId: Long)
 }

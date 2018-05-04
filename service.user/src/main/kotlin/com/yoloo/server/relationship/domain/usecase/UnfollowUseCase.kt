@@ -14,7 +14,7 @@ class UnfollowUseCase(private val memcacheService: MemcacheService) :
 
     override fun execute(request: Request) {
         val userId = request.userId
-        val requesterId = request.principal.name
+        val requesterId = request.principal.name.toLong()
 
         val cacheIds = listOf(
             "counter_follower:$userId",
@@ -52,5 +52,5 @@ class UnfollowUseCase(private val memcacheService: MemcacheService) :
         ofy().delete().key(relationshipKey)
     }
 
-    class Request(val principal: Principal, val userId: String)
+    class Request(val principal: Principal, val userId: Long)
 }

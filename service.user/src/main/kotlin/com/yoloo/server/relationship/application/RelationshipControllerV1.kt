@@ -26,14 +26,14 @@ class RelationshipControllerV1 @Autowired constructor(
     @PutMapping("/follow/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    fun follow(principal: Principal, @PathVariable("userId") userId: String) {
+    fun follow(principal: Principal, @PathVariable("userId") userId: Long) {
         followUseCase.execute(FollowUseCase.Request(principal, userId))
     }
 
     @DeleteMapping("/unfollow/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    fun unfollow(principal: Principal, @PathVariable("userId") userId: String) {
+    fun unfollow(principal: Principal, @PathVariable("userId") userId: Long) {
         unfollowUseCase.execute(UnfollowUseCase.Request(principal, userId))
     }
 
