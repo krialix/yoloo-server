@@ -1,6 +1,5 @@
 package com.yoloo.server.user.domain.usecase
 
-import com.yoloo.server.common.api.exception.NotFoundException
 import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.domain.entity.User
@@ -12,11 +11,11 @@ import java.security.Principal
 class PatchUserUseCase : UseCase<PatchUserUseCase.Request, Unit> {
 
     override fun execute(request: Request) {
-        val user = ofy().load().type(User::class.java).id(request.userId).now()
+        val userId = request.principal?.name?.toLong()!!
 
-        if (user == null || !user.account.enabled) {
-            throw NotFoundException("user.error.not-found")
-        }
+        val user = ofy().load().type(User::class.java).id(userId).now()
+
+        User.checkUserExistsAndEnabled(user)
 
         val payload = request.payload
 
@@ -26,5 +25,5 @@ class PatchUserUseCase : UseCase<PatchUserUseCase.Request, Unit> {
         ofy().save().entity(user)
     }
 
-    class Request(val principal: Principal?, val userId: String, val payload: PatchUserPayload)
+    class Request(val principal: Principal?, val payload: PatchUserPayload)
 }

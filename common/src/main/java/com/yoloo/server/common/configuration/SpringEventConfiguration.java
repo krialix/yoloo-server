@@ -16,7 +16,7 @@ public class SpringEventConfiguration {
   public ApplicationEventMulticaster simpleApplicationEventMulticaster() {
     SimpleApplicationEventMulticaster eventMulticaster = new SimpleApplicationEventMulticaster();
 
-    ExecutorService executor = Executors.newSingleThreadExecutor(ThreadManager.backgroundThreadFactory());
+    ExecutorService executor = Executors.newCachedThreadPool(ThreadManager.backgroundThreadFactory());
 
     eventMulticaster.setTaskExecutor(executor);
     return eventMulticaster;

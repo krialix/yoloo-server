@@ -20,7 +20,6 @@ class DefaultGroupInfoFetcher(
         try {
             val response = urlFetchService.fetch(URL(""))
             return objectMapper.readValue(response.content, object : TypeReference<List<UserGroup>>() {
-
             })
         } catch (e: IOException) {
             e.printStackTrace()

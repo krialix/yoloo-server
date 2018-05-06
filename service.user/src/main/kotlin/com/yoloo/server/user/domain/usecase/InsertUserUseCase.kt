@@ -1,5 +1,7 @@
 package com.yoloo.server.user.domain.usecase
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.appengine.api.memcache.MemcacheService
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.common.util.Filters
@@ -7,19 +9,19 @@ import com.yoloo.server.common.util.ServiceExceptions.checkConflict
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.yoloo.server.relationship.infrastructure.event.FollowEvent
 import com.yoloo.server.user.domain.entity.User
-import com.yoloo.server.user.domain.entity.UserFilter
 import com.yoloo.server.user.domain.requestpayload.InsertUserPayload
 import com.yoloo.server.user.domain.response.UserResponse
 import com.yoloo.server.user.domain.vo.*
 import com.yoloo.server.user.infrastructure.event.GroupSubscriptionEvent
 import com.yoloo.server.user.infrastructure.event.RefreshFeedEvent
-import com.yoloo.server.user.infrastructure.event.RelationshipEvent
 import com.yoloo.server.user.infrastructure.fetcher.groupinfo.GroupInfoFetcher
 import com.yoloo.server.user.infrastructure.mapper.UserResponseMapper
 import com.yoloo.server.user.infrastructure.social.ProviderType
 import com.yoloo.server.user.infrastructure.social.UserInfo
 import com.yoloo.server.user.infrastructure.social.provider.UserInfoProviderFactory
+import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
@@ -31,48 +33,46 @@ class InsertUserUseCase(
     private val userInfoProviderFactory: UserInfoProviderFactory,
     private val groupInfoFetcher: GroupInfoFetcher,
     @Qualifier("cached") private val idGenerator: LongIdGenerator,
-    private val eventPublisher: ApplicationEventPublisher
+    private val eventPublisher: ApplicationEventPublisher,
+    private val objectMapper: ObjectMapper,
+    private val memcacheService: MemcacheService
 ) : UseCase<InsertUserUseCase.Request, UserResponse> {
 
     override fun execute(request: Request): UserResponse {
         val payload = request.payload
 
-        val userFilter = getUserFilter()
+        val emailFilter = getEmailFilter()
 
-        checkConflict(!userFilter.filter.contains(payload.email), "user.register.exists")
+        checkConflict(!emailFilter.contains(payload.email), "user.error.exists")
 
         val providerType = ProviderType.valueOf(payload.providerType!!.toUpperCase())
         val userInfoProvider = userInfoProviderFactory.create(providerType)
         val userInfo = userInfoProvider.getUserInfo(payload.providerIdToken)
         val subscribedGroupIds = payload.subscribedGroupIds!!
         val groups = groupInfoFetcher.fetch(subscribedGroupIds)
-        val followedUserIdFcmTokenMap = getFollowedUserIdFcmTokenMap(payload.followedUserIds.orEmpty())
+        val followedUsers = getFollowedUsers(payload.followedUserIds.orEmpty())
         val user = createUser(payload, userInfo, groups)
 
-        saveTx(user, userFilter, followedUserIdFcmTokenMap, subscribedGroupIds)
+        saveTx(user, emailFilter, followedUsers, subscribedGroupIds)
 
         return userResponseMapper.apply(user)
     }
 
     private fun saveTx(
         user: User,
-        userFilter: UserFilter,
-        followedUserIdFcmTokenMap: Map<Long, String>,
+        emailFilter: NanoCuckooFilter,
+        followedUsers: Collection<User>,
         subscribedGroupIds: List<Long>
     ) {
         ofy().transact {
             ofy().defer().save().entity(user)
 
-            addUserToExistsFilter(userFilter, user.account.email.value, user.id)
+            addUserToExistsFilter(emailFilter, user.account.email.value)
 
             publishGroupSubscriptionEvent(user)
-            publishUserRelationshipEvent(user, followedUserIdFcmTokenMap)
+            followedUsers.forEach { publishFollowEvent(user, it) }
             publishRefreshFeedEvent(subscribedGroupIds)
         }
-    }
-
-    private fun getUserFilter(): UserFilter {
-        return ofy().load().type(UserFilter::class.java).id(Filters.KEY_FILTER_USERS).now() ?: UserFilter()
     }
 
     private fun createUser(payload: InsertUserPayload, userInfo: UserInfo, groups: List<UserGroup>): User {
@@ -104,31 +104,27 @@ class InsertUserUseCase(
         )
     }
 
-    private fun addUserToExistsFilter(userFilter: UserFilter, email: String, userId: Long) {
-        val filter = userFilter.filter
-        filter.insert(email)
-        filter.insert(userId)
-
-        ofy().defer().save().entity(userFilter)
+    private fun addUserToExistsFilter(emailFilter: NanoCuckooFilter, email: String) {
+        emailFilter.insert(email);
+        memcacheService.put(Filters.KEY_FILTER_EMAIL, emailFilter)
     }
 
     private fun publishRefreshFeedEvent(subscribedGroupIds: List<Long>) {
         eventPublisher.publishEvent(RefreshFeedEvent(this, subscribedGroupIds))
     }
 
-    private fun publishUserRelationshipEvent(user: User, map: Map<Long, String>) {
-        if (map.isNotEmpty()) {
-            val event = RelationshipEvent(
-                this,
-                idGenerator.generateId(),
-                user.id,
-                user.profile.displayName,
-                user.profile.image,
-                map
-            )
+    private fun publishFollowEvent(fromUser: User, toUser: User) {
+        val event = FollowEvent(
+            this,
+            fromUser.id,
+            fromUser.profile.displayName,
+            fromUser.profile.image,
+            toUser.id,
+            toUser.account.fcmToken,
+            objectMapper
+        )
 
-            eventPublisher.publishEvent(event)
-        }
+        eventPublisher.publishEvent(event)
     }
 
     private fun publishGroupSubscriptionEvent(user: User) {
@@ -144,12 +140,30 @@ class InsertUserUseCase(
         eventPublisher.publishEvent(event)
     }
 
-    private fun getFollowedUserIdFcmTokenMap(userIds: List<Long>): Map<Long, String> {
+    private fun getFollowedUsers(userIds: List<Long>): Collection<User> {
         return when {
-            userIds.isEmpty() -> emptyMap()
+            userIds.isEmpty() -> emptyList()
             else -> ofy().load().type(User::class.java).ids(userIds).values
-                .associateBy({ it.id }, { it.account.fcmToken })
         }
+    }
+
+    private fun getEmailFilter(): NanoCuckooFilter {
+        return memcacheService.get(Filters.KEY_FILTER_EMAIL) as NanoCuckooFilter? ?: ofy()
+            .load()
+            .type(User::class.java)
+            //.project("account.email.value")
+            .list()
+            .asSequence()
+            .map { it.account.email.value }
+            .toList()
+            .let {
+                println("Creating new cuckoo filter for email")
+                val cuckooFilter = NanoCuckooFilter.Builder(32).build()
+                it.forEach { cuckooFilter.insert(it) }
+
+                memcacheService.put(Filters.KEY_FILTER_EMAIL, cuckooFilter)
+                return@let cuckooFilter
+            }
     }
 
     class Request(val payload: InsertUserPayload)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
     <cron>
-        <url>/api/v1/tasks/pull</url>
+        <url>/api/tasks/pull/relationship</url>
         <!--<target>beta</target>
         <description>daily summary job</description>-->
         <schedule>every 20 seconds</schedule>

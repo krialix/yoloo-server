@@ -22,7 +22,7 @@ class ServerSecurityConfiguration : WebSecurityConfigurerAdapter() {
             .csrf()
             .disable()
             .authorizeRequests()
-            .antMatchers("/api/**")
+            .antMatchers("/api/**", "/tasks/**")
             .permitAll()
     }
 

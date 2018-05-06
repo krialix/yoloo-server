@@ -3,7 +3,6 @@ package com.yoloo.server.user.application
 import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.user.domain.requestpayload.InsertUserPayload
 import com.yoloo.server.user.domain.requestpayload.PatchUserPayload
-import com.yoloo.server.user.domain.response.EmailValidResponse
 import com.yoloo.server.user.domain.response.SearchUserResponse
 import com.yoloo.server.user.domain.response.UserResponse
 import com.yoloo.server.user.domain.usecase.*
@@ -27,18 +26,18 @@ internal class UserControllerV1 @Autowired constructor(
     private val searchUserUseCase: SearchUserUseCase,
     private val patchUserUseCase: PatchUserUseCase,
     private val insertUserUseCase: InsertUserUseCase,
-    private val checkEmailValidationUseCase: CheckEmailValidationUseCase
+    private val emailValidationUseCase: EmailValidationUseCase
 ) {
 
     @PostMapping("/checkEmail")
     @ResponseStatus(HttpStatus.OK)
-    fun checkEmail(@RequestBody @Valid @NotBlank email: String?): EmailValidResponse {
-        return checkEmailValidationUseCase.execute(email!!)
+    fun checkEmail(@RequestBody @Valid @NotBlank email: String?) {
+        emailValidationUseCase.execute(email!!)
     }
 
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    fun getUser(principal: Principal?, @PathVariable("userId") userId: String): UserResponse {
+    fun getUser(principal: Principal?, @PathVariable("userId") userId: Long): UserResponse {
         return getUserUseCase.execute(GetUserUseCase.Request(principal, userId))
     }
 
@@ -48,14 +47,13 @@ internal class UserControllerV1 @Autowired constructor(
         return insertUserUseCase.execute(InsertUserUseCase.Request(payload))
     }
 
-    @PatchMapping("/{userId}")
+    @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     fun patchUser(
         principal: Principal?,
-        @PathVariable("userId") userId: String,
         @RequestBody @Valid payload: PatchUserPayload
     ) {
-        patchUserUseCase.execute(PatchUserUseCase.Request(principal, userId, payload))
+        patchUserUseCase.execute(PatchUserUseCase.Request(principal, payload))
     }
 
     @GetMapping("/search", params = ["q"])

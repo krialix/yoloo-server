@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration
 class QueueConfiguration {
 
     @Bean("relationship-queue")
-    fun getRelationshipQueue(): Queue {
+    fun relationshipQueue(): Queue {
         return QueueFactory.getQueue("relationship-queue")
     }
 
@@ -26,9 +26,9 @@ class QueueConfiguration {
     ): ServletRegistrationBean<RelationshipPullServlet> {
         val bean = ServletRegistrationBean(
             RelationshipPullServlet(queue, objectMapper, idGenerator),
-            "/api/tasks/pull/relationship"
+            "/tasks/pull/relationship"
         )
-        bean.setLoadOnStartup(1)
+        bean.setLoadOnStartup(2)
         return bean
     }
 }

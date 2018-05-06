@@ -1,68 +1,60 @@
 package com.yoloo.server.relationship.domain.usecase
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.common.api.exception.NotFoundException
-import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.shared.UseCase
+import com.yoloo.server.common.util.Filters
+import com.yoloo.server.common.util.ServiceExceptions.checkConflict
+import com.yoloo.server.common.util.ServiceExceptions.checkNotFound
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
-import com.yoloo.server.relationship.domain.entity.Relationship
+import com.yoloo.server.relationship.infrastructure.event.FollowEvent
 import com.yoloo.server.user.domain.entity.User
 import net.cinnom.nanocuckoo.NanoCuckooFilter
-import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import java.security.Principal
 
 @Component
 class FollowUseCase(
     private val memcacheService: MemcacheService,
-    @Qualifier("cached") private val idGenerator: LongIdGenerator
+    private val eventPublisher: ApplicationEventPublisher,
+    private val objectMapper: ObjectMapper
 ) : UseCase<FollowUseCase.Request, Unit> {
 
     override fun execute(request: Request) {
-        val fromId = request.principal.name.toLong()
+        val fromId = request.principal!!.name.toLong()
         val toId = request.userId
 
-        val toUser = ofy().load().type(User::class.java).id(toId).now()
+        val cacheMap = memcacheService.getAll(
+            listOf(Filters.KEY_FILTER_EMAIL, Filters.KEY_FILTER_RELATIONSHIP)
+        ) as Map<String, *>
 
-        if (toUser == null || !toUser.account.enabled) {
-            throw NotFoundException("user.error.not-found")
-        }
+        val userFilter = cacheMap[Filters.KEY_FILTER_EMAIL] as NanoCuckooFilter
+        val relationshipFilter = cacheMap[Filters.KEY_FILTER_RELATIONSHIP] as NanoCuckooFilter
 
-        val cacheIds = listOf(
-            "counter_follower:$toId",
-            "counter_following:$fromId",
-            "filter_follower:$toId",
-            "filter_following:$fromId"
-        )
+        checkNotFound(userFilter.contains(toId) || !userFilter.contains("d:$toId"), "user.error.not-found")
+        checkConflict(!relationshipFilter.contains("$fromId:$toId"), "relationship.error.exists")
 
-        val values = memcacheService.getAll(cacheIds)
+        val map = ofy().load().type(User::class.java).ids(fromId, toId)
+        val fromUser = map[fromId]!!
+        val toUser = map[toId]!!
 
-        val followerCount = values["counter_follower:$toId"] as Long? ?: 0L
-        val followingCount = values["counter_following:$fromId"] as Long? ?: 0L
-        val followerCuckooFilter =
-            values["filter_follower:$toId"] as NanoCuckooFilter? ?: NanoCuckooFilter.Builder(32).build()
-        val followingCuckooFilter =
-            values["filter_following:$fromId"] as NanoCuckooFilter? ?: NanoCuckooFilter.Builder(32).build()
-
-        val updatedCache = mapOf(
-            "counter_follower:$toId" to followerCount.inc(),
-            "counter_following:$fromId" to followingCount.inc(),
-            "filter_follower:$toId" to followerCuckooFilter.insert(fromId),
-            "filter_following:$fromId" to followingCuckooFilter.insert(toId)
-        )
-
-        memcacheService.putAll(updatedCache)
-
-        val relationship = Relationship(
-            id = idGenerator.generateId(),
-            fromId = fromId,
-            toId = toId,
-            displayName = toUser.profile.displayName,
-            avatarImage = toUser.profile.image
-        )
-
-        ofy().save().entity(relationship)
+        publishFollowEvent(fromUser, toUser)
     }
 
-    class Request(val principal: Principal, val userId: Long)
+    private fun publishFollowEvent(fromUser: User, toUser: User) {
+        val event = FollowEvent(
+            this,
+            fromUser.id,
+            fromUser.profile.displayName,
+            fromUser.profile.image,
+            toUser.id,
+            toUser.account.fcmToken,
+            objectMapper
+        )
+
+        eventPublisher.publishEvent(event)
+    }
+
+    class Request(val principal: Principal?, val userId: Long)
 }

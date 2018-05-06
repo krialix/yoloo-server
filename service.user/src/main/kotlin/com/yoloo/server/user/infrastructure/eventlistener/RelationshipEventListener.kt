@@ -1,13 +1,12 @@
 package com.yoloo.server.user.infrastructure.eventlistener
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.google.appengine.api.taskqueue.Queue
 import com.google.appengine.api.taskqueue.TaskOptions
 import com.yoloo.server.common.util.Filters
-import com.yoloo.server.common.vo.AvatarImage
-import com.yoloo.server.user.domain.vo.DisplayName
-import com.yoloo.server.user.infrastructure.event.RelationshipEvent
+import com.yoloo.server.relationship.infrastructure.event.FollowEvent
+import com.yoloo.server.relationship.infrastructure.event.RelationshipEvent
+import com.yoloo.server.relationship.infrastructure.event.UnfollowEvent
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.ApplicationListener
@@ -16,8 +15,7 @@ import org.springframework.stereotype.Component
 @Component
 class RelationshipEventListener(
     @Qualifier("relationship-queue") private val queue: Queue,
-    private val memcacheService: AsyncMemcacheService,
-    private val objectMapper: ObjectMapper
+    private val memcacheService: AsyncMemcacheService
 ) : ApplicationListener<RelationshipEvent> {
 
     override fun onApplicationEvent(event: RelationshipEvent) {
@@ -26,42 +24,28 @@ class RelationshipEventListener(
     }
 
     private fun addToQueue(event: RelationshipEvent) {
-        val payload = Payload(
-            id = event.eventId,
-            userId = event.userId,
-            displayName = event.displayName,
-            avatarImage = event.avatarImage,
-            idFcmTokenMap = event.idFcmTokenMap
-        )
-
-        val json = objectMapper.writeValueAsString(payload)
-
         val taskOptions = TaskOptions.Builder
             .withMethod(TaskOptions.Method.PULL)
-            .payload(json)
+            .taskName(event.tag())
+            .payload(event.toByteArray())
 
         queue.addAsync(taskOptions)
     }
 
     private fun updateRelationshipCache(event: RelationshipEvent) {
-        val filter = memcacheService.get(Filters.KEY_FILTER_RELATIONSHIPS).get() as NanoCuckooFilter
+        val filter = getRelationshipCuckooFilter()
 
-        val userId = event.userId
+        if (event is FollowEvent) {
+            filter.insert("${event.fromUserId}:${event.toUserId}")
+        } else if (event is UnfollowEvent) {
+            filter.delete("${event.fromUserId}:${event.toUserId}")
+        }
 
-        event.idFcmTokenMap
-            .keys
-            .map { "$userId:$it" }
-            .forEach { filter.insert(it) }
-
-        memcacheService.put(Filters.KEY_FILTER_RELATIONSHIPS, filter)
-        TODO("implement notification")
+        memcacheService.put(Filters.KEY_FILTER_RELATIONSHIP, filter)
     }
 
-    internal data class Payload(
-        val id: Long,
-        val userId: Long,
-        val displayName: DisplayName,
-        val avatarImage: AvatarImage,
-        val idFcmTokenMap: Map<Long, String>
-    )
+    private fun getRelationshipCuckooFilter(): NanoCuckooFilter {
+        return memcacheService.get(Filters.KEY_FILTER_RELATIONSHIP).get() as NanoCuckooFilter?
+                ?: NanoCuckooFilter.Builder(32).build()
+    }
 }
