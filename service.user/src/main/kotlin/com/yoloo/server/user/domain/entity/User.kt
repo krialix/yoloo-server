@@ -3,6 +3,7 @@ package com.yoloo.server.user.domain.entity
 import com.googlecode.objectify.annotation.Cache
 import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id
+import com.googlecode.objectify.annotation.OnLoad
 import com.yoloo.server.common.api.exception.ConflictException
 import com.yoloo.server.common.shared.BaseEntity
 import com.yoloo.server.common.util.NoArg
@@ -31,6 +32,12 @@ data class User constructor(
 
     val following: Boolean = false
 ) : BaseEntity<User>(1) {
+
+    @OnLoad
+    fun onLoad() {
+        profile.spokenLanguages = profile.spokenLanguages ?: emptyList()
+        subscribedGroups = subscribedGroups ?: emptyList()
+    }
 
     companion object {
 

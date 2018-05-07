@@ -26,5 +26,5 @@ class DeleteUserUseCase : UseCase<DeleteUserUseCase.Request, Unit> {
         ofy().transact { ofy().save().entity(user) }
     }
 
-    class Request(val principal: Principal, val userId: String)
+    class Request(val principal: Principal?, val userId: String)
 }

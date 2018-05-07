@@ -9,7 +9,7 @@ import com.yoloo.server.common.util.ServiceExceptions.checkConflict
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
-import com.yoloo.server.relationship.infrastructure.event.FollowEvent
+import com.yoloo.server.relationship.infrastructure.event.RelationshipEvent
 import com.yoloo.server.user.domain.entity.User
 import com.yoloo.server.user.domain.requestpayload.InsertUserPayload
 import com.yoloo.server.user.domain.response.UserResponse
@@ -105,7 +105,7 @@ class InsertUserUseCase(
     }
 
     private fun addUserToExistsFilter(emailFilter: NanoCuckooFilter, email: String) {
-        emailFilter.insert(email);
+        emailFilter.insert(email)
         memcacheService.put(Filters.KEY_FILTER_EMAIL, emailFilter)
     }
 
@@ -114,7 +114,7 @@ class InsertUserUseCase(
     }
 
     private fun publishFollowEvent(fromUser: User, toUser: User) {
-        val event = FollowEvent(
+        val event = RelationshipEvent.Follow(
             this,
             fromUser.id,
             fromUser.profile.displayName,
@@ -148,22 +148,7 @@ class InsertUserUseCase(
     }
 
     private fun getEmailFilter(): NanoCuckooFilter {
-        return memcacheService.get(Filters.KEY_FILTER_EMAIL) as NanoCuckooFilter? ?: ofy()
-            .load()
-            .type(User::class.java)
-            //.project("account.email.value")
-            .list()
-            .asSequence()
-            .map { it.account.email.value }
-            .toList()
-            .let {
-                println("Creating new cuckoo filter for email")
-                val cuckooFilter = NanoCuckooFilter.Builder(32).build()
-                it.forEach { cuckooFilter.insert(it) }
-
-                memcacheService.put(Filters.KEY_FILTER_EMAIL, cuckooFilter)
-                return@let cuckooFilter
-            }
+        return memcacheService.get(Filters.KEY_FILTER_EMAIL) as NanoCuckooFilter
     }
 
     class Request(val payload: InsertUserPayload)

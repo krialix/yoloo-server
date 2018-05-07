@@ -7,8 +7,7 @@ import com.googlecode.objectify.cmd.Query
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.relationship.domain.entity.Relationship
-import com.yoloo.server.relationship.infrastructure.event.FollowEvent
-import com.yoloo.server.relationship.infrastructure.event.UnfollowEvent
+import com.yoloo.server.relationship.infrastructure.event.RelationshipEvent
 import com.yoloo.server.user.domain.entity.User
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
@@ -54,29 +53,24 @@ class RelationshipPullServlet(
 
             var query: Query<Relationship> = ofy().load().type(Relationship::class.java)
 
-            var numOfDeletedTasks = 0
             for (task in tasks) {
-                if (task.name == "follow") {
-                    val payload = convertToFollowPayload(mapper, task)
+                if (task.name == RelationshipEvent.Follow::class.java.simpleName) {
+                    val payload = mapper.readValue(task.payload, RelationshipEvent.Follow.Payload::class.java)
                     log.info("Processing: taskName='{}'  payload='{}'", task.name, payload)
-                    log.info("Deleting taskName='{}'", task.name)
 
                     val relationship = createRelationship(idGenerator, payload)
 
                     pendingSaves.add(relationship)
                     incCountUserIds.add(payload.toUserId)
-                } else if (task.name == "unfollow") {
-                    val payload = convertToUnfollowPayload(mapper, task)
+                } else if (task.name == RelationshipEvent.Unfollow::class.java.simpleName) {
+                    val payload = mapper.readValue(task.payload, RelationshipEvent.Unfollow.Payload::class.java)
                     log.info("Processing: taskName='{}'  payload='{}'", task.name, payload)
-                    log.info("Deleting taskName='{}'", task.name)
 
                     query = query.filter(Relationship.FROM_ID, payload.fromUserId)
                         .filter(Relationship.TO_ID, payload.toUserId)
 
                     decCountUserIds.add(payload.toUserId)
                 }
-
-                numOfDeletedTasks++
             }
 
             val fetchIds = mutableListOf<Long>()
@@ -96,19 +90,22 @@ class RelationshipPullServlet(
                     }
                     return@map it
                 }
-                .forEach { pendingSaves.add(it) }
-
-            q.deleteTaskAsync(tasks)
+                .let(pendingSaves::addAll)
 
             ofy().save().entities(pendingSaves)
             if (decCountUserIds.isNotEmpty()) {
                 ofy().delete().keys(query.keys().list())
             }
 
-            log.info("Processed and deleted $numOfDeletedTasks tasks from the task queue (max: $NUMBER_OF_TASKS_TO_LEASE).")
+            q.deleteTaskAsync(tasks)
+
+            log.info("Processed and deleted ${tasks.size} tasks from the task queue (max: $NUMBER_OF_TASKS_TO_LEASE).")
         }
 
-        private fun createRelationship(idGenerator: LongIdGenerator, payload: FollowEvent.Payload): Relationship {
+        private fun createRelationship(
+            idGenerator: LongIdGenerator,
+            payload: RelationshipEvent.Follow.Payload
+        ): Relationship {
             return Relationship(
                 id = idGenerator.generateId(),
                 fromId = payload.fromUserId,
@@ -116,14 +113,6 @@ class RelationshipPullServlet(
                 displayName = payload.fromDisplayName,
                 avatarImage = payload.fromAvatarImage
             )
-        }
-
-        private fun convertToFollowPayload(mapper: ObjectMapper, task: TaskHandle): FollowEvent.Payload {
-            return mapper.readValue(task.payload, FollowEvent.Payload::class.java)
-        }
-
-        private fun convertToUnfollowPayload(mapper: ObjectMapper, task: TaskHandle): UnfollowEvent.Payload {
-            return mapper.readValue(task.payload, UnfollowEvent.Payload::class.java)
         }
     }
 }

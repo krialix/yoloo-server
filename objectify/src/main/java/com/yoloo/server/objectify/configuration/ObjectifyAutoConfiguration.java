@@ -55,7 +55,7 @@ public class ObjectifyAutoConfiguration {
   }
 
   @DependsOn("ofyFilter")
-  @Bean
+  @Bean("ofy")
   public ObjectifyProxy ofy() {
     ObjectifyProxy proxy = new ObjectifyProxy() {};
 

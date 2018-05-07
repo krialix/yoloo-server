@@ -5,9 +5,8 @@ import com.google.appengine.api.memcache.MemcacheService
 import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.common.util.Filters
 import com.yoloo.server.common.util.ServiceExceptions.checkConflict
-import com.yoloo.server.common.util.ServiceExceptions.checkNotFound
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
-import com.yoloo.server.relationship.infrastructure.event.FollowEvent
+import com.yoloo.server.relationship.infrastructure.event.RelationshipEvent
 import com.yoloo.server.user.domain.entity.User
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.context.ApplicationEventPublisher
@@ -25,25 +24,22 @@ class FollowUseCase(
         val fromId = request.principal!!.name.toLong()
         val toId = request.userId
 
-        val cacheMap = memcacheService.getAll(
-            listOf(Filters.KEY_FILTER_EMAIL, Filters.KEY_FILTER_RELATIONSHIP)
-        ) as Map<String, *>
+        val map = ofy().load().type(User::class.java).ids(fromId, toId)
+        val fromUser = map[fromId]
+        val toUser = map[toId]
 
-        val userFilter = cacheMap[Filters.KEY_FILTER_EMAIL] as NanoCuckooFilter
-        val relationshipFilter = cacheMap[Filters.KEY_FILTER_RELATIONSHIP] as NanoCuckooFilter
+        User.checkUserExistsAndEnabled(fromUser)
+        User.checkUserExistsAndEnabled(toUser)
 
-        checkNotFound(userFilter.contains(toId) || !userFilter.contains("d:$toId"), "user.error.not-found")
+        val relationshipFilter = memcacheService.get(Filters.KEY_FILTER_RELATIONSHIP) as NanoCuckooFilter
+
         checkConflict(!relationshipFilter.contains("$fromId:$toId"), "relationship.error.exists")
 
-        val map = ofy().load().type(User::class.java).ids(fromId, toId)
-        val fromUser = map[fromId]!!
-        val toUser = map[toId]!!
-
-        publishFollowEvent(fromUser, toUser)
+        publishFollowEvent(fromUser!!, toUser!!)
     }
 
     private fun publishFollowEvent(fromUser: User, toUser: User) {
-        val event = FollowEvent(
+        val event = RelationshipEvent.Follow(
             this,
             fromUser.id,
             fromUser.profile.displayName,
@@ -52,7 +48,6 @@ class FollowUseCase(
             toUser.account.fcmToken,
             objectMapper
         )
-
         eventPublisher.publishEvent(event)
     }
 
