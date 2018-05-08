@@ -28,8 +28,8 @@ class FollowUseCase(
         val fromUser = map[fromId]
         val toUser = map[toId]
 
-        User.checkUserExistsAndEnabled(fromUser)
-        User.checkUserExistsAndEnabled(toUser)
+        /*User.checkUserExistsAndEnabled(fromUser)
+        User.checkUserExistsAndEnabled(toUser)*/
 
         val relationshipFilter = memcacheService.get(Filters.KEY_FILTER_RELATIONSHIP) as NanoCuckooFilter
 
@@ -45,7 +45,7 @@ class FollowUseCase(
             fromUser.profile.displayName,
             fromUser.profile.image,
             toUser.id,
-            toUser.account.fcmToken,
+            "",
             objectMapper
         )
         eventPublisher.publishEvent(event)

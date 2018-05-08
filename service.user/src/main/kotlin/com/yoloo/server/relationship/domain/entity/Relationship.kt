@@ -26,7 +26,7 @@ data class Relationship(
 ) : Keyable<Relationship> {
 
     companion object {
-        const val FROM_ID = "fromId"
-        const val TO_ID = "toId"
+        const val INDEX_FROM_ID = "fromId"
+        const val INDEX_TO_ID = "toId"
     }
 }

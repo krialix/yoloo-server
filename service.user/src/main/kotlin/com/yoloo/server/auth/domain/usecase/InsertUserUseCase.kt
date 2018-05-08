@@ -1,7 +1,8 @@
-package com.yoloo.server.user.domain.usecase
+package com.yoloo.server.auth.domain.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
+import com.yoloo.server.auth.domain.entity.Account
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.common.util.Filters
@@ -52,22 +53,24 @@ class InsertUserUseCase(
         val groups = groupInfoFetcher.fetch(subscribedGroupIds)
         val followedUsers = getFollowedUsers(payload.followedUserIds.orEmpty())
         val user = createUser(payload, userInfo, groups)
+        val account = createAccount(user.id, payload, userInfo)
 
-        saveTx(user, emailFilter, followedUsers, subscribedGroupIds)
+        saveTx(user, account, emailFilter, followedUsers, subscribedGroupIds)
 
         return userResponseMapper.apply(user)
     }
 
     private fun saveTx(
         user: User,
+        account: Account,
         emailFilter: NanoCuckooFilter,
         followedUsers: Collection<User>,
         subscribedGroupIds: List<Long>
     ) {
         ofy().transact {
-            ofy().defer().save().entity(user)
+            ofy().defer().save().entities(user, account)
 
-            addUserToExistsFilter(emailFilter, user.account.email.value)
+            addEmailToEmailFilter(emailFilter, account.email.value)
 
             publishGroupSubscriptionEvent(user)
             followedUsers.forEach { publishFollowEvent(user, it) }
@@ -79,8 +82,9 @@ class InsertUserUseCase(
         return User(
             id = idGenerator.generateId(),
             profile = createProfile(payload, userInfo),
-            account = createAccount(payload, userInfo),
             subscribedGroups = groups,
+            fcmToken = payload.fcmToken!!,
+            email = Email(payload.email!!),
             self = true
         )
     }
@@ -94,17 +98,18 @@ class InsertUserUseCase(
         )
     }
 
-    private fun createAccount(payload: InsertUserPayload, userInfo: UserInfo): Account {
+    private fun createAccount(userId: Long, payload: InsertUserPayload, userInfo: UserInfo): Account {
         return Account(
+            id = "account:$userId",
             email = Email(payload.email!!),
             provider = SocialProvider(userInfo.providerId, userInfo.providerType),
-            fcmToken = payload.fcmToken!!,
             scopes = setOf("user:read", "user:write", "post:read", "post:write"),
-            lastKnownIP = IP(payload.lastKnownIP!!)
+            lastKnownIP = IP(payload.lastKnownIP!!),
+            password = payload.password?.let { Password(it) }
         )
     }
 
-    private fun addUserToExistsFilter(emailFilter: NanoCuckooFilter, email: String) {
+    private fun addEmailToEmailFilter(emailFilter: NanoCuckooFilter, email: String) {
         emailFilter.insert(email)
         memcacheService.put(Filters.KEY_FILTER_EMAIL, emailFilter)
     }
@@ -120,7 +125,7 @@ class InsertUserUseCase(
             fromUser.profile.displayName,
             fromUser.profile.image,
             toUser.id,
-            toUser.account.fcmToken,
+            toUser.fcmToken,
             objectMapper
         )
 

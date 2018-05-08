@@ -47,8 +47,8 @@ class ListRelationshipUseCase(
 
     private fun getQueryKeyByRelationshipType(type: Type): String {
         return when (type) {
-            FOLLOWING -> Relationship.FROM_ID
-            FOLLOWER -> Relationship.TO_ID
+            FOLLOWING -> Relationship.INDEX_FROM_ID
+            FOLLOWER -> Relationship.INDEX_TO_ID
         }
     }
 

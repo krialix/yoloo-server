@@ -1,11 +1,11 @@
 package com.yoloo.server.admin.domain.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
+import com.yoloo.server.auth.domain.entity.Account
 import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.common.util.Filters
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.relationship.domain.entity.Relationship
-import com.yoloo.server.user.domain.entity.User
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -26,11 +26,11 @@ class WarmupCacheUseCase(private val memcacheService: AsyncMemcacheService) : Us
 
         return ofy()
             .load()
-            .type(User::class.java)
+            .type(Account::class.java)
             //.project("account.email.value")
             .iterable()
             .asSequence()
-            .map { it.account.email.value }
+            .map { it.email.value }
             .toList()
             .let {
                 log.info("Creating new cuckoo filter for email")

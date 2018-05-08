@@ -1,18 +1,20 @@
 package com.yoloo.server.user.application
 
+import com.yoloo.server.auth.domain.usecase.InsertUserUseCase
 import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.user.domain.requestpayload.InsertUserPayload
 import com.yoloo.server.user.domain.requestpayload.PatchUserPayload
 import com.yoloo.server.user.domain.response.SearchUserResponse
 import com.yoloo.server.user.domain.response.UserResponse
-import com.yoloo.server.user.domain.usecase.*
+import com.yoloo.server.user.domain.usecase.GetUserUseCase
+import com.yoloo.server.user.domain.usecase.PatchUserUseCase
+import com.yoloo.server.user.domain.usecase.SearchUserUseCase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
 import javax.validation.Valid
-import javax.validation.constraints.NotBlank
 
 @RestController
 @ResponseBody
@@ -25,19 +27,13 @@ internal class UserControllerV1 @Autowired constructor(
     private val getUserUseCase: GetUserUseCase,
     private val searchUserUseCase: SearchUserUseCase,
     private val patchUserUseCase: PatchUserUseCase,
-    private val insertUserUseCase: InsertUserUseCase,
-    private val emailValidationUseCase: EmailValidationUseCase
+    private val insertUserUseCase: InsertUserUseCase
 ) {
-
-    @PostMapping("/checkEmail")
-    @ResponseStatus(HttpStatus.OK)
-    fun checkEmail(@RequestBody @Valid @NotBlank email: String?) {
-        emailValidationUseCase.execute(email!!)
-    }
-
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     fun getUser(principal: Principal?, @PathVariable("userId") userId: Long): UserResponse {
+        principal?.let { println(it) }
+        principal?.let { println(it.javaClass.name) }
         return getUserUseCase.execute(GetUserUseCase.Request(principal, userId))
     }
 

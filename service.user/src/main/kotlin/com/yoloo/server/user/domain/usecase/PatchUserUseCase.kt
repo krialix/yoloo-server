@@ -15,12 +15,12 @@ class PatchUserUseCase : UseCase<PatchUserUseCase.Request, Unit> {
 
         val user = ofy().load().type(User::class.java).id(userId).now()
 
-        User.checkUserExistsAndEnabled(user)
+        //User.checkUserExistsAndEnabled(user)
 
         val payload = request.payload
 
         payload.displayName?.let { user.profile.displayName.value = it }
-        payload.email?.let { user.account.email.value = it }
+        //payload.email?.let { user.account.email.value = it }
 
         ofy().save().entity(user)
     }

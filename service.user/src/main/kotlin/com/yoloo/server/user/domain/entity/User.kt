@@ -4,11 +4,9 @@ import com.googlecode.objectify.annotation.Cache
 import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id
 import com.googlecode.objectify.annotation.OnLoad
-import com.yoloo.server.common.api.exception.ConflictException
 import com.yoloo.server.common.shared.BaseEntity
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.common.util.ServiceExceptions.checkNotFound
-import com.yoloo.server.user.domain.vo.Account
+import com.yoloo.server.user.domain.vo.Email
 import com.yoloo.server.user.domain.vo.Profile
 import com.yoloo.server.user.domain.vo.UserFilterData
 import com.yoloo.server.user.domain.vo.UserGroup
@@ -19,13 +17,15 @@ import com.yoloo.server.user.domain.vo.UserGroup
 data class User constructor(
     @Id var id: Long,
 
-    var profile: Profile,
+    var email: Email,
 
-    var account: Account,
+    var profile: Profile,
 
     var userFilterData: UserFilterData = UserFilterData(),
 
     var subscribedGroups: List<UserGroup>,
+
+    var fcmToken: String,
 
     // Extra fields for easy mapping
     val self: Boolean = false,
@@ -37,13 +37,5 @@ data class User constructor(
     fun onLoad() {
         profile.spokenLanguages = profile.spokenLanguages ?: emptyList()
         subscribedGroups = subscribedGroups ?: emptyList()
-    }
-
-    companion object {
-
-        @Throws(ConflictException::class)
-        fun checkUserExistsAndEnabled(user: User?) {
-            checkNotFound(user != null && user.account.enabled, "user.error.not-found")
-        }
     }
 }

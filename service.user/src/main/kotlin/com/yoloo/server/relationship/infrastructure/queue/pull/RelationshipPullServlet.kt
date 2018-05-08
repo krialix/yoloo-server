@@ -66,8 +66,8 @@ class RelationshipPullServlet(
                     val payload = mapper.readValue(task.payload, RelationshipEvent.Unfollow.Payload::class.java)
                     log.info("Processing: taskName='{}'  payload='{}'", task.name, payload)
 
-                    query = query.filter(Relationship.FROM_ID, payload.fromUserId)
-                        .filter(Relationship.TO_ID, payload.toUserId)
+                    query = query.filter(Relationship.INDEX_FROM_ID, payload.fromUserId)
+                        .filter(Relationship.INDEX_TO_ID, payload.toUserId)
 
                     decCountUserIds.add(payload.toUserId)
                 }

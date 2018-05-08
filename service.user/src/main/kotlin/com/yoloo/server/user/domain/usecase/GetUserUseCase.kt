@@ -24,8 +24,6 @@ class GetUserUseCase @Autowired constructor(
 
         var user = ofy().load().type(User::class.java).id(targetId).now()
 
-        User.checkUserExistsAndEnabled(user)
-
         val requesterId = request.principal?.name?.toLong() ?: BasicUserPrincipal("101010").name.toLong()
 
         val self = targetId == requesterId
