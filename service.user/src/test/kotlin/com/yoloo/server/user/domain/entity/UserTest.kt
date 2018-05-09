@@ -39,7 +39,7 @@ class UserTest {
                 gender = Gender.MALE,
                 locale = UserLocale("en", "EN")
             ),
-            /*account = Account(
+            /*account = OauthUser(
                 provider = SocialProvider("2", ProviderType.FACEBOOK),
                 email = Email("test@test.com"),
                 lastKnownIP = IP("127.0.0.1"),
@@ -81,7 +81,7 @@ class UserTest {
                 gender = Gender.MALE,
                 locale = UserLocale("en", "EN")
             ),
-            /*account = Account(
+            /*account = OauthUser(
                 provider = SocialProvider("2", ProviderType.FACEBOOK),
                 email = Email("test@test.com"),
                 lastKnownIP = IP("127.0.0.1"),

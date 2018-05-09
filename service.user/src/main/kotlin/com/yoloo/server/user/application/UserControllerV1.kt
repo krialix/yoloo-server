@@ -17,7 +17,6 @@ import java.security.Principal
 import javax.validation.Valid
 
 @RestController
-@ResponseBody
 @RequestMapping(
     "/api/v1/users",
     produces = [MediaType.APPLICATION_JSON_UTF8_VALUE],
@@ -30,7 +29,6 @@ internal class UserControllerV1 @Autowired constructor(
     private val insertUserUseCase: InsertUserUseCase
 ) {
     @GetMapping("/{userId}")
-    @ResponseStatus(HttpStatus.OK)
     fun getUser(principal: Principal?, @PathVariable("userId") userId: Long): UserResponse {
         principal?.let { println(it) }
         principal?.let { println(it.javaClass.name) }
@@ -44,7 +42,6 @@ internal class UserControllerV1 @Autowired constructor(
     }
 
     @PatchMapping
-    @ResponseStatus(HttpStatus.OK)
     fun patchUser(
         principal: Principal?,
         @RequestBody @Valid payload: PatchUserPayload
@@ -53,7 +50,6 @@ internal class UserControllerV1 @Autowired constructor(
     }
 
     @GetMapping("/search", params = ["q"])
-    @ResponseStatus(HttpStatus.OK)
     fun searchUsers(
         principal: Principal?,
         @RequestParam("q") query: String,

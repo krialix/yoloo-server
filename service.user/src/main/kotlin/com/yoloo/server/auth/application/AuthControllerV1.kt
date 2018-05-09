@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 
 @RestController
-@ResponseBody
 @RequestMapping(
     "/api/v1/auth",
     produces = [MediaType.APPLICATION_JSON_UTF8_VALUE],
@@ -22,9 +22,12 @@ internal class AuthControllerV1 @Autowired constructor(
     private val insertUserUseCase: InsertUserUseCase,
     private val emailValidationUseCase: EmailValidationUseCase
 ) {
+    @GetMapping("/self")
+    fun getSelf(principal: Principal?): Principal? {
+        return principal
+    }
 
     @PostMapping("/checkEmail")
-    @ResponseStatus(HttpStatus.OK)
     fun checkEmail(@RequestBody @Valid @NotBlank email: String?) {
         emailValidationUseCase.execute(email!!)
     }

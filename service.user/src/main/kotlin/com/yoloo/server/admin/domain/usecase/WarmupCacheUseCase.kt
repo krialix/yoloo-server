@@ -1,7 +1,7 @@
 package com.yoloo.server.admin.domain.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
-import com.yoloo.server.auth.domain.entity.Account
+import com.yoloo.server.auth.domain.entity.OauthUser
 import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.common.util.Filters
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
@@ -26,7 +26,7 @@ class WarmupCacheUseCase(private val memcacheService: AsyncMemcacheService) : Us
 
         return ofy()
             .load()
-            .type(Account::class.java)
+            .type(OauthUser::class.java)
             //.project("account.email.value")
             .iterable()
             .asSequence()

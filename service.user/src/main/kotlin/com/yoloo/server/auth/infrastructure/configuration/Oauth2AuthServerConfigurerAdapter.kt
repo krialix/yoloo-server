@@ -7,13 +7,13 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices
+import org.springframework.security.oauth2.provider.token.TokenEnhancer
 
 @EnableAuthorizationServer
 @Configuration
 class Oauth2AuthServerConfigurerAdapter @Autowired constructor(
     private val authenticationManager: AuthenticationManager,
-    private val tokenServices: DefaultTokenServices
+    private val tokenEnhancer: TokenEnhancer
 ) : AuthorizationServerConfigurerAdapter() {
 
     /*override fun configure(security: AuthorizationServerSecurityConfigurer) {
@@ -31,6 +31,6 @@ class Oauth2AuthServerConfigurerAdapter @Autowired constructor(
     }
 
     override fun configure(endpoints: AuthorizationServerEndpointsConfigurer) {
-        endpoints.authenticationManager(authenticationManager).tokenServices(tokenServices)
+        endpoints.authenticationManager(authenticationManager).tokenEnhancer(tokenEnhancer)
     }
 }

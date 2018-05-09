@@ -2,7 +2,7 @@ package com.yoloo.server.auth.domain.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.auth.domain.entity.Account
+import com.yoloo.server.auth.domain.entity.OauthUser
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.common.util.Filters
@@ -25,6 +25,7 @@ import com.yoloo.server.user.infrastructure.social.provider.UserInfoProviderFact
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.util.*
 
@@ -36,7 +37,8 @@ class InsertUserUseCase(
     @Qualifier("cached") private val idGenerator: LongIdGenerator,
     private val eventPublisher: ApplicationEventPublisher,
     private val objectMapper: ObjectMapper,
-    private val memcacheService: MemcacheService
+    private val memcacheService: MemcacheService,
+    private val passwordEncoder: PasswordEncoder
 ) : UseCase<InsertUserUseCase.Request, UserResponse> {
 
     override fun execute(request: Request): UserResponse {
@@ -62,15 +64,15 @@ class InsertUserUseCase(
 
     private fun saveTx(
         user: User,
-        account: Account,
+        oauthUser: OauthUser,
         emailFilter: NanoCuckooFilter,
         followedUsers: Collection<User>,
         subscribedGroupIds: List<Long>
     ) {
         ofy().transact {
-            ofy().defer().save().entities(user, account)
+            ofy().defer().save().entities(user, oauthUser)
 
-            addEmailToEmailFilter(emailFilter, account.email.value)
+            addEmailToEmailFilter(emailFilter, oauthUser.email.value)
 
             publishGroupSubscriptionEvent(user)
             followedUsers.forEach { publishFollowEvent(user, it) }
@@ -81,7 +83,12 @@ class InsertUserUseCase(
     private fun createUser(payload: InsertUserPayload, userInfo: UserInfo, groups: List<UserGroup>): User {
         return User(
             id = idGenerator.generateId(),
-            profile = createProfile(payload, userInfo),
+            profile = Profile(
+                displayName = DisplayName(payload.displayName!!),
+                image = AvatarImage(Url(userInfo.picture)),
+                gender = Gender.valueOf(payload.gender!!.toUpperCase()),
+                locale = UserLocale(Locale.ENGLISH.language, "en_US")
+            ),
             subscribedGroups = groups,
             fcmToken = payload.fcmToken!!,
             email = Email(payload.email!!),
@@ -89,23 +96,16 @@ class InsertUserUseCase(
         )
     }
 
-    private fun createProfile(payload: InsertUserPayload, userInfo: UserInfo): Profile {
-        return Profile(
-            displayName = DisplayName(payload.displayName!!),
-            image = AvatarImage(Url(userInfo.picture)),
-            gender = Gender.valueOf(payload.gender!!.toUpperCase()),
-            locale = UserLocale(Locale.ENGLISH.language, "en_US")
-        )
-    }
-
-    private fun createAccount(userId: Long, payload: InsertUserPayload, userInfo: UserInfo): Account {
-        return Account(
-            id = "account:$userId",
+    private fun createAccount(userId: Long, payload: InsertUserPayload, userInfo: UserInfo): OauthUser {
+        return OauthUser(
+            id = "oauth:$userId",
             email = Email(payload.email!!),
             provider = SocialProvider(userInfo.providerId, userInfo.providerType),
             scopes = setOf("user:read", "user:write", "post:read", "post:write"),
             lastKnownIP = IP(payload.lastKnownIP!!),
-            password = payload.password?.let { Password(it) }
+            password = payload.password?.let { Password(passwordEncoder.encode(it)) },
+            displayName = DisplayName(payload.displayName!!),
+            image = AvatarImage(Url(userInfo.picture))
         )
     }
 
