@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 @Cache(expirationSeconds = 3600)
 @Entity
 @NoArg
-data class OauthUser(
+data class Account(
     // oauth:userId
     @Id var id: String,
 

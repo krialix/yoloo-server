@@ -1,6 +1,7 @@
 package com.yoloo.server.user.application
 
-import com.yoloo.server.auth.domain.usecase.InsertUserUseCase
+import com.yoloo.server.auth.domain.usecase.InsertAccountUseCase
+import com.yoloo.server.auth.domain.vo.JwtClaims
 import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.user.domain.requestpayload.InsertUserPayload
 import com.yoloo.server.user.domain.requestpayload.PatchUserPayload
@@ -12,6 +13,8 @@ import com.yoloo.server.user.domain.usecase.SearchUserUseCase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.security.core.Authentication
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
 import javax.validation.Valid
@@ -26,19 +29,23 @@ internal class UserControllerV1 @Autowired constructor(
     private val getUserUseCase: GetUserUseCase,
     private val searchUserUseCase: SearchUserUseCase,
     private val patchUserUseCase: PatchUserUseCase,
-    private val insertUserUseCase: InsertUserUseCase
+    private val insertAccountUseCase: InsertAccountUseCase
 ) {
     @GetMapping("/{userId}")
-    fun getUser(principal: Principal?, @PathVariable("userId") userId: Long): UserResponse {
-        principal?.let { println(it) }
-        principal?.let { println(it.javaClass.name) }
-        return getUserUseCase.execute(GetUserUseCase.Request(principal, userId))
+    fun getUser(authentication: Authentication?, @PathVariable("userId") userId: Long): UserResponse {
+        authentication?.let {
+            println(it)
+        }
+        val details = authentication!!.details as OAuth2AuthenticationDetails
+        val jwtClaim = details.decodedDetails as JwtClaims
+
+        return getUserUseCase.execute(GetUserUseCase.Params(jwtClaim, userId))
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun insertUser(@RequestBody @Valid payload: InsertUserPayload): UserResponse {
-        return insertUserUseCase.execute(InsertUserUseCase.Request(payload))
+        return insertAccountUseCase.execute(InsertAccountUseCase.Request(payload))
     }
 
     @PatchMapping

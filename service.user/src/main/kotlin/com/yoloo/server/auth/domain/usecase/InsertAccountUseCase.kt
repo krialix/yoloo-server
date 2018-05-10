@@ -2,7 +2,7 @@ package com.yoloo.server.auth.domain.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.auth.domain.entity.OauthUser
+import com.yoloo.server.auth.domain.entity.Account
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.common.util.Filters
@@ -25,21 +25,19 @@ import com.yoloo.server.user.infrastructure.social.provider.UserInfoProviderFact
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.ApplicationEventPublisher
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class InsertUserUseCase(
+class InsertAccountUseCase(
     private val userResponseMapper: UserResponseMapper,
     private val userInfoProviderFactory: UserInfoProviderFactory,
     private val groupInfoFetcher: GroupInfoFetcher,
     @Qualifier("cached") private val idGenerator: LongIdGenerator,
     private val eventPublisher: ApplicationEventPublisher,
     private val objectMapper: ObjectMapper,
-    private val memcacheService: MemcacheService,
-    private val passwordEncoder: PasswordEncoder
-) : UseCase<InsertUserUseCase.Request, UserResponse> {
+    private val memcacheService: MemcacheService
+) : UseCase<InsertAccountUseCase.Request, UserResponse> {
 
     override fun execute(request: Request): UserResponse {
         val payload = request.payload
@@ -64,15 +62,15 @@ class InsertUserUseCase(
 
     private fun saveTx(
         user: User,
-        oauthUser: OauthUser,
+        account: Account,
         emailFilter: NanoCuckooFilter,
         followedUsers: Collection<User>,
         subscribedGroupIds: List<Long>
     ) {
         ofy().transact {
-            ofy().defer().save().entities(user, oauthUser)
+            ofy().defer().save().entities(user, account)
 
-            addEmailToEmailFilter(emailFilter, oauthUser.email.value)
+            addEmailToEmailFilter(emailFilter, account.email.value)
 
             publishGroupSubscriptionEvent(user)
             followedUsers.forEach { publishFollowEvent(user, it) }
@@ -96,14 +94,14 @@ class InsertUserUseCase(
         )
     }
 
-    private fun createAccount(userId: Long, payload: InsertUserPayload, userInfo: UserInfo): OauthUser {
-        return OauthUser(
+    private fun createAccount(userId: Long, payload: InsertUserPayload, userInfo: UserInfo): Account {
+        return Account(
             id = "oauth:$userId",
             email = Email(payload.email!!),
             provider = SocialProvider(userInfo.providerId, userInfo.providerType),
             scopes = setOf("user:read", "user:write", "post:read", "post:write"),
             lastKnownIP = IP(payload.lastKnownIP!!),
-            password = payload.password?.let { Password(passwordEncoder.encode(it)) },
+            password = payload.password?.let { Password(it) },
             displayName = DisplayName(payload.displayName!!),
             image = AvatarImage(Url(userInfo.picture))
         )

@@ -1,6 +1,7 @@
 package com.yoloo.server.user.domain.usecase
 
 import com.google.appengine.api.memcache.MemcacheService
+import com.yoloo.server.auth.domain.vo.JwtClaims
 import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.common.util.Filters
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
@@ -8,23 +9,19 @@ import com.yoloo.server.user.domain.entity.User
 import com.yoloo.server.user.domain.response.UserResponse
 import com.yoloo.server.user.infrastructure.mapper.UserResponseMapper
 import net.cinnom.nanocuckoo.NanoCuckooFilter
-import org.apache.http.auth.BasicUserPrincipal
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import java.security.Principal
 
 @Component
-class GetUserUseCase @Autowired constructor(
+class GetUserUseCase(
     private val userResponseMapper: UserResponseMapper,
     private val memcacheService: MemcacheService
-) : UseCase<GetUserUseCase.Request, UserResponse> {
+) : UseCase<GetUserUseCase.Params, UserResponse> {
 
-    override fun execute(request: Request): UserResponse {
-        val targetId = request.userId
+    override fun execute(params: Params): UserResponse {
+        val requesterId = params.jwtClaims.sub
+        val targetId = params.targetId
 
         var user = ofy().load().type(User::class.java).id(targetId).now()
-
-        val requesterId = request.principal?.name?.toLong() ?: BasicUserPrincipal("101010").name.toLong()
 
         val self = targetId == requesterId
 
@@ -42,5 +39,5 @@ class GetUserUseCase @Autowired constructor(
         return userResponseMapper.apply(user)
     }
 
-    class Request(val principal: Principal?, val userId: Long)
+    class Params(val jwtClaims: JwtClaims, val targetId: Long)
 }

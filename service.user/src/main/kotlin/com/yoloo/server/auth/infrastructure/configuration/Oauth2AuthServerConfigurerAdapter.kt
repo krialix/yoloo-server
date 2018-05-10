@@ -16,12 +16,6 @@ class Oauth2AuthServerConfigurerAdapter @Autowired constructor(
     private val tokenEnhancer: TokenEnhancer
 ) : AuthorizationServerConfigurerAdapter() {
 
-    /*override fun configure(security: AuthorizationServerSecurityConfigurer) {
-        security
-            .tokenKeyAccess("permitAll()") // token public key is accessible from everywhere
-            .checkTokenAccess("isAuthenticated()")
-    }*/
-
     override fun configure(clients: ClientDetailsServiceConfigurer) {
         clients.inMemory()
             .withClient("mobile")
