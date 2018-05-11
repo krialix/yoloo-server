@@ -13,6 +13,7 @@ import com.yoloo.server.user.domain.usecase.SearchUserUseCase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails
 import org.springframework.web.bind.annotation.*
@@ -31,6 +32,7 @@ internal class UserControllerV1 @Autowired constructor(
     private val patchUserUseCase: PatchUserUseCase,
     private val insertAccountUseCase: InsertAccountUseCase
 ) {
+    @PreAuthorize("hasAnyAuthority('user:read')")
     @GetMapping("/{userId}")
     fun getUser(authentication: Authentication?, @PathVariable("userId") userId: Long): UserResponse {
         authentication?.let {

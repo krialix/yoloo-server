@@ -1,27 +1,39 @@
 package com.yoloo.server.user.infrastructure.configuration
 
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer
 import org.springframework.security.oauth2.provider.token.TokenStore
 
+@EnableResourceServer
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @Configuration
-class ResourceServerConfiguration(private val tokenStore: TokenStore) : ResourceServerConfigurerAdapter() {
+class Oauth2ResourceServerConfigurerAdapter(private val tokenStore: TokenStore) : ResourceServerConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
-        http.csrf()
+        http
+            .csrf()
             .disable()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
             .headers()
             .frameOptions()
             .disable()
             .and()
-            .authorizeRequests()
-            .antMatchers("/_ah/**")
-            .permitAll()
-            .and()
             .httpBasic()
             .disable()
+            .authorizeRequests()
+            .antMatchers("/api/**")
+            .authenticated()
+            .and()
+            .authorizeRequests()
+            .antMatchers("/tasks/**", "/_ah/**")
+            .permitAll()
     }
 
     override fun configure(resources: ResourceServerSecurityConfigurer) {

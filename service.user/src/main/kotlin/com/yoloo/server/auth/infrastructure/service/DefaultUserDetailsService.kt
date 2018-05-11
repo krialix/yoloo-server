@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 
 @Primary
 @Service
-class AccountDetailsService : UserDetailsService {
+class DefaultUserDetailsService : UserDetailsService {
 
     override fun loadUserByUsername(email: String): UserDetails {
         val account = ofy()

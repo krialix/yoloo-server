@@ -40,7 +40,7 @@ class QueueConfiguration(private val urlFetchService: URLFetchService) {
     }
 
     @Profile("dev")
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 1000000)
     fun leaseRelationshipPullQueue() {
         log.info("Running 'leaseRelationshipPullQueue' cron")
         val url = "http://localhost:8081/tasks/pull/relationship"

@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancer
 
 @EnableAuthorizationServer
 @Configuration
-class Oauth2AuthServerConfigurerAdapter @Autowired constructor(
+class Oauth2AuthorizationServerConfigurerAdapter @Autowired constructor(
     private val authenticationManager: AuthenticationManager,
     private val tokenEnhancer: TokenEnhancer
 ) : AuthorizationServerConfigurerAdapter() {
