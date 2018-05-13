@@ -55,7 +55,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     //implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.0.RELEASE'
+    implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.1.RELEASE'
 
     // Kotlin
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'

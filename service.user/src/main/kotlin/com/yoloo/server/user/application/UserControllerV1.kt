@@ -47,7 +47,7 @@ internal class UserControllerV1 @Autowired constructor(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun insertUser(@RequestBody @Valid payload: InsertUserPayload): UserResponse {
-        return insertAccountUseCase.execute(InsertAccountUseCase.Request(payload))
+        return insertAccountUseCase.execute(InsertAccountUseCase.Params(payload))
     }
 
     @PatchMapping

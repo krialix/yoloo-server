@@ -67,6 +67,7 @@ dependencies {
     // Util
     implementation 'org.hibernate.validator:hibernate-validator:6.0.9.Final'
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
+    implementation 'com.auth0:java-jwt:3.3.0'
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

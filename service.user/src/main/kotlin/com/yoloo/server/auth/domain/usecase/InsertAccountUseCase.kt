@@ -37,10 +37,10 @@ class InsertAccountUseCase(
     private val eventPublisher: ApplicationEventPublisher,
     private val objectMapper: ObjectMapper,
     private val memcacheService: MemcacheService
-) : UseCase<InsertAccountUseCase.Request, UserResponse> {
+) : UseCase<InsertAccountUseCase.Params, UserResponse> {
 
-    override fun execute(request: Request): UserResponse {
-        val payload = request.payload
+    override fun execute(params: Params): UserResponse {
+        val payload = params.payload
 
         val emailFilter = getEmailFilter()
 
@@ -154,5 +154,5 @@ class InsertAccountUseCase(
         return memcacheService.get(Filters.KEY_FILTER_EMAIL) as NanoCuckooFilter
     }
 
-    class Request(val payload: InsertUserPayload)
+    class Params(val payload: InsertUserPayload)
 }
