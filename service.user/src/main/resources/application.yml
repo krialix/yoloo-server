@@ -7,3 +7,7 @@ server:
   compression:
     enabled: true
     mime-types: application/json
+auth:
+  scopes:
+    - user:read
+    - user:write

@@ -19,7 +19,7 @@ class UserInfoProviderFactory(
         return when (type) {
             ProviderType.FACEBOOK -> facebookUserInfoProvider
             ProviderType.GOOGLE -> googleUserInfoProvider
-            ProviderType.YOLOO -> yolooUserInfoProvider
+            ProviderType.EMAIL -> yolooUserInfoProvider
         }
     }
 }

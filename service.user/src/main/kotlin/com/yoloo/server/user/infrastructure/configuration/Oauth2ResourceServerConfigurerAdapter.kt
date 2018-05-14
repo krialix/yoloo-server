@@ -28,16 +28,16 @@ class Oauth2ResourceServerConfigurerAdapter(private val tokenStore: TokenStore) 
             .httpBasic()
             .disable()
             .authorizeRequests()
+            .antMatchers("/api/internal/mobile/v1/auth/signUpEmail", "/api/v1/admin/**")
+            .permitAll()
+            .and()
+            .authorizeRequests()
             .antMatchers("/api/**")
             .authenticated()
             .and()
             .authorizeRequests()
             .antMatchers("/tasks/**", "/_ah/**")
-            .permitAll()
-            .and()
-            .authorizeRequests()
-            .antMatchers("/api/internal/mobile/v1/auth/deneme")
-            .permitAll()
+            .permitAll();
     }
 
     override fun configure(resources: ResourceServerSecurityConfigurer) {

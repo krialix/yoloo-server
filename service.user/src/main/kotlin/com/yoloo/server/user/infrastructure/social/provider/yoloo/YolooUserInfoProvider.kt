@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 class YolooUserInfoProvider : UserInfoProvider {
 
     override fun getUserInfo(token: String?): UserInfo {
-        return UserInfo(providerId = null, providerType = ProviderType.YOLOO, picture = DEFAULT_USER_IMAGE)
+        return UserInfo(providerId = null, providerType = ProviderType.EMAIL, picture = DEFAULT_USER_IMAGE)
     }
 
     companion object {
