@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
 import com.yoloo.server.auth.domain.entity.Account
 import com.yoloo.server.auth.domain.request.SignUpEmailRequest
+import com.yoloo.server.auth.domain.vo.Provider
+import com.yoloo.server.auth.domain.vo.UserLocale
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.common.util.Filters
@@ -13,31 +15,29 @@ import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.relationship.infrastructure.event.RelationshipEvent
 import com.yoloo.server.user.domain.entity.User
+import com.yoloo.server.user.domain.entity.UserMeta
 import com.yoloo.server.user.domain.vo.*
 import com.yoloo.server.user.infrastructure.event.GroupSubscriptionEvent
 import com.yoloo.server.user.infrastructure.event.RefreshFeedEvent
 import com.yoloo.server.user.infrastructure.fetcher.groupinfo.GroupInfoFetcher
-import com.yoloo.server.user.infrastructure.social.ProviderType
-import com.yoloo.server.user.infrastructure.social.UserInfo
-import com.yoloo.server.user.infrastructure.social.provider.UserInfoProviderFactory
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.security.oauth2.client.token.AccessTokenProvider
 import org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest
-import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordAccessTokenProvider
 import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails
 import org.springframework.security.oauth2.common.OAuth2AccessToken
 import org.springframework.stereotype.Component
-import java.util.*
 
 @Component
 class SignUpEmailUseCase(
-    private val userInfoProviderFactory: UserInfoProviderFactory,
     private val groupInfoFetcher: GroupInfoFetcher,
     @Qualifier("cached") private val idGenerator: LongIdGenerator,
     private val eventPublisher: ApplicationEventPublisher,
     private val objectMapper: ObjectMapper,
-    private val memcacheService: MemcacheService
+    private val memcacheService: MemcacheService,
+    private val resourceOwnerPasswordResourceDetails: ResourceOwnerPasswordResourceDetails,
+    private val accessTokenProvider: AccessTokenProvider
 ) : UseCase<SignUpEmailUseCase.Params, OAuth2AccessToken> {
 
     override fun execute(params: Params): OAuth2AccessToken {
@@ -47,20 +47,19 @@ class SignUpEmailUseCase(
 
         ServiceExceptions.checkConflict(!emailFilter.contains(payload.email), "user.error.exists")
 
-        val userInfoProvider = userInfoProviderFactory.create(ProviderType.EMAIL)
-        val userInfo = userInfoProvider.getUserInfo(null)
         val subscribedGroupIds = payload.subscribedGroupIds!!
         val groups = groupInfoFetcher.fetch(subscribedGroupIds)
         val followedUsers = getFollowedUsers(payload.followedUserIds.orEmpty())
-        val user = createUser(payload, userInfo, groups)
-        val account = createAccount(user.id, payload, userInfo)
 
-        saveTx(user, account, emailFilter, followedUsers, subscribedGroupIds)
+        val user = createUser(payload, groups)
+        val account = createAccount(user.id, payload)
+        val userMeta = createUserMeta(user.id, payload)
+
+        saveTx(user, account, userMeta, emailFilter, followedUsers, subscribedGroupIds)
 
         val passwordResourceDetails =
             getResourceOwnerPasswordResourceDetails(account.email.value, account.password!!.value)
 
-        val accessTokenProvider = ResourceOwnerPasswordAccessTokenProvider()
         return accessTokenProvider.obtainAccessToken(passwordResourceDetails, DefaultAccessTokenRequest())
     }
 
@@ -68,59 +67,81 @@ class SignUpEmailUseCase(
         email: String,
         password: String
     ): ResourceOwnerPasswordResourceDetails {
-        val passwordResourceDetails = ResourceOwnerPasswordResourceDetails()
-        passwordResourceDetails.username = email
-        passwordResourceDetails.password = password
-        passwordResourceDetails.clientId = "trusted_mobile"
-        passwordResourceDetails.clientSecret = "secret"
-        passwordResourceDetails.accessTokenUri = "http://localhost:8081/oauth/token"
-        return passwordResourceDetails
+        resourceOwnerPasswordResourceDetails.username = email
+        resourceOwnerPasswordResourceDetails.password = password
+        return resourceOwnerPasswordResourceDetails
     }
 
     private fun saveTx(
         user: User,
         account: Account,
+        userMeta: UserMeta,
         emailFilter: NanoCuckooFilter,
-        followedUsers: Collection<User>,
+        followedUsers: Collection<Account>,
         subscribedGroupIds: List<Long>
     ) {
         ofy().transact {
-            ofy().save().entities(user, account).now()
+            ofy().save().entities(user, account, userMeta).now()
 
             addEmailToEmailFilter(emailFilter, account.email.value)
 
             publishGroupSubscriptionEvent(user)
-            followedUsers.forEach { publishFollowEvent(user, it) }
+            followedUsers.forEach { publishFollowEvent(account, it) }
             publishRefreshFeedEvent(subscribedGroupIds)
         }
     }
 
-    private fun createUser(payload: SignUpEmailRequest, userInfo: UserInfo, groups: List<UserGroup>): User {
+    private fun createUser(payload: SignUpEmailRequest, groups: List<UserGroup>): User {
         return User(
             id = idGenerator.generateId(),
+            email = Email(payload.email!!),
             profile = Profile(
                 displayName = DisplayName(payload.displayName!!),
-                image = AvatarImage(Url(userInfo.picture)),
+                image = AvatarImage(Url(DEFAULT_IMAGE_URL)),
                 gender = Gender.valueOf(payload.gender!!.toUpperCase()),
-                locale = UserLocale(Locale.ENGLISH.language, "en_US")
+                locale = UserLocale(payload.language!!, payload.country!!)
             ),
             subscribedGroups = groups,
-            fcmToken = payload.fcmToken!!,
-            email = Email(payload.email!!),
             self = true
         )
     }
 
-    private fun createAccount(userId: Long, payload: SignUpEmailRequest, userInfo: UserInfo): Account {
+    private fun createAccount(userId: Long, payload: SignUpEmailRequest): Account {
         return Account(
-            id = "oauth:$userId",
+            id = userId,
             email = Email(payload.email!!),
-            provider = SocialProvider(userInfo.providerId, userInfo.providerType),
-            scopes = setOf("user:read", "user:write", "post:read", "post:write"),
-            lastKnownIP = IP(payload.device!!.localIp!!),
+            provider = Provider(null, Provider.Type.EMAIL),
+            authorities = setOf(Account.Authority.MEMBER),
+            localIp = IP(payload.device!!.localIp!!),
             password = payload.password?.let { Password(it) },
             displayName = DisplayName(payload.displayName!!),
-            image = AvatarImage(Url(userInfo.picture))
+            image = AvatarImage(Url(DEFAULT_IMAGE_URL)),
+            fcmToken = payload.fcmToken!!
+        )
+    }
+
+    private fun createUserMeta(userId: Long, payload: SignUpEmailRequest): UserMeta {
+        return UserMeta(
+            id = userId,
+            appInfo = AppInfo(
+                firstInstallTime = payload.app!!.firstInstallTime!!,
+                lastUpdateTime = payload.app.lastUpdateTime!!,
+                googleAdsId = payload.app.googleAdvertisingId!!
+            ),
+            device = Device(
+                brand = payload.device!!.brand!!,
+                model = payload.device.model!!,
+                screen = Screen(
+                    dpi = Screen.Dpi(payload.device.screen!!.dpi!!),
+                    height = payload.device.screen.height!!,
+                    width = payload.device.screen.width!!
+                ),
+                localIp = IP(payload.device.localIp!!),
+                os = Os(
+                    type = Os.Type.valueOf(payload.device.os!!.type!!.toUpperCase()),
+                    version = Os.Version(payload.device.os.version!!)
+                )
+            )
         )
     }
 
@@ -133,12 +154,12 @@ class SignUpEmailUseCase(
         eventPublisher.publishEvent(RefreshFeedEvent(this, subscribedGroupIds))
     }
 
-    private fun publishFollowEvent(fromUser: User, toUser: User) {
+    private fun publishFollowEvent(fromUser: Account, toUser: Account) {
         val event = RelationshipEvent.Follow(
             this,
             fromUser.id,
-            fromUser.profile.displayName,
-            fromUser.profile.image,
+            fromUser.displayName,
+            fromUser.image,
             toUser.id,
             toUser.fcmToken,
             objectMapper
@@ -160,10 +181,10 @@ class SignUpEmailUseCase(
         eventPublisher.publishEvent(event)
     }
 
-    private fun getFollowedUsers(userIds: List<Long>): Collection<User> {
+    private fun getFollowedUsers(userIds: List<Long>): Collection<Account> {
         return when {
             userIds.isEmpty() -> emptyList()
-            else -> ofy().load().type(User::class.java).ids(userIds).values
+            else -> ofy().load().type(Account::class.java).ids(userIds).values
         }
     }
 
@@ -172,4 +193,8 @@ class SignUpEmailUseCase(
     }
 
     class Params(val payload: SignUpEmailRequest)
+
+    companion object {
+        const val DEFAULT_IMAGE_URL = ""
+    }
 }

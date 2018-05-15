@@ -3,7 +3,7 @@ package com.yoloo.server.auth.domain.vo
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.User
 
-class OauthUser(
+class Oauth2User(
     val userId: Long,
     val email: String,
     val profileImageUrl: String,

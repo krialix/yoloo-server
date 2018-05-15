@@ -1,4 +1,4 @@
-package com.yoloo.server.user.domain.vo
+package com.yoloo.server.auth.domain.vo
 
 import com.yoloo.server.common.util.NoArg
 

@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank
 
 @RestController
 @RequestMapping(
-    "/api/internal/mobile/v1/auth",
+    "/api/v1/m/auth",
     produces = [MediaType.APPLICATION_JSON_UTF8_VALUE],
     consumes = [MediaType.APPLICATION_JSON_UTF8_VALUE]
 )

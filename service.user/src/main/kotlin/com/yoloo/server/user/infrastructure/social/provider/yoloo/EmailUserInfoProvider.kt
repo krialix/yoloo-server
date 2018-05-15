@@ -1,6 +1,5 @@
 package com.yoloo.server.user.infrastructure.social.provider.yoloo
 
-import com.yoloo.server.user.infrastructure.social.ProviderType
 import com.yoloo.server.user.infrastructure.social.UserInfo
 import com.yoloo.server.user.infrastructure.social.provider.UserInfoProvider
 import org.springframework.context.annotation.Lazy
@@ -8,10 +7,10 @@ import org.springframework.stereotype.Component
 
 @Lazy
 @Component
-class YolooUserInfoProvider : UserInfoProvider {
+class EmailUserInfoProvider : UserInfoProvider {
 
     override fun getUserInfo(token: String?): UserInfo {
-        return UserInfo(providerId = null, providerType = ProviderType.EMAIL, picture = DEFAULT_USER_IMAGE)
+        return UserInfo(providerId = null, picture = DEFAULT_USER_IMAGE)
     }
 
     companion object {

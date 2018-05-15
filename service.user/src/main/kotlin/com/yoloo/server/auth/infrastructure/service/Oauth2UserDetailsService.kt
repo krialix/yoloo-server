@@ -1,7 +1,7 @@
 package com.yoloo.server.auth.infrastructure.service
 
 import com.yoloo.server.auth.domain.entity.Account
-import com.yoloo.server.auth.domain.vo.OauthUser
+import com.yoloo.server.auth.domain.vo.Oauth2User
 import com.yoloo.server.common.util.ServiceExceptions.checkNotFound
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import org.springframework.context.annotation.Primary
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 
 @Primary
 @Service
-class DefaultUserDetailsService : UserDetailsService {
+class Oauth2UserDetailsService : UserDetailsService {
 
     override fun loadUserByUsername(email: String): UserDetails {
         val account = ofy()
@@ -25,8 +25,8 @@ class DefaultUserDetailsService : UserDetailsService {
         checkNotFound(account != null, "user.error.not-found")
         checkNotFound(!account!!.disabled, "user.error.not-found")
 
-        return OauthUser(
-            userId = account.id.substring(6).toLong(),
+        return Oauth2User(
+            userId = account.id,
             email = account.email.value,
             profileImageUrl = account.image.url.value,
             password = account.password?.value ?: "",
@@ -35,7 +35,7 @@ class DefaultUserDetailsService : UserDetailsService {
             accountNonExpired = !account.expired,
             credentialsNonExpired = !account.credentialsExpired,
             accountNonLocked = !account.locked,
-            authorities = account.scopes.map { SimpleGrantedAuthority(it) }
+            authorities = account.authorities.map { SimpleGrantedAuthority(it.name) }
         )
     }
 }

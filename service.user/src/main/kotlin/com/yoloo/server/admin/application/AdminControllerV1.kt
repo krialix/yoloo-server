@@ -11,14 +11,12 @@ import java.security.Principal
 @RestController
 @RequestMapping(
     "/api/v1/admin",
-    produces = [MediaType.APPLICATION_JSON_UTF8_VALUE],
-    consumes = [MediaType.APPLICATION_JSON_UTF8_VALUE]
+    produces = [MediaType.APPLICATION_JSON_UTF8_VALUE]
 )
 class AdminControllerV1 @Autowired constructor(
     private val deleteUserUseCase: DeleteUserUseCase,
     private val warmupCacheUseCase: WarmupCacheUseCase
 ) {
-
     @DeleteMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody

@@ -1,5 +1,6 @@
 package com.yoloo.server.user.domain.vo
 
+import com.yoloo.server.auth.domain.vo.UserLocale
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
@@ -20,9 +21,9 @@ data class Profile(
 
     var about: About? = null,
 
-    var locale: UserLocale,
-
     var verified: Boolean = false,
+
+    var locale: UserLocale,
 
     var countData: UserCountData = UserCountData()
 )

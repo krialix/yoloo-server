@@ -1,6 +1,7 @@
 package com.yoloo.server.user.domain.entity
 
 import com.google.common.truth.Truth.assertThat
+import com.yoloo.server.auth.domain.vo.UserLocale
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory
@@ -42,13 +43,12 @@ class UserTest {
             /*account = Account(
                 provider = SocialProvider("2", ProviderType.FACEBOOK),
                 email = Email("test@test.com"),
-                lastKnownIP = IP("127.0.0.1"),
+                localIp = IP("127.0.0.1"),
                 fcmToken = "providerIdToken",
-                scopes = setOf("scope1", "scope2")
+                authorities = setOf("scope1", "scope2")
             ),*/
             subscribedGroups = listOf(UserGroup(1L, "http://g1.com", "g1Name")),
-            email = Email("test@test.com"),
-            fcmToken = "providerIdToken"
+            email = Email("test@test.com")
         )
 
         val loaded = ofy().saveClearLoad(original)
@@ -61,12 +61,11 @@ class UserTest {
         assertThat(original.profile.locale).isEqualTo(loaded.profile.locale)
         /*assertThat(original.account.provider).isEqualTo(loaded.account.provider)
         assertThat(original.account.email).isEqualTo(loaded.account.email)
-        assertThat(original.account.lastKnownIP).isEqualTo(loaded.account.lastKnownIP)
+        assertThat(original.account.localIp).isEqualTo(loaded.account.localIp)
         assertThat(original.account.fcmToken).isEqualTo(loaded.account.fcmToken)
-        assertThat(original.account.scopes).isEqualTo(loaded.account.scopes)*/
+        assertThat(original.account.authorities).isEqualTo(loaded.account.authorities)*/
         assertThat(original.subscribedGroups).isEqualTo(loaded.subscribedGroups)
 
-        assertThat(loaded.userFilterData).isNotNull()
         assertThat(loaded.createdAt).isNotNull()
         assertThat(loaded.updatedAt).isNull()
     }
@@ -84,13 +83,12 @@ class UserTest {
             /*account = Account(
                 provider = SocialProvider("2", ProviderType.FACEBOOK),
                 email = Email("test@test.com"),
-                lastKnownIP = IP("127.0.0.1"),
+                localIp = IP("127.0.0.1"),
                 fcmToken = "providerIdToken",
-                scopes = setOf("scope1", "scope2")
+                authorities = setOf("scope1", "scope2")
             ),*/
             subscribedGroups = listOf(UserGroup(1L, "http://g1.com", "g1Name")),
-            email = Email("test@test.com"),
-            fcmToken = "providerIdToken"
+            email = Email("test@test.com")
         )
 
         val loaded = ofy().saveClearLoad(original)

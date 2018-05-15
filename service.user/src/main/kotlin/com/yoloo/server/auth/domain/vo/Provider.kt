@@ -1,7 +1,13 @@
 package com.yoloo.server.auth.domain.vo
 
-enum class Provider(name: String) {
-    EMAIL("email"),
-    GOOGLE("email"),
-    FACEBOOK("email")
+import com.yoloo.server.common.util.NoArg
+
+@NoArg
+data class Provider(var id: String?, var type: Type) {
+
+    enum class Type {
+        EMAIL,
+        GOOGLE,
+        FACEBOOK
+    }
 }

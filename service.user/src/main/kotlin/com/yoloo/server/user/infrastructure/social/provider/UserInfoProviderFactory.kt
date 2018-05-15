@@ -1,9 +1,9 @@
 package com.yoloo.server.user.infrastructure.social.provider
 
-import com.yoloo.server.user.infrastructure.social.ProviderType
+import com.yoloo.server.auth.domain.vo.Provider
 import com.yoloo.server.user.infrastructure.social.provider.facebook.FacebookUserInfoProvider
 import com.yoloo.server.user.infrastructure.social.provider.google.GoogleUserInfoProvider
-import com.yoloo.server.user.infrastructure.social.provider.yoloo.YolooUserInfoProvider
+import com.yoloo.server.user.infrastructure.social.provider.yoloo.EmailUserInfoProvider
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
@@ -12,14 +12,14 @@ import org.springframework.stereotype.Component
 class UserInfoProviderFactory(
     private val facebookUserInfoProvider: FacebookUserInfoProvider,
     private val googleUserInfoProvider: GoogleUserInfoProvider,
-    private val yolooUserInfoProvider: YolooUserInfoProvider
+    private val emailUserInfoProvider: EmailUserInfoProvider
 ) {
 
-    fun create(type: ProviderType): UserInfoProvider {
+    fun create(type: Provider.Type): UserInfoProvider {
         return when (type) {
-            ProviderType.FACEBOOK -> facebookUserInfoProvider
-            ProviderType.GOOGLE -> googleUserInfoProvider
-            ProviderType.EMAIL -> yolooUserInfoProvider
+            Provider.Type.FACEBOOK -> facebookUserInfoProvider
+            Provider.Type.GOOGLE -> googleUserInfoProvider
+            Provider.Type.EMAIL -> emailUserInfoProvider
         }
     }
 }

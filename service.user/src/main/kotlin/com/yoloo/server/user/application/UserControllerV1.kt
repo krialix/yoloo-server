@@ -1,9 +1,7 @@
 package com.yoloo.server.user.application
 
-import com.yoloo.server.auth.domain.usecase.InsertAccountUseCase
 import com.yoloo.server.auth.domain.vo.JwtClaims
 import com.yoloo.server.common.response.CollectionResponse
-import com.yoloo.server.user.domain.requestpayload.InsertUserPayload
 import com.yoloo.server.user.domain.requestpayload.PatchUserPayload
 import com.yoloo.server.user.domain.response.SearchUserResponse
 import com.yoloo.server.user.domain.response.UserResponse
@@ -11,7 +9,6 @@ import com.yoloo.server.user.domain.usecase.GetUserUseCase
 import com.yoloo.server.user.domain.usecase.PatchUserUseCase
 import com.yoloo.server.user.domain.usecase.SearchUserUseCase
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
@@ -29,8 +26,7 @@ import javax.validation.Valid
 internal class UserControllerV1 @Autowired constructor(
     private val getUserUseCase: GetUserUseCase,
     private val searchUserUseCase: SearchUserUseCase,
-    private val patchUserUseCase: PatchUserUseCase,
-    private val insertAccountUseCase: InsertAccountUseCase
+    private val patchUserUseCase: PatchUserUseCase
 ) {
     @PreAuthorize("hasAnyAuthority('user:read')")
     @GetMapping("/{userId}")
@@ -42,12 +38,6 @@ internal class UserControllerV1 @Autowired constructor(
         val jwtClaim = details.decodedDetails as JwtClaims
 
         return getUserUseCase.execute(GetUserUseCase.Params(jwtClaim, userId))
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    fun insertUser(@RequestBody @Valid payload: InsertUserPayload): UserResponse {
-        return insertAccountUseCase.execute(InsertAccountUseCase.Params(payload))
     }
 
     @PatchMapping

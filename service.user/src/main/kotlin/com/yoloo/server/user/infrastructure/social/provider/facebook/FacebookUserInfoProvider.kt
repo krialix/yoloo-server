@@ -1,7 +1,6 @@
 package com.yoloo.server.user.infrastructure.social.provider.facebook
 
 import com.google.appengine.api.urlfetch.URLFetchService
-import com.yoloo.server.user.infrastructure.social.ProviderType
 import com.yoloo.server.user.infrastructure.social.UserInfo
 import com.yoloo.server.user.infrastructure.social.provider.UserInfoProvider
 import org.codehaus.jackson.map.ObjectMapper
@@ -21,7 +20,6 @@ class FacebookUserInfoProvider(private val urlFetchService: URLFetchService) : U
 
         return UserInfo(
             providerId = response.id,
-            providerType = ProviderType.FACEBOOK,
             picture = response.picture.data.url
         )
     }

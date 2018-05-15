@@ -8,24 +8,19 @@ import com.yoloo.server.common.shared.BaseEntity
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.user.domain.vo.Email
 import com.yoloo.server.user.domain.vo.Profile
-import com.yoloo.server.user.domain.vo.UserFilterData
 import com.yoloo.server.user.domain.vo.UserGroup
 
 @Cache(expirationSeconds = 3600)
 @NoArg
 @Entity
-data class User constructor(
+data class User(
     @Id var id: Long,
 
     var email: Email,
 
     var profile: Profile,
 
-    var userFilterData: UserFilterData = UserFilterData(),
-
     var subscribedGroups: List<UserGroup>,
-
-    var fcmToken: String,
 
     // Extra fields for easy mapping
     val self: Boolean = false,
