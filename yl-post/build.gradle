@@ -1,0 +1,71 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.2.41'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.41'
+    id 'org.jetbrains.kotlin.plugin.noarg' version '1.2.41'
+    id 'org.springframework.boot' version '2.0.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.5.RELEASE'
+    id 'war'
+}
+
+group 'com.yoloo.server'
+version '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs = ["-Xjsr305=strict"]
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        freeCompilerArgs = ["-Xjsr305=strict"]
+        jvmTarget = "1.8"
+    }
+}
+
+repositories {
+    jcenter()
+    maven{
+        url "https://krialix.github.io/maven-artifactory/"
+    }
+}
+
+noArg {
+    annotation("com.yoloo.server.common.util.NoArg")
+}
+
+configurations.all {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    exclude group: 'org.slf4j', module: 'jul-to-slf4j'
+}
+
+dependencies {
+    implementation project(':yl-common')
+    implementation project(':objectify')
+
+    // App Engine
+    implementation 'com.google.appengine:appengine-api-1.0-sdk:1.9.63'
+    compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
+
+    // Spring Boot
+    //implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    //implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.1.RELEASE'
+
+    // Kotlin
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+
+    // Util
+    implementation 'org.hibernate.validator:hibernate-validator:6.0.9.Final'
+    implementation 'net.cinnom:nano-cuckoo:2.0.0'
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

@@ -76,7 +76,7 @@ public class ObjectifyAutoConfiguration {
 
     configurers
         .stream()
-        .map(ObjectifyConfigurer::registerObjectifyTranslators)
+        .map(ObjectifyConfigurer::registerTranslators)
         .flatMap(Collection::stream)
         .distinct()
         .peek(
@@ -88,7 +88,7 @@ public class ObjectifyAutoConfiguration {
   private void registerEntities(ObjectifyFactory factory) {
     configurers
         .stream()
-        .map(ObjectifyConfigurer::registerObjectifyEntities)
+        .map(ObjectifyConfigurer::registerEntities)
         .flatMap(Collection::stream)
         .distinct()
         .forEach(factory::register);

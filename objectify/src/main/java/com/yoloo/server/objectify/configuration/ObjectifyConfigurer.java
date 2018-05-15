@@ -21,7 +21,7 @@ public interface ObjectifyConfigurer {
    *
    * @return Collection of entities to register.
    */
-  default Collection<TranslatorFactory<?, ?>> registerObjectifyTranslators() {
+  default Collection<TranslatorFactory<?, ?>> registerTranslators() {
     return Collections.emptyList();
   }
 
@@ -30,7 +30,7 @@ public interface ObjectifyConfigurer {
    *
    * @return Collection of entities to register.
    */
-  default Collection<Class<?>> registerObjectifyEntities() {
+  default Collection<Class<?>> registerEntities() {
     return Collections.emptyList();
   }
 }

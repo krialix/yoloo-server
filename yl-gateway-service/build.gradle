@@ -1,0 +1,40 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' version '2.0.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.5.RELEASE'
+    id 'war'
+}
+
+group = 'com.yoloo.server'
+version = '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    jcenter()
+    maven { url "https://repo.spring.io/milestone" }
+}
+
+ext {
+    springCloudVersion = 'Finchley.M9'
+}
+
+configurations.all {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    exclude group: 'org.slf4j', module: 'jul-to-slf4j'
+}
+
+dependencies {
+    compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
