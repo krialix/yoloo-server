@@ -9,7 +9,7 @@ import javax.validation.constraints.*
 @NoArg
 data class SignUpEmailRequest(
     @field:NotBlank
-    val displayName: String?,
+    val clientId: String,
 
     @field:NotBlank
     @field:Email
@@ -18,33 +18,44 @@ data class SignUpEmailRequest(
     @field:NotBlank
     val password: String?,
 
-    @field:NumberFormat
-    @field:UniqueElements
     @field:NotNull
-    @field:NotEmpty
-    var subscribedGroupIds: List<Long>?,
-
-    @field:UniqueElements
-    var followedUserIds: List<Long>?,
-
-    @field:Pattern(regexp = "(male|female)", message = "must match with either male or female")
-    @field:NotNull
-    val gender: String?,
-
-    @field:NotBlank
-    val fcmToken: String?,
-
     @field:Valid
-    @field:NotNull
-    val device: DeviceRequest?,
+    val metaData: UserMetaData?
+) {
 
-    @field:Valid
-    @field:NotNull
-    val app: AppRequest?,
+    @NoArg
+    data class UserMetaData(
+        @field:NotBlank
+        val displayName: String?,
 
-    @field:NotBlank
-    val country: String?,
+        @field:NumberFormat
+        @field:UniqueElements
+        @field:NotNull
+        @field:NotEmpty
+        val subscribedGroupIds: List<Long>?,
 
-    @field:NotBlank
-    val language: String?
-)
+        @field:UniqueElements
+        val followedUserIds: List<Long>?,
+
+        @field:Pattern(regexp = "(male|female)", message = "must match with either male or female")
+        @field:NotNull
+        val gender: String?,
+
+        @field:NotBlank
+        val fcmToken: String?,
+
+        @field:Valid
+        @field:NotNull
+        val device: DeviceRequest?,
+
+        @field:Valid
+        @field:NotNull
+        val app: AppRequest?,
+
+        @field:NotBlank
+        val country: String?,
+
+        @field:NotBlank
+        val language: String?
+    )
+}

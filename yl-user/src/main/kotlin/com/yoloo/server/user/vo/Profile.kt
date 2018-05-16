@@ -21,8 +21,6 @@ data class Profile(
 
     var about: About? = null,
 
-    var verified: Boolean = false,
-
     var locale: UserLocale,
 
     var countData: UserCountData = UserCountData()

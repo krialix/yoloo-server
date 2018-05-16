@@ -7,7 +7,6 @@ import com.yoloo.server.auth.vo.Provider
 import com.yoloo.server.auth.vo.SignUpEmailRequest
 import com.yoloo.server.auth.vo.UserLocale
 import com.yoloo.server.common.id.generator.LongIdGenerator
-import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.common.util.Filters
 import com.yoloo.server.common.util.ServiceExceptions
 import com.yoloo.server.common.vo.AvatarImage
@@ -38,22 +37,23 @@ internal class SignUpEmailUseCase(
     private val memcacheService: MemcacheService,
     private val resourceOwnerPasswordResourceDetails: ResourceOwnerPasswordResourceDetails,
     private val accessTokenProvider: AccessTokenProvider
-) : UseCase<SignUpEmailUseCase.Params, OAuth2AccessToken> {
+) {
 
-    override fun execute(params: Params): OAuth2AccessToken {
-        val payload = params.payload
-
+    fun execute(request: SignUpEmailRequest): OAuth2AccessToken {
         val emailFilter = getEmailFilter()
 
-        ServiceExceptions.checkConflict(!emailFilter.contains(payload.email), "user.error.exists")
+        val email = request.email!!
+        ServiceExceptions.checkConflict(!emailFilter.contains(email), "user.error.exists")
 
-        val subscribedGroupIds = payload.subscribedGroupIds!!
+        val metaData = request.metaData!!
+
+        val subscribedGroupIds = metaData.subscribedGroupIds!!
         val groups = groupInfoFetcher.fetch(subscribedGroupIds)
-        val followedUsers = getFollowedUsers(payload.followedUserIds.orEmpty())
+        val followedUsers = getFollowedUsers(metaData.followedUserIds.orEmpty())
 
-        val user = createUser(payload, groups)
-        val account = createAccount(user.id, payload)
-        val userMeta = createUserMeta(user.id, payload)
+        val user = createUser(email, metaData, groups)
+        val account = createAccount(request.clientId, user.id, email, request.password!!, metaData)
+        val userMeta = createUserMeta(user.id, metaData)
 
         addEmailToEmailFilter(emailFilter, account.email.value)
 
@@ -94,38 +94,49 @@ internal class SignUpEmailUseCase(
         }
     }
 
-    private fun createUser(payload: SignUpEmailRequest, groups: List<UserGroup>): User {
+    private fun createUser(
+        email: String,
+        metaData: SignUpEmailRequest.UserMetaData,
+        groups: List<UserGroup>
+    ): User {
         return User(
             id = idGenerator.generateId(),
-            email = Email(payload.email!!),
+            email = Email(email),
             profile = Profile(
-                displayName = DisplayName(payload.displayName!!),
+                displayName = DisplayName(metaData.displayName!!),
                 image = AvatarImage(Url(DEFAULT_IMAGE_URL)),
-                gender = Gender.valueOf(payload.gender!!.toUpperCase()),
-                locale = UserLocale(payload.language!!, payload.country!!)
+                gender = Gender.valueOf(metaData.gender!!.toUpperCase()),
+                locale = UserLocale(metaData.language!!, metaData.country!!)
             ),
             subscribedGroups = groups,
             self = true
         )
     }
 
-    private fun createAccount(userId: Long, payload: SignUpEmailRequest): Account {
+    private fun createAccount(
+        clientId: String,
+        userId: Long,
+        email: String,
+        password: String,
+        metaData: SignUpEmailRequest.UserMetaData
+    ): Account {
         return Account(
             id = userId,
-            email = Email(payload.email!!),
+            email = Email(email),
             provider = Provider(null, Provider.Type.EMAIL),
             authorities = setOf(Account.Authority.MEMBER),
-            localIp = IP(payload.device!!.localIp!!),
-            password = payload.password?.let { Password(it) },
-            displayName = DisplayName(payload.displayName!!),
+            localIp = IP(metaData.device!!.localIp!!),
+            password = Password(password),
+            displayName = DisplayName(metaData.displayName!!),
             image = AvatarImage(Url(DEFAULT_IMAGE_URL)),
-            fcmToken = payload.fcmToken!!
+            fcmToken = metaData.fcmToken!!,
+            clientId = clientId
         )
     }
 
-    private fun createUserMeta(userId: Long, payload: SignUpEmailRequest): UserMeta {
-        val app = payload.app!!
-        val device = payload.device!!
+    private fun createUserMeta(userId: Long, metaData: SignUpEmailRequest.UserMetaData): UserMeta {
+        val app = metaData.app!!
+        val device = metaData.device!!
         val screen = device.screen!!
         val os = device.os!!
 
@@ -199,8 +210,6 @@ internal class SignUpEmailUseCase(
     private fun getEmailFilter(): NanoCuckooFilter {
         return memcacheService.get(Filters.KEY_FILTER_EMAIL) as NanoCuckooFilter
     }
-
-    class Params(val payload: SignUpEmailRequest)
 
     companion object {
         const val DEFAULT_IMAGE_URL = ""

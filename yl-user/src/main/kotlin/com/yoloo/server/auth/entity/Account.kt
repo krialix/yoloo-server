@@ -20,18 +20,22 @@ import java.time.LocalDateTime
 data class Account(
     @Id var id: Long,
 
+    var clientId: String,
+
     var provider: Provider,
 
     @Index
     var email: Email,
+
+    var emailVerified: Boolean = false,
+
+    var accountVerified: Boolean = false,
 
     var password: Password? = null,
 
     var displayName: DisplayName,
 
     var image: AvatarImage,
-
-    var localIp: IP,
 
     var expired: Boolean = false,
 
@@ -43,9 +47,12 @@ data class Account(
 
     var authorities: Set<@JvmSuppressWildcards Authority>,
 
-    var lastLoginTime: LocalDateTime? = null,
+    var lastSignInTime: LocalDateTime? = null,
 
     var deletedAt: LocalDateTime? = null,
+
+    // Metadata
+    var localIp: IP,
 
     var fcmToken: String
 ) : BaseEntity<Account>(1) {
