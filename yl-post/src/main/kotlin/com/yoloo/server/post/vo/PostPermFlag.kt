@@ -1,13 +1,15 @@
 package com.yoloo.server.post.vo
 
-enum class PostAcl {
+import java.util.*
+
+enum class PostPermFlag {
     ALLOW_COMMENTING,
     ALLOW_VOTING,
     ALLOW_COMMENT_VOTING;
 
     companion object {
-        fun default(): Set<PostAcl> {
-            return setOf(
+        fun default(): EnumSet<PostPermFlag> {
+            return EnumSet.of(
                 ALLOW_COMMENTING,
                 ALLOW_VOTING,
                 ALLOW_COMMENT_VOTING

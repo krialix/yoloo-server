@@ -1,11 +1,11 @@
 package com.yoloo.server.comment.usecase
 
 import com.yoloo.server.comment.entity.Comment
-import com.yoloo.server.comment.requestpayload.InsertCommentPayload
-import com.yoloo.server.comment.response.CommentResponse
-import com.yoloo.server.comment.vo.CommentContent
-import com.yoloo.server.comment.vo.PostId
 import com.yoloo.server.comment.mapper.CommentResponseMapper
+import com.yoloo.server.comment.vo.CommentContent
+import com.yoloo.server.comment.vo.CommentResponse
+import com.yoloo.server.comment.vo.InsertCommentRequest
+import com.yoloo.server.comment.vo.PostId
 import com.yoloo.server.common.api.exception.ForbiddenException
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.shared.UseCase
@@ -14,9 +14,9 @@ import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.response.UserInfoResponse
 import com.yoloo.server.post.vo.Author
-import com.yoloo.server.post.vo.PostAcl
+import com.yoloo.server.post.vo.PostPermFlag
+import com.yoloo.server.post.vo.UserInfoResponse
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import java.security.Principal
@@ -35,7 +35,7 @@ class InsertCommentUseCase(
 
         val post = ofy().load().type(Post::class.java).id(postId).now()
 
-        if (!post.acls.contains(PostAcl.ALLOW_COMMENTING)) {
+        if (!post.flags.contains(PostPermFlag.ALLOW_COMMENTING)) {
             throw ForbiddenException("post.not_allowed.commenting")
         }
 
@@ -50,7 +50,7 @@ class InsertCommentUseCase(
                 avatar = AvatarImage(Url(userInfoResponse.image)),
                 verified = userInfoResponse.verified
             ),
-            content = CommentContent(request.payload.content!!)
+            content = CommentContent(request.request.content!!)
         )
 
         ofy().save().entity(comment)
@@ -58,5 +58,5 @@ class InsertCommentUseCase(
         return commentResponseMapper.apply(comment)
     }
 
-    class Request(val principal: Principal, val postId: Long, val payload: InsertCommentPayload)
+    class Request(val principal: Principal, val postId: Long, val request: InsertCommentRequest)
 }

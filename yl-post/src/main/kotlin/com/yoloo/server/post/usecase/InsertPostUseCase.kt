@@ -6,10 +6,10 @@ import com.yoloo.server.common.util.Fetcher
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.request.PostRequest
-import com.yoloo.server.post.response.GroupInfoResponse
-import com.yoloo.server.post.response.PostResponse
-import com.yoloo.server.post.response.UserInfoResponse
+import com.yoloo.server.post.vo.PostRequest
+import com.yoloo.server.post.vo.GroupInfoResponse
+import com.yoloo.server.post.vo.PostResponse
+import com.yoloo.server.post.vo.UserInfoResponse
 import com.yoloo.server.post.vo.*
 import com.yoloo.server.post.vo.postdata.TextPostData
 import com.yoloo.server.post.mapper.PostResponseMapper

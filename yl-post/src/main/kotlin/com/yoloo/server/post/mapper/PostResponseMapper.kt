@@ -1,23 +1,21 @@
 package com.yoloo.server.post.mapper
 
 import com.yoloo.server.common.response.attachment.SimpleAttachmentResponse
-import com.yoloo.server.common.util.Mapper
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.response.*
-import com.yoloo.server.post.response.postdata.PostDataResponse
-import com.yoloo.server.post.response.postdata.RichPostDataResponse
-import com.yoloo.server.post.response.postdata.SponsoredPostDataResponse
-import com.yoloo.server.post.response.postdata.TextPostDataResponse
-import com.yoloo.server.post.vo.PostType
+import com.yoloo.server.post.vo.*
 import com.yoloo.server.post.vo.postdata.RichPostData
 import com.yoloo.server.post.vo.postdata.SponsoredPostData
 import com.yoloo.server.post.vo.postdata.TextPostData
+import com.yoloo.server.post.vo.postdataresponse.PostDataResponse
+import com.yoloo.server.post.vo.postdataresponse.RichPostDataResponse
+import com.yoloo.server.post.vo.postdataresponse.SponsoredPostDataResponse
+import com.yoloo.server.post.vo.postdataresponse.TextPostDataResponse
 import org.springframework.stereotype.Component
 
 @Component
-class PostResponseMapper : Mapper<Post, PostResponse> {
+class PostResponseMapper {
 
-    override fun apply(from: Post, payload: MutableMap<String, Any>): PostResponse {
+    fun apply(from: Post, payload: MutableMap<String, Any>): PostResponse {
         val dataResponse = when (from.type) {
             PostType.TEXT -> mapToTextPostDataResponse(from, payload)
             PostType.ATTACHMENT -> mapToRichPostDataResponse(from, payload)
@@ -43,7 +41,10 @@ class PostResponseMapper : Mapper<Post, PostResponse> {
         val data = from.data as TextPostData
         return TextPostDataResponse(
             title = data.title.value,
-            group = PostGroupResponse(id = data.group.id, displayName = data.group.displayName),
+            group = PostGroupResponse(
+                id = data.group.id,
+                displayName = data.group.displayName
+            ),
             tags = data.tags.map { it.value },
             approvedCommentId = data.approvedCommentId?.value,
             bounty = data.bounty?.value ?: 0,
@@ -60,7 +61,10 @@ class PostResponseMapper : Mapper<Post, PostResponse> {
         val data = from.data as RichPostData
         return RichPostDataResponse(
             title = data.title.value,
-            group = PostGroupResponse(id = data.group.id, displayName = data.group.displayName),
+            group = PostGroupResponse(
+                id = data.group.id,
+                displayName = data.group.displayName
+            ),
             tags = data.tags.map { it.value },
             approvedCommentId = data.approvedCommentId?.value,
             bounty = data.bounty?.value ?: 0,

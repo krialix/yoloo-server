@@ -2,7 +2,7 @@ package com.yoloo.server.comment.usecase
 
 import com.google.appengine.api.datastore.Cursor
 import com.yoloo.server.comment.entity.Comment
-import com.yoloo.server.comment.response.CommentResponse
+import com.yoloo.server.comment.vo.CommentResponse
 import com.yoloo.server.comment.mapper.CommentResponseMapper
 import com.yoloo.server.common.api.exception.BadRequestException
 import com.yoloo.server.common.response.CollectionResponse

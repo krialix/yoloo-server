@@ -1,4 +1,4 @@
-package com.yoloo.server.post.request
+package com.yoloo.server.post.vo
 
 import com.yoloo.server.common.util.NoArg
 import javax.validation.constraints.Min

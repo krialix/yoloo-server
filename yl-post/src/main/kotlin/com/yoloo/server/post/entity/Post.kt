@@ -4,14 +4,14 @@ import com.googlecode.objectify.annotation.*
 import com.googlecode.objectify.condition.IfNotNull
 import com.googlecode.objectify.condition.IfNull
 import com.yoloo.server.common.shared.Keyable
-import com.yoloo.server.common.shared.Validatable
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.post.vo.Author
 import com.yoloo.server.post.vo.PostContent
-import com.yoloo.server.post.vo.PostAcl
+import com.yoloo.server.post.vo.PostPermFlag
 import com.yoloo.server.post.vo.PostType
 import com.yoloo.server.post.vo.postdata.*
 import java.time.LocalDateTime
+import java.util.*
 import javax.validation.Valid
 
 @NoArg
@@ -26,7 +26,7 @@ data class Post(
     @field:Valid
     var data: PostData,
 
-    var acls: Set<@JvmSuppressWildcards PostAcl> = PostAcl.default(),
+    var flags: EnumSet<@JvmSuppressWildcards PostPermFlag> = PostPermFlag.default(),
 
     var content: PostContent,
 
@@ -35,24 +35,17 @@ data class Post(
     @Index(IfNotNull::class)
     @IgnoreSave(IfNull::class)
     var deletedAt: LocalDateTime? = null
-) : Keyable<Post>, Validatable {
+) : Keyable<Post> {
 
     val type: PostType
-        get() = getPostType(data)
-
-    @OnSave
-    override fun validate() {
-        super.validate()
-        /*attachments = attachments ?: emptyList()
-        bounty = bounty ?: PostBounty()*/
-    }
+        get() = toPostType(data)
 
     fun isDeleted(): Boolean {
         return deletedAt != null
     }
 
     companion object {
-        fun getPostType(data: PostData): PostType {
+        fun toPostType(data: PostData): PostType {
             return when (data) {
                 is TextPostData -> PostType.TEXT
                 is RichPostData -> PostType.ATTACHMENT

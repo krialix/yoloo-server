@@ -6,7 +6,7 @@ import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.objectify.ObjectifyProxy
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.response.PostResponse
+import com.yoloo.server.post.vo.PostResponse
 import com.yoloo.server.post.mapper.PostResponseMapper
 import org.springframework.stereotype.Component
 import java.security.Principal

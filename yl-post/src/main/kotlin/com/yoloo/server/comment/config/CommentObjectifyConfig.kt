@@ -1,4 +1,4 @@
-package com.yoloo.server.comment.objectify
+package com.yoloo.server.comment.config
 
 import com.yoloo.server.comment.entity.Comment
 import com.yoloo.server.objectify.configuration.ObjectifyConfigurer

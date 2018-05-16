@@ -1,7 +1,7 @@
-package com.yoloo.server.post.response
+package com.yoloo.server.post.vo
 
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.post.response.postdata.PostDataResponse
+import com.yoloo.server.post.vo.postdataresponse.PostDataResponse
 
 @NoArg
 data class PostResponse(

@@ -1,9 +1,9 @@
 package com.yoloo.server.post.api
 
 import com.yoloo.server.common.response.CollectionResponse
-import com.yoloo.server.post.response.PostResponse
 import com.yoloo.server.post.usecase.GetPostUseCase
 import com.yoloo.server.post.usecase.ListGroupFeedUseCase
+import com.yoloo.server.post.vo.PostResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize

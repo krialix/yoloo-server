@@ -4,14 +4,14 @@ import com.googlecode.objectify.impl.translate.TranslatorFactory
 import com.yoloo.server.objectify.configuration.ObjectifyConfigurer
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.vo.postdata.*
-import com.yoloo.server.post.config.translators.PostAclTranslatorFactory
+import com.yoloo.server.post.config.translators.EnumTranslatorFactory
 import org.springframework.stereotype.Component
 
 @Component
 class PostObjectifyConfig : ObjectifyConfigurer {
 
     override fun registerTranslators(): List<TranslatorFactory<*, *>> {
-        return listOf(PostAclTranslatorFactory())
+        return listOf(EnumTranslatorFactory())
     }
 
     override fun registerEntities(): List<Class<*>> {

@@ -1,7 +1,7 @@
-package com.yoloo.server.comment.response
+package com.yoloo.server.comment.vo
 
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.post.response.AuthorResponse
+import com.yoloo.server.post.vo.AuthorResponse
 import java.time.LocalDateTime
 
 @NoArg

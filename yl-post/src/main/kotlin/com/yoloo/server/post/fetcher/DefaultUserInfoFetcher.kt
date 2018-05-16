@@ -1,28 +1,21 @@
 package com.yoloo.server.post.fetcher
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.appengine.api.urlfetch.URLFetchService
-import com.yoloo.server.common.api.exception.BadRequestException
 import com.yoloo.server.common.util.Fetcher
-import com.yoloo.server.post.response.UserInfoResponse
+import com.yoloo.server.post.vo.UserInfoResponse
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
-import java.io.IOException
-import java.net.URL
+import org.springframework.web.client.RestTemplate
 
 @Profile("!dev")
 @Component
-class DefaultUserInfoFetcher(
-    private val urlFetchService: URLFetchService,
-    private val objectMapper: ObjectMapper
-) : Fetcher<Long, UserInfoResponse> {
+class DefaultUserInfoFetcher : Fetcher<Long, UserInfoResponse> {
 
     override fun fetch(id: Long): UserInfoResponse {
-        try {
-            val response = urlFetchService.fetch(URL(""))
-            return objectMapper.readValue(response.content, UserInfoResponse::class.java)
-        } catch (e: IOException) {
-            throw BadRequestException("100")
-        }
+        val response = RestTemplate().getForEntity(USER_INFO_ENDPOINT, UserInfoResponse::class.java)
+        return response.body!!
+    }
+
+    companion object {
+        private const val USER_INFO_ENDPOINT = "http://localhost:8080/api/v1/auth/userinfo"
     }
 }

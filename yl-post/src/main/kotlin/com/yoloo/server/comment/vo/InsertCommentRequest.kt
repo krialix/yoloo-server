@@ -1,10 +1,10 @@
-package com.yoloo.server.comment.requestpayload
+package com.yoloo.server.comment.vo
 
 import com.yoloo.server.common.util.NoArg
 import javax.validation.constraints.NotBlank
 
 @NoArg
-class InsertCommentPayload(
+class InsertCommentRequest(
     @field:NotBlank
     val content: String?
 )
