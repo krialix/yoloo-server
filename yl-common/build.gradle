@@ -1,29 +1,20 @@
 plugins {
-    id 'java-library'
-    id 'org.springframework.boot' version '2.0.1.RELEASE'
+    id 'org.springframework.boot' version '2.0.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.5.RELEASE'
 }
 
 group 'com.yoloo.server'
 version '0.0.1-SNAPSHOT'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-repositories {
-    jcenter()
-    maven{
-        url "https://krialix.github.io/maven-artifactory/"
-    }
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', includes: ['*.jar'])
 
     api 'com.yoloo.tools:uid-generator:1.0.0'
 
-    api 'com.googlecode.objectify:objectify:5.1.22'
-    api 'com.google.firebase:firebase-admin:5.9.0'
+    api "com.googlecode.objectify:objectify:$objectifyVersion"
+
+    compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
     implementation 'org.slf4j:slf4j-api:1.8.0-beta2'
     implementation 'javax.validation:validation-api:2.0.1.Final'
@@ -34,5 +25,6 @@ dependencies {
     compileOnly 'com.google.appengine:appengine-api-1.0-sdk:1.9.63'
 
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.json:json:20180130'
     testImplementation "com.google.appengine:appengine-testing:1.9.63"
 }

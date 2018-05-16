@@ -10,9 +10,6 @@ plugins {
 group 'com.yoloo.server'
 version '0.0.1-SNAPSHOT'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 compileKotlin {
     kotlinOptions {
         freeCompilerArgs = ["-Xjsr305=strict"]
@@ -26,20 +23,8 @@ compileTestKotlin {
     }
 }
 
-repositories {
-    jcenter()
-    maven{
-        url "https://krialix.github.io/maven-artifactory/"
-    }
-}
-
 noArg {
     annotation("com.yoloo.server.common.util.NoArg")
-}
-
-configurations.all {
-    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
-    exclude group: 'org.slf4j', module: 'jul-to-slf4j'
 }
 
 dependencies {
@@ -47,13 +32,12 @@ dependencies {
     implementation project(':objectify')
 
     // App Engine
-    implementation 'com.google.appengine:appengine-api-1.0-sdk:1.9.63'
-    compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
+    implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
+    compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
 
     // Spring Boot
-    //implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    //implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.1.RELEASE'
 
@@ -63,7 +47,6 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
     // Util
-    implementation 'org.hibernate.validator:hibernate-validator:6.0.9.Final'
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
 
     // Testing

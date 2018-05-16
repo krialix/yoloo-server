@@ -30,11 +30,9 @@ public abstract class BaseEntity<Type> implements Keyable<Type> {
 
   @OnSave
   protected void onSave() {
-    if (createdAt != null) {
-      updatedAt = LocalDateTime.now();
-    }
     if (createdAt == null) {
       createdAt = LocalDateTime.now();
     }
+    updatedAt = LocalDateTime.now();
   }
 }

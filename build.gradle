@@ -1,2 +1,31 @@
+plugins {
+    id 'com.github.ben-manes.versions' version '0.17.0' apply false
+}
+
+apply from: 'dependencies.gradle'
+
 group = 'com.yoloo.server'
 version = '0.0.1-SNAPSHOT'
+
+allprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'com.github.ben-manes.versions'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+subprojects {
+    repositories {
+        jcenter()
+        maven{
+            url "https://krialix.github.io/maven-artifactory/"
+        }
+        maven { url "https://repo.spring.io/milestone" }
+    }
+
+    configurations.all {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+        exclude group: 'org.slf4j', module: 'jul-to-slf4j'
+    }
+}

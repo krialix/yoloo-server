@@ -12,9 +12,6 @@ plugins {
 group 'com.yoloo.server'
 version '0.0.1-SNAPSHOT'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 compileKotlin {
     kotlinOptions {
         freeCompilerArgs = ["-Xjsr305=strict"]
@@ -28,53 +25,40 @@ compileTestKotlin {
     }
 }
 
-repositories {
-    jcenter()
-    maven{
-        url "https://krialix.github.io/maven-artifactory/"
-    }
-}
-
 noArg {
     annotation("com.yoloo.server.common.util.NoArg")
 }
-
-configurations.all {
-    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
-    exclude group: 'org.slf4j', module: 'jul-to-slf4j'
-}
-
-final APP_ENGINE_VERSION = '1.9.63'
 
 dependencies {
     implementation project(':yl-common')
     implementation project(':objectify')
 
+    implementation 'com.google.firebase:firebase-admin:6.1.0'
+
     // App Engine
-    implementation "com.google.appengine:appengine-api-1.0-sdk:$APP_ENGINE_VERSION"
-    compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
+    implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
+    compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
 
     // Spring Boot
-    //implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.1.RELEASE'
-    compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+    compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
 
     // Kotlin
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 
     // Util
-    implementation 'org.hibernate.validator:hibernate-validator:6.0.9.Final'
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
     implementation 'com.auth0:java-jwt:3.3.0'
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.2.41'
-    testImplementation 'com.google.truth:truth:0.37'
-    testImplementation "com.google.appengine:appengine-api-stubs:$APP_ENGINE_VERSION"
-    testImplementation "com.google.appengine:appengine-testing:$APP_ENGINE_VERSION"
-    testImplementation "com.google.appengine:appengine-tools-sdk:$APP_ENGINE_VERSION"
+    testImplementation 'com.google.truth:truth:0.40'
+    testImplementation "com.google.appengine:appengine-api-stubs:$appengineVersion"
+    testImplementation "com.google.appengine:appengine-testing:$appengineVersion"
+    testImplementation "com.google.appengine:appengine-tools-sdk:$appengineVersion"
 }

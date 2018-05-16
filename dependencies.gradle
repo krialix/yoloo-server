@@ -1,0 +1,7 @@
+ext {
+    objectifyVersion = '5.1.22'
+    appengineVersion = '1.9.63'
+    javaxServletVersion = '3.1.0'
+    kotlinVersion = '1.2.41'
+    springBootVersion = '2.0.2.RELEASE'
+}

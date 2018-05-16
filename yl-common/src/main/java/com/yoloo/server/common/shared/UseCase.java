@@ -9,7 +9,6 @@ import javax.annotation.Nonnull;
  * <p>Use case will have only one method - {@link #execute(I)}. This method takes a
  * pair of request and response objects that should be instantiated externally in plugin way
  * pattern. That ensures decoupling of presentation from domain.
- *
  */
 @FunctionalInterface
 public interface UseCase<I, O> {
