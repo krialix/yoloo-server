@@ -1,58 +1,65 @@
 package com.yoloo.server.post.entity
 
 import com.googlecode.objectify.annotation.*
+import com.googlecode.objectify.condition.IfEmpty
 import com.googlecode.objectify.condition.IfNotNull
 import com.googlecode.objectify.condition.IfNull
+import com.yoloo.server.common.shared.BaseEntity
 import com.yoloo.server.common.shared.Keyable
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.post.vo.Author
-import com.yoloo.server.post.vo.PostContent
-import com.yoloo.server.post.vo.PostPermFlag
-import com.yoloo.server.post.vo.PostType
-import com.yoloo.server.post.vo.postdata.*
+import com.yoloo.server.post.vo.*
 import java.time.LocalDateTime
 import java.util.*
-import javax.validation.Valid
 
 @NoArg
-@Cache
+@Cache(expirationSeconds = Post.CACHE_EXPIRATION_TIME)
 @Entity
 data class Post(
     @Id
     var id: Long,
 
+    var type: PostType,
+
     var author: Author,
-
-    @field:Valid
-    var data: PostData,
-
-    var flags: EnumSet<@JvmSuppressWildcards PostPermFlag> = PostPermFlag.default(),
 
     var content: PostContent,
 
-    var createdAt: LocalDateTime = LocalDateTime.now(),
+    var flags: EnumSet<@JvmSuppressWildcards PostPermFlag> = PostPermFlag.default(),
+
+    var title: PostTitle,
+
+    var group: PostGroup,
+
+    var tags: Set<@JvmSuppressWildcards PostTag>,
+
+    @IgnoreSave(IfNull::class)
+    var approvedCommentId: AcceptedCommentId? = null,
+
+    var coin: PostCoin? = null,
+
+    @IgnoreSave(IfEmpty::class)
+    var attachments: List<@JvmSuppressWildcards PostAttachment> = emptyList(),
+
+    var buddyRequest: BuddyRequest?,
+
+    var countData: PostCountData = PostCountData(),
 
     @Index(IfNotNull::class)
     @IgnoreSave(IfNull::class)
     var deletedAt: LocalDateTime? = null
-) : Keyable<Post> {
+) : BaseEntity<Post>(1L), Keyable<Post> {
 
-    val type: PostType
-        get() = toPostType(data)
+    @OnLoad
+    fun onLoad() {
+        @Suppress("USELESS_ELVIS")
+        attachments = attachments ?: emptyList()
+    }
 
     fun isDeleted(): Boolean {
         return deletedAt != null
     }
 
     companion object {
-        fun toPostType(data: PostData): PostType {
-            return when (data) {
-                is TextPostData -> PostType.TEXT
-                is RichPostData -> PostType.ATTACHMENT
-                is BuddyPostData -> PostType.BUDDY
-                is SponsoredPostData -> PostType.SPONSORED
-                else -> PostType.TEXT
-            }
-        }
+        const val CACHE_EXPIRATION_TIME = 7200
     }
 }

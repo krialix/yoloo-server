@@ -2,7 +2,6 @@ package com.yoloo.server.admin.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.yoloo.server.auth.entity.Account
-import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.common.util.Filters
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.entity.Relationship
@@ -12,9 +11,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
-class WarmUpCacheUseCase(private val memcacheService: AsyncMemcacheService) : UseCase<Unit, Unit> {
+class WarmUpCacheUseCase(private val memcacheService: AsyncMemcacheService) {
 
-    override fun execute(request: Unit) {
+    fun execute() {
         val emailCache = warmupEmailCache()
         val relationshipCache = warmupRelationshipCache()
 

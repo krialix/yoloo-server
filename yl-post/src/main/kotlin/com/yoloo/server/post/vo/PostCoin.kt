@@ -6,7 +6,7 @@ import com.yoloo.server.common.util.NoArg
 import javax.validation.constraints.PositiveOrZero
 
 @NoArg
-data class PostBounty(
+data class PostCoin(
     @field:PositiveOrZero
     @Index(IfNotZero::class)
     var value: Int = 0

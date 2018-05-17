@@ -1,21 +1,14 @@
 package com.yoloo.server.post.usecase
 
 import com.yoloo.server.common.id.generator.LongIdGenerator
-import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.common.util.Fetcher
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.vo.PostRequest
-import com.yoloo.server.post.vo.GroupInfoResponse
-import com.yoloo.server.post.vo.PostResponse
-import com.yoloo.server.post.vo.UserInfoResponse
-import com.yoloo.server.post.vo.*
-import com.yoloo.server.post.vo.postdata.TextPostData
 import com.yoloo.server.post.mapper.PostResponseMapper
+import com.yoloo.server.post.vo.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
-import java.security.Principal
 
 @Component
 class InsertPostUseCase(
@@ -23,30 +16,31 @@ class InsertPostUseCase(
     @Qualifier("cached") private val idGenerator: LongIdGenerator,
     private val userInfoFetcher: Fetcher<Long, UserInfoResponse>,
     private val groupInfoFetcher: Fetcher<Long, GroupInfoResponse>
-) : UseCase<InsertPostUseCase.Request, PostResponse> {
-
-    override fun execute(request: Request): PostResponse {
-        val userId = request.principal!!.name.toLong()
+) {
+    fun execute(jwtClaims: JwtClaims, request: InsertPostRequest): PostResponse {
+        val userId = jwtClaims.sub
 
         val userInfoResponse = userInfoFetcher.fetch(userId)
-        val groupInfoResponse = groupInfoFetcher.fetch(request.payload.groupId)
-
-        val payload = request.payload
+        val groupInfoResponse = groupInfoFetcher.fetch(request.groupId)
 
         val post = Post(
             id = idGenerator.generateId(),
+            type = findPostType(request),
             author = Author(
                 id = userId,
-                displayName = userInfoResponse.displayName,
-                avatar = AvatarImage(Url(userInfoResponse.image)),
+                displayName = jwtClaims.displayName,
+                avatar = AvatarImage(Url(jwtClaims.picture)),
                 verified = userInfoResponse.verified
             ),
-            data = TextPostData(
-                title = PostTitle(payload.title!!),
-                group = PostGroup(groupInfoResponse.id, groupInfoResponse.displayName),
-                tags = payload.tags!!.map(::PostTag).toSet()
-            ),
-            content = PostContent(payload.content!!)
+            content = PostContent(request.content!!),
+            title = PostTitle(request.title!!),
+            group = PostGroup(groupInfoResponse.id, groupInfoResponse.displayName),
+            tags = request.tags!!.map(::PostTag).toSet(),
+            coin = if (request.coin == 0) null else PostCoin(request.coin),
+            buddyRequest = when (request.buddyInfo) {
+                null -> null
+                else -> createBuddyRequest(request.buddyInfo)
+            }
         )
 
         // todo inc post count of the user
@@ -54,5 +48,22 @@ class InsertPostUseCase(
         return postResponseMapper.apply(post)
     }
 
-    class Request(val principal: Principal?, val payload: PostRequest)
+    private fun findPostType(request: InsertPostRequest): PostType {
+        if (request.buddyInfo != null) {
+            return PostType.BUDDY
+        }
+        if (request.attachments != null) {
+            return PostType.ATTACHMENT
+        }
+
+        return PostType.TEXT
+    }
+
+    private fun createBuddyRequest(buddyInfo: BuddyInfo): BuddyRequest {
+        return BuddyRequest(
+            peopleRange = Range(buddyInfo.fromPeople!!, buddyInfo.toPeople!!),
+            location = Location(buddyInfo.location!!),
+            dateRange = Range(buddyInfo.fromDate!!, buddyInfo.toDate!!)
+        )
+    }
 }

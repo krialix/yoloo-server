@@ -2,13 +2,20 @@ package com.yoloo.server.post.api
 
 import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.post.usecase.GetPostUseCase
+import com.yoloo.server.post.usecase.InsertPostUseCase
 import com.yoloo.server.post.usecase.ListGroupFeedUseCase
+import com.yoloo.server.post.vo.InsertPostRequest
+import com.yoloo.server.post.vo.JwtClaims
 import com.yoloo.server.post.vo.PostResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.Authentication
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
+import javax.validation.Valid
+import javax.validation.constraints.NotNull
 
 @RequestMapping(
     "/api/v1/posts",
@@ -17,92 +24,38 @@ import java.security.Principal
 @RestController
 class PostControllerV1(
     private val getPostUseCase: GetPostUseCase,
-    private val listGroupFeedUseCase: ListGroupFeedUseCase
+    private val listGroupFeedUseCase: ListGroupFeedUseCase,
+    private val insertPostUseCase: InsertPostUseCase
 ) {
 
-    @PreAuthorize("#oauth2.hasScope('post:read')")
+    @PreAuthorize("hasAuthority('MEMBER') or #oauth2.hasScope('post:read')")
     @GetMapping("/{postId}")
-    @ResponseBody
-    fun getPost(principal: Principal, @PathVariable("postId") postId: Long): PostResponse {
-        return getPostUseCase.execute(GetPostUseCase.Params(principal, postId))
+    fun getPost(authentication: Authentication, @PathVariable("postId") postId: Long): PostResponse {
+        val details = authentication.details as OAuth2AuthenticationDetails
+        val jwtClaim = details.decodedDetails as JwtClaims
+
+        return getPostUseCase.execute(jwtClaim, postId)
     }
 
+    @PreAuthorize("hasAuthority('MEMBER') or #oauth2.hasScope('post:write')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-    fun insertPost(principal: Principal?) {
-        /*(1..5).map {
-            return@map when (it) {
-                1, 2 -> Post(
-                    author = Author(id = "id$it", displayName = "user$it", avatarUrl = ""),
-                    data = TextPostData(
-                        title = PostTitle("title-deneme-$it"),
-                        group = PostGroup(id = "id$it", displayName = "group$it"),
-                        tags = setOf(PostTag("tag"))
-                    ),
-                    content = PostContent("lorem impsum")
-                )
-                3 -> Post(
-                    author = Author(id = "id$it", displayName = "user$it", avatarUrl = ""),
-                    data = RichPostData(
-                        title = PostTitle("title-deneme-$it"),
-                        group = PostGroup(id = "id$it", displayName = "group$it"),
-                        tags = setOf(PostTag("tag")),
-                        attachments = listOf(
-                            PostAttachment("/hello", "http://hello.jpg"),
-                            PostAttachment("/hello", "http://hello.jpg")
-                        )
-                    ),
-                    content = PostContent("lorem impsum")
-                )
-                4 -> Post(
-                    author = Author(id = "id$it", displayName = "user$it", avatarUrl = ""),
-                    data = SponsoredPostData(
-                        title = PostTitle("title-deneme-$it"),
-                        attachments = listOf(
-                            PostAttachment("/hello", "http://hello.jpg"),
-                            PostAttachment("/hello", "http://hello.jpg")
-                        )
-                    ),
-                    content = PostContent("lorem impsum")
+    fun insertPost(
+        authentication: Authentication,
+        @RequestBody @Valid @NotNull request: InsertPostRequest?
+    ): PostResponse {
+        val details = authentication.details as OAuth2AuthenticationDetails
+        val jwtClaim = details.decodedDetails as JwtClaims
 
-                )
-            *//*5 -> Post(
-                author = Author(id = "id$it", displayName = "user$it", avatarUrl = ""),
-                data = BuddyPostData(
-                    title = PostTitle("title-deneme-$it"),
-                    group = PostGroup(id = "id$it", displayName = "group$it"),
-                    tags = setOf(PostTag("tag")),
-                    buddyRequestInfo = BuddyRequestInfo(
-                        Range(1, 3),
-                        Location(""),
-                        Range(LocalDate.of(2018, Month.JUNE, 15), LocalDate.of(2018, Month.JUNE, 20))
-                    )
-                ),
-                type = PostType.BUDDY,
-                content = PostContent("lorem impsum")
-            )*//*
-                else -> Post(
-                    author = Author(id = "id$it", displayName = "user$it", avatarUrl = ""),
-                    data = TextPostData(
-                        title = PostTitle("title-deneme-$it"),
-                        group = PostGroup(id = "id$it", displayName = "group$it"),
-                        tags = setOf(PostTag("tag"))
-                    ),
-                    content = PostContent("lorem impsum")
-                )
-            }
-        }.let { ofy().save().entities(it) }*/
+        return insertPostUseCase.execute(jwtClaim, request!!)
     }
 
     @GetMapping("/topics/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     fun listTopicPosts(
-        principal: Principal?,
+        principal: Principal,
         @PathVariable("id") topicId: String,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CollectionResponse<PostResponse> {
-        return listGroupFeedUseCase.execute(ListGroupFeedUseCase.Request(principal, topicId, cursor))
+        return listGroupFeedUseCase.execute(principal, topicId, cursor)
     }
 }

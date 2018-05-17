@@ -11,6 +11,6 @@ open class TextPostDataResponse(
     open var approvedCommentId: String?,
     open var bounty: Int,
     open var count: PostCountResponse,
-    open var voteDir: Int,
+    open var voted: Boolean,
     open var createdAt: LocalDateTime
 ) : PostDataResponse

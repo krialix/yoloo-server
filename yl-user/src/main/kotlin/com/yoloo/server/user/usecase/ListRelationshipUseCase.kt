@@ -2,29 +2,26 @@ package com.yoloo.server.user.usecase
 
 import com.google.appengine.api.datastore.Cursor
 import com.yoloo.server.common.response.CollectionResponse
-import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.entity.Relationship
-import com.yoloo.server.user.vo.RelationshipResponse
 import com.yoloo.server.user.usecase.ListRelationshipUseCase.Type.FOLLOWER
 import com.yoloo.server.user.usecase.ListRelationshipUseCase.Type.FOLLOWING
+import com.yoloo.server.user.vo.RelationshipResponse
 import org.springframework.stereotype.Component
 
 @Component
-class ListRelationshipUseCase : UseCase<ListRelationshipUseCase.Request, CollectionResponse<RelationshipResponse>> {
+class ListRelationshipUseCase {
 
-    override fun execute(request: Request): CollectionResponse<RelationshipResponse> {
+    fun execute(type: Type, userId: String, cursor: String?): CollectionResponse<RelationshipResponse> {
         var query = ofy()
             .load()
             .type(Relationship::class.java)
-            .filter(getQueryKeyByRelationshipType(request.type), request.userId)
+            .filter(getQueryKeyByRelationshipType(type), userId)
             .orderKey(true)
 
-        request.cursor?.let { query = query.startAt(Cursor.fromWebSafeString(it)) }
+        cursor?.let { query = query.startAt(Cursor.fromWebSafeString(it)) }
 
         val keys = query.limit(50).keys().list()
-
-        val cursor = Cursor.fromWebSafeString(keys.last().toWebSafeString()).toWebSafeString()
 
         return ofy()
             .load()
@@ -42,8 +39,8 @@ class ListRelationshipUseCase : UseCase<ListRelationshipUseCase.Request, Collect
             .let {
                 CollectionResponse.builder<RelationshipResponse>()
                     .data(it)
-                    .prevPageToken(request.cursor)
-                    .nextPageToken(cursor)
+                    .prevPageToken(cursor)
+                    .nextPageToken(Cursor.fromWebSafeString(keys.last().toWebSafeString()).toWebSafeString())
                     .build()
             }
     }
@@ -54,8 +51,6 @@ class ListRelationshipUseCase : UseCase<ListRelationshipUseCase.Request, Collect
             FOLLOWER -> Relationship.INDEX_TO_ID
         }
     }
-
-    class Request(val type: Type, val userId: String, val cursor: String?)
 
     enum class Type {
         FOLLOWING,

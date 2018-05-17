@@ -10,7 +10,7 @@ import com.yoloo.server.user.vo.Email
 import com.yoloo.server.user.vo.Profile
 import com.yoloo.server.user.vo.UserGroup
 
-@Cache(expirationSeconds = 3600)
+@Cache(expirationSeconds = User.CACHE_EXPIRATION_TIME)
 @NoArg
 @Entity
 data class User(
@@ -34,5 +34,9 @@ data class User(
         profile.spokenLanguages = profile.spokenLanguages ?: emptyList()
         @Suppress("USELESS_ELVIS")
         subscribedGroups = subscribedGroups ?: emptyList()
+    }
+
+    companion object {
+        const val CACHE_EXPIRATION_TIME = 7200
     }
 }

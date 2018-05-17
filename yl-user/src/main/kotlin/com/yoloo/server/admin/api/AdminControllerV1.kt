@@ -4,6 +4,7 @@ import com.yoloo.server.admin.usecase.DeleteUserUseCase
 import com.yoloo.server.admin.usecase.WarmUpCacheUseCase
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
 
@@ -16,17 +17,15 @@ class AdminControllerV1(
     private val deleteUserUseCase: DeleteUserUseCase,
     private val warmUpCacheUseCase: WarmUpCacheUseCase
 ) {
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ResponseBody
-    fun deleteUser(principal: Principal?, @PathVariable("userId") userId: String) {
-        deleteUserUseCase.execute(DeleteUserUseCase.Request(principal, userId))
+    fun deleteUser(principal: Principal, @PathVariable("userId") userId: String) {
+        deleteUserUseCase.execute(principal, userId)
     }
 
-    @PostMapping("cache/warmup")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    fun warmupCache() {
-        warmUpCacheUseCase.execute(Unit)
+    @PostMapping("/cache/warmup")
+    fun warmUpCache() {
+        warmUpCacheUseCase.execute()
     }
 }
