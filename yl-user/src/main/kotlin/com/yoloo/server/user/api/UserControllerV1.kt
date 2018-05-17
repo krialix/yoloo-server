@@ -12,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails
 import org.springframework.web.bind.annotation.*
-import java.security.Principal
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
@@ -38,7 +37,7 @@ internal class UserControllerV1(
         println("Auth: $authentication")
         println("Details: $details")
 
-        return getUserUseCase.execute(GetUserUseCase.Params(jwtClaim, userId))
+        return getUserUseCase.execute(jwtClaim.sub, userId)
     }
 
     @PreAuthorize("hasAnyAuthority('MEMBER') or #oauth2.hasScope('user:write')")
@@ -47,17 +46,17 @@ internal class UserControllerV1(
         val details = authentication.details as OAuth2AuthenticationDetails
         val jwtClaim = details.decodedDetails as JwtClaims
 
-        patchUserUseCase.execute(PatchUserUseCase.Params(jwtClaim, request!!))
+        patchUserUseCase.execute(jwtClaim.sub, request!!)
     }
 
     @PreAuthorize("hasAnyAuthority('MEMBER') or #oauth2.hasScope('user:read')")
     @GetMapping("/search", params = ["q"])
     fun searchUsers(
-        principal: Principal?,
+        authentication: Authentication,
         @RequestParam("q") query: String,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CollectionResponse<SearchUserResponse> {
-        return searchUserUseCase.execute(SearchUserUseCase.Params(query, cursor))
+        return searchUserUseCase.execute(query, cursor)
     }
 
     @PreAuthorize("hasAnyAuthority('MEMBER') or #oauth2.hasScope('user:write')")

@@ -13,9 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails
 import org.springframework.web.bind.annotation.*
-import java.security.Principal
 import javax.validation.Valid
-import javax.validation.constraints.NotNull
 
 @RequestMapping(
     "/api/v1/posts",
@@ -27,35 +25,34 @@ class PostControllerV1(
     private val listGroupFeedUseCase: ListGroupFeedUseCase,
     private val insertPostUseCase: InsertPostUseCase
 ) {
-
     @PreAuthorize("hasAuthority('MEMBER') or #oauth2.hasScope('post:read')")
     @GetMapping("/{postId}")
     fun getPost(authentication: Authentication, @PathVariable("postId") postId: Long): PostResponse {
         val details = authentication.details as OAuth2AuthenticationDetails
         val jwtClaim = details.decodedDetails as JwtClaims
 
-        return getPostUseCase.execute(jwtClaim, postId)
+        return getPostUseCase.execute(jwtClaim.sub, postId)
     }
 
     @PreAuthorize("hasAuthority('MEMBER') or #oauth2.hasScope('post:write')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun insertPost(
-        authentication: Authentication,
-        @RequestBody @Valid @NotNull request: InsertPostRequest?
-    ): PostResponse {
+    fun insertPost(authentication: Authentication, @RequestBody @Valid request: InsertPostRequest): PostResponse {
         val details = authentication.details as OAuth2AuthenticationDetails
         val jwtClaim = details.decodedDetails as JwtClaims
 
-        return insertPostUseCase.execute(jwtClaim, request!!)
+        return insertPostUseCase.execute(jwtClaim, request)
     }
 
     @GetMapping("/topics/{id}")
     fun listTopicPosts(
-        principal: Principal,
+        authentication: Authentication,
         @PathVariable("id") topicId: String,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CollectionResponse<PostResponse> {
-        return listGroupFeedUseCase.execute(principal, topicId, cursor)
+        val details = authentication.details as OAuth2AuthenticationDetails
+        val jwtClaim = details.decodedDetails as JwtClaims
+
+        return listGroupFeedUseCase.execute(jwtClaim.sub, topicId, cursor)
     }
 }

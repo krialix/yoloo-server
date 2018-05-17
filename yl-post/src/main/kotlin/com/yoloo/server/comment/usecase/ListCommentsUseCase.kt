@@ -2,24 +2,18 @@ package com.yoloo.server.comment.usecase
 
 import com.google.appengine.api.datastore.Cursor
 import com.yoloo.server.comment.entity.Comment
-import com.yoloo.server.comment.vo.CommentResponse
 import com.yoloo.server.comment.mapper.CommentResponseMapper
+import com.yoloo.server.comment.vo.CommentResponse
 import com.yoloo.server.common.api.exception.BadRequestException
 import com.yoloo.server.common.response.CollectionResponse
-import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
 import org.springframework.stereotype.Service
-import java.security.Principal
 
 @Service
-class ListCommentsUseCase(
-    private val commentResponseMapper: CommentResponseMapper
-) : UseCase<ListCommentsUseCase.Request, CollectionResponse<CommentResponse>> {
+class ListCommentsUseCase(private val commentResponseMapper: CommentResponseMapper) {
 
-    override fun execute(request: Request): CollectionResponse<CommentResponse> {
-        val postId = request.postId
-
+    fun execute(requesterId: Long, postId: String, cursor: String?): CollectionResponse<CommentResponse> {
         val post =
             ofy().load().type(Post::class.java).id(postId).now() ?: throw BadRequestException("error.post.not-found")
 
@@ -27,7 +21,7 @@ class ListCommentsUseCase(
             .type(Comment::class.java)
             .filter("postId.value", postId)
 
-        request.cursor?.let { query = query.startAt(Cursor.fromWebSafeString(it)) }
+        cursor?.let { query = query.startAt(Cursor.fromWebSafeString(it)) }
 
         query = query.limit(50)
 
@@ -37,10 +31,8 @@ class ListCommentsUseCase(
 
         return CollectionResponse.builder<CommentResponse>()
             .data(data)
-            .prevPageToken(request.cursor)
+            .prevPageToken(cursor)
             .nextPageToken(iterator.cursor.toWebSafeString())
             .build()
     }
-
-    class Request(val principal: Principal?, val postId: String, val cursor: String?)
 }

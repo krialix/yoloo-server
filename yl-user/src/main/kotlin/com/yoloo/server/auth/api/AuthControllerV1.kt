@@ -1,7 +1,6 @@
 package com.yoloo.server.auth.api
 
 import com.yoloo.server.auth.usecase.EmailValidationUseCase
-import com.yoloo.server.auth.usecase.SignInGoogleUseCase
 import com.yoloo.server.auth.usecase.SignUpEmailUseCase
 import com.yoloo.server.auth.vo.SignInFacebookRequest
 import com.yoloo.server.auth.vo.SignInGoogleRequest

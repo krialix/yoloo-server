@@ -1,8 +1,6 @@
 package com.yoloo.server.user.usecase
 
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.auth.vo.JwtClaims
-import com.yoloo.server.common.shared.UseCase
 import com.yoloo.server.common.util.Filters
 import com.yoloo.server.common.util.ServiceExceptions
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
@@ -12,12 +10,9 @@ import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.stereotype.Component
 
 @Component
-class GetUserUseCase(private val memcacheService: MemcacheService) : UseCase<GetUserUseCase.Params, UserResponse> {
+class GetUserUseCase(private val memcacheService: MemcacheService) {
 
-    override fun execute(params: Params): UserResponse {
-        val requesterId = params.jwtClaims.sub
-        val targetId = params.targetId
-
+    fun execute(requesterId: Long, targetId: Long): UserResponse {
         var user = ofy().load().type(User::class.java).id(targetId).now()
 
         ServiceExceptions.checkBadRequest(user != null, "userId is invalid")
@@ -70,6 +65,4 @@ class GetUserUseCase(private val memcacheService: MemcacheService) : UseCase<Get
             spokenLanguages = user.profile.spokenLanguages.map { LanguageResponse(it.value) }
         )
     }
-
-    class Params(val jwtClaims: JwtClaims, val targetId: Long)
 }
