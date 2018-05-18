@@ -51,4 +51,9 @@ dependencies {
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.2.41'
+    testImplementation 'com.google.truth:truth:0.40'
+    testImplementation "com.google.appengine:appengine-api-stubs:$appengineVersion"
+    testImplementation "com.google.appengine:appengine-testing:$appengineVersion"
+    testImplementation "com.google.appengine:appengine-tools-sdk:$appengineVersion"
 }

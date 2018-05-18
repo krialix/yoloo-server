@@ -1,6 +1,5 @@
 package com.yoloo.server.common.config;
 
-import com.google.appengine.api.LifecycleManager;
 import com.google.appengine.api.memcache.AsyncMemcacheService;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
@@ -8,7 +7,6 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
-import com.yoloo.server.common.event.AppengineShutdownEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -20,12 +18,12 @@ public class AppengineConfig {
 
   @Autowired
   public AppengineConfig(ApplicationEventPublisher eventPublisher) {
-    LifecycleManager.getInstance()
+    /*LifecycleManager.getInstance()
         .setShutdownHook(
             () -> {
               LifecycleManager.getInstance().interruptAllRequests();
               eventPublisher.publishEvent(new AppengineShutdownEvent(this));
-            });
+            });*/
   }
 
   @Bean

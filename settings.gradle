@@ -5,3 +5,5 @@ include 'yl-common'
 include 'yl-gateway-service'
 include 'yl-post'
 include 'yl-user'
+include 'yl-counter-service'
+

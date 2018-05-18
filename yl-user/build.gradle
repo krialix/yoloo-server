@@ -1,4 +1,5 @@
 plugins {
+    id "com.google.protobuf" version "0.8.5"
     id 'org.jetbrains.kotlin.jvm' version '1.2.41'
     id 'org.jetbrains.kotlin.plugin.spring' version '1.2.41'
     id 'org.jetbrains.kotlin.plugin.noarg' version '1.2.41'
@@ -53,6 +54,7 @@ dependencies {
     // Util
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
     implementation 'com.auth0:java-jwt:3.3.0'
+    implementation 'org.lognet:grpc-spring-boot-starter:2.3.2'
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -62,3 +64,28 @@ dependencies {
     testImplementation "com.google.appengine:appengine-testing:$appengineVersion"
     testImplementation "com.google.appengine:appengine-tools-sdk:$appengineVersion"
 }
+
+/*
+protobuf {
+    protoc {
+        // The artifact spec for the Protobuf Compiler
+        artifact = 'com.google.protobuf:protoc:3.5.1-1'
+    }
+    plugins {
+        // Optional: an artifact spec for a protoc plugin, with "grpc" as
+        // the identifier, which can be referred to in the "plugins"
+        // container of the "generateProtoTasks" closure.
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.12.0'
+        }
+    }
+    generateProtoTasks {
+        ofSourceSet('main')*.plugins {
+            // Apply the "grpc" plugin whose spec is defined above, without
+            // options.  Note the braces cannot be omitted, otherwise the
+            // plugin will not be added. This is because of the implicit way
+            // NamedDomainObjectContainer binds the methods.
+            grpc { }
+        }
+    }
+}*/

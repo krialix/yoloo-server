@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
-import com.googlecode.objectify.impl.translate.opt.joda.JodaTimeTranslators;
 import com.googlecode.objectify.util.Closeable;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -223,7 +222,7 @@ public final class AppEngineRule extends ExternalResource {
       TestObjectifyService.initialize();
       rootService = TestObjectifyService.begin();
 
-      JodaTimeTranslators.add(TestObjectifyService.fact());
+      //JodaTimeTranslators.add(TestObjectifyService.fact());
 
       //loadInitialData();
     }

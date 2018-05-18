@@ -9,7 +9,7 @@ import com.googlecode.objectify.impl.ObjectifyImpl;
 /** Adds some convenience methods. */
 public class TestObjectify extends ObjectifyImpl<TestObjectify> {
 
-  public TestObjectify(ObjectifyFactory fact) {
+  TestObjectify(ObjectifyFactory fact) {
     super(fact);
   }
 

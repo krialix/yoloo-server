@@ -2,14 +2,14 @@ package com.yoloo.server.user.entity
 
 import com.google.common.truth.Truth.assertThat
 import com.yoloo.server.auth.vo.UserLocale
-import com.yoloo.server.common.vo.AvatarImage
-import com.yoloo.server.common.vo.Url
-import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory
-import com.yoloo.server.user.vo.*
-import com.yoloo.server.user.translator.CuckooFilterTranslatorFactory
 import com.yoloo.server.common.util.AppEngineRule
 import com.yoloo.server.common.util.TestObjectifyService.fact
 import com.yoloo.server.common.util.TestObjectifyService.ofy
+import com.yoloo.server.common.vo.AvatarImage
+import com.yoloo.server.common.vo.Url
+import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory
+import com.yoloo.server.user.translator.CuckooFilterTranslatorFactory
+import com.yoloo.server.user.vo.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
