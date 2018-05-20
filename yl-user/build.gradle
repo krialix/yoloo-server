@@ -55,6 +55,7 @@ dependencies {
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
     implementation 'com.auth0:java-jwt:3.3.0'
     implementation 'org.lognet:grpc-spring-boot-starter:2.3.2'
+    implementation 'de.codecentric:spring-boot-admin-starter-server:2.0.0'
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

@@ -27,10 +27,10 @@ class ListCommentsUseCase(private val commentResponseMapper: CommentResponseMapp
 
         val iterator = query.iterator()
 
-        val data = iterator.asSequence().map { commentResponseMapper.apply(it) }.toList()
+        //val data = iterator.asSequence().map { commentResponseMapper.apply(it) }.toList()
 
         return CollectionResponse.builder<CommentResponse>()
-            .data(data)
+            .data(emptyList())
             .prevPageToken(cursor)
             .nextPageToken(iterator.cursor.toWebSafeString())
             .build()

@@ -18,13 +18,11 @@ class InsertPostUseCase(
     private val userInfoFetcher: Fetcher<Long, UserInfoResponse>,
     private val groupInfoFetcher: Fetcher<Long, GroupInfoResponse>
 ) {
-    fun execute(jwtClaims: JwtClaims, request: InsertPostRequest): PostResponse {
-        val userId = jwtClaims.sub
-
-        val userInfo = userInfoFetcher.fetch(userId)
+    fun execute(requesterId: Long, request: InsertPostRequest): PostResponse {
+        val userInfo = userInfoFetcher.fetch(requesterId)
         val groupInfo = groupInfoFetcher.fetch(request.groupId)
 
-        val post = createPost(request, userId, userInfo, groupInfo)
+        val post = createPost(request, requesterId, userInfo, groupInfo)
 
         // TODO inc user & group post count
         // TODO register title & tags in search service
@@ -34,7 +32,7 @@ class InsertPostUseCase(
 
         // todo inc post count of the user
 
-        return postResponseMapper.apply(post)
+        return postResponseMapper.apply(post, true, false)
     }
 
     private fun createPost(

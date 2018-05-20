@@ -8,8 +8,8 @@ open class TextPostDataResponse(
     open var title: String,
     open var group: PostGroupResponse,
     open var tags: List<String>,
-    open var approvedCommentId: String?,
-    open var bounty: Int,
+    open var approvedCommentId: Long?,
+    open var coin: Int,
     open var count: PostCountResponse,
     open var voted: Boolean,
     open var createdAt: LocalDateTime

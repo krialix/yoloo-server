@@ -3,6 +3,9 @@ spring:
     active: dev
   messages:
     basename: i18n/messages
+  boot:
+    admin:
+      context-path: /admin
 server:
   compression:
     enabled: true

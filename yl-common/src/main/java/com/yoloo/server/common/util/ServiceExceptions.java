@@ -2,6 +2,7 @@ package com.yoloo.server.common.util;
 
 import com.yoloo.server.common.api.exception.BadRequestException;
 import com.yoloo.server.common.api.exception.ConflictException;
+import com.yoloo.server.common.api.exception.ForbiddenException;
 import com.yoloo.server.common.api.exception.NotFoundException;
 
 public class ServiceExceptions {
@@ -22,7 +23,7 @@ public class ServiceExceptions {
 
   public static void checkForbidden(boolean expression, String message, Object... args) {
     if (!expression) {
-      throw new NotFoundException(message, args);
+      throw new ForbiddenException(message, args);
     }
   }
 

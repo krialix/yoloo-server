@@ -5,7 +5,7 @@ import com.yoloo.server.post.vo.postdataresponse.PostDataResponse
 
 @NoArg
 data class PostResponse(
-    val id: String,
+    val id: Long,
     val type: String,
     val author: AuthorResponse,
     val content: String,

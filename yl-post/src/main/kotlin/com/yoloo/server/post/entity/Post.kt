@@ -9,6 +9,7 @@ import com.yoloo.server.common.shared.Keyable
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.post.vo.*
 import java.time.LocalDateTime
+import java.util.*
 
 @NoArg
 @Cache(expirationSeconds = Post.CACHE_EXPIRATION_TIME)
@@ -23,7 +24,7 @@ data class Post(
 
     var content: PostContent,
 
-    var flags: Set<@JvmSuppressWildcards PostPermFlag> = PostPermFlag.default(),
+    var flags: Set<@JvmSuppressWildcards PostPermFlag> = EnumSet.noneOf(PostPermFlag::class.java),
 
     var title: PostTitle,
 
@@ -32,7 +33,7 @@ data class Post(
     var tags: Set<@JvmSuppressWildcards PostTag>,
 
     @IgnoreSave(IfNull::class)
-    var approvedCommentId: AcceptedCommentId? = null,
+    var approvedCommentId: ApprovedCommentId? = null,
 
     var coin: PostCoin? = null,
 
@@ -50,6 +51,8 @@ data class Post(
 
     @OnLoad
     fun onLoad() {
+        @Suppress("USELESS_ELVIS")
+        flags = flags ?: emptySet()
         @Suppress("USELESS_ELVIS")
         attachments = attachments ?: emptyList()
     }

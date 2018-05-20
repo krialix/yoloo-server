@@ -2,9 +2,9 @@ package com.yoloo.server.comment.config
 
 import com.yoloo.server.comment.entity.Comment
 import com.yoloo.server.objectify.configuration.ObjectifyConfigurer
-import org.springframework.stereotype.Component
+import org.springframework.context.annotation.Configuration
 
-@Component
+@Configuration
 class CommentObjectifyConfig : ObjectifyConfigurer {
 
     override fun registerEntities(): List<Class<*>> {

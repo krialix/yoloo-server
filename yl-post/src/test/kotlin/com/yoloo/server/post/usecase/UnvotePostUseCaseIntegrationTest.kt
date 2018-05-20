@@ -11,52 +11,62 @@ import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.mapper.PostResponseMapper
+import com.yoloo.server.post.entity.Vote
 import com.yoloo.server.post.vo.*
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class GetPostUseCaseIntegrationTest {
+class UnvotePostUseCaseIntegrationTest {
 
     @get:Rule
     val appEngineRule: AppEngineRule =
         AppEngineRule.builder().withDatastore().withMemcacheService().build()
 
-    private val memcacheService by lazy(LazyThreadSafetyMode.NONE) { MemcacheServiceFactory.getMemcacheService() }
-    private val postResponseMapper by lazy(LazyThreadSafetyMode.NONE) { PostResponseMapper() }
-    private val getPostUseCase by lazy(LazyThreadSafetyMode.NONE) { GetPostUseCase(postResponseMapper, memcacheService) }
+    private val memcacheService by lazy(LazyThreadSafetyMode.NONE) { MemcacheServiceFactory.getAsyncMemcacheService() }
+    private val votePostUseCase by lazy(LazyThreadSafetyMode.NONE) { VotePostUseCase(memcacheService) }
+    private val unvotePostUseCase by lazy(LazyThreadSafetyMode.NONE) { UnvotePostUseCase(memcacheService) }
 
     @Before
     fun setUp() {
-        memcacheService.put(Filters.KEY_FILTER_VOTE, NanoCuckooFilter.Builder(32).build())
+        memcacheService.put(Filters.KEY_FILTER_VOTE, NanoCuckooFilter.Builder(32).build()).get()
 
         fact().translators.add(LocalDateTimeDateTranslatorFactory())
         fact().register(Post::class.java)
+        fact().register(Vote::class.java)
     }
 
     @Test
-    fun getPostById_postExists_ShouldReturnSamePost() {
-        val original = ofy().saveClearLoad(createDemoPost())
+    fun unvotePost_whenPostIsExistsAndVotedBefore_shouldUnvote() {
+        val userId = 100L
 
-        val postResponse = getPostUseCase.execute(1, 1)
+        val post = ofy().saveClearLoad(createVotingAllowedPost())
+        val voteKey = Vote.createKey(userId, post.id, "p")
 
-        assertThat(postResponse.id).isEqualTo(original.id)
-        assertThat(postResponse.author.id).isEqualTo(original.author.id)
-        assertThat(postResponse.author.displayName).isEqualTo(original.author.displayName)
-        assertThat(original.id).isEqualTo(postResponse.id)
-        assertThat(original.id).isEqualTo(postResponse.id)
+        votePostUseCase.execute(userId, post.id)
+
+        unvotePostUseCase.execute(userId, post.id)
+
+        val voteFilter = memcacheService.get(Filters.KEY_FILTER_VOTE).get() as NanoCuckooFilter
+        assertThat(voteFilter.contains(voteKey.name)).isFalse()
+
+        val map = ofy().load().keys(post.key, voteKey) as Map<*, *>
+        val unvotedPost = map[post.key] as Post
+        val deletedVote = map[voteKey] as Vote?
+
+        assertThat(unvotedPost.countData.voteCount).isEqualTo(0)
+        assertThat(deletedVote).isNull()
     }
 
     @Test(expected = NotFoundException::class)
-    fun getPostById_postNotExists_ShouldReturnSamePost() {
-        ofy().saveClearLoad(createDemoPost())
+    fun unvotePost_whenPostIsNotExists_shouldThrowNotFoundException() {
+        val userId = 100L
 
-        getPostUseCase.execute(1, 10)
+        unvotePostUseCase.execute(userId, 1000)
     }
 
-    private fun createDemoPost(): Post {
+    private fun createVotingAllowedPost(): Post {
         return Post(
             id = 1,
             type = PostType.TEXT,

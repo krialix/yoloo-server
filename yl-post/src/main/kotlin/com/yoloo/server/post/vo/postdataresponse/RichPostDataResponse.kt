@@ -9,10 +9,10 @@ data class RichPostDataResponse(
     override var title: String,
     override var group: PostGroupResponse,
     override var tags: List<String>,
-    override var approvedCommentId: String?,
-    override var bounty: Int,
+    override var approvedCommentId: Long?,
+    override var coin: Int,
     override var count: PostCountResponse,
     override var voted: Boolean,
     override var createdAt: LocalDateTime,
     val attachments: List<PostAttachmentResponse>
-) : TextPostDataResponse(title, group, tags, approvedCommentId, bounty, count, voted, createdAt)
+) : TextPostDataResponse(title, group, tags, approvedCommentId, coin, count, voted, createdAt)

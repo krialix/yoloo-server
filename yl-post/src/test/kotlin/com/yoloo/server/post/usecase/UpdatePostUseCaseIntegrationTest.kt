@@ -1,8 +1,7 @@
 package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.memcache.MemcacheServiceFactory
-import com.google.common.truth.Truth.assertThat
-import com.yoloo.server.common.api.exception.NotFoundException
+import com.google.common.truth.Truth
 import com.yoloo.server.common.util.AppEngineRule
 import com.yoloo.server.common.util.Filters
 import com.yoloo.server.common.util.TestObjectifyService.fact
@@ -18,7 +17,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class GetPostUseCaseIntegrationTest {
+class UpdatePostUseCaseIntegrationTest {
 
     @get:Rule
     val appEngineRule: AppEngineRule =
@@ -26,7 +25,12 @@ class GetPostUseCaseIntegrationTest {
 
     private val memcacheService by lazy(LazyThreadSafetyMode.NONE) { MemcacheServiceFactory.getMemcacheService() }
     private val postResponseMapper by lazy(LazyThreadSafetyMode.NONE) { PostResponseMapper() }
-    private val getPostUseCase by lazy(LazyThreadSafetyMode.NONE) { GetPostUseCase(postResponseMapper, memcacheService) }
+    private val updatePostUseCase by lazy(LazyThreadSafetyMode.NONE) {
+        UpdatePostUseCase(
+            postResponseMapper,
+            memcacheService
+        )
+    }
 
     @Before
     fun setUp() {
@@ -37,23 +41,12 @@ class GetPostUseCaseIntegrationTest {
     }
 
     @Test
-    fun getPostById_postExists_ShouldReturnSamePost() {
-        val original = ofy().saveClearLoad(createDemoPost())
-
-        val postResponse = getPostUseCase.execute(1, 1)
-
-        assertThat(postResponse.id).isEqualTo(original.id)
-        assertThat(postResponse.author.id).isEqualTo(original.author.id)
-        assertThat(postResponse.author.displayName).isEqualTo(original.author.displayName)
-        assertThat(original.id).isEqualTo(postResponse.id)
-        assertThat(original.id).isEqualTo(postResponse.id)
-    }
-
-    @Test(expected = NotFoundException::class)
-    fun getPostById_postNotExists_ShouldReturnSamePost() {
+    fun getPostById_postExistsAndChangeContent_ShouldReturnUpdatedPost() {
         ofy().saveClearLoad(createDemoPost())
 
-        getPostUseCase.execute(1, 10)
+        val postResponse = updatePostUseCase.execute(2, 1, UpdatePostRequest("changed"))
+
+        Truth.assertThat(postResponse.content).isEqualTo("changed")
     }
 
     private fun createDemoPost(): Post {

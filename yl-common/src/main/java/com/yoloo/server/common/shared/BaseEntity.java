@@ -5,7 +5,6 @@ import com.googlecode.objectify.annotation.OnSave;
 import java.time.LocalDateTime;
 
 public abstract class BaseEntity<Type> implements Keyable<Type> {
-
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
   private long schemaVersion;

@@ -10,6 +10,7 @@ data class CommentResponse(
     val author: AuthorResponse,
     val content: String,
     val approved: Boolean,
+    val voted: Boolean,
     val voteCount: Int,
     val createdAt: LocalDateTime
 )

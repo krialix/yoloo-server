@@ -12,15 +12,16 @@ import org.springframework.stereotype.Component
 @Component
 class PostResponseMapper {
 
-    fun apply(from: Post, voted: Boolean = false): PostResponse {
+    fun apply(from: Post, self: Boolean, voted: Boolean): PostResponse {
         return PostResponse(
-            id = from.key.toWebSafeString(),
+            id = from.id,
             type = from.type.name.toLowerCase(),
             author = AuthorResponse(
                 id = from.author.id,
                 displayName = from.author.displayName,
                 image = SimpleAttachmentResponse(from.author.avatar.url.value),
-                self = from.author.self
+                self = self,
+                verified = from.author.verified
             ),
             content = from.content.value,
             data = when (from.type) {
@@ -38,7 +39,7 @@ class PostResponseMapper {
             group = PostGroupResponse(post.group.id, post.group.displayName),
             tags = post.tags.map { it.value },
             approvedCommentId = post.approvedCommentId?.value,
-            bounty = post.coin?.value ?: 0,
+            coin = post.coin?.value ?: 0,
             count = PostCountResponse(post.countData.voteCount, post.countData.commentCount),
             voted = voted,
             createdAt = post.createdAt
@@ -51,7 +52,7 @@ class PostResponseMapper {
             group = PostGroupResponse(post.group.id, post.group.displayName),
             tags = post.tags.map { it.value },
             approvedCommentId = post.approvedCommentId?.value,
-            bounty = post.coin?.value ?: 0,
+            coin = post.coin?.value ?: 0,
             count = PostCountResponse(post.countData.voteCount, post.countData.commentCount),
             voted = voted,
             createdAt = post.createdAt,
