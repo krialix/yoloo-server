@@ -1,11 +1,11 @@
-package com.yoloo.server.comment.usecase
+package com.yoloo.server.post.usecase
 
-import com.yoloo.server.comment.entity.Comment
-import com.yoloo.server.comment.mapper.CommentResponseMapper
-import com.yoloo.server.comment.vo.CommentContent
-import com.yoloo.server.comment.vo.CommentResponse
-import com.yoloo.server.comment.vo.InsertCommentRequest
-import com.yoloo.server.comment.vo.PostId
+import com.yoloo.server.post.entity.Comment
+import com.yoloo.server.post.mapper.CommentResponseMapper
+import com.yoloo.server.post.vo.CommentContent
+import com.yoloo.server.post.vo.CommentResponse
+import com.yoloo.server.post.vo.InsertCommentRequest
+import com.yoloo.server.post.vo.PostId
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.common.util.Fetcher
@@ -27,20 +27,20 @@ class InsertCommentUseCase(
 ) {
     fun execute(requesterId: Long, request: InsertCommentRequest): CommentResponse {
         val postId = request.postId!!
-        var post = ofy().load().type(Post::class.java).id(postId).now()
+        val post = ofy().load().type(Post::class.java).id(postId).now()
 
-        ServiceExceptions.checkNotFound(post != null, "post.not-found")
-        ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not-found")
+        ServiceExceptions.checkNotFound(post != null, "post.not_found")
+        ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
         ServiceExceptions.checkForbidden(
             !post.flags.contains(PostPermFlag.DISABLE_COMMENTING),
-            "post.not_allowed.commenting"
+            "post.forbidden_commenting"
         )
 
         val userResponse = userInfoFetcher.fetch(requesterId)
 
         val comment = createComment(postId, requesterId, userResponse, request)
 
-        post = updatePost(post)
+        post.countData.commentCount.inc()
 
         val saveResult = ofy().save().entities(comment, post)
         if (AppengineUtil.isTest()) {
@@ -67,10 +67,5 @@ class InsertCommentUseCase(
             ),
             content = CommentContent(request.content!!)
         )
-    }
-
-    private fun updatePost(post: Post): Post {
-        val countData = post.countData.copy(commentCount = post.countData.commentCount.inc())
-        return post.copy(countData = countData)
     }
 }

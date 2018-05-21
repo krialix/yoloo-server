@@ -1,4 +1,4 @@
-package com.yoloo.server.comment.vo
+package com.yoloo.server.post.vo
 
 import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.util.NoArg

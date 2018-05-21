@@ -1,4 +1,4 @@
-package com.yoloo.server.common.config
+package com.yoloo.server.post.config
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean

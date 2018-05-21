@@ -31,7 +31,7 @@ class UnfollowUseCase(
 
         val relationshipFilter = memcacheService.get(Filters.KEY_FILTER_RELATIONSHIP) as NanoCuckooFilter
 
-        checkNotFound(relationshipFilter.contains("$fromId:$userId"), "relationship.error.not-found")
+        checkNotFound(relationshipFilter.contains("$fromId:$userId"), "relationship.error.not_found")
 
         publishUnfollowEvent(fromId, userId)
     }

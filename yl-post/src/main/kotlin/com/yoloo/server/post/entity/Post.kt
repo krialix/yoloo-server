@@ -62,6 +62,7 @@ data class Post(
     }
 
     companion object {
+        const val INDEX_GROUP_ID = "group.id"
         const val CACHE_EXPIRATION_TIME = 7200
     }
 }

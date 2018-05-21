@@ -58,11 +58,11 @@ class ListGroupFeedUseCaseIntegrationTest {
 
     @Test
     fun listGroupFeed_whenFeedIsNotEmpty_shouldReturnAllResponse() {
-        saveExamplePosts(200L)
+        createPosts(200L)
 
         val collectionResponse = listGroupFeedUseCase.execute(100, 200, null)
 
-        assertThat(collectionResponse.data).hasSize(10)
+        assertThat(collectionResponse.data).hasSize(50)
         assertThat(collectionResponse.data).isOrdered(postResponseComparator)
         assertThat(collectionResponse.prevPageToken).isNull()
         assertThat(collectionResponse.nextPageToken).isNotNull()
@@ -70,7 +70,7 @@ class ListGroupFeedUseCaseIntegrationTest {
 
     @Test
     fun listGroupFeed_whenGivenCursor_shouldReturnPaginatedResponse() {
-        saveExamplePosts(200L)
+        createPosts(200L)
 
         val collectionResponse1 = listGroupFeedUseCase.execute(100, 200, null)
 
@@ -84,7 +84,7 @@ class ListGroupFeedUseCaseIntegrationTest {
 
     @Test
     fun listGroupFeed_whenFeedIsNotEmptyAndVoted_shouldReturnVoted() {
-        saveExamplePosts(200L)
+        createPosts(200L)
         votePostUseCase.execute(100, 60)
 
         val collectionResponse = listGroupFeedUseCase.execute(100, 200, null)
@@ -98,7 +98,7 @@ class ListGroupFeedUseCaseIntegrationTest {
         assertThat(collectionResponse.nextPageToken).isNotNull()
     }
 
-    private fun saveExamplePosts(groupId: Long): Map<Key<Post>, Post> {
+    private fun createPosts(groupId: Long): Map<Key<Post>, Post> {
         return (1..60)
             .map {
                 Post(

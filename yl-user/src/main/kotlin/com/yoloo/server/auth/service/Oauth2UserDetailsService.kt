@@ -22,8 +22,8 @@ class Oauth2UserDetailsService : UserDetailsService {
             .first()
             .now()
 
-        checkNotFound(account != null, "user.error.not-found")
-        checkNotFound(!account!!.disabled, "user.error.not-found")
+        checkNotFound(account != null, "user.error.not_found")
+        checkNotFound(!account!!.disabled, "user.error.not_found")
 
         return Oauth2User(
             userId = account.id,

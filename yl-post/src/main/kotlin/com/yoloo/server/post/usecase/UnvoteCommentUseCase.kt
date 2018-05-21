@@ -2,27 +2,27 @@ package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.googlecode.objectify.Key
+import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.common.util.Filters
 import com.yoloo.server.common.util.ServiceExceptions
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
-import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.entity.Vote
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.stereotype.Component
 
 @Component
-class UnvotePostUseCase(private val memcacheService: AsyncMemcacheService) {
+class UnvoteCommentUseCase(private val memcacheService: AsyncMemcacheService) {
 
-    fun execute(requesterId: Long, postId: Long) {
-        val postKey = Key.create(Post::class.java, postId)
-        val voteKey = Vote.createKey(requesterId, postId, "p")
+    fun execute(requesterId: Long, commentId: Long) {
+        val commentKey = Key.create(Comment::class.java, commentId)
+        val voteKey = Vote.createKey(requesterId, commentId, "c")
 
-        val map = ofy().load().keys(postKey, voteKey) as Map<*, *>
-        val post = map[postKey] as Post?
+        val map = ofy().load().keys(commentKey, voteKey) as Map<*, *>
+        val comment = map[commentKey] as Comment?
         val vote = map[voteKey] as Vote?
 
-        ServiceExceptions.checkNotFound(post != null, "post.not_found")
+        ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
         ServiceExceptions.checkNotFound(vote != null, "vote.not_found")
 
         val deleteResult = ofy().delete().key(voteKey)
@@ -38,8 +38,8 @@ class UnvotePostUseCase(private val memcacheService: AsyncMemcacheService) {
             putFuture.get()
         }
 
-        post!!.countData.voteCount = post.countData.voteCount.dec()
-        val saveResult = ofy().save().entity(post)
+        comment!!.voteCount = comment.voteCount.dec()
+        val saveResult = ofy().save().entity(comment)
         if (AppengineUtil.isTest()) {
             saveResult.now()
         }

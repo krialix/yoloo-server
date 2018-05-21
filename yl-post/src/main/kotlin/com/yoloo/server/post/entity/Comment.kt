@@ -1,10 +1,10 @@
-package com.yoloo.server.comment.entity
+package com.yoloo.server.post.entity
 
 import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id
 import com.googlecode.objectify.annotation.Index
-import com.yoloo.server.comment.vo.CommentContent
-import com.yoloo.server.comment.vo.PostId
+import com.yoloo.server.post.vo.CommentContent
+import com.yoloo.server.post.vo.PostId
 import com.yoloo.server.common.shared.BaseEntity
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.post.vo.Author
@@ -25,4 +25,10 @@ data class Comment(
     var voteCount: Int = 0,
 
     var approved: Boolean = false
-) : BaseEntity<Comment>(1L)
+) : BaseEntity<Comment>(1L) {
+
+    companion object {
+        const val INDEX_POST_ID = "postId.value"
+        const val INDEX_AUTHOR_ID = "author.id"
+    }
+}

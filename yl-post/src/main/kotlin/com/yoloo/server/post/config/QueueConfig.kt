@@ -1,4 +1,4 @@
-package com.yoloo.server.common.config
+package com.yoloo.server.post.config
 
 import com.google.appengine.api.taskqueue.Queue
 import com.google.appengine.api.taskqueue.QueueFactory

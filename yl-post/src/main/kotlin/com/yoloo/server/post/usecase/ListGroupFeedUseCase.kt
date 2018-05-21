@@ -1,6 +1,7 @@
 package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.datastore.Cursor
+import com.google.appengine.api.datastore.QueryResultIterator
 import com.google.appengine.api.memcache.MemcacheService
 import com.yoloo.server.common.response.CollectionResponse
 import com.yoloo.server.common.util.Filters
@@ -18,16 +19,7 @@ class ListGroupFeedUseCase(
     private val memcacheService: MemcacheService
 ) {
     fun execute(requesterId: Long, groupId: Long, cursor: String?): CollectionResponse<PostResponse> {
-        var query = ofy()
-            .load()
-            .type(Post::class.java)
-            .filter("group.id", groupId)
-            .orderKey(true)
-
-        cursor?.let { query = query.startAt(Cursor.fromWebSafeString(it)) }
-        query = query.limit(50)
-
-        val queryResultIterator = query.iterator()
+        val queryResultIterator = buildQueryResultIterator(groupId, cursor)
 
         if (!queryResultIterator.hasNext()) {
             return CollectionResponse.builder<PostResponse>().data(emptyList()).build()
@@ -35,6 +27,31 @@ class ListGroupFeedUseCase(
 
         val voteFilter = memcacheService.get(Filters.KEY_FILTER_VOTE) as NanoCuckooFilter
 
+        return buildCollectionResponse(queryResultIterator, requesterId, voteFilter, cursor)
+    }
+
+    private fun buildQueryResultIterator(
+        groupId: Long,
+        cursor: String?
+    ): QueryResultIterator<Post> {
+        var query = ofy()
+            .load()
+            .type(Post::class.java)
+            .filter(Post.INDEX_GROUP_ID, groupId)
+            .orderKey(true)
+
+        cursor?.let { query = query.startAt(Cursor.fromWebSafeString(it)) }
+        query = query.limit(50)
+
+        return query.iterator()
+    }
+
+    private fun buildCollectionResponse(
+        queryResultIterator: QueryResultIterator<Post>,
+        requesterId: Long,
+        voteFilter: NanoCuckooFilter,
+        cursor: String?
+    ): CollectionResponse<PostResponse> {
         return queryResultIterator
             .asSequence()
             .map {

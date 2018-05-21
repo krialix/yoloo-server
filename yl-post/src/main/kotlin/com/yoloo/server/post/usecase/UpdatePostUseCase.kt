@@ -21,9 +21,9 @@ class UpdatePostUseCase(
     fun execute(requesterId: Long, postId: Long, request: UpdatePostRequest): PostResponse {
         val post = ofy().load().type(Post::class.java).id(postId).now()
 
-        ServiceExceptions.checkNotFound(post != null, "post.not-found")
-        ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not-found")
-        ServiceExceptions.checkForbidden(post.author.id == requesterId, "not allowed")
+        ServiceExceptions.checkNotFound(post != null, "post.not_found")
+        ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
+        ServiceExceptions.checkForbidden(post.author.id == requesterId, "post.forbidden_update")
 
         request.content?.let { post.content.value = it }
         request.tags?.map { PostTag(it) }?.toSet()?.let { post.tags = it }

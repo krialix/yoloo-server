@@ -1,7 +1,7 @@
-package com.yoloo.server.comment.mapper
+package com.yoloo.server.post.mapper
 
-import com.yoloo.server.comment.entity.Comment
-import com.yoloo.server.comment.vo.CommentResponse
+import com.yoloo.server.post.entity.Comment
+import com.yoloo.server.post.vo.CommentResponse
 import com.yoloo.server.common.response.attachment.SimpleAttachmentResponse
 import com.yoloo.server.post.vo.AuthorResponse
 import org.springframework.stereotype.Component

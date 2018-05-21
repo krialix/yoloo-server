@@ -19,8 +19,8 @@ class GetPostUseCase(
     fun execute(requesterId: Long, postId: Long): PostResponse {
         val post = ofy().load().type(Post::class.java).id(postId).now()
 
-        ServiceExceptions.checkNotFound(post != null, "post.not-found")
-        ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not-found")
+        ServiceExceptions.checkNotFound(post != null, "post.not_found")
+        ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
 
         val self = requesterId == post.author.id
         val voted = checkIsVoted(requesterId, postId)

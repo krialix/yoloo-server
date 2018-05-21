@@ -83,6 +83,7 @@ class PostControllerV1(
     }
 
     @PutMapping("/{postId}/votes")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun votePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
         val details = authentication.details as OAuth2AuthenticationDetails
         val jwtClaim = details.decodedDetails as JwtClaims
@@ -91,10 +92,29 @@ class PostControllerV1(
     }
 
     @DeleteMapping("/{postId}/votes")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun unvotePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
         val details = authentication.details as OAuth2AuthenticationDetails
         val jwtClaim = details.decodedDetails as JwtClaims
 
         unvotePostUseCase.execute(jwtClaim.sub, postId)
+    }
+
+    @PutMapping("/{postId}/bookmarks")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun bookmarkPost(authentication: Authentication, @PathVariable("postId") postId: Long) {
+        val details = authentication.details as OAuth2AuthenticationDetails
+        val jwtClaim = details.decodedDetails as JwtClaims
+
+
+    }
+
+    @DeleteMapping("/{postId}/bookmarks")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun unbookmarkPost(authentication: Authentication, @PathVariable("postId") postId: Long) {
+        val details = authentication.details as OAuth2AuthenticationDetails
+        val jwtClaim = details.decodedDetails as JwtClaims
+
+
     }
 }
