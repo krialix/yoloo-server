@@ -12,7 +12,7 @@ import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.stereotype.Component
 
 @Component
-class BookmarkPostUseCase(private val memcacheService: AsyncMemcacheService) {
+class UnbookmarkPostUseCase(private val memcacheService: AsyncMemcacheService) {
 
     fun execute(requesterId: Long, postId: Long) {
         val postKey = Key.create(Post::class.java, postId)
@@ -23,19 +23,24 @@ class BookmarkPostUseCase(private val memcacheService: AsyncMemcacheService) {
         val bookmark = map[bookmarkKey] as Bookmark?
 
         ServiceExceptions.checkNotFound(post != null, "post.not_found")
-        ServiceExceptions.checkConflict(bookmark == null, "bookmark.conflict")
+        ServiceExceptions.checkNotFound(bookmark != null, "bookmark.not_found")
 
         val bookmarkFilter = memcacheService.get(Filters.KEY_FILTER_BOOKMARK).get() as NanoCuckooFilter
-        bookmarkFilter.insert(bookmarkKey.name)
+        bookmarkFilter.delete(bookmarkKey.name)
         val putFuture = memcacheService.put(Filters.KEY_FILTER_VOTE, bookmarkFilter)
         if (AppengineUtil.isTest()) {
             putFuture.get()
         }
 
-        post!!.countData.voteCount = post.countData.voteCount.inc()
-        val result = ofy().save().entities(post, bookmark)
+        post!!.countData.voteCount = post.countData.voteCount.dec()
+        val saveFuture = ofy().save().entities(post)
         if (AppengineUtil.isTest()) {
-            result.now()
+            saveFuture.now()
+        }
+
+        val deleteFuture = ofy().delete().entity(bookmark)
+        if (AppengineUtil.isTest()) {
+            deleteFuture.now()
         }
     }
 }

@@ -26,7 +26,9 @@ class PostControllerV1(
     private val updatePostUseCase: UpdatePostUseCase,
     private val deletePostUseCase: DeletePostUseCase,
     private val votePostUseCase: VotePostUseCase,
-    private val unvotePostUseCase: UnvotePostUseCase
+    private val unvotePostUseCase: UnvotePostUseCase,
+    private val bookmarkPostUseCase: BookmarkPostUseCase,
+    private val unbookmarkPostUseCase: UnbookmarkPostUseCase
 ) {
     @PreAuthorize("hasAuthority('MEMBER') or #oauth2.hasScope('post:read')")
     @GetMapping("/{postId}")
@@ -106,7 +108,7 @@ class PostControllerV1(
         val details = authentication.details as OAuth2AuthenticationDetails
         val jwtClaim = details.decodedDetails as JwtClaims
 
-
+        bookmarkPostUseCase.execute(jwtClaim.sub, postId)
     }
 
     @DeleteMapping("/{postId}/bookmarks")
@@ -115,6 +117,6 @@ class PostControllerV1(
         val details = authentication.details as OAuth2AuthenticationDetails
         val jwtClaim = details.decodedDetails as JwtClaims
 
-
+        unbookmarkPostUseCase.execute(jwtClaim.sub, postId)
     }
 }

@@ -13,6 +13,9 @@ data class Vote(
     var id: String,
 
     @Index
+    var userId: Long = extractUserIdFromId(id),
+
+    @Index
     var votableId: Long = extractVotableIdFromId(id)
 ) {
 
@@ -29,6 +32,10 @@ data class Vote(
 
         private fun extractVotableIdFromId(id: String): Long {
             return id.substring(id.indexOf(':') + 1, id.lastIndexOf(':')).toLong()
+        }
+
+        private fun extractUserIdFromId(id: String): Long {
+            return id.substring(0, id.indexOf(':')).toLong()
         }
     }
 }
