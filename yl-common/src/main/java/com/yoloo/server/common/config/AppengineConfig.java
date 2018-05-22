@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
@@ -31,11 +32,13 @@ public class AppengineConfig {
     return URLFetchServiceFactory.getURLFetchService();
   }
 
+  @Lazy
   @Bean
   public MemcacheService memcacheService() {
     return MemcacheServiceFactory.getMemcacheService();
   }
 
+  @Lazy
   @Bean
   public AsyncMemcacheService asyncMemcacheService() {
     return MemcacheServiceFactory.getAsyncMemcacheService();

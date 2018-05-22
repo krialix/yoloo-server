@@ -1,11 +1,11 @@
 package com.yoloo.server.post.usecase
 
 import com.google.common.truth.Truth.assertThat
+import com.yoloo.server.api.exception.BadRequestException
+import com.yoloo.server.api.exception.ForbiddenException
 import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.vo.CommentContent
 import com.yoloo.server.post.vo.PostId
-import com.yoloo.server.common.api.exception.BadRequestException
-import com.yoloo.server.common.api.exception.ForbiddenException
 import com.yoloo.server.common.util.AppEngineRule
 import com.yoloo.server.common.util.TestObjectifyService.fact
 import com.yoloo.server.common.util.TestObjectifyService.ofy

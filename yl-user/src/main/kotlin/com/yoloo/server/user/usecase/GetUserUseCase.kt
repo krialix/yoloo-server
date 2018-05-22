@@ -2,20 +2,22 @@ package com.yoloo.server.user.usecase
 
 import com.google.appengine.api.memcache.MemcacheService
 import com.yoloo.server.common.util.Filters
-import com.yoloo.server.common.util.ServiceExceptions
+import com.yoloo.server.api.exception.ServiceExceptions
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.vo.*
 import net.cinnom.nanocuckoo.NanoCuckooFilter
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
+@Lazy
 @Component
 class GetUserUseCase(private val memcacheService: MemcacheService) {
 
     fun execute(requesterId: Long, targetId: Long): UserResponse {
         var user = ofy().load().type(User::class.java).id(targetId).now()
 
-        ServiceExceptions.checkBadRequest(user != null, "userId is invalid")
+        com.yoloo.server.api.exception.ServiceExceptions.checkBadRequest(user != null, "userId is invalid")
 
         val self = targetId == requesterId
 

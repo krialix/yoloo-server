@@ -1,6 +1,10 @@
 package com.yoloo.server;
 
 import spark.servlet.SparkApplication;
+import spark.servlet.SparkFilter;
+
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebInitParam;
 
 import static spark.Spark.get;
 
@@ -32,5 +36,12 @@ public class CounterApplication implements SparkApplication {
       simpleClient.resetCounter(counterName.getBytes());
       return "";
     });
+  }
+
+  @WebFilter(
+      filterName = "SparkInitFilter",
+      urlPatterns = {"/*"},
+      initParams = {@WebInitParam(name = "applicationClass", value = "com.yoloo.server.CounterApplication")})
+  public static class SparkInitFilter extends SparkFilter {
   }
 }

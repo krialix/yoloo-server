@@ -3,13 +3,13 @@ package com.yoloo.server.post.usecase
 import com.google.appengine.api.memcache.MemcacheServiceFactory
 import com.google.common.truth.Truth
 import com.yoloo.server.common.util.AppEngineRule
-import com.yoloo.server.common.util.Filters
 import com.yoloo.server.common.util.TestObjectifyService.fact
 import com.yoloo.server.common.util.TestObjectifyService.ofy
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory
 import com.yoloo.server.post.entity.Post
+import com.yoloo.server.post.entity.Vote
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.*
 import net.cinnom.nanocuckoo.NanoCuckooFilter
@@ -34,7 +34,7 @@ class UpdatePostUseCaseIntegrationTest {
 
     @Before
     fun setUp() {
-        memcacheService.put(Filters.KEY_FILTER_VOTE, NanoCuckooFilter.Builder(32).build())
+        memcacheService.put(Vote.KEY_FILTER_VOTE, NanoCuckooFilter.Builder(32).build())
 
         fact().translators.add(LocalDateTimeDateTranslatorFactory())
         fact().register(Post::class.java)

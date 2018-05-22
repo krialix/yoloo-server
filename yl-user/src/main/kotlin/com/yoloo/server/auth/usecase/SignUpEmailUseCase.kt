@@ -8,7 +8,7 @@ import com.yoloo.server.auth.vo.SignUpEmailRequest
 import com.yoloo.server.auth.vo.UserLocale
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.util.Filters
-import com.yoloo.server.common.util.ServiceExceptions
+import com.yoloo.server.api.exception.ServiceExceptions
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
@@ -43,7 +43,7 @@ internal class SignUpEmailUseCase(
         val emailFilter = getEmailFilter()
 
         val email = request.email!!
-        ServiceExceptions.checkConflict(!emailFilter.contains(email), "user.error.exists")
+        com.yoloo.server.api.exception.ServiceExceptions.checkConflict(!emailFilter.contains(email), "user.error.exists")
 
         val metaData = request.metaData!!
 

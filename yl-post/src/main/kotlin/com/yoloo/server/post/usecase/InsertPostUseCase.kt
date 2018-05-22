@@ -9,8 +9,10 @@ import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.*
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
+@Lazy
 @Component
 class InsertPostUseCase(
     private val postResponseMapper: PostResponseMapper,
@@ -32,7 +34,7 @@ class InsertPostUseCase(
 
         // todo inc post count of the user
 
-        return postResponseMapper.apply(post, true, false)
+        return postResponseMapper.apply(post, true, false, false)
     }
 
     private fun createPost(

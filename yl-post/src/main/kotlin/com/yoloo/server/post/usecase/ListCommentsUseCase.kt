@@ -7,8 +7,7 @@ import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.mapper.CommentResponseMapper
 import com.yoloo.server.post.vo.CommentCollectionResponse
 import com.yoloo.server.post.vo.CommentResponse
-import com.yoloo.server.common.util.Filters
-import com.yoloo.server.common.util.ServiceExceptions
+import com.yoloo.server.api.exception.ServiceExceptions
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.entity.Vote
@@ -23,8 +22,8 @@ class ListCommentsUseCase(
     fun execute(requesterId: Long, postId: Long, cursor: String?): CommentCollectionResponse {
         val post = ofy().load().type(Post::class.java).id(postId).now()
 
-        ServiceExceptions.checkNotFound(post != null, "post.not_found")
-        ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
+        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(post != null, "post.not_found")
+        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
 
         val queryResultIterator = getQueryResultIterator(postId, cursor)
 
@@ -32,7 +31,7 @@ class ListCommentsUseCase(
             return CommentCollectionResponse.builder().data(emptyList()).build()
         }
 
-        val voteFilter = memcacheService.get(Filters.KEY_FILTER_VOTE) as NanoCuckooFilter
+        val voteFilter = memcacheService.get(Vote.KEY_FILTER_VOTE) as NanoCuckooFilter
 
         val approvedComment = getApprovedCommentResponse(post, requesterId, voteFilter)
 

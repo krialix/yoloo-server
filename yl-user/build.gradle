@@ -31,8 +31,9 @@ noArg {
 }
 
 dependencies {
-    implementation project(':yl-common')
+    implementation project(':api-error')
     implementation project(':objectify')
+    implementation project(':yl-common')
 
     implementation 'com.google.firebase:firebase-admin:6.1.0'
 
@@ -46,6 +47,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.1.RELEASE'
     compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
+    kapt 'org.springframework:spring-context-indexer:5.0.6.RELEASE'
 
     // Kotlin
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
@@ -55,7 +57,7 @@ dependencies {
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
     implementation 'com.auth0:java-jwt:3.3.0'
     implementation 'org.lognet:grpc-spring-boot-starter:2.3.2'
-    implementation 'de.codecentric:spring-boot-admin-starter-server:2.0.0'
+    //implementation 'de.codecentric:spring-boot-admin-starter-server:2.0.0'
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

@@ -12,5 +12,6 @@ open class TextPostDataResponse(
     open var coin: Int,
     open var count: PostCountResponse,
     open var voted: Boolean,
+    open var bookmarked: Boolean,
     open var createdAt: LocalDateTime
 ) : PostDataResponse

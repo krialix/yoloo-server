@@ -7,8 +7,10 @@ import com.yoloo.server.user.entity.Relationship
 import com.yoloo.server.user.usecase.ListRelationshipUseCase.Type.FOLLOWER
 import com.yoloo.server.user.usecase.ListRelationshipUseCase.Type.FOLLOWING
 import com.yoloo.server.user.vo.RelationshipResponse
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
+@Lazy
 @Component
 class ListRelationshipUseCase {
 

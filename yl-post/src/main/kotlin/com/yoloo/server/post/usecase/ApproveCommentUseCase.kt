@@ -1,23 +1,25 @@
 package com.yoloo.server.post.usecase
 
-import com.yoloo.server.post.entity.Comment
-import com.yoloo.server.common.util.ServiceExceptions
+import com.yoloo.server.api.exception.ServiceExceptions
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.vo.ApprovedCommentId
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
+@Lazy
 @Component
 class ApproveCommentUseCase {
     fun execute(requesterId: Long, commentId: Long) {
         val comment = ofy().load().type(Comment::class.java).id(commentId).now()
 
-        ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
-        ServiceExceptions.checkBadRequest(!comment.approved, "comment.conflict_approve")
+        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
+        com.yoloo.server.api.exception.ServiceExceptions.checkBadRequest(!comment.approved, "comment.conflict_approve")
 
         val post = ofy().load().type(Post::class.java).id(comment.postId.value).now()
 
-        ServiceExceptions.checkForbidden(post.author.id == requesterId, "post.forbidden_approve")
+        com.yoloo.server.api.exception.ServiceExceptions.checkForbidden(post.author.id == requesterId, "post.forbidden_approve")
 
         comment.approved = true
         post.approvedCommentId = ApprovedCommentId(commentId)

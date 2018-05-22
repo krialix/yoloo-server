@@ -7,12 +7,14 @@ import com.yoloo.server.post.vo.postdataresponse.PostDataResponse
 import com.yoloo.server.post.vo.postdataresponse.RichPostDataResponse
 import com.yoloo.server.post.vo.postdataresponse.SponsoredPostDataResponse
 import com.yoloo.server.post.vo.postdataresponse.TextPostDataResponse
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
+@Lazy
 @Component
 class PostResponseMapper {
 
-    fun apply(from: Post, self: Boolean, voted: Boolean): PostResponse {
+    fun apply(from: Post, self: Boolean, voted: Boolean, bookmarked: Boolean): PostResponse {
         return PostResponse(
             id = from.id,
             type = from.type.name.toLowerCase(),
@@ -25,15 +27,15 @@ class PostResponseMapper {
             ),
             content = from.content.value,
             data = when (from.type) {
-                PostType.TEXT -> mapToTextPostDataResponse(from, voted)
-                PostType.ATTACHMENT -> mapToRichPostDataResponse(from, voted)
+                PostType.TEXT -> mapToTextPostDataResponse(from, voted, bookmarked)
+                PostType.ATTACHMENT -> mapToRichPostDataResponse(from, voted, bookmarked)
                 PostType.SPONSORED -> mapToSponsoredPostDataResponse(from)
                 PostType.BUDDY -> TODO()
             }
         )
     }
 
-    private fun mapToTextPostDataResponse(post: Post, voted: Boolean): PostDataResponse {
+    private fun mapToTextPostDataResponse(post: Post, voted: Boolean, bookmarked: Boolean): PostDataResponse {
         return TextPostDataResponse(
             title = post.title.value,
             group = PostGroupResponse(post.group.id, post.group.displayName),
@@ -42,11 +44,12 @@ class PostResponseMapper {
             coin = post.coin?.value ?: 0,
             count = PostCountResponse(post.countData.voteCount, post.countData.commentCount),
             voted = voted,
+            bookmarked = bookmarked,
             createdAt = post.createdAt
         )
     }
 
-    private fun mapToRichPostDataResponse(post: Post, voted: Boolean): PostDataResponse {
+    private fun mapToRichPostDataResponse(post: Post, voted: Boolean, bookmarked: Boolean): PostDataResponse {
         return RichPostDataResponse(
             title = post.title.value,
             group = PostGroupResponse(post.group.id, post.group.displayName),
@@ -55,6 +58,7 @@ class PostResponseMapper {
             coin = post.coin?.value ?: 0,
             count = PostCountResponse(post.countData.voteCount, post.countData.commentCount),
             voted = voted,
+            bookmarked = bookmarked,
             createdAt = post.createdAt,
             attachments = post.attachments.map { PostAttachmentResponse(it.url) }
         )

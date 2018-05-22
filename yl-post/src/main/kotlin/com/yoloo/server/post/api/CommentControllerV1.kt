@@ -48,7 +48,7 @@ class CommentControllerV1(
     }
 
     @PreAuthorize("hasAuthority('MEMBER') or #oauth2.hasScope('comment:write')")
-    @PatchMapping("/{commentId}/approve")
+    @DeleteMapping("/{commentId}/approve")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun disapproveComment(authentication: Authentication, @PathVariable("commentId") commentId: Long) {
         val details = authentication.details as OAuth2AuthenticationDetails

@@ -6,8 +6,10 @@ import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.vo.Email
 import com.yoloo.server.user.vo.PatchUserRequest
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
+@Lazy
 @Component
 internal class PatchUserUseCase {
 

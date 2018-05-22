@@ -4,15 +4,17 @@ import com.google.appengine.api.datastore.Cursor
 import com.google.appengine.api.datastore.QueryResultIterator
 import com.google.appengine.api.memcache.MemcacheService
 import com.yoloo.server.common.response.CollectionResponse
-import com.yoloo.server.common.util.Filters
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.yoloo.server.post.entity.Bookmark
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.entity.Vote
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.PostResponse
 import net.cinnom.nanocuckoo.NanoCuckooFilter
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
+@Lazy
 @Component
 class ListGroupFeedUseCase(
     private val postResponseMapper: PostResponseMapper,
@@ -25,9 +27,13 @@ class ListGroupFeedUseCase(
             return CollectionResponse.builder<PostResponse>().data(emptyList()).build()
         }
 
-        val voteFilter = memcacheService.get(Filters.KEY_FILTER_VOTE) as NanoCuckooFilter
+        val cacheMap =
+            memcacheService.getAll(listOf(Vote.KEY_FILTER_VOTE, Bookmark.KEY_FILTER_BOOKMARK)) as Map<String, *>
 
-        return buildCollectionResponse(queryResultIterator, requesterId, voteFilter, cursor)
+        val voteFilter = cacheMap[Vote.KEY_FILTER_VOTE] as NanoCuckooFilter
+        val bookmarkFilter = cacheMap[Bookmark.KEY_FILTER_BOOKMARK] as NanoCuckooFilter
+
+        return buildCollectionResponse(queryResultIterator, requesterId, voteFilter, bookmarkFilter, cursor)
     }
 
     private fun buildQueryResultIterator(
@@ -50,17 +56,12 @@ class ListGroupFeedUseCase(
         queryResultIterator: QueryResultIterator<Post>,
         requesterId: Long,
         voteFilter: NanoCuckooFilter,
+        bookmarkFilter: NanoCuckooFilter,
         cursor: String?
     ): CollectionResponse<PostResponse> {
         return queryResultIterator
             .asSequence()
-            .map {
-                postResponseMapper.apply(
-                    it,
-                    checkIsSelf(requesterId, it),
-                    checkIsVoted(voteFilter, requesterId, it)
-                )
-            }
+            .map { mapToPostResponse(it, requesterId, voteFilter, bookmarkFilter) }
             .toList()
             .let {
                 CollectionResponse.builder<PostResponse>()
@@ -71,11 +72,21 @@ class ListGroupFeedUseCase(
             }
     }
 
-    private fun checkIsSelf(requesterId: Long, post: Post): Boolean {
-        return requesterId == post.author.id
+    private fun mapToPostResponse(
+        it: Post,
+        requesterId: Long,
+        voteFilter: NanoCuckooFilter,
+        bookmarkFilter: NanoCuckooFilter
+    ): PostResponse {
+        return postResponseMapper.apply(
+            it,
+            isSelf(requesterId, it),
+            Vote.isVoted(voteFilter, requesterId, it.id, "p"),
+            Bookmark.isBookmarked(bookmarkFilter, requesterId, it.id)
+        )
     }
 
-    private fun checkIsVoted(voteFilter: NanoCuckooFilter, requesterId: Long, post: Post): Boolean {
-        return voteFilter.contains(Vote.createId(requesterId, post.id, "p"))
+    private fun isSelf(requesterId: Long, post: Post): Boolean {
+        return requesterId == post.author.id
     }
 }

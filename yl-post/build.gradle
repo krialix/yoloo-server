@@ -2,6 +2,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.2.41'
     id 'org.jetbrains.kotlin.plugin.spring' version '1.2.41'
     id 'org.jetbrains.kotlin.plugin.noarg' version '1.2.41'
+    id 'org.jetbrains.kotlin.kapt' version '1.2.41'
     id 'org.springframework.boot' version '2.0.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.5.RELEASE'
     id 'war'
@@ -28,8 +29,9 @@ noArg {
 }
 
 dependencies {
-    implementation project(':yl-common')
+    implementation project(':api-error')
     implementation project(':objectify')
+    implementation project(':yl-common')
 
     // App Engine
     implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"

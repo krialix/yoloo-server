@@ -13,6 +13,7 @@ data class RichPostDataResponse(
     override var coin: Int,
     override var count: PostCountResponse,
     override var voted: Boolean,
+    override var bookmarked: Boolean,
     override var createdAt: LocalDateTime,
     val attachments: List<PostAttachmentResponse>
-) : TextPostDataResponse(title, group, tags, approvedCommentId, coin, count, voted, createdAt)
+) : TextPostDataResponse(title, group, tags, approvedCommentId, coin, count, voted, bookmarked, createdAt)

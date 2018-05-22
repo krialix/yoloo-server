@@ -1,6 +1,6 @@
 package com.yoloo.server.auth.exception
 
-import com.yoloo.server.common.api.exception.ForbiddenException
+import com.yoloo.server.api.exception.ForbiddenException
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.annotation.ControllerAdvice

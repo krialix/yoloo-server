@@ -2,10 +2,12 @@ package com.yoloo.server.post.fetcher
 
 import com.yoloo.server.common.util.Fetcher
 import com.yoloo.server.post.vo.UserInfoResponse
+import org.springframework.context.annotation.Lazy
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 
+@Lazy
 @Profile("!dev")
 @Component
 class DefaultUserInfoFetcher : Fetcher<Long, UserInfoResponse> {

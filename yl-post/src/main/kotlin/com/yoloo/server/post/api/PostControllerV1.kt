@@ -28,7 +28,8 @@ class PostControllerV1(
     private val votePostUseCase: VotePostUseCase,
     private val unvotePostUseCase: UnvotePostUseCase,
     private val bookmarkPostUseCase: BookmarkPostUseCase,
-    private val unbookmarkPostUseCase: UnbookmarkPostUseCase
+    private val unbookmarkPostUseCase: UnbookmarkPostUseCase,
+    private var listBookmarkedPostsUseCase: ListBookmarkedPostsUseCase
 ) {
     @PreAuthorize("hasAuthority('MEMBER') or #oauth2.hasScope('post:read')")
     @GetMapping("/{postId}")
@@ -73,7 +74,7 @@ class PostControllerV1(
     }
 
     @GetMapping("/groups/{groupId}")
-    fun listGroupPosts(
+    fun listGroupFeed(
         authentication: Authentication,
         @PathVariable("groupId") groupId: Long,
         @RequestParam(value = "cursor", required = false) cursor: String?
@@ -118,5 +119,16 @@ class PostControllerV1(
         val jwtClaim = details.decodedDetails as JwtClaims
 
         unbookmarkPostUseCase.execute(jwtClaim.sub, postId)
+    }
+
+    @GetMapping("/bookmarks")
+    fun listBookmarkedPosts(
+        authentication: Authentication,
+        @RequestParam(value = "cursor", required = false) cursor: String?
+    ): CollectionResponse<PostResponse> {
+        val details = authentication.details as OAuth2AuthenticationDetails
+        val jwtClaim = details.decodedDetails as JwtClaims
+
+        return listBookmarkedPostsUseCase.execute(jwtClaim.sub, cursor)
     }
 }

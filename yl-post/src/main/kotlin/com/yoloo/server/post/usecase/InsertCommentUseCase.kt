@@ -9,7 +9,7 @@ import com.yoloo.server.post.vo.PostId
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.common.util.Fetcher
-import com.yoloo.server.common.util.ServiceExceptions
+import com.yoloo.server.api.exception.ServiceExceptions
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
@@ -29,9 +29,9 @@ class InsertCommentUseCase(
         val postId = request.postId!!
         val post = ofy().load().type(Post::class.java).id(postId).now()
 
-        ServiceExceptions.checkNotFound(post != null, "post.not_found")
-        ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
-        ServiceExceptions.checkForbidden(
+        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(post != null, "post.not_found")
+        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
+        com.yoloo.server.api.exception.ServiceExceptions.checkForbidden(
             !post.flags.contains(PostPermFlag.DISABLE_COMMENTING),
             "post.forbidden_commenting"
         )

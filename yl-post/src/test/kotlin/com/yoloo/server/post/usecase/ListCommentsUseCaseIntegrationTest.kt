@@ -42,7 +42,7 @@ class ListCommentsUseCaseIntegrationTest{
 
     @Before
     fun setUp() {
-        memcacheService.put(Filters.KEY_FILTER_VOTE, NanoCuckooFilter.Builder(32).build())
+        memcacheService.put(Vote.KEY_FILTER_VOTE, NanoCuckooFilter.Builder(32).build())
 
         fact().translators.add(LocalDateTimeDateTranslatorFactory())
         fact().register(Post::class.java)

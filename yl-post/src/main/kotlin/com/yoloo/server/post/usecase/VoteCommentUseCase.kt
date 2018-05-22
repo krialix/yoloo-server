@@ -3,8 +3,7 @@ package com.yoloo.server.post.usecase
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.common.util.AppengineUtil
-import com.yoloo.server.common.util.Filters
-import com.yoloo.server.common.util.ServiceExceptions
+import com.yoloo.server.api.exception.ServiceExceptions
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Vote
 import net.cinnom.nanocuckoo.NanoCuckooFilter
@@ -16,13 +15,13 @@ class VoteCommentUseCase(private val memcacheService: AsyncMemcacheService) {
     fun execute(requesterId: Long, commentId: Long) {
         val comment = ofy().load().type(Comment::class.java).id(commentId).now()
 
-        ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
+        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
 
         val vote = Vote(Vote.createId(requesterId, commentId, "c"), 1)
 
-        val voteFilter = memcacheService.get(Filters.KEY_FILTER_VOTE).get() as NanoCuckooFilter
+        val voteFilter = memcacheService.get(Vote.KEY_FILTER_VOTE).get() as NanoCuckooFilter
         voteFilter.insert(vote.id)
-        val putFuture = memcacheService.put(Filters.KEY_FILTER_VOTE, voteFilter)
+        val putFuture = memcacheService.put(Vote.KEY_FILTER_VOTE, voteFilter)
         if (AppengineUtil.isTest()) {
             putFuture.get()
         }

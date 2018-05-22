@@ -5,6 +5,7 @@ import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id
 import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.util.NoArg
+import net.cinnom.nanocuckoo.NanoCuckooFilter
 
 @Entity
 @NoArg
@@ -22,6 +23,8 @@ data class Vote(
     companion object {
         const val INDEX_VOTABLE_ID = "votableId"
 
+        const val KEY_FILTER_VOTE = "FILTER_VOTE"
+
         fun createId(userId: Long, votableId: Long, identifier: String): String {
             return "$userId:$votableId:$identifier"
         }
@@ -36,6 +39,10 @@ data class Vote(
 
         private fun extractUserIdFromId(id: String): Long {
             return id.substring(0, id.indexOf(':')).toLong()
+        }
+
+        fun isVoted(filter: NanoCuckooFilter, requesterId: Long, postId: Long, identifier: String): Boolean {
+            return filter.contains(Vote.createId(requesterId, postId, identifier))
         }
     }
 }
