@@ -3,11 +3,11 @@ package com.yoloo.server.post.entity
 import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id
 import com.googlecode.objectify.annotation.Index
-import com.yoloo.server.post.vo.CommentContent
-import com.yoloo.server.post.vo.PostId
 import com.yoloo.server.common.shared.BaseEntity
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.post.vo.Author
+import com.yoloo.server.post.vo.CommentContent
+import com.yoloo.server.post.vo.PostId
 
 @NoArg
 @Entity

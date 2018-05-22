@@ -5,7 +5,6 @@ import com.google.common.collect.Iterables
 import com.google.common.truth.Truth.assertThat
 import com.googlecode.objectify.Key
 import com.yoloo.server.common.util.AppEngineRule
-import com.yoloo.server.common.util.Filters
 import com.yoloo.server.common.util.TestObjectifyService.fact
 import com.yoloo.server.common.util.TestObjectifyService.ofy
 import com.yoloo.server.common.vo.AvatarImage

@@ -2,8 +2,8 @@ package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.googlecode.objectify.Key
-import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.api.exception.ServiceExceptions
+import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.entity.Vote
@@ -23,8 +23,8 @@ class UnvotePostUseCase(private val memcacheService: AsyncMemcacheService) {
         val post = map[postKey] as Post?
         val vote = map[voteKey] as Vote?
 
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(post != null, "post.not_found")
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(vote != null, "vote.not_found")
+        ServiceExceptions.checkNotFound(post != null, "post.not_found")
+        ServiceExceptions.checkNotFound(vote != null, "vote.not_found")
 
         val deleteResult = ofy().delete().key(voteKey)
         if (AppengineUtil.isTest()) {

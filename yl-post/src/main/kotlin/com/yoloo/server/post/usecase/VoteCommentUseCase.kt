@@ -1,10 +1,10 @@
 package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
-import com.yoloo.server.post.entity.Comment
-import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.api.exception.ServiceExceptions
+import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Vote
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.stereotype.Component
@@ -15,7 +15,7 @@ class VoteCommentUseCase(private val memcacheService: AsyncMemcacheService) {
     fun execute(requesterId: Long, commentId: Long) {
         val comment = ofy().load().type(Comment::class.java).id(commentId).now()
 
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
+        ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
 
         val vote = Vote(Vote.createId(requesterId, commentId, "c"), 1)
 

@@ -2,10 +2,10 @@ package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.googlecode.objectify.Key
-import com.yoloo.server.post.entity.Comment
-import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.api.exception.ServiceExceptions
+import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Vote
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.stereotype.Component
@@ -21,8 +21,8 @@ class UnvoteCommentUseCase(private val memcacheService: AsyncMemcacheService) {
         val comment = map[commentKey] as Comment?
         val vote = map[voteKey] as Vote?
 
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(vote != null, "vote.not_found")
+        ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
+        ServiceExceptions.checkNotFound(vote != null, "vote.not_found")
 
         val deleteResult = ofy().delete().key(voteKey)
         if (AppengineUtil.isTest()) {

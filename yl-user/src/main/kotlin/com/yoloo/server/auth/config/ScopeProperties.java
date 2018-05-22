@@ -16,11 +16,11 @@ public class ScopeProperties {
     return scopes;
   }
 
-  public String[] getScopesArray() {
-    return getScopes().toArray(new String[0]);
-  }
-
   public void setScopes(List<String> scopes) {
     this.scopes = scopes;
+  }
+
+  public String[] getScopesArray() {
+    return getScopes().toArray(new String[0]);
   }
 }

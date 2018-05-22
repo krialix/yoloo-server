@@ -2,9 +2,9 @@ package com.yoloo.server.user.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
+import com.yoloo.server.api.exception.ServiceExceptions.checkNotFound
 import com.yoloo.server.auth.vo.JwtClaims
 import com.yoloo.server.common.util.Filters
-import com.yoloo.server.api.exception.ServiceExceptions.checkNotFound
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.event.RelationshipEvent

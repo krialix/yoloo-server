@@ -1,4 +1,6 @@
 plugins {
+    id 'org.springframework.boot' version '2.0.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.5.RELEASE'
     id 'war'
 }
 
@@ -6,25 +8,17 @@ group 'com.yoloo.server'
 version '0.0.1-SNAPSHOT'
 
 dependencies {
-    implementation ('com.sparkjava:spark-core:2.7.2', {
-        exclude group: 'org.eclipse.jetty', module: 'jetty-http'
-        exclude group: 'org.eclipse.jetty', module: 'jetty-io'
-        exclude group: 'org.eclipse.jetty', module: 'jetty-security'
-        exclude group: 'org.eclipse.jetty', module: 'jetty-server'
-        exclude group: 'org.eclipse.jetty', module: 'jetty-servlet'
-        exclude group: 'org.eclipse.jetty', module: 'jetty-webapp'
-        exclude group: 'org.eclipse.jetty.websocket', module: 'websocket-api'
-        exclude group: 'org.eclipse.jetty.websocket', module: 'websocket-client'
-        exclude group: 'org.eclipse.jetty.websocket', module: 'websocket-common'
-        exclude group: 'org.eclipse.jetty.websocket', module: 'websocket-server'
-        exclude group: 'org.eclipse.jetty.websocket', module: 'websocket-servlet'
-    })
+    implementation project(':api-error')
 
-    implementation 'org.slf4j:slf4j-simple:1.7.21'
     implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
     compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
 
+    // Spring Boot
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
     implementation 'org.apache.solr:solr-core:7.3.1'
+    implementation 'org.apache.solr:solr-solrj:7.3.1'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

@@ -21,8 +21,8 @@ class GetPostUseCase(
     fun execute(requesterId: Long, postId: Long): PostResponse {
         val post = ofy().load().type(Post::class.java).id(postId).now()
 
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(post != null, "post.not_found")
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
+        ServiceExceptions.checkNotFound(post != null, "post.not_found")
+        ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
 
         val cacheMap =
             memcacheService.getAll(listOf(Vote.KEY_FILTER_VOTE, Bookmark.KEY_FILTER_BOOKMARK)) as Map<String, *>

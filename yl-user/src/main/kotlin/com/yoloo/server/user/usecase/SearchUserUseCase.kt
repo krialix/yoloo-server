@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 
 @Lazy
 @Component
-class SearchUserUseCase{
+class SearchUserUseCase {
 
     fun execute(query: String, cursor: String?): CollectionResponse<SearchUserResponse> {
         return CollectionResponse.builder<SearchUserResponse>()

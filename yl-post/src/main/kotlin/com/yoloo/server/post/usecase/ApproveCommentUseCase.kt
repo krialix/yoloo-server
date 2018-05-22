@@ -14,12 +14,12 @@ class ApproveCommentUseCase {
     fun execute(requesterId: Long, commentId: Long) {
         val comment = ofy().load().type(Comment::class.java).id(commentId).now()
 
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
-        com.yoloo.server.api.exception.ServiceExceptions.checkBadRequest(!comment.approved, "comment.conflict_approve")
+        ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
+        ServiceExceptions.checkBadRequest(!comment.approved, "comment.conflict_approve")
 
         val post = ofy().load().type(Post::class.java).id(comment.postId.value).now()
 
-        com.yoloo.server.api.exception.ServiceExceptions.checkForbidden(post.author.id == requesterId, "post.forbidden_approve")
+        ServiceExceptions.checkForbidden(post.author.id == requesterId, "post.forbidden_approve")
 
         comment.approved = true
         post.approvedCommentId = ApprovedCommentId(commentId)

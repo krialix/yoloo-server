@@ -3,14 +3,14 @@ package com.yoloo.server.post.usecase
 import com.google.appengine.api.datastore.Cursor
 import com.google.appengine.api.datastore.QueryResultIterator
 import com.google.appengine.api.memcache.MemcacheService
+import com.yoloo.server.api.exception.ServiceExceptions
+import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Comment
+import com.yoloo.server.post.entity.Post
+import com.yoloo.server.post.entity.Vote
 import com.yoloo.server.post.mapper.CommentResponseMapper
 import com.yoloo.server.post.vo.CommentCollectionResponse
 import com.yoloo.server.post.vo.CommentResponse
-import com.yoloo.server.api.exception.ServiceExceptions
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
-import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.entity.Vote
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.stereotype.Service
 
@@ -22,8 +22,8 @@ class ListCommentsUseCase(
     fun execute(requesterId: Long, postId: Long, cursor: String?): CommentCollectionResponse {
         val post = ofy().load().type(Post::class.java).id(postId).now()
 
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(post != null, "post.not_found")
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
+        ServiceExceptions.checkNotFound(post != null, "post.not_found")
+        ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
 
         val queryResultIterator = getQueryResultIterator(postId, cursor)
 

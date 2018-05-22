@@ -1,7 +1,6 @@
 package com.yoloo.server.post.vo
 
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.post.vo.AuthorResponse
 import java.time.LocalDateTime
 
 @NoArg

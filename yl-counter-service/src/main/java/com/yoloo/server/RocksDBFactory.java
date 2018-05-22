@@ -4,16 +4,13 @@ import org.rocksdb.Options;
 import org.rocksdb.RocksDB;
 import org.rocksdb.RocksDBException;
 
-/**
- * Factory to provide {@link RocksDBSimpleClient} instances.
- */
+/** Factory to provide {@link RocksDBSimpleClient} instances. */
 public final class RocksDBFactory {
 
   private RocksDBFactory() {}
 
   /**
-   * Retrieve a {@link RocksDBFactory.RocksDBSimpleClient}
-   * instance.
+   * Retrieve a {@link RocksDBFactory.RocksDBSimpleClient} instance.
    *
    * @param path path to RocksDB.
    * @return {@link RocksDBFactory.RocksDBSimpleClient} instance.
@@ -22,10 +19,7 @@ public final class RocksDBFactory {
     return new RocksDBSimpleClient(path);
   }
 
-  /**
-   * Simple RocksDBClient to provide atomic increment, reset and get
-   * methods.
-   */
+  /** Simple RocksDBClient to provide atomic increment, reset and get methods. */
   static class RocksDBSimpleClient {
     private static final byte[] byteArrayOne = ByteConversionHelper.longToByte(1);
     final Options options;
@@ -38,10 +32,11 @@ public final class RocksDBFactory {
      */
     RocksDBSimpleClient(final String path) {
       try {
-        options = new Options()
-            .setCreateIfMissing(true)
-            .setMergeOperatorName("uint64add")
-            .setWriteBufferSize(100);
+        options =
+            new Options()
+                .setCreateIfMissing(true)
+                .setMergeOperatorName("uint64add")
+                .setWriteBufferSize(100);
         db = RocksDB.open(options, path);
       } catch (RocksDBException e) {
         throw new RuntimeException(e);

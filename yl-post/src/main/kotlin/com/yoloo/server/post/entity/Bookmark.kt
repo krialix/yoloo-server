@@ -39,7 +39,7 @@ data class Bookmark(
             return filter.contains(Bookmark.createId(requesterId, postId))
         }
 
-        fun getPostKey(bookmarkKey: Key<Bookmark>) : Key<Post> {
+        fun getPostKey(bookmarkKey: Key<Bookmark>): Key<Post> {
             val name = bookmarkKey.name
             return Key.create(Post::class.java, name.substring(name.indexOf(':') + 1).toLong())
         }

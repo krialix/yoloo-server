@@ -5,14 +5,12 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
-import org.apache.solr.common.SolrInputDocument;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class SolrTest {
 
@@ -22,13 +20,13 @@ public class SolrTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    try {
-      String targetLocation = EmbeddedSolrServerFactory.class
+    /*try {
+      String targetLocation = EmbeddedSolrServerFactoryOld.class
           .getProtectionDomain().getCodeSource().getLocation().getFile() + "/..";
 
       String solrHome = targetLocation + "/solr";
 
-      solrClient = EmbeddedSolrServerFactory.create(solrHome, CONFIGSET_DIR, "exampleCollection");
+      solrClient = EmbeddedSolrServerFactoryOld.create(solrHome, CONFIGSET_DIR, "exampleCollection");
 
       // create some test documents
       SolrInputDocument doc1 = new SolrInputDocument();
@@ -51,7 +49,7 @@ public class SolrTest {
       solrClient.commit();
     } catch (Exception e) {
       Assert.fail(e.getMessage());
-    }
+    }*/
   }
 
   @AfterClass

@@ -1,8 +1,8 @@
 package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
-import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.api.exception.ServiceExceptions
+import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.entity.Vote
@@ -18,9 +18,9 @@ class VotePostUseCase(private val memcacheService: AsyncMemcacheService) {
     fun execute(requesterId: Long, postId: Long) {
         val post = ofy().load().type(Post::class.java).id(postId).now()
 
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(post != null, "post.not_found")
+        ServiceExceptions.checkNotFound(post != null, "post.not_found")
         val votingDisabled = post.flags.contains(PostPermFlag.DISABLE_VOTING)
-        com.yoloo.server.api.exception.ServiceExceptions.checkForbidden(!votingDisabled, "post.forbidden_voting")
+        ServiceExceptions.checkForbidden(!votingDisabled, "post.forbidden_voting")
 
         val vote = Vote(Vote.createId(requesterId, postId, "p"), 1)
 

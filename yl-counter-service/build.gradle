@@ -6,7 +6,7 @@ group 'com.yoloo.server'
 version '0.0.1-SNAPSHOT'
 
 dependencies {
-    implementation ('com.sparkjava:spark-core:2.7.2', {
+    implementation('com.sparkjava:spark-core:2.7.2', {
         exclude group: 'org.eclipse.jetty', module: 'jetty-http'
         exclude group: 'org.eclipse.jetty', module: 'jetty-io'
         exclude group: 'org.eclipse.jetty', module: 'jetty-security'

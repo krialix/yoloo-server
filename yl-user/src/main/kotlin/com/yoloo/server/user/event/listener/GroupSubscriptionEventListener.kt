@@ -5,8 +5,8 @@ import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.google.appengine.api.taskqueue.Queue
 import com.google.appengine.api.taskqueue.TaskOptions
 import com.yoloo.server.common.vo.AvatarImage
-import com.yoloo.server.user.vo.DisplayName
 import com.yoloo.server.user.event.GroupSubscriptionEvent
+import com.yoloo.server.user.vo.DisplayName
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.ApplicationListener

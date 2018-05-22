@@ -1,7 +1,7 @@
 package com.yoloo.server.auth.config
 
-import com.yoloo.server.auth.vo.JwtClaims
 import com.yoloo.server.auth.util.CustomTokenEnhancer
+import com.yoloo.server.auth.vo.JwtClaims
 import org.springframework.boot.autoconfigure.security.oauth2.resource.JwtAccessTokenConverterConfigurer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

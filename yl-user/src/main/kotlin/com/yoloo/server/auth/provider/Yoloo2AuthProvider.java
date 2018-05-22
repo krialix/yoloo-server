@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class Yoloo2AuthProvider extends DaoAuthenticationProvider {
 
-  public Yoloo2AuthProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+  public Yoloo2AuthProvider(
+      UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
     setUserDetailsService(userDetailsService);
     setPasswordEncoder(passwordEncoder);
   }

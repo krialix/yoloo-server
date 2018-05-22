@@ -1,22 +1,16 @@
 package com.yoloo.server.post.usecase
 
-import com.yoloo.server.post.entity.Comment
-import com.yoloo.server.post.mapper.CommentResponseMapper
-import com.yoloo.server.post.vo.CommentContent
-import com.yoloo.server.post.vo.CommentResponse
-import com.yoloo.server.post.vo.InsertCommentRequest
-import com.yoloo.server.post.vo.PostId
+import com.yoloo.server.api.exception.ServiceExceptions
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.common.util.Fetcher
-import com.yoloo.server.api.exception.ServiceExceptions
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.vo.Author
-import com.yoloo.server.post.vo.PostPermFlag
-import com.yoloo.server.post.vo.UserInfoResponse
+import com.yoloo.server.post.mapper.CommentResponseMapper
+import com.yoloo.server.post.vo.*
 import org.springframework.stereotype.Component
 
 @Component
@@ -29,9 +23,9 @@ class InsertCommentUseCase(
         val postId = request.postId!!
         val post = ofy().load().type(Post::class.java).id(postId).now()
 
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(post != null, "post.not_found")
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
-        com.yoloo.server.api.exception.ServiceExceptions.checkForbidden(
+        ServiceExceptions.checkNotFound(post != null, "post.not_found")
+        ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
+        ServiceExceptions.checkForbidden(
             !post.flags.contains(PostPermFlag.DISABLE_COMMENTING),
             "post.forbidden_commenting"
         )

@@ -2,8 +2,8 @@ package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.googlecode.objectify.Key
-import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.api.exception.ServiceExceptions
+import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Bookmark
 import com.yoloo.server.post.entity.Post
@@ -23,8 +23,8 @@ class UnbookmarkPostUseCase(private val memcacheService: AsyncMemcacheService) {
         val post = map[postKey] as Post?
         val bookmark = map[bookmarkKey] as Bookmark?
 
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(post != null, "post.not_found")
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(bookmark != null, "bookmark.not_found")
+        ServiceExceptions.checkNotFound(post != null, "post.not_found")
+        ServiceExceptions.checkNotFound(bookmark != null, "bookmark.not_found")
 
         val bookmarkFilter = memcacheService.get(Bookmark.KEY_FILTER_BOOKMARK).get() as NanoCuckooFilter
         bookmarkFilter.delete(bookmarkKey.name)

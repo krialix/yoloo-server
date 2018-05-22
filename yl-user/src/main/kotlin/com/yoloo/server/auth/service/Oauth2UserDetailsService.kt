@@ -1,8 +1,8 @@
 package com.yoloo.server.auth.service
 
+import com.yoloo.server.api.exception.ServiceExceptions.checkNotFound
 import com.yoloo.server.auth.entity.Account
 import com.yoloo.server.auth.vo.Oauth2User
-import com.yoloo.server.api.exception.ServiceExceptions.checkNotFound
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import org.springframework.context.annotation.Primary
 import org.springframework.security.core.authority.SimpleGrantedAuthority

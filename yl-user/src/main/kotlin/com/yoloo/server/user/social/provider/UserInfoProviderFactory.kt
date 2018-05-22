@@ -1,9 +1,9 @@
 package com.yoloo.server.user.social.provider
 
 import com.yoloo.server.auth.vo.Provider
+import com.yoloo.server.user.social.provider.email.EmailUserInfoProvider
 import com.yoloo.server.user.social.provider.facebook.FacebookUserInfoProvider
 import com.yoloo.server.user.social.provider.google.GoogleUserInfoProvider
-import com.yoloo.server.user.social.provider.email.EmailUserInfoProvider
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 

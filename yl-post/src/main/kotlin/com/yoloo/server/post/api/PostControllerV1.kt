@@ -85,7 +85,7 @@ class PostControllerV1(
         return listGroupFeedUseCase.execute(jwtClaim.sub, groupId, cursor)
     }
 
-    @PutMapping("/{postId}/votes")
+    @PostMapping("/{postId}/votes")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun votePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
         val details = authentication.details as OAuth2AuthenticationDetails
@@ -103,7 +103,7 @@ class PostControllerV1(
         unvotePostUseCase.execute(jwtClaim.sub, postId)
     }
 
-    @PutMapping("/{postId}/bookmarks")
+    @PostMapping("/{postId}/bookmarks")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun bookmarkPost(authentication: Authentication, @PathVariable("postId") postId: Long) {
         val details = authentication.details as OAuth2AuthenticationDetails

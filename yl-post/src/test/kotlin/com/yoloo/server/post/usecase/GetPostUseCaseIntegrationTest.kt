@@ -26,7 +26,12 @@ class GetPostUseCaseIntegrationTest {
 
     private val memcacheService by lazy(LazyThreadSafetyMode.NONE) { MemcacheServiceFactory.getMemcacheService() }
     private val postResponseMapper by lazy(LazyThreadSafetyMode.NONE) { PostResponseMapper() }
-    private val getPostUseCase by lazy(LazyThreadSafetyMode.NONE) { GetPostUseCase(postResponseMapper, memcacheService) }
+    private val getPostUseCase by lazy(LazyThreadSafetyMode.NONE) {
+        GetPostUseCase(
+            postResponseMapper,
+            memcacheService
+        )
+    }
 
     @Before
     fun setUp() {

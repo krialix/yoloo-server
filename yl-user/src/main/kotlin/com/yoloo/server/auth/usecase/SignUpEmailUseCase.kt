@@ -2,13 +2,13 @@ package com.yoloo.server.auth.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
+import com.yoloo.server.api.exception.ServiceExceptions
 import com.yoloo.server.auth.entity.Account
 import com.yoloo.server.auth.vo.Provider
 import com.yoloo.server.auth.vo.SignUpEmailRequest
 import com.yoloo.server.auth.vo.UserLocale
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.util.Filters
-import com.yoloo.server.api.exception.ServiceExceptions
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
@@ -43,7 +43,7 @@ internal class SignUpEmailUseCase(
         val emailFilter = getEmailFilter()
 
         val email = request.email!!
-        com.yoloo.server.api.exception.ServiceExceptions.checkConflict(!emailFilter.contains(email), "user.error.exists")
+        ServiceExceptions.checkConflict(!emailFilter.contains(email), "user.error.exists")
 
         val metaData = request.metaData!!
 

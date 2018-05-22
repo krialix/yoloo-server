@@ -7,8 +7,8 @@ import com.googlecode.objectify.cmd.Query
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.entity.Relationship
-import com.yoloo.server.user.event.RelationshipEvent
 import com.yoloo.server.user.entity.User
+import com.yoloo.server.user.event.RelationshipEvent
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component

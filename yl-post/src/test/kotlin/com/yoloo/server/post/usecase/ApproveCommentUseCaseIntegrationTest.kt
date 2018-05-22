@@ -3,15 +3,13 @@ package com.yoloo.server.post.usecase
 import com.google.common.truth.Truth.assertThat
 import com.yoloo.server.api.exception.BadRequestException
 import com.yoloo.server.api.exception.ForbiddenException
-import com.yoloo.server.post.entity.Comment
-import com.yoloo.server.post.vo.CommentContent
-import com.yoloo.server.post.vo.PostId
 import com.yoloo.server.common.util.AppEngineRule
 import com.yoloo.server.common.util.TestObjectifyService.fact
 import com.yoloo.server.common.util.TestObjectifyService.ofy
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory
+import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.vo.*
 import org.junit.Before
@@ -64,7 +62,7 @@ class ApproveCommentUseCaseIntegrationTest {
         approveCommentUseCase.execute(1, 1)
     }
 
-    private fun createPost() : Post {
+    private fun createPost(): Post {
         val post = Post(
             id = 1,
             type = PostType.TEXT,
@@ -88,7 +86,7 @@ class ApproveCommentUseCaseIntegrationTest {
         return post
     }
 
-    private fun createComment(approved: Boolean = false) : Comment {
+    private fun createComment(approved: Boolean = false): Comment {
         val comment = Comment(
             id = 1,
             postId = PostId(1),

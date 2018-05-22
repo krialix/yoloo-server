@@ -16,9 +16,9 @@ class DeleteCommentUseCase {
     fun execute(requesterId: Long, commentId: Long) {
         val comment = ofy().load().type(Comment::class.java).id(commentId).now()
 
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
-        com.yoloo.server.api.exception.ServiceExceptions.checkForbidden(comment.author.id == requesterId, "comment.forbidden_delete")
-        com.yoloo.server.api.exception.ServiceExceptions.checkForbidden(!comment.approved, "comment.forbidden_delete_approved")
+        ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
+        ServiceExceptions.checkForbidden(comment.author.id == requesterId, "comment.forbidden_delete")
+        ServiceExceptions.checkForbidden(!comment.approved, "comment.forbidden_delete_approved")
 
         val post = ofy().load().type(Post::class.java).id(comment.postId.value).now()
 

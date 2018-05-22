@@ -13,9 +13,9 @@ class DeletePostUseCase {
     fun execute(requesterId: Long, postId: Long) {
         var post = ofy().load().type(Post::class.java).id(postId).now()
 
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(post != null, "post.not_found")
-        com.yoloo.server.api.exception.ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
-        com.yoloo.server.api.exception.ServiceExceptions.checkForbidden(post.author.id == requesterId, "forbidden")
+        ServiceExceptions.checkNotFound(post != null, "post.not_found")
+        ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
+        ServiceExceptions.checkForbidden(post.author.id == requesterId, "forbidden")
 
         post = post.copy(deletedAt = LocalDateTime.now())
 
