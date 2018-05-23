@@ -1,29 +1,23 @@
 package com.yoloo.server.search.api;
 
-import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.common.SolrDocumentList;
+import com.yoloo.server.search.entity.Product;
+import com.yoloo.server.search.repository.ProductRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.IOException;
 
 @RequestMapping("/api/v1/search")
 @RestController
 public class SearchController {
 
-  private final SolrClient solrClient;
+  private final ProductRepository repository;
 
-  public SearchController(SolrClient solrClient) {
-    this.solrClient = solrClient;
+  public SearchController(ProductRepository repository) {
+    this.repository = repository;
   }
 
   @GetMapping
-  public SolrDocumentList getDocuments() throws IOException, SolrServerException {
-    SolrQuery solrQuery = new SolrQuery("*:*");
-
-    return solrClient.query(solrQuery).getResults();
+  public Iterable<Product> getDocuments() {
+    return repository.findAll();
   }
 }

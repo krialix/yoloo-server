@@ -13,6 +13,10 @@ allprojects {
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
+
+    clean {
+        delete 'out'
+    }
 }
 
 subprojects {

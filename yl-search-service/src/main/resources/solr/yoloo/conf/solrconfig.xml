@@ -16,21 +16,21 @@
  limitations under the License.
 -->
 <config>
-    <luceneMatchVersion>6.2.1</luceneMatchVersion>
+  <luceneMatchVersion>7.3.1</luceneMatchVersion>
 
-    <dataDir>${solr.data.dir:}</dataDir>
+  <dataDir>${solr.data.dir:}</dataDir>
 
-    <schemaFactory class="ClassicIndexSchemaFactory"/>
+  <!--<schemaFactory class="ClassicIndexSchemaFactory"/>-->
 
-    <indexConfig>
-        <lockType>single</lockType>
-    </indexConfig>
+  <indexConfig>
+    <lockType>single</lockType>
+  </indexConfig>
 
-    <requestDispatcher handleSelect="false">
-        <httpCaching never304="true"/>
-    </requestDispatcher>
+  <requestDispatcher handleSelect="false">
+    <httpCaching never304="true" />
+  </requestDispatcher>
 
-    <requestHandler name="/select" class="solr.SearchHandler"/>
-    <requestHandler name="/update" class="solr.UpdateRequestHandler"/>
+  <requestHandler name="/select" class="solr.SearchHandler" />
+  <requestHandler name="/update" class="solr.UpdateRequestHandler" />
 
 </config>

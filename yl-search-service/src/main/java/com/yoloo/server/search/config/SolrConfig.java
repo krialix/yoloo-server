@@ -1,44 +1,39 @@
 package com.yoloo.server.search.config;
 
-import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.common.SolrInputDocument;
+import com.yoloo.server.search.entity.Product;
+import com.yoloo.server.search.repository.ProductRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.io.IOException;
-import java.util.Arrays;
 
 @Configuration
 public class SolrConfig {
 
   @Bean
-  public CommandLineRunner runner(SolrClient client) {
+  public CommandLineRunner runner(ProductRepository repository) {
     return args -> {
-      System.out.println("Hello 1");
+      repository.deleteAll();
 
-      // create some test documents
-      SolrInputDocument doc1 = new SolrInputDocument();
-      doc1.addField("id", "1");
+      // insert some products
+      repository.save(new Product("1", "Nintendo Entertainment System", 11.5));
+      repository.save(new Product("2", "Sega Megadrive", 1.0));
+      repository.save(new Product("3", "Sony Playstation", 6.7));
 
-      SolrInputDocument doc2 = new SolrInputDocument();
-      doc2.addField("id", "2");
-
-      SolrInputDocument doc3 = new SolrInputDocument();
-      doc3.addField("id", "3");
-
-      SolrInputDocument doc4 = new SolrInputDocument();
-      doc4.addField("id", "4");
-
-      SolrInputDocument doc5 = new SolrInputDocument();
-      doc5.addField("id", "5");
-      try {
-        client.add(Arrays.asList(doc1, doc2, doc3, doc4, doc5));
-        client.commit();
-      } catch (SolrServerException | IOException e) {
-        e.printStackTrace();
+      // fetch all
+      System.out.println("Products found by findAll():");
+      System.out.println("----------------------------");
+      for (Product product : repository.findAll()) {
+        System.out.println(product);
       }
+      System.out.println();
+
+      // fetch a single product
+      System.out.println("Products found with findByNameStartingWith('So'):");
+      System.out.println("--------------------------------");
+      for (Product product : repository.findByNameStartsWith("So")) {
+        System.out.println(product);
+      }
+      System.out.println();
     };
   }
 }

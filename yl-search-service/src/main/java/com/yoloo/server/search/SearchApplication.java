@@ -1,12 +1,12 @@
 package com.yoloo.server.search;
 
-import com.yoloo.server.search.config.EnableSolrEmbedded;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.data.solr.repository.config.EnableSolrRepositories;
 
-@EnableSolrEmbedded
+@EnableSolrRepositories
 @SpringBootApplication
 public class SearchApplication extends SpringBootServletInitializer {
 
