@@ -2,10 +2,9 @@ package com.yoloo.server.search.repository;
 
 import com.yoloo.server.search.entity.Product;
 import org.springframework.data.solr.repository.SolrCrudRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+@Repository
+public interface ProductRepository extends SolrCrudRepository<Product, String>, ProductFragment {
 
-public interface ProductRepository extends SolrCrudRepository<Product, String> {
-
-  List<Product> findByNameStartsWith(String name);
 }

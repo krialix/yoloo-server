@@ -20,7 +20,7 @@
 
   <dataDir>${solr.data.dir:}</dataDir>
 
-  <!--<schemaFactory class="ClassicIndexSchemaFactory"/>-->
+  <schemaFactory class="ClassicIndexSchemaFactory"/>
 
   <indexConfig>
     <lockType>single</lockType>

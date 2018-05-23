@@ -5,6 +5,7 @@ import com.yoloo.server.search.repository.ProductRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Pageable;
 
 @Configuration
 public class SolrConfig {
@@ -30,7 +31,7 @@ public class SolrConfig {
       // fetch a single product
       System.out.println("Products found with findByNameStartingWith('So'):");
       System.out.println("--------------------------------");
-      for (Product product : repository.findByNameStartsWith("So")) {
+      for (Product product : repository.search("So", Pageable.unpaged())) {
         System.out.println(product);
       }
       System.out.println();

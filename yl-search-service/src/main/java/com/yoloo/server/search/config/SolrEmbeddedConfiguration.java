@@ -1,10 +1,15 @@
 package com.yoloo.server.search.config;
 
+import org.apache.solr.client.solrj.SolrClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.solr.core.SolrTemplate;
-import org.springframework.data.solr.server.support.EmbeddedSolrServerFactoryBean;
+import org.springframework.data.solr.server.support.EmbeddedSolrServerFactory;
 import org.springframework.util.ResourceUtils;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 
 @Configuration
 public class SolrEmbeddedConfiguration {
@@ -22,14 +27,13 @@ public class SolrEmbeddedConfiguration {
   }*/
 
   @Bean
-  public EmbeddedSolrServerFactoryBean solrServerFactoryBean() {
-    EmbeddedSolrServerFactoryBean factory = new EmbeddedSolrServerFactoryBean();
-    factory.setSolrHome(ResourceUtils.CLASSPATH_URL_PREFIX + "solr");
-    return factory;
+  public SolrClient solrClient() throws IOException, ParserConfigurationException, SAXException {
+    return new EmbeddedSolrServerFactory(ResourceUtils.CLASSPATH_URL_PREFIX + "solr")
+        .getSolrClient();
   }
 
   @Bean
-  public SolrTemplate solrTemplate() throws Exception {
-    return new SolrTemplate(solrServerFactoryBean().getObject());
+  public SolrTemplate solrTemplate(SolrClient client) {
+    return new SolrTemplate(client);
   }
 }
