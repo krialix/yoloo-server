@@ -7,7 +7,7 @@ import org.springframework.data.solr.core.mapping.SolrDocument;
 import java.util.List;
 import java.util.Objects;
 
-@SolrDocument(collection = "posts")
+@SolrDocument(collection = "post")
 public class Post {
   public static final String INDEX_TITLE = "title";
   public static final String INDEX_CONTENT = "content";

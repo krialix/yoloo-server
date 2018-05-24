@@ -23,8 +23,7 @@ allprojects {
         exclude group: 'org.slf4j', module: 'jul-to-slf4j'
 
         resolutionStrategy {
-            force 'com.google.guava:guava:25.1-jre',
-                    'com.fasterxml.jackson.core:jackson-databind:2.9.5',
+            force 'com.fasterxml.jackson.core:jackson-databind:2.9.5',
                     'com.fasterxml.jackson.core:jackson-core:2.9.5',
                     'org.slf4j:slf4j-api:1.8.0-beta2'
         }
