@@ -16,7 +16,7 @@
  limitations under the License.
 -->
 
-<schema name="yoloo" version="1.6">
+<schema name="posts" version="1.6">
 
     <!-- BEGIN FIELD TYPES -->
 
@@ -293,10 +293,11 @@
         <!-- Common -->
         <field name="id" type="string" indexed="true" stored="true" required="true"/>
 
-        <!-- Product -->
-        <field name="name" type="text" indexed="true" stored="true" required="true"/>
-        <field name="price" type="double" indexed="true" stored="true" required="true"/>
-        <field name="description" type="text" indexed="true" stored="true"/>
+        <!-- Post -->
+        <field name="title" type="text" indexed="true" stored="true" required="true"/>
+        <field name="content" type="text" indexed="true" stored="true" required="true"/>
+        <field name="tags" type="text" indexed="true" stored="true" required="true" multiValued="true"
+               termVectors="true"/>
 
         <!-- catchall field, containing all other searchable text fields (implemented
              via copyField further on in this schema  -->

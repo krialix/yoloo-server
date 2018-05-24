@@ -1,4 +1,4 @@
-package com.yoloo.server.search.repository;
+package com.yoloo.server.search.repository.product;
 
 import com.yoloo.server.search.entity.Product;
 import org.springframework.data.solr.repository.SolrCrudRepository;

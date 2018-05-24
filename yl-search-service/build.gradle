@@ -16,12 +16,18 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.data:spring-data-solr:4.0.0.M3'
+    implementation 'org.springframework.data:spring-data-commons:2.1.0.M3'
 
     implementation 'org.hibernate:hibernate-search-orm:5.10.0.Final'
     implementation 'org.infinispan:infinispan-directory-provider:9.2.2.Final'
 
     implementation ('org.apache.solr:solr-core:7.3.1', {
         exclude group: 'org.eclipse.jetty'
+        exclude group: 'io.dropwizard.metrics', module: 'metrics-jetty9'
+        exclude group: 'io.dropwizard.metrics', module: 'metrics-ganglia'
+        exclude group: 'io.dropwizard.metrics', module: 'metrics-graphite'
+        exclude group: 'io.dropwizard.metrics', module: 'metrics-jvm'
+        exclude group: 'info.ganglia.gmetric4j', module: 'gmetric4j'
     })
     implementation 'org.apache.solr:solr-solrj:7.3.1'
 

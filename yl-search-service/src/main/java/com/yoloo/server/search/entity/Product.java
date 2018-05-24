@@ -7,6 +7,8 @@ import org.springframework.data.solr.core.mapping.SolrDocument;
 @SolrDocument(collection = "yoloo")
 public class Product {
 
+  public static final String NAME = "name";
+
   @Id private String id;
 
   @Field

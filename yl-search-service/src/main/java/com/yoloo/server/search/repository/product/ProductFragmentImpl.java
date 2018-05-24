@@ -1,4 +1,4 @@
-package com.yoloo.server.search.repository;
+package com.yoloo.server.search.repository.product;
 
 import com.yoloo.server.search.entity.Product;
 import org.slf4j.Logger;
@@ -9,8 +9,6 @@ import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.Criteria;
 import org.springframework.data.solr.core.query.SimpleQuery;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public class ProductFragmentImpl implements ProductFragment {
@@ -24,22 +22,27 @@ public class ProductFragmentImpl implements ProductFragment {
   }
 
   @Override
-  public List<Product> search(String searchTerm, Pageable page) {
-    LOGGER.debug("Building a criteria query with search term: {} and page: {}", searchTerm, page);
+  public Page<Product> search(String searchTerms, Pageable page) {
+    LOGGER.debug("Building a criteria query with search term: {} and page: {}", searchTerms, page);
 
-    String[] words = searchTerm.split(" ");
-
-    Criteria conditions = createSearchConditions(words);
-    SimpleQuery search = new SimpleQuery(conditions);
+    Criteria conditions = buildSearchCriteria(searchTerms);
+    SimpleQuery query = new SimpleQuery(conditions);
     //search.setPageRequest(page);
 
-    Page results = template.queryForPage("yoloo", search, Product.class);
-    return results.getContent();
+    return template.queryForPage("yoloo", query, Product.class);
   }
 
-  private Criteria createSearchConditions(String[] words) {
-    Criteria conditions = null;
+  private Criteria buildSearchCriteria(String searchTerms) {
+    String[] words = searchTerms.split(" ");
 
+    /*Criteria criteria = new Criteria();
+    for (String word: words) {
+      criteria = criteria.and(new Criteria("name").contains(word));
+    }
+
+    return criteria;*/
+
+    Criteria conditions = null;
     for (String word: words) {
       if (conditions == null) {
         conditions = new Criteria("name").contains(word);
