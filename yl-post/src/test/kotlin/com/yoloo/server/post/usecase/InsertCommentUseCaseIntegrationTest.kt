@@ -2,7 +2,7 @@ package com.yoloo.server.post.usecase
 
 import com.google.common.truth.Truth.assertThat
 import com.yoloo.server.api.exception.NotFoundException
-import com.yoloo.server.common.id.generator.CachedSnowflakeIdGenerator
+import com.yoloo.server.common.util.id.CachedSnowflakeIdGenerator
 import com.yoloo.server.common.response.attachment.SimpleAttachmentResponse
 import com.yoloo.server.common.util.AppEngineRule
 import com.yoloo.server.common.util.TestObjectifyService.fact

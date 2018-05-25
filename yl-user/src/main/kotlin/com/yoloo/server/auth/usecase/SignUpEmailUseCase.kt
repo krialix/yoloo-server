@@ -7,7 +7,7 @@ import com.yoloo.server.auth.entity.Account
 import com.yoloo.server.auth.vo.Provider
 import com.yoloo.server.auth.vo.SignUpEmailRequest
 import com.yoloo.server.auth.vo.UserLocale
-import com.yoloo.server.common.id.generator.LongIdGenerator
+import com.yoloo.server.common.util.id.LongIdGenerator
 import com.yoloo.server.common.util.Filters
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url

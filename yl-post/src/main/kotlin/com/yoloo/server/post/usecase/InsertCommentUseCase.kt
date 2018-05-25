@@ -1,7 +1,7 @@
 package com.yoloo.server.post.usecase
 
 import com.yoloo.server.api.exception.ServiceExceptions
-import com.yoloo.server.common.id.generator.LongIdGenerator
+import com.yoloo.server.common.util.id.LongIdGenerator
 import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.common.util.Fetcher
 import com.yoloo.server.common.vo.AvatarImage

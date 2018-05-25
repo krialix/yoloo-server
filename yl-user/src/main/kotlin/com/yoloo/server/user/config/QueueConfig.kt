@@ -6,7 +6,7 @@ import com.google.appengine.api.taskqueue.QueueFactory
 import com.google.appengine.api.urlfetch.HTTPMethod
 import com.google.appengine.api.urlfetch.HTTPRequest
 import com.google.appengine.api.urlfetch.URLFetchService
-import com.yoloo.server.common.id.generator.LongIdGenerator
+import com.yoloo.server.common.util.id.LongIdGenerator
 import com.yoloo.server.user.queue.pull.RelationshipPullServlet
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier

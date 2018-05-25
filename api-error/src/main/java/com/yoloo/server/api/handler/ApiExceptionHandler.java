@@ -257,4 +257,11 @@ class ApiExceptionHandler extends ResponseEntityExceptionHandler {
   public void handleException(Exception e) {
     logger.info("TYPE: {}", e);
   }
+
+  @Override
+  protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    Error error = buildError(status, ex.getMessage());
+    ErrorResponse errorResponse = new ErrorResponse(error);
+    return super.handleExceptionInternal(ex, errorResponse, headers, status, request);
+  }
 }

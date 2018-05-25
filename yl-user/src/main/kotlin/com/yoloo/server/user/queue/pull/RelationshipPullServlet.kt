@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.taskqueue.Queue
 import com.google.appengine.api.taskqueue.TaskHandle
 import com.googlecode.objectify.cmd.Query
-import com.yoloo.server.common.id.generator.LongIdGenerator
+import com.yoloo.server.common.util.id.LongIdGenerator
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.entity.Relationship
 import com.yoloo.server.user.entity.User

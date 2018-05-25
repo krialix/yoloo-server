@@ -1,4 +1,4 @@
-package com.yoloo.server.common.id.generator;
+package com.yoloo.server.common.util.id;
 
 import com.fasterxml.uuid.Generators;
 import org.springframework.stereotype.Component;

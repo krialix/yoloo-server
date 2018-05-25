@@ -1,6 +1,6 @@
 package com.yoloo.server.post.usecase
 
-import com.yoloo.server.common.id.generator.LongIdGenerator
+import com.yoloo.server.common.util.id.LongIdGenerator
 import com.yoloo.server.common.util.Fetcher
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url

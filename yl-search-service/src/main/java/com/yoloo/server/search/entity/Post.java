@@ -9,10 +9,6 @@ import java.util.Objects;
 
 @SolrDocument(collection = "post")
 public class Post {
-  public static final String INDEX_TITLE = "title";
-  public static final String INDEX_CONTENT = "content";
-  public static final String INDEX_TAGS = "tags";
-
   @Id private String id;
 
   @Field private String title;
