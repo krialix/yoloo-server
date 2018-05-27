@@ -2,14 +2,16 @@ package com.yoloo.server.post.fetcher
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.urlfetch.URLFetchService
-import com.yoloo.server.api.exception.BadRequestException
+import com.yoloo.server.rest.error.exception.BadRequestException
 import com.yoloo.server.common.util.Fetcher
 import com.yoloo.server.post.vo.GroupInfoResponse
+import org.springframework.context.annotation.Lazy
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import java.io.IOException
 import java.net.URL
 
+@Lazy
 @Profile("!dev")
 @Component
 class DefaultGroupInfoFetcher(

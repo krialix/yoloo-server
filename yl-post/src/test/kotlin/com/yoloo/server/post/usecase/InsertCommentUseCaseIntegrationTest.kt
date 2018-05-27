@@ -1,9 +1,9 @@
 package com.yoloo.server.post.usecase
 
 import com.google.common.truth.Truth.assertThat
-import com.yoloo.server.api.exception.NotFoundException
+import com.yoloo.server.rest.error.exception.NotFoundException
 import com.yoloo.server.common.util.id.CachedSnowflakeIdGenerator
-import com.yoloo.server.common.response.attachment.SimpleAttachmentResponse
+import com.yoloo.server.common.vo.attachment.SimpleAttachmentResponse
 import com.yoloo.server.common.util.AppEngineRule
 import com.yoloo.server.common.util.TestObjectifyService.fact
 import com.yoloo.server.common.util.TestObjectifyService.ofy
@@ -58,7 +58,11 @@ class InsertCommentUseCaseIntegrationTest {
         assertThat(comment.author.self).isEqualTo(userInfo.self)
         assertThat(comment.author.displayName).isEqualTo(userInfo.displayName)
         assertThat(comment.author.verified).isEqualTo(userInfo.verified)
-        assertThat(comment.author.image).isEqualTo(SimpleAttachmentResponse(userInfo.image))
+        assertThat(comment.author.image).isEqualTo(
+            SimpleAttachmentResponse(
+                userInfo.image
+            )
+        )
 
         assertThat(comment.content).isNotNull()
         assertThat(comment.createdAt).isNotNull()

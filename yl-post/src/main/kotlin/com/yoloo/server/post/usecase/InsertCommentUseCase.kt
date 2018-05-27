@@ -1,6 +1,6 @@
 package com.yoloo.server.post.usecase
 
-import com.yoloo.server.api.exception.ServiceExceptions
+import com.yoloo.server.rest.error.exception.ServiceExceptions
 import com.yoloo.server.common.util.id.LongIdGenerator
 import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.common.util.Fetcher
@@ -11,8 +11,10 @@ import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.CommentResponseMapper
 import com.yoloo.server.post.vo.*
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
+@Lazy
 @Component
 class InsertCommentUseCase(
     private val idGenerator: LongIdGenerator,
@@ -24,7 +26,7 @@ class InsertCommentUseCase(
         val post = ofy().load().type(Post::class.java).id(postId).now()
 
         ServiceExceptions.checkNotFound(post != null, "post.not_found")
-        ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
+        ServiceExceptions.checkNotFound(!post.auditData.isDeleted, "post.not_found")
         ServiceExceptions.checkForbidden(
             !post.flags.contains(PostPermFlag.DISABLE_COMMENTING),
             "post.forbidden_commenting"

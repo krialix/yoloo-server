@@ -2,7 +2,7 @@ package com.yoloo.server.common.vo;
 
 import java.util.Objects;
 
-public class Url {
+public class Url implements ValueObject<Url> {
   private String value;
 
   private Url() {}
@@ -31,5 +31,10 @@ public class Url {
   @Override
   public String toString() {
     return "Url{" + "value='" + value + '\'' + '}';
+  }
+
+  @Override
+  public boolean sameValueAs(Url other) {
+    return equals(other);
   }
 }

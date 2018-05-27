@@ -3,7 +3,7 @@ package com.yoloo.server.post.usecase
 import com.google.appengine.api.datastore.Cursor
 import com.google.appengine.api.datastore.QueryResultIterator
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.api.exception.ServiceExceptions
+import com.yoloo.server.rest.error.exception.ServiceExceptions
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Post
@@ -23,7 +23,7 @@ class ListCommentsUseCase(
         val post = ofy().load().type(Post::class.java).id(postId).now()
 
         ServiceExceptions.checkNotFound(post != null, "post.not_found")
-        ServiceExceptions.checkNotFound(!post.isDeleted(), "post.not_found")
+        ServiceExceptions.checkNotFound(!post.auditData.isDeleted, "post.not_found")
 
         val queryResultIterator = getQueryResultIterator(postId, cursor)
 

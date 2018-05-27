@@ -1,7 +1,7 @@
 package com.yoloo.server.user.api
 
 import com.yoloo.server.auth.vo.JwtClaims
-import com.yoloo.server.common.response.CollectionResponse
+import com.yoloo.server.common.vo.CollectionResponse
 import com.yoloo.server.user.usecase.*
 import com.yoloo.server.user.vo.PatchUserRequest
 import com.yoloo.server.user.vo.RelationshipResponse
@@ -31,11 +31,7 @@ internal class UserControllerV1(
     @PreAuthorize("hasAnyAuthority('MEMBER') or #oauth2.hasScope('user:read')")
     @GetMapping("/{userId}")
     fun getUser(authentication: Authentication, @PathVariable("userId") userId: Long): UserResponse {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
-
-        println("Auth: $authentication")
-        println("Details: $details")
+        val jwtClaim = JwtClaims.from(authentication)
 
         return getUserUseCase.execute(jwtClaim.sub, userId)
     }
@@ -43,8 +39,7 @@ internal class UserControllerV1(
     @PreAuthorize("hasAnyAuthority('MEMBER') or #oauth2.hasScope('user:write')")
     @PatchMapping
     fun patchUser(authentication: Authentication, @RequestBody @Valid @NotNull request: PatchUserRequest?) {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         patchUserUseCase.execute(jwtClaim.sub, request!!)
     }
@@ -62,19 +57,17 @@ internal class UserControllerV1(
     @PreAuthorize("hasAnyAuthority('MEMBER') or #oauth2.hasScope('user:write')")
     @PutMapping("/following/{userId}")
     fun follow(authentication: Authentication, @PathVariable("userId") userId: Long) {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
-        followUseCase.execute(jwtClaim, userId)
+        followUseCase.execute(jwtClaim.sub, userId)
     }
 
     @PreAuthorize("hasAnyAuthority('MEMBER') or #oauth2.hasScope('user:write')")
     @DeleteMapping("/following/{userId}")
     fun unfollow(authentication: Authentication, @PathVariable("userId") userId: Long) {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
-        unfollowUseCase.execute(jwtClaim, userId)
+        unfollowUseCase.execute(jwtClaim.sub, userId)
     }
 
     @PreAuthorize("hasAnyAuthority('MEMBER') or #oauth2.hasScope('user:read')")

@@ -28,7 +28,7 @@ class Oauth2ResourceServerConfig(private val tokenStore: TokenStore) : ResourceS
             .httpBasic()
             .disable()
             .authorizeRequests()
-            .antMatchers("/_ah/admin/**")
+            .antMatchers("/_ah/admin/**", "/api/v1/pubsub/**")
             .permitAll()
             .and()
             .authorizeRequests()

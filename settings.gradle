@@ -1,8 +1,8 @@
 rootProject.name = 'yoloo-server'
 
-include 'api-error'
 include 'objectify'
 include 'yl-common'
+include 'yl-common-rest'
 include 'yl-gateway-service'
 include 'yl-post'
 include 'yl-user'

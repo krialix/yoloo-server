@@ -27,7 +27,6 @@ import static java.time.temporal.ChronoUnit.MILLIS;
  * <p>With this technique 65536 unique IDs can be generated per shard per millisecond.
  */
 @Beta
-@Component("instagram")
 public class InstagramIdGenerator implements LongIdGenerator {
 
   /** Default shard ID. */

@@ -3,7 +3,7 @@ package com.yoloo.server.post.usecase
 import com.google.appengine.api.datastore.Cursor
 import com.google.appengine.api.datastore.QueryResultIterator
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.common.response.CollectionResponse
+import com.yoloo.server.common.vo.CollectionResponse
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Bookmark
 import com.yoloo.server.post.entity.Post
@@ -36,10 +36,7 @@ class ListGroupFeedUseCase(
         return buildCollectionResponse(queryResultIterator, requesterId, voteFilter, bookmarkFilter, cursor)
     }
 
-    private fun buildQueryResultIterator(
-        groupId: Long,
-        cursor: String?
-    ): QueryResultIterator<Post> {
+    private fun buildQueryResultIterator(groupId: Long, cursor: String?): QueryResultIterator<Post> {
         var query = ofy()
             .load()
             .type(Post::class.java)

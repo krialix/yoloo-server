@@ -2,16 +2,15 @@ package com.yoloo.server.auth.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.api.exception.ServiceExceptions
 import com.yoloo.server.auth.entity.Account
 import com.yoloo.server.auth.vo.Provider
 import com.yoloo.server.auth.vo.SignUpEmailRequest
 import com.yoloo.server.auth.vo.UserLocale
 import com.yoloo.server.common.util.id.LongIdGenerator
-import com.yoloo.server.common.util.Filters
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.yoloo.server.rest.error.exception.ServiceExceptions
 import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.entity.UserMeta
 import com.yoloo.server.user.event.GroupSubscriptionEvent
@@ -22,12 +21,14 @@ import com.yoloo.server.user.vo.*
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.context.annotation.Lazy
 import org.springframework.security.oauth2.client.token.AccessTokenProvider
 import org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest
 import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails
 import org.springframework.security.oauth2.common.OAuth2AccessToken
 import org.springframework.stereotype.Component
 
+@Lazy
 @Component
 internal class SignUpEmailUseCase(
     private val groupInfoFetcher: GroupInfoFetcher,
@@ -45,7 +46,7 @@ internal class SignUpEmailUseCase(
         val email = request.email!!
         ServiceExceptions.checkConflict(!emailFilter.contains(email), "user.error.exists")
 
-        val metaData = request.metaData!!
+        val metaData = request.metadata!!
 
         val subscribedGroupIds = metaData.subscribedGroupIds!!
         val groups = groupInfoFetcher.fetch(subscribedGroupIds)
@@ -96,17 +97,17 @@ internal class SignUpEmailUseCase(
 
     private fun createUser(
         email: String,
-        metaData: SignUpEmailRequest.UserMetaData,
+        metadata: SignUpEmailRequest.UserMetadata,
         groups: List<UserGroup>
     ): User {
         return User(
             id = idGenerator.generateId(),
             email = Email(email),
             profile = Profile(
-                displayName = DisplayName(metaData.displayName!!),
+                displayName = DisplayName(metadata.displayName!!),
                 image = AvatarImage(Url(DEFAULT_IMAGE_URL)),
-                gender = Gender.valueOf(metaData.gender!!.toUpperCase()),
-                locale = UserLocale(metaData.language!!, metaData.country!!)
+                gender = Gender.valueOf(metadata.gender!!.toUpperCase()),
+                locale = UserLocale(metadata.language!!, metadata.country!!)
             ),
             subscribedGroups = groups,
             self = true
@@ -118,25 +119,25 @@ internal class SignUpEmailUseCase(
         userId: Long,
         email: String,
         password: String,
-        metaData: SignUpEmailRequest.UserMetaData
+        metadata: SignUpEmailRequest.UserMetadata
     ): Account {
         return Account(
             id = userId,
             email = Email(email),
             provider = Provider(null, Provider.Type.EMAIL),
             authorities = setOf(Account.Authority.MEMBER),
-            localIp = IP(metaData.device!!.localIp!!),
+            localIp = IP(metadata.device!!.localIp!!),
             password = Password(password),
-            displayName = DisplayName(metaData.displayName!!),
+            displayName = DisplayName(metadata.displayName!!),
             image = AvatarImage(Url(DEFAULT_IMAGE_URL)),
-            fcmToken = metaData.fcmToken!!,
+            fcmToken = metadata.fcmToken!!,
             clientId = clientId
         )
     }
 
-    private fun createUserMeta(userId: Long, metaData: SignUpEmailRequest.UserMetaData): UserMeta {
-        val app = metaData.app!!
-        val device = metaData.device!!
+    private fun createUserMeta(userId: Long, metadata: SignUpEmailRequest.UserMetadata): UserMeta {
+        val app = metadata.app!!
+        val device = metadata.device!!
         val screen = device.screen!!
         val os = device.os!!
 
@@ -166,7 +167,7 @@ internal class SignUpEmailUseCase(
 
     private fun addEmailToEmailFilter(emailFilter: NanoCuckooFilter, email: String) {
         emailFilter.insert(email)
-        memcacheService.put(Filters.KEY_FILTER_EMAIL, emailFilter)
+        memcacheService.put(Account.KEY_FILTER_EMAIL, emailFilter)
     }
 
     private fun publishRefreshFeedEvent(subscribedGroupIds: List<Long>) {
@@ -208,7 +209,7 @@ internal class SignUpEmailUseCase(
     }
 
     private fun getEmailFilter(): NanoCuckooFilter {
-        return memcacheService.get(Filters.KEY_FILTER_EMAIL) as NanoCuckooFilter
+        return memcacheService.get(Account.KEY_FILTER_EMAIL) as NanoCuckooFilter
     }
 
     companion object {

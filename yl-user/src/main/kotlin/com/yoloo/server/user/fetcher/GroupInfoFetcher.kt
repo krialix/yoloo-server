@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.urlfetch.URLFetchService
 import com.yoloo.server.user.vo.UserGroup
+import org.springframework.context.annotation.Lazy
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import java.io.IOException
@@ -14,6 +15,7 @@ interface GroupInfoFetcher {
     @Throws(IOException::class)
     fun fetch(ids: Collection<Long>): List<UserGroup>
 
+    @Lazy
     @Profile("!dev")
     @Component
     class DefaultFetcher(
@@ -33,6 +35,7 @@ interface GroupInfoFetcher {
         }
     }
 
+    @Lazy
     @Profile("dev")
     @Component
     class StubFetcher : GroupInfoFetcher {

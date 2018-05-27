@@ -40,7 +40,7 @@ import static com.yoloo.server.objectify.ObjectifyProxy.factory;
 @ConditionalOnMissingBean(ObjectifyProxy.class)
 public class ObjectifyAutoConfiguration {
 
-  private static final Logger log = LoggerFactory.getLogger(ObjectifyAutoConfiguration.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ObjectifyAutoConfiguration.class);
 
   private final Collection<ObjectifyConfigurer> configurers;
 
@@ -81,7 +81,8 @@ public class ObjectifyAutoConfiguration {
         .distinct()
         .peek(
             translatorFactory ->
-                log.info("{} added to translators", translatorFactory.getClass().getSimpleName()))
+                LOGGER.info(
+                    "{} added to translators", translatorFactory.getClass().getSimpleName()))
         .forEach(translators::add);
   }
 

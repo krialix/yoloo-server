@@ -1,7 +1,7 @@
 package com.yoloo.server.post.usecase
 
-import com.yoloo.server.common.util.id.LongIdGenerator
 import com.yoloo.server.common.util.Fetcher
+import com.yoloo.server.common.util.id.LongIdGenerator
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
@@ -20,6 +20,7 @@ class InsertPostUseCase(
     private val userInfoFetcher: Fetcher<Long, UserInfoResponse>,
     private val groupInfoFetcher: Fetcher<Long, GroupInfoResponse>
 ) {
+
     fun execute(requesterId: Long, request: InsertPostRequest): PostResponse {
         val userInfo = userInfoFetcher.fetch(requesterId)
         val groupInfo = groupInfoFetcher.fetch(request.groupId)
@@ -31,8 +32,6 @@ class InsertPostUseCase(
         // TODO If buddy post -> register in buddy search
 
         ofy().save().entities(post)
-
-        // todo inc post count of the user
 
         return postResponseMapper.apply(post, true, false, false)
     }

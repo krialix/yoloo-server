@@ -45,6 +45,7 @@ class GroupSubscriptionEventListener(
     private fun updateGroupSubscriptionCache(event: GroupSubscriptionEvent) {
         val filterIds = event.groupIds.map { "f_subscription:$it" }
 
+        @Suppress("UNCHECKED_CAST")
         val map = memcacheService.getAll(filterIds).get() as MutableMap<String, NanoCuckooFilter>
 
         val userId = event.userId

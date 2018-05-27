@@ -18,8 +18,7 @@ class CustomTokenEnhancer : TokenEnhancer {
             "sub" to user.userId,
             "email" to user.email,
             "picture" to user.profileImageUrl,
-            "fcm_token" to user.fcmToken,
-            "updated_at" to user.updatedAt.toString()
+            "fcm_token" to user.fcmToken
         )
 
         token.additionalInformation = map

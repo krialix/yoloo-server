@@ -1,11 +1,13 @@
 package com.yoloo.server.post.usecase
 
-import com.yoloo.server.api.exception.ServiceExceptions
+import com.yoloo.server.rest.error.exception.ServiceExceptions
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Post
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
+@Lazy
 @Component
 class DisapproveCommentUseCase {
     fun execute(requesterId: Long, commentId: Long) {

@@ -4,8 +4,8 @@ import com.googlecode.objectify.annotation.*
 import com.googlecode.objectify.condition.IfEmpty
 import com.googlecode.objectify.condition.IfNotNull
 import com.googlecode.objectify.condition.IfNull
-import com.yoloo.server.common.shared.BaseEntity
-import com.yoloo.server.common.shared.Keyable
+import com.yoloo.server.common.entity.BaseEntity
+import com.yoloo.server.common.vo.Keyable
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.post.vo.*
 import java.time.LocalDateTime
@@ -14,7 +14,7 @@ import java.util.*
 @NoArg
 @Cache(expirationSeconds = Post.CACHE_EXPIRATION_TIME)
 @Entity
-data class Post(
+class Post(
     @Id
     var id: Long,
 
@@ -42,23 +42,38 @@ data class Post(
 
     var buddyRequest: BuddyRequest? = null,
 
-    var countData: PostCountData = PostCountData(),
+    var countData: PostCountData = PostCountData()
+) : BaseEntity<Long, Post>() {
 
-    @Index(IfNotNull::class)
-    @IgnoreSave(IfNull::class)
-    var deletedAt: LocalDateTime? = null
-) : BaseEntity<Post>(1L), Keyable<Post> {
+    override fun getId(): Long {
+        return id
+    }
 
-    @OnLoad
-    fun onLoad() {
+    override fun sameIdentityAs(other: Post): Boolean {
+        return equals(other)
+    }
+
+    override fun onLoad() {
+        super.onLoad()
         @Suppress("USELESS_ELVIS")
         flags = flags ?: emptySet()
         @Suppress("USELESS_ELVIS")
         attachments = attachments ?: emptyList()
     }
 
-    fun isDeleted(): Boolean {
-        return deletedAt != null
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Post
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
     }
 
     companion object {

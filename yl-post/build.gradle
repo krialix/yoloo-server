@@ -29,9 +29,9 @@ noArg {
 }
 
 dependencies {
-    implementation project(':api-error')
     implementation project(':objectify')
     implementation project(':yl-common')
+    implementation project(':yl-common-rest')
 
     // App Engine
     implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
@@ -42,6 +42,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.1.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-gcp-starter-pubsub:1.0.0.M3'
 
     // Kotlin
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'

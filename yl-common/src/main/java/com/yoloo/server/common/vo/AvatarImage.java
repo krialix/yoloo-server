@@ -2,7 +2,7 @@ package com.yoloo.server.common.vo;
 
 import java.util.Objects;
 
-public class AvatarImage {
+public class AvatarImage implements ValueObject<AvatarImage> {
 
   private Url url;
 
@@ -32,5 +32,10 @@ public class AvatarImage {
   @Override
   public String toString() {
     return "AvatarImage{" + "url=" + url + '}';
+  }
+
+  @Override
+  public boolean sameValueAs(AvatarImage other) {
+    return equals(other);
   }
 }

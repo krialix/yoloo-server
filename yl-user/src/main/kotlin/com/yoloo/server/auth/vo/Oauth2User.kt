@@ -9,7 +9,6 @@ class Oauth2User(
     val email: String,
     val profileImageUrl: String,
     val fcmToken: String,
-    val updatedAt: LocalDateTime,
     username: String,
     password: String,
     enabled: Boolean,

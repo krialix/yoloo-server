@@ -1,7 +1,8 @@
 package com.yoloo.server.admin.api
 
 import com.yoloo.server.admin.usecase.DeleteUserUseCase
-import com.yoloo.server.admin.usecase.WarmUpCacheUseCase
+import com.yoloo.server.admin.usecase.WarmUpRelationshipCacheUseCase
+import com.yoloo.server.admin.usecase.WarmUpEmailCacheUseCase
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -15,8 +16,10 @@ import java.security.Principal
 )
 class AdminControllerV1(
     private val deleteUserUseCase: DeleteUserUseCase,
-    private val warmUpCacheUseCase: WarmUpCacheUseCase
+    private val warmUpEmailCacheUseCase: WarmUpEmailCacheUseCase,
+    private val warmUpRelationshipCacheUseCase: WarmUpRelationshipCacheUseCase
 ) {
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -24,8 +27,15 @@ class AdminControllerV1(
         deleteUserUseCase.execute(principal, userId)
     }
 
-    @PostMapping("/cache/warmup")
-    fun warmUpCache() {
-        warmUpCacheUseCase.execute()
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/cache/emails/warmup")
+    fun warmUpEmailCache() {
+        warmUpEmailCacheUseCase.execute()
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/cache/relationships/warmup")
+    fun warmUpRelationshipCache() {
+        warmUpRelationshipCacheUseCase.execute()
     }
 }

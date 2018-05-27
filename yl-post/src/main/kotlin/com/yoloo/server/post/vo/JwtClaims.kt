@@ -1,5 +1,8 @@
 package com.yoloo.server.post.vo
 
+import org.springframework.security.core.Authentication
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails
+
 data class JwtClaims(
     val sub: Long,
     val displayName: String,
@@ -11,4 +14,12 @@ data class JwtClaims(
     val clientId: String,
     val updatedAt: String,
     val fcmToken: String
-)
+) {
+
+    companion object {
+        fun from(authentication: Authentication) : JwtClaims {
+            val details = authentication.details as OAuth2AuthenticationDetails
+            return details.decodedDetails as JwtClaims
+        }
+    }
+}

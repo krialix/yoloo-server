@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component
 class AppengineShutdownEventListener : ApplicationListener<AppengineShutdownEvent> {
 
     override fun onApplicationEvent(event: AppengineShutdownEvent) {
-        log.info("--- APPENGINE SHUTTING DOWN ---")
+        LOGGER.info("--- APPENGINE SHUTTING DOWN ---")
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(AppengineShutdownEventListener::class.java)
+        private val LOGGER = LoggerFactory.getLogger(AppengineShutdownEventListener::class.java)
     }
 }

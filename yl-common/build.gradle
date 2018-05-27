@@ -22,8 +22,8 @@ dependencies {
 
     implementation 'com.fasterxml.uuid:java-uuid-generator:3.1.5'
 
-    compileOnly 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'com.google.appengine:appengine-api-1.0-sdk:1.9.63'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.google.appengine:appengine-api-1.0-sdk:1.9.63'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20180130'

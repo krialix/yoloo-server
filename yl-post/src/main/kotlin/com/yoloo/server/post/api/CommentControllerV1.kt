@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
@@ -27,12 +26,12 @@ class CommentControllerV1(
     private val unvoteCommentUseCase: UnvoteCommentUseCase,
     private val listCommentsUseCase: ListCommentsUseCase
 ) {
+
     @PreAuthorize("hasAuthority('MEMBER') or #oauth2.hasScope('comment:write')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun insertComment(authentication: Authentication, @RequestBody @Valid request: InsertCommentRequest): CommentResponse {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         return insertCommentUseCase.execute(jwtClaim.sub, request)
     }
@@ -41,8 +40,7 @@ class CommentControllerV1(
     @PatchMapping("/{commentId}/approve")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun approveComment(authentication: Authentication, @PathVariable("commentId") commentId: Long) {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         approveCommentUseCase.execute(jwtClaim.sub, commentId)
     }
@@ -51,8 +49,7 @@ class CommentControllerV1(
     @DeleteMapping("/{commentId}/approve")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun disapproveComment(authentication: Authentication, @PathVariable("commentId") commentId: Long) {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         disapproveCommentUseCase.execute(jwtClaim.sub, commentId)
     }
@@ -61,8 +58,7 @@ class CommentControllerV1(
     @DeleteMapping("/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteComment(authentication: Authentication, @PathVariable("commentId") commentId: Long) {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         deleteCommentUseCase.execute(jwtClaim.sub, commentId)
     }
@@ -71,8 +67,7 @@ class CommentControllerV1(
     @PutMapping("/{commentId}/votes")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun voteComment(authentication: Authentication, @PathVariable("commentId") commentId: Long) {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         voteCommentUseCase.execute(jwtClaim.sub, commentId)
     }
@@ -81,8 +76,7 @@ class CommentControllerV1(
     @DeleteMapping("/{commentId}/votes")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun unvoteComment(authentication: Authentication, @PathVariable("commentId") commentId: Long) {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         unvoteCommentUseCase.execute(jwtClaim.sub, commentId)
     }
@@ -94,8 +88,7 @@ class CommentControllerV1(
         @RequestParam("postId") postId: Long,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CommentCollectionResponse {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         return listCommentsUseCase.execute(jwtClaim.sub, postId, cursor)
     }

@@ -14,10 +14,10 @@ data class Vote(
     var id: String,
 
     @Index
-    var userId: Long = extractUserIdFromId(id),
+    var userId: Long = extractUserId(id),
 
     @Index
-    var votableId: Long = extractVotableIdFromId(id)
+    var votableId: Long = extractVotableId(id)
 ) {
 
     companion object {
@@ -33,12 +33,12 @@ data class Vote(
             return Key.create(Vote::class.java, createId(userId, votableId, identifier))
         }
 
-        private fun extractVotableIdFromId(id: String): Long {
-            return id.substring(id.indexOf(':') + 1, id.lastIndexOf(':')).toLong()
+        private fun extractUserId(id: String): Long {
+            return id.substring(0, id.indexOf(':')).toLong()
         }
 
-        private fun extractUserIdFromId(id: String): Long {
-            return id.substring(0, id.indexOf(':')).toLong()
+        private fun extractVotableId(id: String): Long {
+            return id.substring(id.indexOf(':') + 1, id.lastIndexOf(':')).toLong()
         }
 
         fun isVoted(filter: NanoCuckooFilter, requesterId: Long, postId: Long, identifier: String): Boolean {

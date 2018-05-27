@@ -1,6 +1,6 @@
 package com.yoloo.server.post.api
 
-import com.yoloo.server.common.response.CollectionResponse
+import com.yoloo.server.common.vo.CollectionResponse
 import com.yoloo.server.post.usecase.*
 import com.yoloo.server.post.vo.InsertPostRequest
 import com.yoloo.server.post.vo.JwtClaims
@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
@@ -29,13 +28,13 @@ class PostControllerV1(
     private val unvotePostUseCase: UnvotePostUseCase,
     private val bookmarkPostUseCase: BookmarkPostUseCase,
     private val unbookmarkPostUseCase: UnbookmarkPostUseCase,
-    private var listBookmarkedPostsUseCase: ListBookmarkedPostsUseCase
+    private val listBookmarkedPostsUseCase: ListBookmarkedPostsUseCase
 ) {
+
     @PreAuthorize("hasAuthority('MEMBER') or #oauth2.hasScope('post:read')")
     @GetMapping("/{postId}")
     fun getPost(authentication: Authentication, @PathVariable("postId") postId: Long): PostResponse {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         return getPostUseCase.execute(jwtClaim.sub, postId)
     }
@@ -44,8 +43,7 @@ class PostControllerV1(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun insertPost(authentication: Authentication, @RequestBody @Valid request: InsertPostRequest): PostResponse {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         return insertPostUseCase.execute(jwtClaim.sub, request)
     }
@@ -57,8 +55,7 @@ class PostControllerV1(
         @PathVariable("postId") postId: Long,
         @RequestBody @Valid request: UpdatePostRequest
     ): PostResponse {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         return updatePostUseCase.execute(jwtClaim.sub, postId, request)
     }
@@ -67,8 +64,7 @@ class PostControllerV1(
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{postId}")
     fun deletePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         deletePostUseCase.execute(jwtClaim.sub, postId)
     }
@@ -79,8 +75,7 @@ class PostControllerV1(
         @PathVariable("groupId") groupId: Long,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CollectionResponse<PostResponse> {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         return listGroupFeedUseCase.execute(jwtClaim.sub, groupId, cursor)
     }
@@ -88,8 +83,7 @@ class PostControllerV1(
     @PostMapping("/{postId}/votes")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun votePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         votePostUseCase.execute(jwtClaim.sub, postId)
     }
@@ -97,8 +91,7 @@ class PostControllerV1(
     @DeleteMapping("/{postId}/votes")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun unvotePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         unvotePostUseCase.execute(jwtClaim.sub, postId)
     }
@@ -106,8 +99,7 @@ class PostControllerV1(
     @PostMapping("/{postId}/bookmarks")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun bookmarkPost(authentication: Authentication, @PathVariable("postId") postId: Long) {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         bookmarkPostUseCase.execute(jwtClaim.sub, postId)
     }
@@ -115,8 +107,7 @@ class PostControllerV1(
     @DeleteMapping("/{postId}/bookmarks")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun unbookmarkPost(authentication: Authentication, @PathVariable("postId") postId: Long) {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         unbookmarkPostUseCase.execute(jwtClaim.sub, postId)
     }
@@ -126,8 +117,7 @@ class PostControllerV1(
         authentication: Authentication,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CollectionResponse<PostResponse> {
-        val details = authentication.details as OAuth2AuthenticationDetails
-        val jwtClaim = details.decodedDetails as JwtClaims
+        val jwtClaim = JwtClaims.from(authentication)
 
         return listBookmarkedPostsUseCase.execute(jwtClaim.sub, cursor)
     }

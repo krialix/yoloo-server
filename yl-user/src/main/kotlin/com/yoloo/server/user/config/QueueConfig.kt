@@ -6,7 +6,6 @@ import com.google.appengine.api.taskqueue.QueueFactory
 import com.google.appengine.api.urlfetch.HTTPMethod
 import com.google.appengine.api.urlfetch.HTTPRequest
 import com.google.appengine.api.urlfetch.URLFetchService
-import com.yoloo.server.common.util.id.LongIdGenerator
 import com.yoloo.server.user.queue.pull.RelationshipPullServlet
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
@@ -26,13 +25,9 @@ class QueueConfig(private val urlFetchService: URLFetchService) {
     @Bean
     fun relationshipPullServlet(
         @Qualifier("relationship-queue") queue: Queue,
-        objectMapper: ObjectMapper,
-        @Qualifier("cached") idGenerator: LongIdGenerator
+        objectMapper: ObjectMapper
     ): ServletRegistrationBean<RelationshipPullServlet> {
-        val bean = ServletRegistrationBean(
-            RelationshipPullServlet(queue, objectMapper, idGenerator),
-            "/tasks/pull/relationship"
-        )
+        val bean = ServletRegistrationBean(RelationshipPullServlet(queue, objectMapper), "/tasks/pull/relationship")
         bean.setLoadOnStartup(2)
         return bean
     }
@@ -40,13 +35,13 @@ class QueueConfig(private val urlFetchService: URLFetchService) {
     //@Profile("dev")
     //@Scheduled(fixedRate = 1000000)
     fun leaseRelationshipPullQueue() {
-        log.info("Running 'leaseRelationshipPullQueue' cron")
+        LOGGER.info("Running 'leaseRelationshipPullQueue' cron")
         val url = "http://localhost:8080/tasks/pull/relationship"
         val httpResponse = urlFetchService.fetch(HTTPRequest(URL(url), HTTPMethod.POST))
-        log.info("Response: {}", httpResponse.responseCode)
+        LOGGER.info("Response: {}", httpResponse.responseCode)
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(QueueConfig::class.java)
+        private val LOGGER = LoggerFactory.getLogger(QueueConfig::class.java)
     }
 }

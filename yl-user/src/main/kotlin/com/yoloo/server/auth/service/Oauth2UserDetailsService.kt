@@ -1,6 +1,6 @@
 package com.yoloo.server.auth.service
 
-import com.yoloo.server.api.exception.ServiceExceptions.checkNotFound
+import com.yoloo.server.rest.error.exception.ServiceExceptions.checkNotFound
 import com.yoloo.server.auth.entity.Account
 import com.yoloo.server.auth.vo.Oauth2User
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
@@ -36,8 +36,7 @@ class Oauth2UserDetailsService : UserDetailsService {
             credentialsNonExpired = !account.credentialsExpired,
             accountNonLocked = !account.locked,
             authorities = account.authorities.map { SimpleGrantedAuthority(it.name) },
-            fcmToken = account.fcmToken,
-            updatedAt = account.updatedAt
+            fcmToken = account.fcmToken
         )
     }
 }

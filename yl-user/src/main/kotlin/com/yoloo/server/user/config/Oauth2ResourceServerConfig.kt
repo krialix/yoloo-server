@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer
 import org.springframework.security.oauth2.provider.token.TokenStore
 
+
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Configuration
@@ -41,7 +42,7 @@ class Oauth2ResourceServerConfig(private val tokenStore: TokenStore) : ResourceS
             .and()
             .authorizeRequests()
             .antMatchers("/tasks/**", "/_ah/**")
-            .permitAll();
+            .permitAll()
     }
 
     override fun configure(resources: ResourceServerSecurityConfigurer) {

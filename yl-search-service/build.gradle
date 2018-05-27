@@ -8,7 +8,7 @@ group 'com.yoloo.server'
 version '0.0.1-SNAPSHOT'
 
 dependencies {
-    implementation project(':api-error')
+    implementation project(':yl-common-rest')
 
     compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
 

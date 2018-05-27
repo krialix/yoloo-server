@@ -2,9 +2,11 @@ package com.yoloo.server.admin.usecase
 
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.entity.User
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 import java.security.Principal
 
+@Lazy
 @Component
 class DeleteUserUseCase {
 

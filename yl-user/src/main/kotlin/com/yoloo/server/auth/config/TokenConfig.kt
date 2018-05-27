@@ -61,6 +61,7 @@ class TokenConfig {
         companion object {
             object JwtClaimMapper : Function<Map<String, *>, JwtClaims> {
                 override fun apply(t: Map<String, *>): JwtClaims {
+                    @Suppress("UNCHECKED_CAST")
                     return JwtClaims(
                         sub = t["sub"] as Long,
                         displayName = t["user_name"] as String,

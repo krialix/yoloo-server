@@ -2,11 +2,8 @@ package com.yoloo.server.user.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.api.exception.ServiceExceptions.checkNotFound
-import com.yoloo.server.auth.vo.JwtClaims
-import com.yoloo.server.common.util.Filters
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
-import com.yoloo.server.user.entity.User
+import com.yoloo.server.rest.error.exception.ServiceExceptions.checkNotFound
+import com.yoloo.server.user.entity.Relationship
 import com.yoloo.server.user.event.RelationshipEvent
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.context.ApplicationEventPublisher
@@ -21,21 +18,12 @@ class UnfollowUseCase(
     private val objectMapper: ObjectMapper
 ) {
 
-    fun execute(jwtClaims: JwtClaims, userId: Long) {
-        val fromId = jwtClaims.sub
+    fun execute(requesterId: Long, userId: Long) {
+        val relationshipFilter = memcacheService.get(Relationship.KEY_FILTER_RELATIONSHIP) as NanoCuckooFilter
 
-        val map = ofy().load().type(User::class.java).ids(fromId, userId)
-        val fromUser = map[fromId]
-        val toUser = map[userId]
+        checkNotFound(Relationship.isFollowing(relationshipFilter, requesterId, userId), "relationship.not_found")
 
-        /*User.checkUserExistsAndEnabled(fromUser)
-        User.checkUserExistsAndEnabled(toUser)*/
-
-        val relationshipFilter = memcacheService.get(Filters.KEY_FILTER_RELATIONSHIP) as NanoCuckooFilter
-
-        checkNotFound(relationshipFilter.contains("$fromId:$userId"), "relationship.error.not_found")
-
-        publishUnfollowEvent(fromId, userId)
+        publishUnfollowEvent(requesterId, userId)
     }
 
     private fun publishUnfollowEvent(fromUserId: Long, toUserId: Long) {

@@ -66,34 +66,6 @@ class UserTest {
         assertThat(original.account.authorities).isEqualTo(loaded.account.authorities)*/
         assertThat(original.subscribedGroups).isEqualTo(loaded.subscribedGroups)
 
-        assertThat(loaded.createdAt).isNotNull()
-        assertThat(loaded.updatedAt).isNull()
-    }
-
-    @Test
-    fun updateUser_updatedAtGenerated_ShouldUpdatedAtNotNull() {
-        val original = User(
-            id = 1,
-            profile = Profile(
-                displayName = DisplayName("name"),
-                image = AvatarImage(Url("http://url.com")),
-                gender = Gender.MALE,
-                locale = UserLocale("en", "EN")
-            ),
-            /*account = Account(
-                provider = SocialProvider("2", ProviderType.FACEBOOK),
-                email = Email("test@test.com"),
-                localIp = IP("127.0.0.1"),
-                fcmToken = "providerIdToken",
-                authorities = setOf("scope1", "scope2")
-            ),*/
-            subscribedGroups = listOf(UserGroup(1L, "http://g1.com", "g1Name")),
-            email = Email("test@test.com")
-        )
-
-        val loaded = ofy().saveClearLoad(original)
-        val loaded2 = ofy().saveClearLoad(loaded)
-
-        assertThat(loaded2.updatedAt).isNotNull()
+        assertThat(loaded.auditData.createdAt).isNotNull()
     }
 }

@@ -31,9 +31,9 @@ noArg {
 }
 
 dependencies {
-    implementation project(':api-error')
     implementation project(':objectify')
     implementation project(':yl-common')
+    implementation project(':yl-common-rest')
 
     implementation 'com.google.firebase:firebase-admin:6.1.0'
 

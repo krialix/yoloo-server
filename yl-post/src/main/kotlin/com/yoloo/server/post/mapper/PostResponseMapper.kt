@@ -1,6 +1,6 @@
 package com.yoloo.server.post.mapper
 
-import com.yoloo.server.common.response.attachment.SimpleAttachmentResponse
+import com.yoloo.server.common.vo.attachment.SimpleAttachmentResponse
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.vo.*
 import com.yoloo.server.post.vo.postdataresponse.PostDataResponse
@@ -45,7 +45,7 @@ class PostResponseMapper {
             count = PostCountResponse(post.countData.voteCount, post.countData.commentCount),
             voted = voted,
             bookmarked = bookmarked,
-            createdAt = post.createdAt
+            createdAt = post.auditData.createdAt
         )
     }
 
@@ -59,7 +59,7 @@ class PostResponseMapper {
             count = PostCountResponse(post.countData.voteCount, post.countData.commentCount),
             voted = voted,
             bookmarked = bookmarked,
-            createdAt = post.createdAt,
+            createdAt = post.auditData.createdAt,
             attachments = post.attachments.map { PostAttachmentResponse(it.url) }
         )
     }

@@ -1,7 +1,7 @@
 package com.yoloo.server.user.usecase
 
 import com.google.appengine.api.datastore.Cursor
-import com.yoloo.server.common.response.CollectionResponse
+import com.yoloo.server.common.vo.CollectionResponse
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.entity.Relationship
 import com.yoloo.server.user.usecase.ListRelationshipUseCase.Type.FOLLOWER
@@ -18,21 +18,20 @@ class ListRelationshipUseCase {
         var query = ofy()
             .load()
             .type(Relationship::class.java)
-            .filter(getQueryKeyByRelationshipType(type), userId)
-            .orderKey(true)
+            .filter(getFilterKey(type), userId)
 
         cursor?.let { query = query.startAt(Cursor.fromWebSafeString(it)) }
 
-        val keys = query.limit(50).keys().list()
+        val queryResultIterator = query.limit(50).iterator()
 
-        return ofy()
-            .load()
-            .keys(keys)
-            .values
+        return queryResultIterator
             .asSequence()
             .map {
                 RelationshipResponse(
-                    id = it.id,
+                    id = when (type) {
+                        FOLLOWING -> Relationship.extractToId(it.id)
+                        FOLLOWER -> Relationship.extractFromId(it.id)
+                    },
                     displayName = it.displayName.value,
                     avatarUrl = it.avatarImage.url.value
                 )
@@ -42,12 +41,12 @@ class ListRelationshipUseCase {
                 CollectionResponse.builder<RelationshipResponse>()
                     .data(it)
                     .prevPageToken(cursor)
-                    .nextPageToken(Cursor.fromWebSafeString(keys.last().toWebSafeString()).toWebSafeString())
+                    .nextPageToken(queryResultIterator.cursor.toWebSafeString())
                     .build()
             }
     }
 
-    private fun getQueryKeyByRelationshipType(type: Type): String {
+    private fun getFilterKey(type: Type): String {
         return when (type) {
             FOLLOWING -> Relationship.INDEX_FROM_ID
             FOLLOWER -> Relationship.INDEX_TO_ID

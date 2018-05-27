@@ -20,11 +20,11 @@ data class SignUpEmailRequest(
 
     @field:NotNull
     @field:Valid
-    val metaData: UserMetaData?
+    val metadata: UserMetadata?
 ) {
 
     @NoArg
-    data class UserMetaData(
+    data class UserMetadata(
         @field:NotBlank
         val displayName: String?,
 

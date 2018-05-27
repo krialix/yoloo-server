@@ -1,9 +1,9 @@
 package com.yoloo.server.user.usecase
 
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.api.exception.ServiceExceptions
-import com.yoloo.server.common.util.Filters
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.yoloo.server.rest.error.exception.ServiceExceptions
+import com.yoloo.server.user.entity.Relationship
 import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.vo.*
 import net.cinnom.nanocuckoo.NanoCuckooFilter
@@ -15,29 +15,23 @@ import org.springframework.stereotype.Component
 class GetUserUseCase(private val memcacheService: MemcacheService) {
 
     fun execute(requesterId: Long, targetId: Long): UserResponse {
-        var user = ofy().load().type(User::class.java).id(targetId).now()
+        val user = ofy().load().type(User::class.java).id(targetId).now()
 
         ServiceExceptions.checkBadRequest(user != null, "userId is invalid")
 
         val self = targetId == requesterId
 
-        user = user.copy(
-            self = self,
-            following = when {
-                self -> false
-                else -> checkFollowing(requesterId, targetId)
-            }
-        )
+        user.self = self
+        user.following = when {
+            self -> false
+            else -> Relationship.isFollowing(getRelationshipFilter(), requesterId, targetId)
+        }
 
         return mapToUserResponse(user)
     }
 
-    private fun checkFollowing(requesterId: Long, targetId: Long): Boolean {
-        return getRelationshipFilter().contains("$requesterId:$targetId")
-    }
-
     private fun getRelationshipFilter(): NanoCuckooFilter {
-        return memcacheService.get(Filters.KEY_FILTER_RELATIONSHIP) as NanoCuckooFilter
+        return memcacheService.get(Relationship.KEY_FILTER_RELATIONSHIP) as NanoCuckooFilter
     }
 
     private fun mapToUserResponse(user: User): UserResponse {
