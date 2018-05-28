@@ -12,7 +12,6 @@ data class JwtClaims(
     val jti: String,
     val exp: Long,
     val clientId: String,
-    val updatedAt: String,
     val fcmToken: String
 ) {
 

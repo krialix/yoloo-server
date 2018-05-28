@@ -53,7 +53,7 @@ internal class SignUpEmailUseCase(
         val followedUsers = getFollowedUsers(metaData.followedUserIds.orEmpty())
 
         val user = createUser(email, metaData, groups)
-        val account = createAccount(request.clientId, user.id, email, request.password!!, metaData)
+        val account = createAccount(request.clientId!!, user.id, email, request.password!!, metaData)
         val userMeta = createUserMeta(user.id, metaData)
 
         addEmailToEmailFilter(emailFilter, account.email.value)

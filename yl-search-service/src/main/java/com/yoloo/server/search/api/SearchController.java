@@ -1,34 +1,50 @@
 package com.yoloo.server.search.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yoloo.server.search.entity.Post;
-import com.yoloo.server.search.repository.post.PostRepository;
-import org.apache.logging.log4j.util.Strings;
+import com.yoloo.server.search.usecase.ListenPostSubscriptionUseCase;
+import com.yoloo.server.search.usecase.SearchPostUseCase;
+import com.yoloo.server.search.vo.PubSubResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.solr.core.query.SolrPageRequest;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @RequestMapping("/api/v1/search")
 @RestController
 public class SearchController {
 
-  private final PostRepository postRepository;
+  private static final Logger LOGGER = LoggerFactory.getLogger(SearchController.class);
+
+  private final ObjectMapper objectMapper;
+  private final ListenPostSubscriptionUseCase listenPostSubscriptionUseCase;
+  private final SearchPostUseCase searchPostUseCase;
 
   @Autowired
-  public SearchController(PostRepository postRepository) {
-    this.postRepository = postRepository;
+  public SearchController(
+      ObjectMapper objectMapper,
+      ListenPostSubscriptionUseCase listenPostSubscriptionUseCase,
+      SearchPostUseCase searchPostUseCase) {
+    this.objectMapper = objectMapper;
+    this.listenPostSubscriptionUseCase = listenPostSubscriptionUseCase;
+    this.searchPostUseCase = searchPostUseCase;
+  }
+
+  @PostMapping("/subscription/post")
+  public void listenPostSubscription(HttpServletRequest request) {
+    try {
+      PubSubResponse pubSubResponse = objectMapper.readValue(request.getInputStream(), PubSubResponse.class);
+      listenPostSubscriptionUseCase.execute(pubSubResponse);
+    } catch (IOException e) {
+      LOGGER.error("Couldn't parse response", e);
+    }
   }
 
   @GetMapping("/posts")
   public Iterable<Post> searchPost(@RequestParam(value = "q", required = false) String query) {
-    if (Strings.isBlank(query)) {
-      return postRepository.findAll();
-    }
-
-    String[] values = query.split(" ");
-    return postRepository.findPostsByTitleLikeOrTagsLikeOrContentLike(
-        values, values, values, new SolrPageRequest(0, 30));
+    return searchPostUseCase.execute(query);
   }
 }

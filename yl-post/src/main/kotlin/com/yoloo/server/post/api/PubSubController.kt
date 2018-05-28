@@ -40,7 +40,11 @@ class PubSubController(
 
     @PostMapping("/subscriptions")
     fun createSubscription(@RequestBody request: CreateSubscriptionRequest) {
-        pubSubAdmin.createSubscription(request.subscriptionName, request.topicName)
+        if (request.endpoint == null) {
+            pubSubAdmin.createSubscription(request.subscriptionName, request.topicName)
+        } else {
+            pubSubAdmin.createSubscription(request.subscriptionName, request.topicName, request.endpoint)
+        }
     }
 
     @DeleteMapping("/subscriptions/{subscription}")
@@ -50,12 +54,12 @@ class PubSubController(
 
     @PostMapping("/subscriptions/{subscription}/subscribe")
     fun subscribe(@PathVariable("subscription") subscription: String) {
-        pubSubTemplate.subscribe(subscription) { pubsubMessage, ackReplyConsumer ->
+        pubSubTemplate.subscribe(subscription, { pubsubMessage, ackReplyConsumer ->
             LOGGER.info(
                 "Message received from $subscription subscription. ${pubsubMessage.data.toStringUtf8()}"
             )
             ackReplyConsumer.ack()
-        }
+        })
     }
 
     @GetMapping("/queue/{message}")
@@ -81,5 +85,5 @@ class PubSubController(
     data class PublishRequest(val message: String)
 
     @NoArg
-    data class CreateSubscriptionRequest(val topicName: String, val subscriptionName: String)
+    data class CreateSubscriptionRequest(val topicName: String, val subscriptionName: String, val endpoint: String?)
 }

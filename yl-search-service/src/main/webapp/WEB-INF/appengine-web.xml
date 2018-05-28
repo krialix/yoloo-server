@@ -3,6 +3,8 @@
     <application>spring-demo-192912</application>
     <runtime>java8</runtime>
     <threadsafe>true</threadsafe>
+    <sessions-enabled>true</sessions-enabled>
+    <async-session-persistence enabled="true"/>
     <service>yl-search-service</service>
 
     <system-properties>

@@ -53,8 +53,7 @@ class TokenConfig {
                         jti = t["jti"] as String,
                         exp = t["exp"] as Long,
                         clientId = t["client_id"] as String,
-                        fcmToken = t["fcm_token"] as String,
-                        updatedAt = t["updated_at"] as String
+                        fcmToken = t["fcm_token"] as String
                     )
                 }
             }

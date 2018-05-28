@@ -1,5 +1,7 @@
 package com.yoloo.server.post.usecase
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.yoloo.server.common.util.Fetcher
 import com.yoloo.server.common.util.id.LongIdGenerator
 import com.yoloo.server.common.vo.AvatarImage
@@ -9,6 +11,7 @@ import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.*
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
@@ -18,7 +21,9 @@ class InsertPostUseCase(
     private val postResponseMapper: PostResponseMapper,
     @Qualifier("cached") private val idGenerator: LongIdGenerator,
     private val userInfoFetcher: Fetcher<Long, UserInfoResponse>,
-    private val groupInfoFetcher: Fetcher<Long, GroupInfoResponse>
+    private val groupInfoFetcher: Fetcher<Long, GroupInfoResponse>,
+    private val pubSubTemplate: PubSubTemplate,
+    private val objectMapper: ObjectMapper
 ) {
 
     fun execute(requesterId: Long, request: InsertPostRequest): PostResponse {
@@ -28,10 +33,12 @@ class InsertPostUseCase(
         val post = createPost(request, requesterId, userInfo, groupInfo)
 
         // TODO inc user & group post count
-        // TODO register title & tags in search service
         // TODO If buddy post -> register in buddy search
 
         ofy().save().entities(post)
+
+        val json = objectMapper.writeValueAsString(post)
+        pubSubTemplate.publish("post.create", json, null)
 
         return postResponseMapper.apply(post, true, false, false)
     }

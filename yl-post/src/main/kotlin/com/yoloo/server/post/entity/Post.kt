@@ -1,23 +1,26 @@
 package com.yoloo.server.post.entity
 
-import com.googlecode.objectify.annotation.*
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.googlecode.objectify.annotation.Cache
+import com.googlecode.objectify.annotation.Entity
+import com.googlecode.objectify.annotation.Id
+import com.googlecode.objectify.annotation.IgnoreSave
 import com.googlecode.objectify.condition.IfEmpty
-import com.googlecode.objectify.condition.IfNotNull
 import com.googlecode.objectify.condition.IfNull
 import com.yoloo.server.common.entity.BaseEntity
-import com.yoloo.server.common.vo.Keyable
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.post.vo.*
-import java.time.LocalDateTime
 import java.util.*
 
 @NoArg
 @Cache(expirationSeconds = Post.CACHE_EXPIRATION_TIME)
 @Entity
 class Post(
+    @JsonProperty("id")
     @Id
     var id: Long,
 
+    @JsonProperty("type")
     var type: PostType,
 
     var author: Author,

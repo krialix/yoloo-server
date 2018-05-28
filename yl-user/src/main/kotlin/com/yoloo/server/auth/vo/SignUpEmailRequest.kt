@@ -9,7 +9,7 @@ import javax.validation.constraints.*
 @NoArg
 data class SignUpEmailRequest(
     @field:NotBlank
-    val clientId: String,
+    val clientId: String?,
 
     @field:NotBlank
     @field:Email
