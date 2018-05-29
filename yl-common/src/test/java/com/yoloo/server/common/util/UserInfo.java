@@ -16,19 +16,25 @@ public class UserInfo {
     isLoggedIn = builder.isLoggedIn;
   }
 
-  /** Creates a new logged-in non-admin user instance. */
+  /**
+   * Creates a new logged-in non-admin user instance.
+   */
   public static UserInfo create(String email, String gaeUserId) {
     String authDomain = email.substring(email.indexOf('@') + 1);
     return newBuilder(email, authDomain, gaeUserId, false, true).build();
   }
 
-  /** Creates a new logged-in admin user instance. */
+  /**
+   * Creates a new logged-in admin user instance.
+   */
   public static UserInfo createAdmin(String email, String gaeUserId) {
     String authDomain = email.substring(email.indexOf('@') + 1);
     return newBuilder(email, authDomain, gaeUserId, true, true).build();
   }
 
-  /** Returns a logged-out user instance. */
+  /**
+   * Returns a logged-out user instance.
+   */
   public static UserInfo loggedOut() {
     return newBuilder("", "", "", false, false).build();
   }
@@ -59,6 +65,7 @@ public class UserInfo {
   }
 
   public static final class Builder {
+
     private final String email;
     private final String authDomain;
     private final String gaeUserId;

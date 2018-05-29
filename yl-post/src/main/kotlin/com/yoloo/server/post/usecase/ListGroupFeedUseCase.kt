@@ -20,7 +20,11 @@ class ListGroupFeedUseCase(
     private val postResponseMapper: PostResponseMapper,
     private val memcacheService: MemcacheService
 ) {
-    fun execute(requesterId: Long, groupId: Long, cursor: String?): CollectionResponse<PostResponse> {
+    fun execute(
+        requesterId: Long,
+        groupId: Long,
+        cursor: String?
+    ): CollectionResponse<PostResponse> {
         val queryResultIterator = buildQueryResultIterator(groupId, cursor)
 
         if (!queryResultIterator.hasNext()) {
@@ -28,15 +32,29 @@ class ListGroupFeedUseCase(
         }
 
         val cacheMap =
-            memcacheService.getAll(listOf(Vote.KEY_FILTER_VOTE, Bookmark.KEY_FILTER_BOOKMARK)) as Map<String, *>
+            memcacheService.getAll(
+                listOf(
+                    Vote.KEY_FILTER_VOTE,
+                    Bookmark.KEY_FILTER_BOOKMARK
+                )
+            ) as Map<String, *>
 
         val voteFilter = cacheMap[Vote.KEY_FILTER_VOTE] as NanoCuckooFilter
         val bookmarkFilter = cacheMap[Bookmark.KEY_FILTER_BOOKMARK] as NanoCuckooFilter
 
-        return buildCollectionResponse(queryResultIterator, requesterId, voteFilter, bookmarkFilter, cursor)
+        return buildCollectionResponse(
+            queryResultIterator,
+            requesterId,
+            voteFilter,
+            bookmarkFilter,
+            cursor
+        )
     }
 
-    private fun buildQueryResultIterator(groupId: Long, cursor: String?): QueryResultIterator<Post> {
+    private fun buildQueryResultIterator(
+        groupId: Long,
+        cursor: String?
+    ): QueryResultIterator<Post> {
         var query = ofy()
             .load()
             .type(Post::class.java)

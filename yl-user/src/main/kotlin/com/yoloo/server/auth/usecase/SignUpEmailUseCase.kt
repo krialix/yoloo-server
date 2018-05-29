@@ -53,7 +53,8 @@ internal class SignUpEmailUseCase(
         val followedUsers = getFollowedUsers(metaData.followedUserIds.orEmpty())
 
         val user = createUser(email, metaData, groups)
-        val account = createAccount(request.clientId!!, user.id, email, request.password!!, metaData)
+        val account =
+            createAccount(request.clientId!!, user.id, email, request.password!!, metaData)
         val userMeta = createUserMeta(user.id, metaData)
 
         addEmailToEmailFilter(emailFilter, account.email.value)
@@ -67,7 +68,10 @@ internal class SignUpEmailUseCase(
         val passwordResourceDetails =
             getResourceOwnerPasswordResourceDetails(account.email.value, account.password!!.value)
 
-        return accessTokenProvider.obtainAccessToken(passwordResourceDetails, DefaultAccessTokenRequest())
+        return accessTokenProvider.obtainAccessToken(
+            passwordResourceDetails,
+            DefaultAccessTokenRequest()
+        )
     }
 
     private fun getResourceOwnerPasswordResourceDetails(
@@ -109,8 +113,7 @@ internal class SignUpEmailUseCase(
                 gender = Gender.valueOf(metadata.gender!!.toUpperCase()),
                 locale = UserLocale(metadata.language!!, metadata.country!!)
             ),
-            subscribedGroups = groups,
-            self = true
+            subscribedGroups = groups
         )
     }
 

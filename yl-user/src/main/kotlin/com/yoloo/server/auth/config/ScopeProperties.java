@@ -1,15 +1,15 @@
 package com.yoloo.server.auth.config;
 
+import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
 
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "auth")
 public class ScopeProperties {
+
   private List<String> scopes;
 
   public List<String> getScopes() {

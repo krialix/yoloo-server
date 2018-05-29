@@ -11,6 +11,7 @@ import com.yoloo.server.objectify.configuration.ObjectifyAutoConfiguration;
  * to Objectify will occur after all entities, translators, etc have been registered.
  */
 public interface ObjectifyProxy {
+
   /**
    * Get an objectify instance. Equivalent to calling {@link ObjectifyService#ofy()}
    *

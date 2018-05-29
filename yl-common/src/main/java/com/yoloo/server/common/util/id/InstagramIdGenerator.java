@@ -1,27 +1,24 @@
 package com.yoloo.server.common.util.id;
 
-import com.google.common.annotations.Beta;
-import org.springframework.stereotype.Component;
-
-import java.time.Instant;
-import java.time.LocalDateTime;
-
 import static com.yoloo.server.common.util.RandomUtil.nextInt;
 import static java.time.ZoneOffset.UTC;
 import static java.time.temporal.ChronoUnit.MILLIS;
 
+import com.google.common.annotations.Beta;
+import java.time.Instant;
+import java.time.LocalDateTime;
+
 /**
- * Database agnostic unique ID generator inspired by <a
- * href="https://engineering.instagram.com/sharding-ids-at-instagram-1cf5a71e5a5c">Sharding & IDs at
- * Instagram</a>
+ * Database agnostic unique ID generator inspired by <a href="https://engineering.instagram.com/sharding-ids-at-instagram-1cf5a71e5a5c">Sharding
+ * & IDs at Instagram</a>
  *
  * <p>Going to the most to the least significant bits
  *
  * <ul>
- *   <li>the first bit (sign) is always zero
- *   <li>the next 7 bits represent the shard ID
- *   <li>the next 40 bits represent the elapsed milliseconds from a custom Epoch (2017-02-20)
- *   <li>the next 16 bits represent a serial number XOR-ed with a per-thread random number
+ * <li>the first bit (sign) is always zero
+ * <li>the next 7 bits represent the shard ID
+ * <li>the next 40 bits represent the elapsed milliseconds from a custom Epoch (2017-02-20)
+ * <li>the next 16 bits represent a serial number XOR-ed with a per-thread random number
  * </ul>
  *
  * <p>With this technique 65536 unique IDs can be generated per shard per millisecond.
@@ -29,10 +26,14 @@ import static java.time.temporal.ChronoUnit.MILLIS;
 @Beta
 public class InstagramIdGenerator implements LongIdGenerator {
 
-  /** Default shard ID. */
+  /**
+   * Default shard ID.
+   */
   public static final byte DEFAULT_SHARD_ID = 0;
 
-  /** Custom Epoch (2017-02-20). */
+  /**
+   * Custom Epoch (2017-02-20).
+   */
   public static final Instant EPOCH = LocalDateTime.of(2017, 2, 20, 0, 0, 0, 0).toInstant(UTC);
 
   private static final ThreadLocal<Serial> THREAD_LOCAL_SERIAL;

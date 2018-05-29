@@ -3,9 +3,11 @@ package com.yoloo.server.common.vo;
 import java.util.Objects;
 
 public class Url implements ValueObject<Url> {
+
   private String value;
 
-  private Url() {}
+  private Url() {
+  }
 
   public Url(String value) {
     this.value = value;
@@ -17,8 +19,12 @@ public class Url implements ValueObject<Url> {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Url url = (Url) o;
     return Objects.equals(value, url.value);
   }

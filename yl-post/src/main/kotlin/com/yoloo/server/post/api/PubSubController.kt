@@ -43,7 +43,11 @@ class PubSubController(
         if (request.endpoint == null) {
             pubSubAdmin.createSubscription(request.subscriptionName, request.topicName)
         } else {
-            pubSubAdmin.createSubscription(request.subscriptionName, request.topicName, request.endpoint)
+            pubSubAdmin.createSubscription(
+                request.subscriptionName,
+                request.topicName,
+                request.endpoint
+            )
         }
     }
 
@@ -85,5 +89,9 @@ class PubSubController(
     data class PublishRequest(val message: String)
 
     @NoArg
-    data class CreateSubscriptionRequest(val topicName: String, val subscriptionName: String, val endpoint: String?)
+    data class CreateSubscriptionRequest(
+        val topicName: String,
+        val subscriptionName: String,
+        val endpoint: String?
+    )
 }

@@ -2,12 +2,12 @@ package com.yoloo.server.common.util;
 
 import com.google.appengine.api.utils.SystemProperty;
 import com.google.apphosting.api.ApiProxy;
-
 import java.util.Map;
 
 public final class AppengineUtil {
 
-  private AppengineUtil() {}
+  private AppengineUtil() {
+  }
 
   public static String getAppengineRunningUrl() {
     final ApiProxy.Environment env = ApiProxy.getCurrentEnvironment();

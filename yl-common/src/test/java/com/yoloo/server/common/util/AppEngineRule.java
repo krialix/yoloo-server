@@ -1,11 +1,28 @@
 package com.yoloo.server.common.util;
 
-import com.google.appengine.tools.development.testing.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.json.XML.toJSONObject;
+
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalImagesServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalMemcacheServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalModulesServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalTaskQueueTestConfig;
+import com.google.appengine.tools.development.testing.LocalURLFetchServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
 import com.googlecode.objectify.util.Closeable;
+import java.io.File;
+import java.time.Clock;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,16 +31,6 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-
-import javax.annotation.Nullable;
-import java.io.File;
-import java.time.Clock;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.json.XML.toJSONObject;
 
 /**
  * JUnit Rule for managing the App Engine testing environment.
@@ -222,9 +229,9 @@ public final class AppEngineRule extends ExternalResource {
       TestObjectifyService.initialize();
       rootService = TestObjectifyService.begin();
 
-      //JodaTimeTranslators.add(TestObjectifyService.fact());
+      // JodaTimeTranslators.add(TestObjectifyService.fact());
 
-      //loadInitialData();
+      // loadInitialData();
     }
 
     if (withMemcache) {

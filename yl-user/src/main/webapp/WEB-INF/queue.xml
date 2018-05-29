@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <queue-entries>
-    <queue>
-        <name>subscription-queue</name>
-        <mode>pull</mode>
-    </queue>
-    <queue>
-        <name>relationship-queue</name>
-        <mode>pull</mode>
-    </queue>
-    <queue>
-        <name>notification-queue</name>
-        <mode>pull</mode>
-    </queue>
-    <queue>
-        <name>refresh-feed-queue</name>
-        <rate>100/s</rate>
-        <bucket-size>40</bucket-size>
-    </queue>
+  <queue>
+    <name>subscription-queue</name>
+    <mode>pull</mode>
+  </queue>
+  <queue>
+    <name>relationship-queue</name>
+    <mode>pull</mode>
+  </queue>
+  <queue>
+    <name>notification-queue</name>
+    <mode>pull</mode>
+  </queue>
+  <queue>
+    <name>refresh-feed-queue</name>
+    <rate>100/s</rate>
+    <bucket-size>40</bucket-size>
+  </queue>
 </queue-entries>

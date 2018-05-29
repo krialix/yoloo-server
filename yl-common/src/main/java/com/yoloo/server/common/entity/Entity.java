@@ -1,6 +1,8 @@
 package com.yoloo.server.common.entity;
 
-/** An entity, as explained in the DDD book. */
+/**
+ * An entity, as explained in the DDD book.
+ */
 public interface Entity<I, E> {
 
   /**

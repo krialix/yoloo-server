@@ -25,9 +25,13 @@ class FollowUseCase(
         val fromUser = map[requesterId]
         val toUser = map[userId]
 
-        val relationshipFilter = memcacheService.get(Relationship.KEY_FILTER_RELATIONSHIP) as NanoCuckooFilter
+        val relationshipFilter =
+            memcacheService.get(Relationship.KEY_FILTER_RELATIONSHIP) as NanoCuckooFilter
 
-        checkConflict(!Relationship.isFollowing(relationshipFilter, requesterId, userId), "relationship.conflict")
+        checkConflict(
+            !Relationship.isFollowing(relationshipFilter, requesterId, userId),
+            "relationship.conflict"
+        )
 
         publishFollowEvent(fromUser!!, toUser!!)
     }

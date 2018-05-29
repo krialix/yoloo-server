@@ -27,7 +27,10 @@ class QueueConfig(private val urlFetchService: URLFetchService) {
         @Qualifier("relationship-queue") queue: Queue,
         objectMapper: ObjectMapper
     ): ServletRegistrationBean<RelationshipPullServlet> {
-        val bean = ServletRegistrationBean(RelationshipPullServlet(queue, objectMapper), "/tasks/pull/relationship")
+        val bean = ServletRegistrationBean(
+            RelationshipPullServlet(queue, objectMapper),
+            "/tasks/pull/relationship"
+        )
         bean.setLoadOnStartup(2)
         return bean
     }

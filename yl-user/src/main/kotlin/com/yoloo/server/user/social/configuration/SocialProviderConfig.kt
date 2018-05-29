@@ -21,7 +21,10 @@ class SocialProviderConfig {
     }
 
     @Bean
-    fun googleIdTokenVerifier(httpTransport: HttpTransport, jacksonFactory: JacksonFactory): GoogleIdTokenVerifier {
+    fun googleIdTokenVerifier(
+        httpTransport: HttpTransport,
+        jacksonFactory: JacksonFactory
+    ): GoogleIdTokenVerifier {
         return GoogleIdTokenVerifier.Builder(httpTransport, jacksonFactory)
             .setAudience(listOf("CLIENT_ID_1"))
             .build()

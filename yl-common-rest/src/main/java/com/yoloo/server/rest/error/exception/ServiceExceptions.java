@@ -2,7 +2,8 @@ package com.yoloo.server.rest.error.exception;
 
 public class ServiceExceptions {
 
-  private ServiceExceptions() {}
+  private ServiceExceptions() {
+  }
 
   public static void checkBadRequest(boolean expression, String message, Object... args) {
     if (!expression) {

@@ -1,7 +1,6 @@
 package com.yoloo.server.common.util.id;
 
 import com.yoloo.tools.impl.CachedUidGenerator;
-import org.springframework.stereotype.Component;
 
 public class CachedSnowflakeIdGenerator implements LongIdGenerator {
 

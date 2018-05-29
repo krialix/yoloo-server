@@ -1,18 +1,25 @@
 package com.yoloo.server.common.util;
 
+import static java.time.Instant.EPOCH;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.yoloo.server.common.util.id.IdGenerator;
 import com.yoloo.server.common.util.id.InstagramIdGenerator;
+import java.time.Instant;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.time.Instant;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.time.Instant.EPOCH;
-import static org.junit.Assert.*;
-
-/** Created by lcsontos on 2/20/17. */
+/**
+ * Created by lcsontos on 2/20/17.
+ */
 public class InstagramIdGeneratorTest {
 
   private static final long TIME_DIFF = 10000;
@@ -42,7 +49,8 @@ public class InstagramIdGeneratorTest {
               }
             } else {
               int currentCollisionCount = collisionCount.incrementAndGet();
-              System.out.println(String.format("%d collision(s) on ID %d", currentCollisionCount, id));
+              System.out.println(
+                  String.format("%d collision(s) on ID %d", currentCollisionCount, id));
             }
           });
     }

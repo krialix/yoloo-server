@@ -13,7 +13,8 @@ import org.springframework.security.oauth2.provider.token.TokenStore
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Configuration
-class Oauth2ResourceServerConfig(private val tokenStore: TokenStore) : ResourceServerConfigurerAdapter() {
+class Oauth2ResourceServerConfig(private val tokenStore: TokenStore) :
+    ResourceServerConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
         http

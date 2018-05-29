@@ -11,9 +11,17 @@ import javax.validation.constraints.*
     value =
     [
         Conditional(selected = "providerId", values = ["yoloo"], required = ["email", "password"]),
-        Conditional(selected = "providerId", values = ["google", "facebook"], required = ["providerId"]),
+        Conditional(
+            selected = "providerId",
+            values = ["google", "facebook"],
+            required = ["providerId"]
+        ),
         Conditional(selected = "providerId", values = ["google"], required = ["googleIdToken"]),
-        Conditional(selected = "providerId", values = ["facebook"], required = ["facebookAccessToken"])
+        Conditional(
+            selected = "providerId",
+            values = ["facebook"],
+            required = ["facebookAccessToken"]
+        )
     ]
 )
 @NoArg

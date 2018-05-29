@@ -46,12 +46,14 @@ public class Error {
   }
 
   public static class Builder {
+
     private String error;
     private String message;
     private String field;
     private Object rejectedValue;
 
-    Builder() {}
+    Builder() {
+    }
 
     public Builder error(String error) {
       this.error = error;

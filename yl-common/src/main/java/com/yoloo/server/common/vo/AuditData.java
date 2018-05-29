@@ -8,7 +8,8 @@ public class AuditData implements ValueObject<AuditData> {
   private LocalDateTime createdAt;
   private LocalDateTime deletedAt;
 
-  private AuditData() {}
+  private AuditData() {
+  }
 
   public AuditData(LocalDateTime createdAt, LocalDateTime deletedAt) {
     this.createdAt = createdAt;
@@ -38,8 +39,12 @@ public class AuditData implements ValueObject<AuditData> {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     AuditData auditData = (AuditData) o;
     return Objects.equals(createdAt, auditData.createdAt)
         && Objects.equals(deletedAt, auditData.deletedAt);

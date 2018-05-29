@@ -1,9 +1,9 @@
 package com.yoloo.server.common.vo;
 
+import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
-import java.util.Set;
 
 public interface Validatable {
 

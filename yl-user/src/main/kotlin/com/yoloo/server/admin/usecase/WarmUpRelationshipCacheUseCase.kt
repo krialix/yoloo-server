@@ -31,6 +31,7 @@ class WarmUpRelationshipCacheUseCase(private val memcacheService: AsyncMemcacheS
     }
 
     companion object {
-        private val LOGGER: Logger = LoggerFactory.getLogger(WarmUpRelationshipCacheUseCase::class.java)
+        private val LOGGER: Logger =
+            LoggerFactory.getLogger(WarmUpRelationshipCacheUseCase::class.java)
     }
 }

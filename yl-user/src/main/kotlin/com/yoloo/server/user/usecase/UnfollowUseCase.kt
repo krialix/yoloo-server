@@ -19,9 +19,13 @@ class UnfollowUseCase(
 ) {
 
     fun execute(requesterId: Long, userId: Long) {
-        val relationshipFilter = memcacheService.get(Relationship.KEY_FILTER_RELATIONSHIP) as NanoCuckooFilter
+        val relationshipFilter =
+            memcacheService.get(Relationship.KEY_FILTER_RELATIONSHIP) as NanoCuckooFilter
 
-        checkNotFound(Relationship.isFollowing(relationshipFilter, requesterId, userId), "relationship.not_found")
+        checkNotFound(
+            Relationship.isFollowing(relationshipFilter, requesterId, userId),
+            "relationship.not_found"
+        )
 
         publishUnfollowEvent(requesterId, userId)
     }

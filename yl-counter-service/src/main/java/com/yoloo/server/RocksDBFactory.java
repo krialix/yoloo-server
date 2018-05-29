@@ -4,10 +4,13 @@ import org.rocksdb.Options;
 import org.rocksdb.RocksDB;
 import org.rocksdb.RocksDBException;
 
-/** Factory to provide {@link RocksDBSimpleClient} instances. */
+/**
+ * Factory to provide {@link RocksDBSimpleClient} instances.
+ */
 public final class RocksDBFactory {
 
-  private RocksDBFactory() {}
+  private RocksDBFactory() {
+  }
 
   /**
    * Retrieve a {@link RocksDBFactory.RocksDBSimpleClient} instance.
@@ -19,8 +22,11 @@ public final class RocksDBFactory {
     return new RocksDBSimpleClient(path);
   }
 
-  /** Simple RocksDBClient to provide atomic increment, reset and get methods. */
+  /**
+   * Simple RocksDBClient to provide atomic increment, reset and get methods.
+   */
   static class RocksDBSimpleClient {
+
     private static final byte[] byteArrayOne = ByteConversionHelper.longToByte(1);
     final Options options;
     RocksDB db;

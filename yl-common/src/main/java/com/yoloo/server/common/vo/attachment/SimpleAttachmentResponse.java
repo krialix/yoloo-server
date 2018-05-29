@@ -3,6 +3,7 @@ package com.yoloo.server.common.vo.attachment;
 import java.util.Objects;
 
 public class SimpleAttachmentResponse implements AttachmentResponse {
+
   private final String url;
 
   private SimpleAttachmentResponse() {
@@ -19,8 +20,12 @@ public class SimpleAttachmentResponse implements AttachmentResponse {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     SimpleAttachmentResponse that = (SimpleAttachmentResponse) o;
     return Objects.equals(url, that.url);
   }

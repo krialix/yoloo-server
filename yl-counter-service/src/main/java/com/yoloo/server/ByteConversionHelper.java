@@ -9,8 +9,11 @@ import java.nio.ByteOrder;
  */
 final class ByteConversionHelper {
 
-  /** Utility constructor */
-  private ByteConversionHelper() {}
+  /**
+   * Utility constructor
+   */
+  private ByteConversionHelper() {
+  }
 
   /**
    * Transforms a long value to the platform-specific byte representation.

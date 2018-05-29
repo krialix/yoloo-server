@@ -11,7 +11,9 @@ import java.util.Date;
 public class ZonedDateTimeDateTranslatorFactory
     extends AbstractSimpleTranslatorFactory<ZonedDateTime, Date> {
 
-  /** Create a new instance. */
+  /**
+   * Create a new instance.
+   */
   public ZonedDateTimeDateTranslatorFactory() {
     super(ZonedDateTime.class);
   }

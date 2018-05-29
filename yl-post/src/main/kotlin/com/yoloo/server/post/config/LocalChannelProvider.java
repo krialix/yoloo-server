@@ -6,7 +6,6 @@ import com.google.api.gax.rpc.TransportChannel;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 

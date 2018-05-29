@@ -1,5 +1,7 @@
 package com.yoloo.server.objectify.configuration;
 
+import static com.yoloo.server.objectify.ObjectifyProxy.factory;
+
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyFilter;
@@ -10,6 +12,8 @@ import com.yoloo.server.objectify.translators.LocalDateDateTranslatorFactory;
 import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory;
 import com.yoloo.server.objectify.translators.OffsetDateTimeDateTranslatorFactory;
 import com.yoloo.server.objectify.translators.ZonedDateTimeDateTranslatorFactory;
+import java.util.Arrays;
+import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +25,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import static com.yoloo.server.objectify.ObjectifyProxy.factory;
-
 /**
  * Automatic objectify configuration. Provides the following beans and services:
  *
  * <ul>
- *   <li>Registers an {@link ObjectifyProxy} configured by any registered {@link
- *       ObjectifyConfigurer} beans.
- *   <li>Registers the {@link ObjectifyFilter} to manage Objectify sessions per-request.
+ * <li>Registers an {@link ObjectifyProxy} configured by any registered {@link
+ * ObjectifyConfigurer} beans.
+ * <li>Registers the {@link ObjectifyFilter} to manage Objectify sessions per-request.
  * </ul>
  */
 @Configuration
@@ -57,7 +56,8 @@ public class ObjectifyAutoConfiguration {
   @DependsOn("ofyFilter")
   @Bean("ofy")
   public ObjectifyProxy ofy() {
-    ObjectifyProxy proxy = new ObjectifyProxy() {};
+    ObjectifyProxy proxy = new ObjectifyProxy() {
+    };
 
     registerTranslators(factory().getTranslators());
     registerEntities(factory());
@@ -67,11 +67,11 @@ public class ObjectifyAutoConfiguration {
 
   private void registerTranslators(Translators translators) {
     Arrays.asList(
-            new LocalDateDateTranslatorFactory(),
-            new LocalDateTimeDateTranslatorFactory(),
-            new ZonedDateTimeDateTranslatorFactory(),
-            new OffsetDateTimeDateTranslatorFactory(),
-            new BigDecimalLongTranslatorFactory())
+        new LocalDateDateTranslatorFactory(),
+        new LocalDateTimeDateTranslatorFactory(),
+        new ZonedDateTimeDateTranslatorFactory(),
+        new OffsetDateTimeDateTranslatorFactory(),
+        new BigDecimalLongTranslatorFactory())
         .forEach(translators::add);
 
     configurers

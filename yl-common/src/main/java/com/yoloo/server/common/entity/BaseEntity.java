@@ -4,14 +4,14 @@ import com.googlecode.objectify.annotation.OnLoad;
 import com.googlecode.objectify.annotation.OnSave;
 import com.yoloo.server.common.vo.AuditData;
 import com.yoloo.server.common.vo.Keyable;
-
 import java.time.LocalDateTime;
 
 public abstract class BaseEntity<I, E> implements Entity<I, E>, Keyable<E> {
 
   private AuditData auditData;
 
-  public BaseEntity() {}
+  public BaseEntity() {
+  }
 
   public AuditData getAuditData() {
     return auditData;
@@ -25,5 +25,6 @@ public abstract class BaseEntity<I, E> implements Entity<I, E>, Keyable<E> {
   }
 
   @OnLoad
-  protected void onLoad() {}
+  protected void onLoad() {
+  }
 }

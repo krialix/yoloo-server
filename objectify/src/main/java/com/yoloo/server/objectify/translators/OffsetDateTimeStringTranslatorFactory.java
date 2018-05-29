@@ -14,7 +14,9 @@ import java.time.format.DateTimeFormatter;
 public class OffsetDateTimeStringTranslatorFactory
     extends AbstractSimpleTranslatorFactory<OffsetDateTime, String> {
 
-  /** Create a new instance. */
+  /**
+   * Create a new instance.
+   */
   public OffsetDateTimeStringTranslatorFactory() {
     super(OffsetDateTime.class);
   }

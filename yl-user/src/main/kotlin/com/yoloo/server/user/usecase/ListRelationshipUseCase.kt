@@ -14,7 +14,11 @@ import org.springframework.stereotype.Component
 @Component
 class ListRelationshipUseCase {
 
-    fun execute(type: Type, userId: String, cursor: String?): CollectionResponse<RelationshipResponse> {
+    fun execute(
+        type: Type,
+        userId: String,
+        cursor: String?
+    ): CollectionResponse<RelationshipResponse> {
         var query = ofy()
             .load()
             .type(Relationship::class.java)

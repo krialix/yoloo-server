@@ -8,4 +8,7 @@ include 'yl-post'
 include 'yl-user'
 include 'yl-counter-service'
 include 'yl-search-service'
+include 'yl-group-service'
+include 'yl-group-service'
+include 'yl-group-service'
 

@@ -10,7 +10,9 @@ import java.time.LocalDate;
 public class LocalDateStringTranslatorFactory
     extends AbstractSimpleTranslatorFactory<LocalDate, String> {
 
-  /** Create a new instance. */
+  /**
+   * Create a new instance.
+   */
   public LocalDateStringTranslatorFactory() {
     super(LocalDate.class);
   }

@@ -11,7 +11,9 @@ import java.util.Date;
 public class OffsetDateTimeDateTranslatorFactory
     extends AbstractSimpleTranslatorFactory<OffsetDateTime, Date> {
 
-  /** Create a new instance. */
+  /**
+   * Create a new instance.
+   */
   public OffsetDateTimeDateTranslatorFactory() {
     super(OffsetDateTime.class);
   }

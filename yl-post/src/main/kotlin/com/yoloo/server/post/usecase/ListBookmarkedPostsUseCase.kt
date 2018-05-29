@@ -33,7 +33,10 @@ class ListBookmarkedPostsUseCase(
         return buildCollectionResponse(queryResultIterator, requesterId, voteFilter, cursor)
     }
 
-    private fun buildQueryResultIterator(requesterId: Long, cursor: String?): QueryResultIterator<Key<Bookmark>> {
+    private fun buildQueryResultIterator(
+        requesterId: Long,
+        cursor: String?
+    ): QueryResultIterator<Key<Bookmark>> {
         var query = ofy()
             .load()
             .type(Bookmark::class.java)
@@ -67,7 +70,11 @@ class ListBookmarkedPostsUseCase(
             }
     }
 
-    private fun mapToPostResponse(post: Post, requesterId: Long, voteFilter: NanoCuckooFilter): PostResponse {
+    private fun mapToPostResponse(
+        post: Post,
+        requesterId: Long,
+        voteFilter: NanoCuckooFilter
+    ): PostResponse {
         return postResponseMapper.apply(
             post,
             isSelf(requesterId, post),

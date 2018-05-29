@@ -16,7 +16,10 @@ class FacebookUserInfoProvider(private val urlFetchService: URLFetchService) : U
         val httpResponse = urlFetchService.fetch(URL("$FACEBOOK_GRAPH_API$token"))
 
         val objectMapper = ObjectMapper()
-        val response = objectMapper.readValue<FacebookResponse>(httpResponse.content, FacebookResponse::class.java)
+        val response = objectMapper.readValue<FacebookResponse>(
+            httpResponse.content,
+            FacebookResponse::class.java
+        )
 
         return UserInfo(
             providerId = response.id,

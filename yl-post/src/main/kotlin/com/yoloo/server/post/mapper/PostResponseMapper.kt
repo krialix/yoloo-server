@@ -35,7 +35,11 @@ class PostResponseMapper {
         )
     }
 
-    private fun mapToTextPostDataResponse(post: Post, voted: Boolean, bookmarked: Boolean): PostDataResponse {
+    private fun mapToTextPostDataResponse(
+        post: Post,
+        voted: Boolean,
+        bookmarked: Boolean
+    ): PostDataResponse {
         return TextPostDataResponse(
             title = post.title.value,
             group = PostGroupResponse(post.group.id, post.group.displayName),
@@ -49,7 +53,11 @@ class PostResponseMapper {
         )
     }
 
-    private fun mapToRichPostDataResponse(post: Post, voted: Boolean, bookmarked: Boolean): PostDataResponse {
+    private fun mapToRichPostDataResponse(
+        post: Post,
+        voted: Boolean,
+        bookmarked: Boolean
+    ): PostDataResponse {
         return RichPostDataResponse(
             title = post.title.value,
             group = PostGroupResponse(post.group.id, post.group.displayName),

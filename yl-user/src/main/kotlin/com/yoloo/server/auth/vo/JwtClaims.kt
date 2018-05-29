@@ -17,7 +17,7 @@ data class JwtClaims(
 ) {
 
     companion object {
-        fun from(authentication: Authentication) : JwtClaims {
+        fun from(authentication: Authentication): JwtClaims {
             val details = authentication.details as OAuth2AuthenticationDetails
             return details.decodedDetails as JwtClaims
         }

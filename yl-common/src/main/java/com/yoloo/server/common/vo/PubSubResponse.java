@@ -1,12 +1,14 @@
-package com.yoloo.server.search.vo;
+package com.yoloo.server.common.vo;
 
 public class PubSubResponse {
-  private Message message;
+
+  private PubSubMessage message;
   private String subscription;
 
-  private PubSubResponse() {}
+  private PubSubResponse() {
+  }
 
-  public Message getMessage() {
+  public PubSubMessage getMessage() {
     return message;
   }
 

@@ -2,7 +2,6 @@ package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.memcache.MemcacheServiceFactory
 import com.google.common.truth.Truth.assertThat
-import com.yoloo.server.rest.error.exception.NotFoundException
 import com.yoloo.server.common.util.AppEngineRule
 import com.yoloo.server.common.util.TestObjectifyService.fact
 import com.yoloo.server.common.util.TestObjectifyService.ofy
@@ -14,6 +13,7 @@ import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.entity.Vote
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.*
+import com.yoloo.server.rest.error.exception.NotFoundException
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.junit.Before
 import org.junit.Rule

@@ -1,5 +1,6 @@
 package com.yoloo.server.post.usecase
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheServiceFactory
 import com.google.common.truth.Truth
 import com.yoloo.server.common.util.AppEngineRule
@@ -17,6 +18,7 @@ import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate
 
 class UpdatePostUseCaseIntegrationTest {
 
@@ -26,10 +28,13 @@ class UpdatePostUseCaseIntegrationTest {
 
     private val memcacheService by lazy(LazyThreadSafetyMode.NONE) { MemcacheServiceFactory.getMemcacheService() }
     private val postResponseMapper by lazy(LazyThreadSafetyMode.NONE) { PostResponseMapper() }
+    private val objectMapper by lazy(LazyThreadSafetyMode.NONE) { ObjectMapper() }
     private val updatePostUseCase by lazy(LazyThreadSafetyMode.NONE) {
         UpdatePostUseCase(
             postResponseMapper,
-            memcacheService
+            memcacheService,
+            objectMapper,
+            PubSubTemplate(null, null)
         )
     }
 

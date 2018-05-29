@@ -1,23 +1,28 @@
 package com.yoloo.server.search.entity;
 
+import java.util.List;
+import java.util.Objects;
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
-import java.util.List;
-import java.util.Objects;
-
 @SolrDocument(collection = "post")
 public class Post {
-  @Id private String id;
 
-  @Field private String title;
+  @Id
+  private String id;
 
-  @Field private String content;
+  @Field
+  private String title;
 
-  @Field private List<String> tags;
+  @Field
+  private String content;
 
-  private Post() {}
+  @Field
+  private List<String> tags;
+
+  private Post() {
+  }
 
   private Post(Builder builder) {
     id = builder.id;
@@ -28,6 +33,10 @@ public class Post {
 
   public static Builder newBuilder() {
     return new Builder();
+  }
+
+  public Builder toBuilder() {
+    return newBuilder().id(id).title(title).content(content).tags(tags);
   }
 
   public String getId() {
@@ -48,8 +57,12 @@ public class Post {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Post post = (Post) o;
     return Objects.equals(id, post.id)
         && Objects.equals(title, post.title)
@@ -80,12 +93,14 @@ public class Post {
   }
 
   public static final class Builder {
+
     private String id;
     private String title;
     private String content;
     private List<String> tags;
 
-    private Builder() {}
+    private Builder() {
+    }
 
     public Builder id(String val) {
       id = val;

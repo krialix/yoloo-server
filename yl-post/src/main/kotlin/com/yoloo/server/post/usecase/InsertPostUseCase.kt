@@ -1,7 +1,6 @@
 package com.yoloo.server.post.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.yoloo.server.common.util.Fetcher
 import com.yoloo.server.common.util.id.LongIdGenerator
 import com.yoloo.server.common.vo.AvatarImage
@@ -32,15 +31,19 @@ class InsertPostUseCase(
 
         val post = createPost(request, requesterId, userInfo, groupInfo)
 
-        // TODO inc user & group post count
+        // TODO inc group post count
         // TODO If buddy post -> register in buddy search
 
         ofy().save().entities(post)
 
-        val json = objectMapper.writeValueAsString(post)
-        pubSubTemplate.publish("post.create", json, null)
+        publishPostCreatedEvent(post)
 
         return postResponseMapper.apply(post, true, false, false)
+    }
+
+    private fun publishPostCreatedEvent(post: Post) {
+        val json = objectMapper.writeValueAsString(post)
+        pubSubTemplate.publish("post.create", json, null)
     }
 
     private fun createPost(

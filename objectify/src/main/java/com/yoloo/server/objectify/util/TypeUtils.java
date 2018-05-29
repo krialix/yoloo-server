@@ -1,12 +1,13 @@
 package com.yoloo.server.objectify.util;
 
-import com.google.common.reflect.TypeToken;
-
-import java.lang.reflect.Modifier;
-
 import static com.google.common.base.Preconditions.checkArgument;
 
-/** Utilities methods related to reflection. */
+import com.google.common.reflect.TypeToken;
+import java.lang.reflect.Modifier;
+
+/**
+ * Utilities methods related to reflection.
+ */
 public class TypeUtils {
 
   private static <T> T instantiate(Class<? extends T> clazz) {
@@ -20,8 +21,11 @@ public class TypeUtils {
     }
   }
 
-  /** A {@TypeToken} that removes an ugly cast in the common cases of getting a known type. */
+  /**
+   * A {@TypeToken} that removes an ugly cast in the common cases of getting a known type.
+   */
   public static class TypeInstantiator<T> extends TypeToken<T> {
+
     protected TypeInstantiator(Class<?> declaringClass) {
       super(declaringClass);
     }

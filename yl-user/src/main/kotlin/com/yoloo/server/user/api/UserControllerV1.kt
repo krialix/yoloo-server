@@ -10,7 +10,6 @@ import com.yoloo.server.user.vo.UserResponse
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
@@ -28,6 +27,7 @@ internal class UserControllerV1(
     private val unfollowUseCase: UnfollowUseCase,
     private val listRelationshipUseCase: ListRelationshipUseCase
 ) {
+
     @PreAuthorize("hasAnyAuthority('MEMBER') or #oauth2.hasScope('user:read')")
     @GetMapping("/{userId}")
     fun getUser(authentication: Authentication, @PathVariable("userId") userId: Long): UserResponse {
@@ -77,7 +77,11 @@ internal class UserControllerV1(
         @PathVariable("userId") userId: String,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CollectionResponse<RelationshipResponse> {
-        return listRelationshipUseCase.execute(ListRelationshipUseCase.Type.FOLLOWER, userId, cursor)
+        return listRelationshipUseCase.execute(
+            ListRelationshipUseCase.Type.FOLLOWER,
+            userId,
+            cursor
+        )
     }
 
     @PreAuthorize("hasAnyAuthority('MEMBER') or #oauth2.hasScope('user:read')")
@@ -87,6 +91,10 @@ internal class UserControllerV1(
         @PathVariable("userId") userId: String,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CollectionResponse<RelationshipResponse> {
-        return listRelationshipUseCase.execute(ListRelationshipUseCase.Type.FOLLOWING, userId, cursor)
+        return listRelationshipUseCase.execute(
+            ListRelationshipUseCase.Type.FOLLOWING,
+            userId,
+            cursor
+        )
     }
 }

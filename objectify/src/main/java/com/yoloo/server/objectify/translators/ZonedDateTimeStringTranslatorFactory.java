@@ -15,7 +15,9 @@ import java.time.format.DateTimeFormatter;
 public class ZonedDateTimeStringTranslatorFactory
     extends AbstractSimpleTranslatorFactory<ZonedDateTime, String> {
 
-  /** Create a new instance. */
+  /**
+   * Create a new instance.
+   */
   public ZonedDateTimeStringTranslatorFactory() {
     super(ZonedDateTime.class);
   }

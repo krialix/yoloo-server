@@ -1,12 +1,11 @@
 package com.yoloo.server.common.validation.constraints;
 
+import java.util.Arrays;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.util.StringUtils;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import java.util.Arrays;
 
 public class ConditionalValidator implements ConstraintValidator<Conditional, Object> {
 

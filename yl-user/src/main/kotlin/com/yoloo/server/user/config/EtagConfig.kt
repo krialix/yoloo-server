@@ -10,7 +10,8 @@ class EtagConfig {
 
     @Bean
     fun etagFilterRegistration(): FilterRegistrationBean<ShallowEtagHeaderFilter> {
-        val registration = FilterRegistrationBean<ShallowEtagHeaderFilter>(ShallowEtagHeaderFilter())
+        val registration =
+            FilterRegistrationBean<ShallowEtagHeaderFilter>(ShallowEtagHeaderFilter())
         registration.addUrlPatterns("/api/*")
         return registration
     }

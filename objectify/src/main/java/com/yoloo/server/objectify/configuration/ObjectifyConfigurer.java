@@ -1,7 +1,6 @@
 package com.yoloo.server.objectify.configuration;
 
 import com.googlecode.objectify.impl.translate.TranslatorFactory;
-
 import java.util.Collection;
 import java.util.Collections;
 

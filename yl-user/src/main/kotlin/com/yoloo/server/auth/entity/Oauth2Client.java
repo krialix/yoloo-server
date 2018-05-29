@@ -3,6 +3,17 @@ package com.yoloo.server.auth.entity;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.provider.ClientDetails;
@@ -10,8 +21,6 @@ import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 import org.springframework.security.oauth2.provider.client.Jackson2ArrayOrStringDeserializer;
 import org.springframework.security.oauth2.provider.client.JacksonArrayOrStringDeserializer;
 import org.springframework.util.StringUtils;
-
-import java.util.*;
 
 @Cache
 @Entity
@@ -28,7 +37,7 @@ public class Oauth2Client implements ClientDetails {
 
   @org.codehaus.jackson.map.annotate.JsonDeserialize(using = JacksonArrayOrStringDeserializer.class)
   @com.fasterxml.jackson.databind.annotation.JsonDeserialize(
-    using = Jackson2ArrayOrStringDeserializer.class
+      using = Jackson2ArrayOrStringDeserializer.class
   )
   private Set<String> scope = Collections.emptySet();
 
@@ -36,7 +45,7 @@ public class Oauth2Client implements ClientDetails {
   @org.codehaus.jackson.map.annotate.JsonDeserialize(using = JacksonArrayOrStringDeserializer.class)
   @com.fasterxml.jackson.annotation.JsonProperty("resource_ids")
   @com.fasterxml.jackson.databind.annotation.JsonDeserialize(
-    using = Jackson2ArrayOrStringDeserializer.class
+      using = Jackson2ArrayOrStringDeserializer.class
   )
   private Set<String> resourceIds = Collections.emptySet();
 
@@ -44,7 +53,7 @@ public class Oauth2Client implements ClientDetails {
   @org.codehaus.jackson.map.annotate.JsonDeserialize(using = JacksonArrayOrStringDeserializer.class)
   @com.fasterxml.jackson.annotation.JsonProperty("authorized_grant_types")
   @com.fasterxml.jackson.databind.annotation.JsonDeserialize(
-    using = Jackson2ArrayOrStringDeserializer.class
+      using = Jackson2ArrayOrStringDeserializer.class
   )
   private Set<String> authorizedGrantTypes = Collections.emptySet();
 
@@ -52,7 +61,7 @@ public class Oauth2Client implements ClientDetails {
   @org.codehaus.jackson.map.annotate.JsonDeserialize(using = JacksonArrayOrStringDeserializer.class)
   @com.fasterxml.jackson.annotation.JsonProperty("redirect_uri")
   @com.fasterxml.jackson.databind.annotation.JsonDeserialize(
-    using = Jackson2ArrayOrStringDeserializer.class
+      using = Jackson2ArrayOrStringDeserializer.class
   )
   private Set<String> registeredRedirectUris;
 
@@ -60,7 +69,7 @@ public class Oauth2Client implements ClientDetails {
   @org.codehaus.jackson.map.annotate.JsonDeserialize(using = JacksonArrayOrStringDeserializer.class)
   @com.fasterxml.jackson.annotation.JsonProperty("autoapprove")
   @com.fasterxml.jackson.databind.annotation.JsonDeserialize(
-    using = Jackson2ArrayOrStringDeserializer.class
+      using = Jackson2ArrayOrStringDeserializer.class
   )
   private Set<String> autoApproveScopes;
 
@@ -74,10 +83,12 @@ public class Oauth2Client implements ClientDetails {
   @com.fasterxml.jackson.annotation.JsonProperty("refresh_token_validity")
   private Integer refreshTokenValiditySeconds;
 
-  @org.codehaus.jackson.annotate.JsonIgnore @com.fasterxml.jackson.annotation.JsonIgnore
+  @org.codehaus.jackson.annotate.JsonIgnore
+  @com.fasterxml.jackson.annotation.JsonIgnore
   private Map<String, Object> additionalInformation = new LinkedHashMap<>();
 
-  private Oauth2Client() {}
+  private Oauth2Client() {
+  }
 
   public Oauth2Client(ClientDetails prototype) {
     this();
@@ -244,7 +255,7 @@ public class Oauth2Client implements ClientDetails {
   @org.codehaus.jackson.map.annotate.JsonDeserialize(using = JacksonArrayOrStringDeserializer.class)
   @com.fasterxml.jackson.annotation.JsonProperty("authorities")
   @com.fasterxml.jackson.databind.annotation.JsonDeserialize(
-    using = Jackson2ArrayOrStringDeserializer.class
+      using = Jackson2ArrayOrStringDeserializer.class
   )
   private void setAuthoritiesAsStrings(Set<String> values) {
     setAuthorities(AuthorityUtils.createAuthorityList(values.toArray(new String[values.size()])));
@@ -316,8 +327,12 @@ public class Oauth2Client implements ClientDetails {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Oauth2Client that = (Oauth2Client) o;
     return Objects.equals(clientId, that.clientId)
         && Objects.equals(clientSecret, that.clientSecret)
@@ -333,6 +348,7 @@ public class Oauth2Client implements ClientDetails {
   }
 
   public static class Builder {
+
     private final String clientId;
 
     private Collection<String> authorizedGrantTypes = new LinkedHashSet<>();

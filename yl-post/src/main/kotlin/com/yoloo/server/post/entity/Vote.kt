@@ -41,7 +41,12 @@ data class Vote(
             return id.substring(id.indexOf(':') + 1, id.lastIndexOf(':')).toLong()
         }
 
-        fun isVoted(filter: NanoCuckooFilter, requesterId: Long, postId: Long, identifier: String): Boolean {
+        fun isVoted(
+            filter: NanoCuckooFilter,
+            requesterId: Long,
+            postId: Long,
+            identifier: String
+        ): Boolean {
             return filter.contains(Vote.createId(requesterId, postId, identifier))
         }
     }

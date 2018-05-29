@@ -9,7 +9,8 @@ public class CommentCollectionResponse {
   private String prevPageToken;
   private Collection<CommentResponse> data;
 
-  private CommentCollectionResponse() {}
+  private CommentCollectionResponse() {
+  }
 
   private CommentCollectionResponse(Builder builder) {
     this.approvedComment = builder.approvedComment;
@@ -55,12 +56,14 @@ public class CommentCollectionResponse {
   }
 
   public static class Builder {
+
     private CommentResponse approvedComment;
     private String nextPageToken;
     private String prevPageToken;
     private Collection<CommentResponse> data;
 
-    private Builder() {}
+    private Builder() {
+    }
 
     public Builder approvedComment(CommentResponse approvedComment) {
       this.approvedComment = approvedComment;

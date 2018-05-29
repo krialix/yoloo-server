@@ -10,7 +10,10 @@ import org.springframework.stereotype.Component
 @Component
 class CustomTokenEnhancer : TokenEnhancer {
 
-    override fun enhance(accessToken: OAuth2AccessToken, authentication: OAuth2Authentication): OAuth2AccessToken {
+    override fun enhance(
+        accessToken: OAuth2AccessToken,
+        authentication: OAuth2Authentication
+    ): OAuth2AccessToken {
         val user = authentication.principal as Oauth2User
         val token = accessToken as DefaultOAuth2AccessToken
 

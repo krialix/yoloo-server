@@ -48,7 +48,8 @@ class RelationshipPullServlet(
 
             for (task in tasks) {
                 if (task.name == RelationshipEvent.Follow::class.java.simpleName) {
-                    val payload = mapper.readValue(task.payload, RelationshipEvent.Follow.Payload::class.java)
+                    val payload =
+                        mapper.readValue(task.payload, RelationshipEvent.Follow.Payload::class.java)
                     LOGGER.info("Processing: taskName='{}'  payload='{}'", task.name, payload)
 
                     val relationship = createRelationship(payload)
@@ -56,7 +57,10 @@ class RelationshipPullServlet(
                     pendingSaves.add(relationship)
                     incCountUserIds.add(payload.toUserId)
                 } else if (task.name == RelationshipEvent.Unfollow::class.java.simpleName) {
-                    val payload = mapper.readValue(task.payload, RelationshipEvent.Unfollow.Payload::class.java)
+                    val payload = mapper.readValue(
+                        task.payload,
+                        RelationshipEvent.Unfollow.Payload::class.java
+                    )
                     LOGGER.info("Processing: taskName='{}'  payload='{}'", task.name, payload)
 
                     query = query.filter(Relationship.INDEX_FROM_ID, payload.fromUserId)

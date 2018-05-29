@@ -1,12 +1,11 @@
 package com.yoloo.server;
 
-import spark.servlet.SparkApplication;
-import spark.servlet.SparkFilter;
+import static spark.Spark.get;
 
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
-
-import static spark.Spark.get;
+import spark.servlet.SparkApplication;
+import spark.servlet.SparkFilter;
 
 public class CounterApplication implements SparkApplication {
 
@@ -46,11 +45,13 @@ public class CounterApplication implements SparkApplication {
   }
 
   @WebFilter(
-    filterName = "SparkInitFilter",
-    urlPatterns = {"/*"},
-    initParams = {
-      @WebInitParam(name = "applicationClass", value = "com.yoloo.server.CounterApplication")
-    }
+      filterName = "SparkInitFilter",
+      urlPatterns = {"/*"},
+      initParams = {
+          @WebInitParam(name = "applicationClass", value = "com.yoloo.server.CounterApplication")
+      }
   )
-  public static class SparkInitFilter extends SparkFilter {}
+  public static class SparkInitFilter extends SparkFilter {
+
+  }
 }

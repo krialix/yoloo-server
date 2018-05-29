@@ -11,7 +11,9 @@ import java.util.Date;
 public class LocalDateDateTranslatorFactory
     extends AbstractSimpleTranslatorFactory<LocalDate, Date> {
 
-  /** Create a new instance. */
+  /**
+   * Create a new instance.
+   */
   public LocalDateDateTranslatorFactory() {
     super(LocalDate.class);
   }

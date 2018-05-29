@@ -8,7 +8,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 
 @Configuration
-class WebSecurityConfig(private val yoloo2AuthProvider: Yoloo2AuthProvider) : WebSecurityConfigurerAdapter() {
+class WebSecurityConfig(private val yoloo2AuthProvider: Yoloo2AuthProvider) :
+    WebSecurityConfigurerAdapter() {
 
     @Bean
     override fun authenticationManager(): AuthenticationManager {

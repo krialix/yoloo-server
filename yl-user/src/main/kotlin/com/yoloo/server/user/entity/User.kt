@@ -19,12 +19,7 @@ class User(
 
     var profile: Profile,
 
-    var subscribedGroups: List<UserGroup>,
-
-    // Extra fields for easy mapping
-    var self: Boolean = false,
-
-    var following: Boolean = false
+    var subscribedGroups: List<UserGroup>
 ) : BaseEntity<Long, User>() {
 
     override fun getId(): Long {

@@ -3,11 +3,13 @@ package com.yoloo.server.common.vo;
 import java.util.Collection;
 
 public class CollectionResponse<T> {
+
   private String nextPageToken;
   private String prevPageToken;
   private Collection<T> data;
 
-  private CollectionResponse() {}
+  private CollectionResponse() {
+  }
 
   private CollectionResponse(Builder<T> builder) {
     this.nextPageToken = builder.nextPageToken;
@@ -46,11 +48,13 @@ public class CollectionResponse<T> {
   }
 
   public static class Builder<T> {
+
     private String nextPageToken;
     private String prevPageToken;
     private Collection<T> data;
 
-    private Builder() {}
+    private Builder() {
+    }
 
     public Builder<T> nextPageToken(String nextPageToken) {
       this.nextPageToken = nextPageToken;

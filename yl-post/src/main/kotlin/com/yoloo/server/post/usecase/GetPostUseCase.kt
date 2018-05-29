@@ -14,7 +14,10 @@ import org.springframework.stereotype.Component
 
 @Lazy
 @Component
-class GetPostUseCase(private val postResponseMapper: PostResponseMapper, private val memcacheService: MemcacheService) {
+class GetPostUseCase(
+    private val postResponseMapper: PostResponseMapper,
+    private val memcacheService: MemcacheService
+) {
 
     fun execute(requesterId: Long, postId: Long): PostResponse {
         val post = ofy().load().type(Post::class.java).id(postId).now()
@@ -23,7 +26,12 @@ class GetPostUseCase(private val postResponseMapper: PostResponseMapper, private
         ServiceExceptions.checkNotFound(!post.auditData.isDeleted, "post.not_found")
 
         val cacheMap =
-            memcacheService.getAll(listOf(Vote.KEY_FILTER_VOTE, Bookmark.KEY_FILTER_BOOKMARK)) as Map<String, *>
+            memcacheService.getAll(
+                listOf(
+                    Vote.KEY_FILTER_VOTE,
+                    Bookmark.KEY_FILTER_BOOKMARK
+                )
+            ) as Map<String, *>
 
         val self = requesterId == post.author.id
 

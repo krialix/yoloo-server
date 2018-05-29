@@ -19,7 +19,8 @@ class TokenConfig {
     fun accessTokenConverter(): JwtAccessTokenConverter {
         val converter = JwtAccessTokenConverter()
         converter.accessTokenConverter = JwtConverter()
-        val publicKey = ClassPathResource("public.txt").inputStream.bufferedReader().use { it.readText() }
+        val publicKey =
+            ClassPathResource("public.txt").inputStream.bufferedReader().use { it.readText() }
         converter.setVerifierKey(publicKey)
         return converter
     }

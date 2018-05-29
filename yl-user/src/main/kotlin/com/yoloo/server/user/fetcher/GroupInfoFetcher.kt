@@ -25,8 +25,10 @@ interface GroupInfoFetcher {
         override fun fetch(ids: Collection<Long>): List<UserGroup> {
             try {
                 val response = urlFetchService.fetch(URL(""))
-                return objectMapper.readValue(response.content, object : TypeReference<List<UserGroup>>() {
-                })
+                return objectMapper.readValue(
+                    response.content,
+                    object : TypeReference<List<UserGroup>>() {
+                    })
             } catch (e: IOException) {
                 e.printStackTrace()
             }

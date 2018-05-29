@@ -2,8 +2,6 @@ package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.memcache.MemcacheServiceFactory
 import com.google.common.truth.Truth.assertThat
-import com.yoloo.server.rest.error.exception.ForbiddenException
-import com.yoloo.server.rest.error.exception.NotFoundException
 import com.yoloo.server.common.util.AppEngineRule
 import com.yoloo.server.common.util.TestObjectifyService.fact
 import com.yoloo.server.common.util.TestObjectifyService.ofy
@@ -14,6 +12,8 @@ import com.yoloo.server.post.entity.Bookmark
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.entity.Vote
 import com.yoloo.server.post.vo.*
+import com.yoloo.server.rest.error.exception.ForbiddenException
+import com.yoloo.server.rest.error.exception.NotFoundException
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.junit.Before
 import org.junit.Rule
@@ -32,7 +32,8 @@ class VotePostUseCaseIntegrationTest {
     @Before
     fun setUp() {
         memcacheService.put(Vote.KEY_FILTER_VOTE, NanoCuckooFilter.Builder(32).build()).get()
-        memcacheService.put(Bookmark.KEY_FILTER_BOOKMARK, NanoCuckooFilter.Builder(32).build()).get()
+        memcacheService.put(Bookmark.KEY_FILTER_BOOKMARK, NanoCuckooFilter.Builder(32).build())
+            .get()
 
         fact().translators.add(LocalDateTimeDateTranslatorFactory())
         fact().register(Post::class.java)

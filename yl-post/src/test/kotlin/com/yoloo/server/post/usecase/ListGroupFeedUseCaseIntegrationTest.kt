@@ -36,7 +36,11 @@ class ListGroupFeedUseCaseIntegrationTest {
     private val postResponseComparator by lazy(LazyThreadSafetyMode.NONE) {
         Comparator<PostResponse> { p1, p2 -> (p2.id - p1.id).toInt() }
     }
-    private val votePostUseCase by lazy(LazyThreadSafetyMode.NONE) { VotePostUseCase(asyncMemcacheService) }
+    private val votePostUseCase by lazy(LazyThreadSafetyMode.NONE) {
+        VotePostUseCase(
+            asyncMemcacheService
+        )
+    }
 
     @Before
     fun setUp() {
@@ -75,7 +79,8 @@ class ListGroupFeedUseCaseIntegrationTest {
 
         val collectionResponse1 = listGroupFeedUseCase.execute(100, 200, null)
 
-        val collectionResponse2 = listGroupFeedUseCase.execute(100, 200, collectionResponse1.nextPageToken)
+        val collectionResponse2 =
+            listGroupFeedUseCase.execute(100, 200, collectionResponse1.nextPageToken)
 
         assertThat(collectionResponse2.data).hasSize(10)
         assertThat(collectionResponse2.data).isOrdered(postResponseComparator)
@@ -90,7 +95,8 @@ class ListGroupFeedUseCaseIntegrationTest {
 
         val collectionResponse = listGroupFeedUseCase.execute(100, 200, null)
 
-        val votedPostDataResponse = Iterables.get(collectionResponse.data, 0).data as TextPostDataResponse
+        val votedPostDataResponse =
+            Iterables.get(collectionResponse.data, 0).data as TextPostDataResponse
 
         assertThat(votedPostDataResponse.voted).isTrue()
         assertThat(collectionResponse.data).hasSize(50)

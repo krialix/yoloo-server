@@ -3,18 +3,16 @@ package com.yoloo.server.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yoloo.server.rest.error.vo.Error;
 import com.yoloo.server.rest.error.vo.ErrorResponse;
+import java.io.IOException;
+import java.io.Writer;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.Writer;
 
 public class DefaultAuthenticationFailureHandler implements AuthenticationFailureHandler {
 

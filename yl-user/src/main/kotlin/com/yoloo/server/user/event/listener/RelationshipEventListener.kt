@@ -34,8 +34,18 @@ class RelationshipEventListener(
         val filter = getRelationshipCuckooFilter()
 
         when (event) {
-            is RelationshipEvent.Follow -> filter.insert(Relationship.createId(event.fromUserId, event.toUserId))
-            is RelationshipEvent.Unfollow -> filter.delete(Relationship.createId(event.fromUserId, event.toUserId))
+            is RelationshipEvent.Follow -> filter.insert(
+                Relationship.createId(
+                    event.fromUserId,
+                    event.toUserId
+                )
+            )
+            is RelationshipEvent.Unfollow -> filter.delete(
+                Relationship.createId(
+                    event.fromUserId,
+                    event.toUserId
+                )
+            )
         }
 
         memcacheService.put(Relationship.KEY_FILTER_RELATIONSHIP, filter)

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
-    <cron>
-        <url>/api/tasks/pull/relationship</url>
-        <!--<target>beta</target>
-        <description>daily summary job</description>-->
-        <schedule>every 20 seconds</schedule>
-    </cron>
+  <cron>
+    <url>/api/tasks/pull/relationship</url>
+    <!--<target>beta</target>
+    <description>daily summary job</description>-->
+    <schedule>every 20 seconds</schedule>
+  </cron>
 </cronentries>

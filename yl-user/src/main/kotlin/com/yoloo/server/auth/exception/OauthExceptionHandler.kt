@@ -11,7 +11,10 @@ import org.springframework.web.context.request.WebRequest
 class OauthExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException::class)
-    fun handleServiceExceptions(ex: AccessDeniedException, request: WebRequest): ResponseEntity<Any> {
+    fun handleServiceExceptions(
+        ex: AccessDeniedException,
+        request: WebRequest
+    ): ResponseEntity<Any> {
         throw ForbiddenException("Access is denied")
     }
 }

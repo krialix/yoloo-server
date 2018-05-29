@@ -6,7 +6,8 @@ public class AvatarImage implements ValueObject<AvatarImage> {
 
   private Url url;
 
-  private AvatarImage() {}
+  private AvatarImage() {
+  }
 
   public AvatarImage(Url url) {
     this.url = url;
@@ -18,8 +19,12 @@ public class AvatarImage implements ValueObject<AvatarImage> {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     AvatarImage that = (AvatarImage) o;
     return Objects.equals(url, that.url);
   }

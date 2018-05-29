@@ -3,7 +3,9 @@ package com.yoloo.server.common.util;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 
-/** Primarily exists to enable the TestObjectify */
+/**
+ * Primarily exists to enable the TestObjectify
+ */
 public class TestObjectifyFactory extends ObjectifyFactory {
 
   @Override

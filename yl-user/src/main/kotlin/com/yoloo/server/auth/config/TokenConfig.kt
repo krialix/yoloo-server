@@ -23,7 +23,8 @@ class TokenConfig {
     @Bean
     fun accessTokenConverter(): JwtAccessTokenConverter {
         val converter = JwtAccessTokenConverter()
-        val keyFactory = KeyStoreKeyFactory(ClassPathResource("yoloojwt.jks"), "yolooisnewwress".toCharArray())
+        val keyFactory =
+            KeyStoreKeyFactory(ClassPathResource("yoloojwt.jks"), "yolooisnewwress".toCharArray())
         converter.setKeyPair(keyFactory.getKeyPair("yoloojwtkey"))
         converter.accessTokenConverter = JwtConverter()
         converter.setVerifierKey(ClassPathResource("public.txt").inputStream.bufferedReader().use { it.readText() })

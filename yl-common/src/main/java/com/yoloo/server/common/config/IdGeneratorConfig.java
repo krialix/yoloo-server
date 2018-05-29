@@ -1,6 +1,11 @@
 package com.yoloo.server.common.config;
 
-import com.yoloo.server.common.util.id.*;
+import com.yoloo.server.common.util.id.CachedSnowflakeIdGenerator;
+import com.yoloo.server.common.util.id.InstagramIdGenerator;
+import com.yoloo.server.common.util.id.LongIdGenerator;
+import com.yoloo.server.common.util.id.SnowflakeIdGenerator;
+import com.yoloo.server.common.util.id.StringIdGenerator;
+import com.yoloo.server.common.util.id.TimestampUUIDGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
