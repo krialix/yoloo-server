@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
-@Lazy
-@Component
 class WarmUpBookmarkCacheUseCase(private val memcacheService: AsyncMemcacheService) {
 
     fun execute() {

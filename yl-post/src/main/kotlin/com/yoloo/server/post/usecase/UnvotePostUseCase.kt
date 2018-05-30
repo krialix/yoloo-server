@@ -11,8 +11,6 @@ import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
-@Lazy
-@Component
 class UnvotePostUseCase(private val memcacheService: AsyncMemcacheService) {
 
     fun execute(requesterId: Long, postId: Long) {

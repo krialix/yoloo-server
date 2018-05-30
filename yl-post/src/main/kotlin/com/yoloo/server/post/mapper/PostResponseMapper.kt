@@ -10,8 +10,6 @@ import com.yoloo.server.post.vo.postdataresponse.TextPostDataResponse
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
-@Lazy
-@Component
 class PostResponseMapper {
 
     fun apply(from: Post, self: Boolean, voted: Boolean, bookmarked: Boolean): PostResponse {

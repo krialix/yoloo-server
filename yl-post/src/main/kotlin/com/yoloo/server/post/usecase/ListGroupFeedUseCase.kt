@@ -11,15 +11,12 @@ import com.yoloo.server.post.entity.Vote
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.PostResponse
 import net.cinnom.nanocuckoo.NanoCuckooFilter
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Component
 
-@Lazy
-@Component
 class ListGroupFeedUseCase(
     private val postResponseMapper: PostResponseMapper,
     private val memcacheService: MemcacheService
 ) {
+
     fun execute(
         requesterId: Long,
         groupId: Long,

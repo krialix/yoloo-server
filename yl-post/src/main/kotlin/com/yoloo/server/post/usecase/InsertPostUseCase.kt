@@ -9,16 +9,11 @@ import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.*
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Component
 
-@Lazy
-@Component
 class InsertPostUseCase(
+    private val idGenerator: LongIdGenerator,
     private val postResponseMapper: PostResponseMapper,
-    @Qualifier("cached") private val idGenerator: LongIdGenerator,
     private val userInfoFetcher: Fetcher<Long, UserInfoResponse>,
     private val groupInfoFetcher: Fetcher<Long, GroupInfoResponse>,
     private val pubSubTemplate: PubSubTemplate,

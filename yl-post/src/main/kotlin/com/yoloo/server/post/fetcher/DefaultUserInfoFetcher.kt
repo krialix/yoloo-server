@@ -7,9 +7,6 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 
-@Lazy
-@Profile("!dev")
-@Component
 class DefaultUserInfoFetcher : Fetcher<Long, UserInfoResponse> {
 
     override fun fetch(id: Long): UserInfoResponse {

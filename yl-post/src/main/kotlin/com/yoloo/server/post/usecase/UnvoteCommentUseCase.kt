@@ -8,11 +8,7 @@ import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Vote
 import com.yoloo.server.rest.error.exception.ServiceExceptions
 import net.cinnom.nanocuckoo.NanoCuckooFilter
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Component
 
-@Lazy
-@Component
 class UnvoteCommentUseCase(private val memcacheService: AsyncMemcacheService) {
 
     fun execute(requesterId: Long, commentId: Long) {

@@ -13,7 +13,8 @@ import com.yoloo.server.user.vo.UserGroup
 @NoArg
 @Entity
 class User(
-    @Id var id: Long,
+    @Id
+    var id: Long,
 
     var email: Email,
 
@@ -26,7 +27,7 @@ class User(
         return id
     }
 
-    override fun sameIdentityAs(other: User): Boolean {
+    override fun sameIdentityAs(other: User?): Boolean {
         return equals(other)
     }
 

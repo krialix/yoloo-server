@@ -13,11 +13,7 @@ import com.yoloo.server.post.vo.UpdatePostRequest
 import com.yoloo.server.rest.error.exception.ServiceExceptions
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Component
 
-@Lazy
-@Component
 class UpdatePostUseCase(
     private val postResponseMapper: PostResponseMapper,
     private val memcacheService: MemcacheService,

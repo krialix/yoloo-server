@@ -20,6 +20,9 @@ allprojects {
 
     configurations.all {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+        //exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+        exclude group: 'ch.qos.logback', module: 'logback-core'
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
         exclude group: 'org.slf4j', module: 'jul-to-slf4j'
 
         resolutionStrategy {
@@ -36,4 +39,11 @@ subprojects {
         maven { url "https://krialix.github.io/maven-artifactory/" }
         maven { url "https://repo.spring.io/milestone" }
     }
+
+    configure(JavaPluginConvention, {
+        setSourceCompatibility(1.8)
+        setTargetCompatibility(1.8)
+
+        sourceSets.getByName("main").java.srcDir("${project.buildDir}/generated/source/kapt/main/")
+    })
 }

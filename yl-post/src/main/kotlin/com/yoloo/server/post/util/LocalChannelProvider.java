@@ -1,4 +1,4 @@
-package com.yoloo.server.post.config;
+package com.yoloo.server.post.util;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.grpc.GrpcTransportChannel;

@@ -12,13 +12,12 @@ import com.yoloo.server.post.vo.CommentCollectionResponse
 import com.yoloo.server.post.vo.CommentResponse
 import com.yoloo.server.rest.error.exception.ServiceExceptions
 import net.cinnom.nanocuckoo.NanoCuckooFilter
-import org.springframework.stereotype.Service
 
-@Service
 class ListCommentsUseCase(
     private val commentResponseMapper: CommentResponseMapper,
     private val memcacheService: MemcacheService
 ) {
+
     fun execute(requesterId: Long, postId: Long, cursor: String?): CommentCollectionResponse {
         val post = ofy().load().type(Post::class.java).id(postId).now()
 

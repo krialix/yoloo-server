@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.2.41'
     id 'org.jetbrains.kotlin.plugin.spring' version '1.2.41'
     id 'org.jetbrains.kotlin.plugin.noarg' version '1.2.41'
-    id 'org.jetbrains.kotlin.kapt' version '1.2.41'
+    //id 'org.jetbrains.kotlin.kapt' version '1.2.41'
     id 'org.springframework.boot' version '2.0.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.5.RELEASE'
     id 'war'
@@ -44,10 +44,9 @@ dependencies {
     // Spring Boot
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.1.RELEASE'
-    compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
-    kapt 'org.springframework:spring-context-indexer:5.0.6.RELEASE'
+    //compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
+    //kapt 'org.springframework:spring-context-indexer:5.0.6.RELEASE'
 
     // Kotlin
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'

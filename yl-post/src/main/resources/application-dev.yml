@@ -1,0 +1,6 @@
+debug: false
+spring:
+  cloud:
+    gcp:
+      pubsub:
+        emulator-host: http://localhost:8085

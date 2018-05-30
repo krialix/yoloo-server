@@ -7,8 +7,6 @@ import com.yoloo.server.post.vo.CommentResponse
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
-@Lazy
-@Component
 class CommentResponseMapper {
 
     fun apply(from: Comment, self: Boolean, voted: Boolean): CommentResponse {

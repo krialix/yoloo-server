@@ -8,11 +8,7 @@ import com.yoloo.server.post.entity.Bookmark
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.rest.error.exception.ServiceExceptions
 import net.cinnom.nanocuckoo.NanoCuckooFilter
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Component
 
-@Lazy
-@Component
 class UnbookmarkPostUseCase(private val memcacheService: AsyncMemcacheService) {
 
     fun execute(requesterId: Long, postId: Long) {

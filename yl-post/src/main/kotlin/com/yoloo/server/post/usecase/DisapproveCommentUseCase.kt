@@ -7,8 +7,6 @@ import com.yoloo.server.rest.error.exception.ServiceExceptions
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
-@Lazy
-@Component
 class DisapproveCommentUseCase {
 
     fun execute(requesterId: Long, commentId: Long) {

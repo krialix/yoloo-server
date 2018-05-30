@@ -11,16 +11,13 @@ import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.CommentResponseMapper
 import com.yoloo.server.post.vo.*
 import com.yoloo.server.rest.error.exception.ServiceExceptions
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Component
 
-@Lazy
-@Component
 class InsertCommentUseCase(
     private val idGenerator: LongIdGenerator,
     private val userInfoFetcher: Fetcher<Long, UserInfoResponse>,
     private val commentResponseMapper: CommentResponseMapper
 ) {
+
     fun execute(requesterId: Long, request: InsertCommentRequest): CommentResponse {
         val postId = request.postId!!
         val post = ofy().load().type(Post::class.java).id(postId).now()

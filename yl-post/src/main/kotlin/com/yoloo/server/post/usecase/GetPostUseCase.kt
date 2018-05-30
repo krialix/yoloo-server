@@ -9,11 +9,7 @@ import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.PostResponse
 import com.yoloo.server.rest.error.exception.ServiceExceptions
 import net.cinnom.nanocuckoo.NanoCuckooFilter
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Component
 
-@Lazy
-@Component
 class GetPostUseCase(
     private val postResponseMapper: PostResponseMapper,
     private val memcacheService: MemcacheService

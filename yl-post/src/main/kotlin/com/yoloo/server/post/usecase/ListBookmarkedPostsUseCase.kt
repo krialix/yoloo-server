@@ -12,15 +12,12 @@ import com.yoloo.server.post.entity.Vote
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.PostResponse
 import net.cinnom.nanocuckoo.NanoCuckooFilter
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Component
 
-@Lazy
-@Component
 class ListBookmarkedPostsUseCase(
     private val postResponseMapper: PostResponseMapper,
     private val memcacheService: MemcacheService
 ) {
+
     fun execute(requesterId: Long, cursor: String?): CollectionResponse<PostResponse> {
         val queryResultIterator = buildQueryResultIterator(requesterId, cursor)
 
