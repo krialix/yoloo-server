@@ -5,9 +5,8 @@ import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id
 import com.yoloo.server.common.entity.BaseEntity
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.group.vo.Description
-import com.yoloo.server.group.vo.DisplayName
-import com.yoloo.server.group.vo.GroupCountData
+import com.yoloo.server.group.vo.*
+import java.util.*
 
 @NoArg
 @Cache
@@ -20,11 +19,11 @@ class Group(
 
     var description: Description,
 
-    var enabled: Boolean = true,
+    var countData: GroupCountData = GroupCountData(),
 
-    var private: Boolean = false,
+    var owner: Owner,
 
-    var countData: GroupCountData = GroupCountData()
+    var flags: Set<@JvmSuppressWildcards GroupFlag> = EnumSet.noneOf(GroupFlag::class.java)
 ) : BaseEntity<Long, Group>() {
 
     override fun getId(): Long {
@@ -35,5 +34,28 @@ class Group(
         return equals(other)
     }
 
+    override fun onLoad() {
+        super.onLoad()
+        @Suppress("USELESS_ELVIS")
+        flags = flags ?: emptySet()
+    }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Group
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+
+    companion object {
+        const val KEY_FILTER_SUBSCRIPTION = "FILTER_SUBSCRIPTION"
+    }
 }

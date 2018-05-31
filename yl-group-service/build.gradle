@@ -38,6 +38,9 @@ dependencies {
 
     // Spring Boot
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.1.RELEASE'
+
+    implementation 'net.cinnom:nano-cuckoo:2.0.0'
 
     // Kotlin
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
