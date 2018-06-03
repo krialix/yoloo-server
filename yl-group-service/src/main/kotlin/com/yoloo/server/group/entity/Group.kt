@@ -21,17 +21,13 @@ class Group(
 
     var countData: GroupCountData = GroupCountData(),
 
-    var owner: Owner,
+    var owner: Owner? = null,
 
     var flags: Set<@JvmSuppressWildcards GroupFlag> = EnumSet.noneOf(GroupFlag::class.java)
 ) : BaseEntity<Long, Group>() {
 
     override fun getId(): Long {
         return id
-    }
-
-    override fun sameIdentityAs(other: Group?): Boolean {
-        return equals(other)
     }
 
     override fun onLoad() {

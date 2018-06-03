@@ -6,7 +6,7 @@ import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Vote
-import com.yoloo.server.rest.error.exception.ServiceExceptions
+import com.yoloo.server.rest.exception.ServiceExceptions
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 
 class UnvoteCommentUseCase(private val memcacheService: AsyncMemcacheService) {

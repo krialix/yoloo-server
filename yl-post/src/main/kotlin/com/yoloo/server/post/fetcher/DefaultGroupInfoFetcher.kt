@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.urlfetch.URLFetchService
 import com.yoloo.server.common.util.Fetcher
 import com.yoloo.server.post.vo.GroupInfoResponse
-import com.yoloo.server.rest.error.exception.BadRequestException
+import com.yoloo.server.rest.exception.BadRequestException
 import java.io.IOException
 import java.net.URL
 

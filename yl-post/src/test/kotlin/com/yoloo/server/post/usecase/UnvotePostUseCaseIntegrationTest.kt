@@ -11,7 +11,7 @@ import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.entity.Vote
 import com.yoloo.server.post.vo.*
-import com.yoloo.server.rest.error.exception.NotFoundException
+import com.yoloo.server.rest.exception.NotFoundException
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.junit.Before
 import org.junit.Rule

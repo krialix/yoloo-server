@@ -18,5 +18,7 @@ public interface Entity<I, E> {
    * @param other The other entity.
    * @return true if the identities are the same, regardles of other attributes.
    */
-  boolean sameIdentityAs(E other);
+  default boolean sameIdentityAs(E other) {
+    return equals(other);
+  }
 }

@@ -6,7 +6,7 @@ import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Bookmark
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.rest.error.exception.ServiceExceptions
+import com.yoloo.server.rest.exception.ServiceExceptions
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 
 class UnbookmarkPostUseCase(private val memcacheService: AsyncMemcacheService) {

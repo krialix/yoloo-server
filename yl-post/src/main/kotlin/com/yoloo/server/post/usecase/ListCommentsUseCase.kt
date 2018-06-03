@@ -10,7 +10,7 @@ import com.yoloo.server.post.entity.Vote
 import com.yoloo.server.post.mapper.CommentResponseMapper
 import com.yoloo.server.post.vo.CommentCollectionResponse
 import com.yoloo.server.post.vo.CommentResponse
-import com.yoloo.server.rest.error.exception.ServiceExceptions
+import com.yoloo.server.rest.exception.ServiceExceptions
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 
 class ListCommentsUseCase(

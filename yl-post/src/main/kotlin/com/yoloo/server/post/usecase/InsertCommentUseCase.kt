@@ -10,7 +10,7 @@ import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.CommentResponseMapper
 import com.yoloo.server.post.vo.*
-import com.yoloo.server.rest.error.exception.ServiceExceptions
+import com.yoloo.server.rest.exception.ServiceExceptions
 
 class InsertCommentUseCase(
     private val idGenerator: LongIdGenerator,

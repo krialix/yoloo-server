@@ -10,7 +10,7 @@ import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.PostResponse
 import com.yoloo.server.post.vo.PostTag
 import com.yoloo.server.post.vo.UpdatePostRequest
-import com.yoloo.server.rest.error.exception.ServiceExceptions
+import com.yoloo.server.rest.exception.ServiceExceptions
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate
 

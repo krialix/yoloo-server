@@ -14,5 +14,7 @@ public interface ValueObject<T> extends Serializable {
    * @return <code>true</code> if the given value object's and this value object's attributes are
    * the same
    */
-  boolean sameValueAs(T other);
+  default boolean sameValueAs(T other) {
+    return equals(other);
+  }
 }

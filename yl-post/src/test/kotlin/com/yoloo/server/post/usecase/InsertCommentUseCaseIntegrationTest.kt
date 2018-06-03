@@ -14,7 +14,7 @@ import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.fetcher.StubUserInfoFetcher
 import com.yoloo.server.post.mapper.CommentResponseMapper
 import com.yoloo.server.post.vo.*
-import com.yoloo.server.rest.error.exception.NotFoundException
+import com.yoloo.server.rest.exception.NotFoundException
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

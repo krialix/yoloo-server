@@ -39,11 +39,4 @@ subprojects {
         maven { url "https://krialix.github.io/maven-artifactory/" }
         maven { url "https://repo.spring.io/milestone" }
     }
-
-    configure(JavaPluginConvention, {
-        setSourceCompatibility(1.8)
-        setTargetCompatibility(1.8)
-
-        sourceSets.getByName("main").java.srcDir("${project.buildDir}/generated/source/kapt/main/")
-    })
 }

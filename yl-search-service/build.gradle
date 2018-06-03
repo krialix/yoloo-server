@@ -9,7 +9,7 @@ version '0.0.1-SNAPSHOT'
 
 dependencies {
     implementation project(':yl-common')
-    implementation project(':yl-common-rest')
+    implementation project(':yl-common-exception')
 
     compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
 

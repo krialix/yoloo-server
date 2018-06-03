@@ -6,7 +6,7 @@ import com.yoloo.server.group.entity.Subscription
 import com.yoloo.server.group.mapper.GroupResponseMapper
 import com.yoloo.server.group.vo.GroupResponse
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
-import com.yoloo.server.rest.error.exception.ServiceExceptions
+import com.yoloo.server.rest.exception.ServiceExceptions
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 
 class GetGroupUseCase(

@@ -8,9 +8,4 @@ data class GroupCountData(
     var postCount: Int = 0,
 
     var subscriberCount: Int = 0
-) : ValueObject<GroupCountData> {
-
-    override fun sameValueAs(other: GroupCountData?): Boolean {
-        return equals(other)
-    }
-}
+) : ValueObject<GroupCountData>

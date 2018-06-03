@@ -34,7 +34,7 @@ configurations.all {
 dependencies {
     implementation project(':objectify')
     implementation project(':yl-common')
-    implementation project(':yl-common-rest')
+    implementation project(':yl-common-exception')
 
     // App Engine
     implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
@@ -45,7 +45,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
     implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.1.RELEASE'
-    implementation 'org.springframework.cloud:spring-cloud-gcp-starter-pubsub:1.0.0.M3'
+    implementation "org.springframework.cloud:spring-cloud-gcp-starter-pubsub:$pubsubVersion"
 
     implementation 'com.lmax:disruptor:3.4.2'
 

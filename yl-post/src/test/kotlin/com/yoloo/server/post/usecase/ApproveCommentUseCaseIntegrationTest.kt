@@ -10,8 +10,8 @@ import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory
 import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.vo.*
-import com.yoloo.server.rest.error.exception.BadRequestException
-import com.yoloo.server.rest.error.exception.ForbiddenException
+import com.yoloo.server.rest.exception.BadRequestException
+import com.yoloo.server.rest.exception.ForbiddenException
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

@@ -16,11 +16,6 @@ public class AuditData implements ValueObject<AuditData> {
     this.deletedAt = deletedAt;
   }
 
-  @Override
-  public boolean sameValueAs(AuditData other) {
-    return equals(other);
-  }
-
   public LocalDateTime getCreatedAt() {
     return createdAt;
   }

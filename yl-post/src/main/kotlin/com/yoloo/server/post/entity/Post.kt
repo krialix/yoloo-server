@@ -52,10 +52,6 @@ class Post(
         return id
     }
 
-    override fun sameIdentityAs(other: Post): Boolean {
-        return equals(other)
-    }
-
     override fun onLoad() {
         super.onLoad()
         @Suppress("USELESS_ELVIS")

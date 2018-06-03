@@ -25,10 +25,6 @@ class Bookmark(
         return id
     }
 
-    override fun sameIdentityAs(other: Bookmark?): Boolean {
-        return equals(other)
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

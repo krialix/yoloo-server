@@ -2,7 +2,7 @@ package com.yoloo.server.post
 
 import com.google.api.gax.rpc.TransportChannelProvider
 import com.yoloo.server.common.config.AppengineConfig
-import com.yoloo.server.common.config.CacheConfig
+import com.yoloo.server.common.config.EtagConfig
 import com.yoloo.server.common.config.IdGeneratorConfig
 import com.yoloo.server.common.config.SchedulerConfig
 import com.yoloo.server.post.util.LocalChannelProvider
@@ -68,9 +68,9 @@ import org.springframework.context.annotation.Profile
 @Import(
     value = [
         AppengineConfig::class,
-        CacheConfig::class,
         IdGeneratorConfig::class,
-        SchedulerConfig::class
+        SchedulerConfig::class,
+        EtagConfig::class
     ]
 )
 @SpringBootApplication(

@@ -31,10 +31,6 @@ class Comment(
         return id
     }
 
-    override fun sameIdentityAs(other: Comment): Boolean {
-        return equals(other)
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

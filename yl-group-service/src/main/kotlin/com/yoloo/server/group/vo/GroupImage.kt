@@ -5,9 +5,4 @@ import com.yoloo.server.common.vo.Url
 import com.yoloo.server.common.vo.ValueObject
 
 @NoArg
-data class GroupImage(var url: Url) : ValueObject<GroupImage> {
-
-    override fun sameValueAs(other: GroupImage?): Boolean {
-        return equals(other)
-    }
-}
+data class GroupImage(var url: Url) : ValueObject<GroupImage>
