@@ -1,7 +1,5 @@
 package com.yoloo.server.user.api
 
-import com.yoloo.server.user.usecase.EmailValidationUseCase
-import com.yoloo.server.user.usecase.SignUpEmailUseCase
 import com.yoloo.server.common.vo.CollectionResponse
 import com.yoloo.server.user.usecase.*
 import com.yoloo.server.user.vo.*
@@ -57,6 +55,7 @@ internal class UserControllerV1(
     @PreAuthorize("hasAnyAuthority('MEMBER') or #oauth2.hasScope('user:read')")
     @GetMapping("/{userId}")
     fun getUser(authentication: Authentication, @PathVariable("userId") userId: Long): UserResponse {
+        println("Get User - ${authentication.details}")
         val jwtClaim = JwtClaims.from(authentication)
 
         return getUserUseCase.execute(jwtClaim.sub, userId)
