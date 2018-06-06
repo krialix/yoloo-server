@@ -8,6 +8,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.common.OAuth2AccessToken
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
@@ -34,19 +35,19 @@ internal class UserControllerV1(
         emailValidationUseCase.execute(email!!)
     }
 
-    @PostMapping("/signUpEmail")
+    @PostMapping("/auth/signUpEmail")
     @ResponseStatus(HttpStatus.CREATED)
     fun signUp(@RequestBody @Valid @NotNull request: SignUpEmailRequest?): OAuth2AccessToken {
         return signUpEmailUseCase.execute(request!!)
     }
 
-    @PostMapping("/signInGoogle")
+    @PostMapping("/auth/signInGoogle")
     @ResponseStatus(HttpStatus.CREATED)
     fun signIn(@RequestBody @Valid @NotNull request: SignInGoogleRequest?): OAuth2AccessToken {
         TODO()
     }
 
-    @PostMapping("/signInFacebook")
+    @PostMapping("/auth/signInFacebook")
     @ResponseStatus(HttpStatus.CREATED)
     fun signIn(@RequestBody @Valid @NotNull request: SignInFacebookRequest?): OAuth2AccessToken {
         TODO()
@@ -55,7 +56,9 @@ internal class UserControllerV1(
     @PreAuthorize("hasAnyAuthority('MEMBER') or #oauth2.hasScope('user:read')")
     @GetMapping("/{userId}")
     fun getUser(authentication: Authentication, @PathVariable("userId") userId: Long): UserResponse {
-        println("Get User - ${authentication.details}")
+        println("Details - ${(authentication.details as OAuth2AuthenticationDetails).decodedDetails}")
+        println("Principal - ${authentication.principal}")
+        println("Credentials - ${authentication.credentials}")
         val jwtClaim = JwtClaims.from(authentication)
 
         return getUserUseCase.execute(jwtClaim.sub, userId)

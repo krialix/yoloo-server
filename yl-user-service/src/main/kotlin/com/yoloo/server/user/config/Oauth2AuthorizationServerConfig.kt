@@ -75,7 +75,8 @@ class Oauth2AuthorizationServerConfig(
         return ResourceOwnerPasswordAccessTokenProvider()
     }
 
-    private fun jwtAccessTokenConverter(): JwtAccessTokenConverter {
+    @Bean
+    fun jwtAccessTokenConverter(): JwtAccessTokenConverter {
         val converter = CustomTokenEnhancer()
         val keyFactory = getKeyStoreKeyFactory()
         converter.setKeyPair(keyFactory.getKeyPair("jwt"))
@@ -86,7 +87,8 @@ class Oauth2AuthorizationServerConfig(
         return KeyStoreKeyFactory(ClassPathResource("yoloo-server-jwt.jks"), "yolooisnewwress".toCharArray())
     }
 
-    private fun tokenStore(): TokenStore {
+    @Bean
+    fun tokenStore(): TokenStore {
         return JwtTokenStore(jwtAccessTokenConverter())
     }
 

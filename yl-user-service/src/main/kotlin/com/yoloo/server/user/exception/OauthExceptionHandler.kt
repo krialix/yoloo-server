@@ -3,11 +3,10 @@ package com.yoloo.server.user.exception
 import com.yoloo.server.rest.exception.ForbiddenException
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
-import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 
-@ControllerAdvice
+//@ControllerAdvice
 class OauthExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException::class)

@@ -1,15 +1,11 @@
 package com.yoloo.server.user.config
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.taskqueue.Queue
 import com.google.appengine.api.taskqueue.QueueFactory
 import com.google.appengine.api.urlfetch.HTTPMethod
 import com.google.appengine.api.urlfetch.HTTPRequest
 import com.google.appengine.api.urlfetch.URLFetchService
-import com.yoloo.server.user.queue.pull.RelationshipPullServlet
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.boot.web.servlet.ServletRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.net.URL
@@ -22,7 +18,7 @@ class QueueConfig(private val urlFetchService: URLFetchService) {
         return QueueFactory.getQueue("relationship-queue")
     }
 
-    @Bean
+    /*@Bean
     fun relationshipPullServlet(
         @Qualifier("relationship-queue") queue: Queue,
         objectMapper: ObjectMapper
@@ -33,7 +29,7 @@ class QueueConfig(private val urlFetchService: URLFetchService) {
         )
         bean.setLoadOnStartup(2)
         return bean
-    }
+    }*/
 
     //@Profile("dev")
     //@Scheduled(fixedRate = 1000000)

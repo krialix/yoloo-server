@@ -40,7 +40,7 @@ class Oauth2UserDetailsService(private val passwordEncoder: PasswordEncoder) : U
             userId = 1,
             email = "demo@demo.com",
             profileImageUrl = "http://image.com",
-            password = passwordEncoder.encode(email),
+            password = passwordEncoder.encode("demo"),
             username = "demo",
             enabled = true,
             accountNonExpired = true,

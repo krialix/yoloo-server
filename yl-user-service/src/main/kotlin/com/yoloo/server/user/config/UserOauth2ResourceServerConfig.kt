@@ -6,7 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 
 @Configuration
-class UserOauth2ResourceServerConfig: Oauth2ResourceServerConfig() {
+class UserOauth2ResourceServerConfig : Oauth2ResourceServerConfig() {
 
     override fun configure(http: HttpSecurity) {
         http
@@ -22,19 +22,11 @@ class UserOauth2ResourceServerConfig: Oauth2ResourceServerConfig() {
             .httpBasic()
             .disable()
             .authorizeRequests()
-            .antMatchers("/api/v1/users/signUpEmail", "/api/v1/admin/**")
-            .permitAll()
-            .and()
-            .authorizeRequests()
-            .antMatchers("/admin/**")
+            .antMatchers("/api/v1/users/auth/**", "/api/v1/admin/**", "/tasks/**", "/_ah/**")
             .permitAll()
             .and()
             .authorizeRequests()
             .antMatchers("/api/**")
             .authenticated()
-            .and()
-            .authorizeRequests()
-            .antMatchers("/tasks/**", "/_ah/**")
-            .permitAll()
     }
 }

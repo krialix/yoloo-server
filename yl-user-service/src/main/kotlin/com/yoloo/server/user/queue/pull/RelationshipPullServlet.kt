@@ -10,13 +10,11 @@ import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.event.RelationshipEvent
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-@Component
 class RelationshipPullServlet(
     @Qualifier("relationship-queue") private val queue: Queue,
     private val mapper: ObjectMapper
