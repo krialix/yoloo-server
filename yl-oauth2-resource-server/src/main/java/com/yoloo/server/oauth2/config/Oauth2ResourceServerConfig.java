@@ -2,7 +2,6 @@ package com.yoloo.server.oauth2.config;
 
 import com.yoloo.server.oauth2.handler.YolooAccessDeniedHandler;
 import org.apache.commons.io.IOUtils;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.JwtAccessTokenConverterConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -50,19 +49,13 @@ public class Oauth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     return IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8);
   }
 
-  public class ResourceAccessTokenConverter extends DefaultAccessTokenConverter
-      implements JwtAccessTokenConverterConfigurer {
+  static class ResourceAccessTokenConverter extends DefaultAccessTokenConverter {
 
     @Override
-    public OAuth2Authentication extractAuthentication(Map<String, ?> map) {
-      final OAuth2Authentication authentication = super.extractAuthentication(map);
-      authentication.setDetails(map);
+    public OAuth2Authentication extractAuthentication(Map<String, ?> claims) {
+      final OAuth2Authentication authentication = super.extractAuthentication(claims);
+      authentication.setDetails(claims);
       return authentication;
-    }
-
-    @Override
-    public void configure(JwtAccessTokenConverter converter) {
-      converter.setAccessTokenConverter(this);
     }
   }
 }

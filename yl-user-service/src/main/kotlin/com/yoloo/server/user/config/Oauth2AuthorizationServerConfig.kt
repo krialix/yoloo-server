@@ -18,6 +18,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer
 import org.springframework.security.oauth2.provider.OAuth2Authentication
+import org.springframework.security.oauth2.provider.token.TokenEnhancer
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain
 import org.springframework.security.oauth2.provider.token.TokenStore
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore
@@ -45,16 +47,20 @@ class Oauth2AuthorizationServerConfig(
     }
 
     override fun configure(endpoints: AuthorizationServerEndpointsConfigurer) {
+        val chain = TokenEnhancerChain()
+        chain.setTokenEnhancers(listOf(CustomTokenEnhancer(), accessTokenConverter()))
+
         endpoints
-            .pathMapping("/oauth/authorize", "/api/v1/oauth/authorize")
+            .prefix("/api/v1/")
+            /*.pathMapping("/oauth/authorize", "/api/v1/oauth/authorize")
             .pathMapping("/oauth/token", "/api/v1/oauth/token")
             .pathMapping("/oauth/check_token", "/api/v1/oauth/check_token")
             .pathMapping("/oauth/confirm_access", "/api/v1/oauth/confirm_access")
             .pathMapping("/oauth/error", "/api/v1/oauth/error")
-            .pathMapping("/oauth/token_key", "/api/v1/oauth/token_key")
+            .pathMapping("/oauth/token_key", "/api/v1/oauth/token_key")*/
             .authenticationManager(authenticationManager)
             .tokenStore(tokenStore())
-            .tokenEnhancer(jwtAccessTokenConverter())
+            .tokenEnhancer(chain)
     }
 
     override fun configure(security: AuthorizationServerSecurityConfigurer) {
@@ -76,8 +82,8 @@ class Oauth2AuthorizationServerConfig(
     }
 
     @Bean
-    fun jwtAccessTokenConverter(): JwtAccessTokenConverter {
-        val converter = CustomTokenEnhancer()
+    fun accessTokenConverter(): JwtAccessTokenConverter {
+        val converter = JwtAccessTokenConverter()
         val keyFactory = getKeyStoreKeyFactory()
         converter.setKeyPair(keyFactory.getKeyPair("jwt"))
         return converter
@@ -89,10 +95,10 @@ class Oauth2AuthorizationServerConfig(
 
     @Bean
     fun tokenStore(): TokenStore {
-        return JwtTokenStore(jwtAccessTokenConverter())
+        return JwtTokenStore(accessTokenConverter())
     }
 
-    class CustomTokenEnhancer : JwtAccessTokenConverter() {
+    class CustomTokenEnhancer : TokenEnhancer {
 
         override fun enhance(
             accessToken: OAuth2AccessToken,
@@ -100,15 +106,15 @@ class Oauth2AuthorizationServerConfig(
         ): OAuth2AccessToken {
             val user = authentication.principal as Oauth2User
 
-            val info = LinkedHashMap(accessToken.additionalInformation)
-            info["sub"] = user.userId
-            info["email"] = user.email
-            info["picture"] = user.profileImageUrl
+            val info = mapOf(
+                "sub" to user.userId,
+                "email" to user.email,
+                "picture" to user.profileImageUrl
+            )
 
-            val customAccessToken = DefaultOAuth2AccessToken(accessToken)
-            customAccessToken.additionalInformation = info
+            (accessToken as DefaultOAuth2AccessToken).additionalInformation = info
 
-            return super.enhance(customAccessToken, authentication)
+            return accessToken
         }
     }
 }
