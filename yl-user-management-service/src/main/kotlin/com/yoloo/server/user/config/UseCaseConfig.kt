@@ -1,6 +1,7 @@
 package com.yoloo.server.user.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.google.appengine.api.memcache.MemcacheService
 import com.yoloo.server.common.util.id.LongIdGenerator
 import com.yoloo.server.user.fetcher.GroupInfoFetcher
@@ -25,13 +26,13 @@ class UseCaseConfig {
 
     @Lazy
     @Bean
-    fun followUseCase(memcacheService: MemcacheService): FollowUseCase {
+    fun followUseCase(memcacheService: AsyncMemcacheService): FollowUseCase {
         return FollowUseCase(memcacheService)
     }
 
     @Lazy
     @Bean
-    fun unfollowUseCase(memcacheService: MemcacheService): UnfollowUseCase {
+    fun unfollowUseCase(memcacheService: AsyncMemcacheService): UnfollowUseCase {
         return UnfollowUseCase(memcacheService)
     }
 
@@ -57,6 +58,12 @@ class UseCaseConfig {
     @Bean
     fun postCreatedEventUseCase(objectMapper: ObjectMapper): PostCreatedEventUseCase {
         return PostCreatedEventUseCase(objectMapper)
+    }
+
+    @Lazy
+    @Bean
+    fun postDeletedEventUseCase(objectMapper: ObjectMapper): PostDeletedEventUseCase {
+        return PostDeletedEventUseCase(objectMapper)
     }
 
     @Lazy

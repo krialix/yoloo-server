@@ -1,6 +1,6 @@
 package com.yoloo.server.search.api;
 
-import com.yoloo.server.common.util.PubSubHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yoloo.server.common.vo.PubSubResponse;
 import com.yoloo.server.search.usecase.PostCreatedEventUseCase;
 import com.yoloo.server.search.usecase.PostDeletedEventUseCase;
@@ -24,21 +24,24 @@ public class EventController {
   private final PostCreatedEventUseCase postCreatedEventUseCase;
   private final PostUpdatedEventUseCase postUpdatedEventUseCase;
   private final PostDeletedEventUseCase postDeletedEventUseCase;
+  private final ObjectMapper mapper;
 
   @Autowired
   public EventController(
       PostCreatedEventUseCase postCreatedEventUseCase,
       PostUpdatedEventUseCase postUpdatedEventUseCase,
-      PostDeletedEventUseCase postDeletedEventUseCase) {
+      PostDeletedEventUseCase postDeletedEventUseCase,
+      ObjectMapper mapper) {
     this.postCreatedEventUseCase = postCreatedEventUseCase;
     this.postUpdatedEventUseCase = postUpdatedEventUseCase;
     this.postDeletedEventUseCase = postDeletedEventUseCase;
+    this.mapper = mapper;
   }
 
   @PostMapping("/post.create")
   public void postCreatedEvent(HttpServletRequest request) {
     try {
-      PubSubResponse pubSubResponse = PubSubHelper.convertToPubSubResponse(request);
+      PubSubResponse pubSubResponse = PubSubResponse.from(mapper, request.getInputStream());
       postCreatedEventUseCase.execute(pubSubResponse);
     } catch (IOException e) {
       LOGGER.error("Couldn't parse response", e);
@@ -48,7 +51,7 @@ public class EventController {
   @PostMapping("/post.update")
   public void postUpdatedEvent(HttpServletRequest request) {
     try {
-      PubSubResponse pubSubResponse = PubSubHelper.convertToPubSubResponse(request);
+      PubSubResponse pubSubResponse = PubSubResponse.from(mapper, request.getInputStream());
       postUpdatedEventUseCase.execute(pubSubResponse);
     } catch (IOException e) {
       LOGGER.error("Couldn't parse response", e);
@@ -58,7 +61,7 @@ public class EventController {
   @PostMapping("/post.delete")
   public void postDeletedEvent(HttpServletRequest request) {
     try {
-      PubSubResponse pubSubResponse = PubSubHelper.convertToPubSubResponse(request);
+      PubSubResponse pubSubResponse = PubSubResponse.from(mapper, request.getInputStream());
       postDeletedEventUseCase.execute(pubSubResponse);
     } catch (IOException e) {
       LOGGER.error("Couldn't parse response", e);

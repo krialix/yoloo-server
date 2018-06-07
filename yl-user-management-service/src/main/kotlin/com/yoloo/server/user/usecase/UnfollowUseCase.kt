@@ -1,6 +1,7 @@
 package com.yoloo.server.user.usecase
 
-import com.google.appengine.api.memcache.MemcacheService
+import com.google.appengine.api.memcache.AsyncMemcacheService
+import com.yoloo.server.common.util.AppengineUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.rest.exception.ServiceExceptions
 import com.yoloo.server.rest.exception.ServiceExceptions.checkNotFound
@@ -8,7 +9,8 @@ import com.yoloo.server.user.entity.Relationship
 import com.yoloo.server.user.entity.User
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 
-class UnfollowUseCase(private val memcacheService: MemcacheService) {
+// TODO needs test
+class UnfollowUseCase(private val memcacheService: AsyncMemcacheService) {
 
     fun execute(requesterId: Long, userId: Long) {
         val map = ofy().load().type(User::class.java).ids(requesterId, userId)
@@ -27,11 +29,21 @@ class UnfollowUseCase(private val memcacheService: MemcacheService) {
         fromUser!!.profile.countData.followingCount = fromUser.profile.countData.followingCount--
         toUser!!.profile.countData.followerCount = fromUser.profile.countData.followerCount--
 
-        ofy().save().entities(fromUser, toUser)
-        ofy().delete().key(Relationship.createKey(requesterId, userId))
+        val saveFuture = ofy().save().entities(fromUser, toUser)
+        val relationshipKey = Relationship.createKey(requesterId, userId)
+        val deleteFuture = ofy().delete().key(relationshipKey)
+        relationshipFilter.delete(relationshipKey.name)
+
+        val putFuture = memcacheService.put(Relationship.KEY_FILTER_RELATIONSHIP, relationshipFilter)
+
+        if (AppengineUtil.isTest()) {
+            saveFuture.now()
+            deleteFuture.now()
+            putFuture.get()
+        }
     }
 
     private fun getRelationshipFilter(): NanoCuckooFilter {
-        return memcacheService.get(Relationship.KEY_FILTER_RELATIONSHIP) as NanoCuckooFilter
+        return memcacheService.get(Relationship.KEY_FILTER_RELATIONSHIP).get() as NanoCuckooFilter
     }
 }

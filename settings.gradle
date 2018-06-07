@@ -9,6 +9,4 @@ include 'yl-user-management-service'
 include 'yl-search-service'
 include 'yl-group-service'
 include 'yl-oauth2-resource-server'
-include 'yl-activity'
 include 'yl-firebase-auth'
-

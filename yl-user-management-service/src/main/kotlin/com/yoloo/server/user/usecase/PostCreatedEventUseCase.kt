@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.yoloo.server.common.vo.PubSubResponse
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.entity.User
-import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Component
+import org.apache.logging.log4j.LogManager
 import java.io.IOException
 
 class PostCreatedEventUseCase(private val objectMapper: ObjectMapper) {
@@ -43,7 +41,7 @@ class PostCreatedEventUseCase(private val objectMapper: ObjectMapper) {
     }
 
     companion object {
-        private val LOGGER = LoggerFactory.getLogger(PostCreatedEventUseCase::class.java)
+        private val LOGGER = LogManager.getLogger()
 
         private val CONSUMED_MESSAGE_IDS = mutableSetOf<String>()
     }
