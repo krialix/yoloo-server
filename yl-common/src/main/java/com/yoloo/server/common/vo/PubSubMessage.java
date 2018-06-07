@@ -1,6 +1,7 @@
 package com.yoloo.server.common.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.Map;
@@ -13,8 +14,7 @@ public class PubSubMessage {
   @JsonProperty("message_id")
   private String messageId;
 
-  private PubSubMessage() {
-  }
+  private PubSubMessage() {}
 
   public Map<String, String> getAttributes() {
     return attributes;

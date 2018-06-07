@@ -4,19 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yoloo.server.common.vo.PubSubMessage;
 import com.yoloo.server.common.vo.PubSubResponse;
 import com.yoloo.server.search.repository.post.PostRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 
-@Lazy
-@Component
 public class PostUpdatedEventUseCase {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PostUpdatedEventUseCase.class);
@@ -26,7 +22,6 @@ public class PostUpdatedEventUseCase {
   private final PostRepository postRepository;
   private final ObjectMapper objectMapper;
 
-  @Autowired
   public PostUpdatedEventUseCase(PostRepository postRepository, ObjectMapper objectMapper) {
     this.postRepository = postRepository;
     this.objectMapper = objectMapper;

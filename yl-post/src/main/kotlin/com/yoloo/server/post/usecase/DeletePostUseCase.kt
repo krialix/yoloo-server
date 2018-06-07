@@ -3,9 +3,10 @@ package com.yoloo.server.post.usecase
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.rest.exception.ServiceExceptions
+import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate
 import java.time.LocalDateTime
 
-class DeletePostUseCase {
+class DeletePostUseCase(private val pubSubTemplate: PubSubTemplate) {
 
     fun execute(requesterId: Long, postId: Long) {
         val post = ofy().load().type(Post::class.java).id(postId).now()
@@ -17,7 +18,11 @@ class DeletePostUseCase {
         post.auditData.deletedAt = LocalDateTime.now()
 
         ofy().save().entity(post)
-        // TODO remove title & tags from search service
-        // TODO recreate vote filter
+
+        publishPostDeletedEvent(postId)
+    }
+
+    private fun publishPostDeletedEvent(postId: Long) {
+        pubSubTemplate.publish("post.delete", postId.toString(), null)
     }
 }

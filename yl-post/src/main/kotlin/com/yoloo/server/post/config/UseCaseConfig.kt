@@ -8,6 +8,7 @@ import com.yoloo.server.common.util.id.LongIdGenerator
 import com.yoloo.server.post.mapper.CommentResponseMapper
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.usecase.*
+import com.yoloo.server.post.util.CircularFifoBuffer
 import com.yoloo.server.post.vo.GroupInfoResponse
 import com.yoloo.server.post.vo.UserInfoResponse
 import org.springframework.beans.factory.annotation.Qualifier
@@ -51,8 +52,8 @@ class UseCaseConfig {
 
     @Lazy
     @Bean
-    fun deletePostUseCase(): DeletePostUseCase {
-        return DeletePostUseCase()
+    fun deletePostUseCase(pubSubTemplate: PubSubTemplate): DeletePostUseCase {
+        return DeletePostUseCase(pubSubTemplate)
     }
 
     @Lazy
@@ -157,5 +158,12 @@ class UseCaseConfig {
     @Bean
     fun warmupBookmarkCacheUseCase(memcacheService: AsyncMemcacheService): WarmUpBookmarkCacheUseCase {
         return WarmUpBookmarkCacheUseCase(memcacheService)
+    }
+
+    @Lazy
+    @Bean
+    fun listAnonymousFeedUseCase(postResponseMapper: PostResponseMapper): ListAnonymousMainFeedUseCase {
+        val holder = CircularFifoBuffer(100)
+        return ListAnonymousMainFeedUseCase(holder, postResponseMapper)
     }
 }

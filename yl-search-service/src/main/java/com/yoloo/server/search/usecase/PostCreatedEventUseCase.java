@@ -6,19 +6,15 @@ import com.yoloo.server.common.vo.PubSubResponse;
 import com.yoloo.server.search.entity.Post;
 import com.yoloo.server.search.repository.post.PostRepository;
 import com.yoloo.server.search.usecase.PostCreatedEventUseCase.PostResponse.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 
-@Lazy
-@Component
 public class PostCreatedEventUseCase {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PostCreatedEventUseCase.class);
@@ -28,7 +24,6 @@ public class PostCreatedEventUseCase {
   private final PostRepository postRepository;
   private final ObjectMapper objectMapper;
 
-  @Autowired
   public PostCreatedEventUseCase(PostRepository postRepository, ObjectMapper objectMapper) {
     this.postRepository = postRepository;
     this.objectMapper = objectMapper;
