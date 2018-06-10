@@ -1,8 +1,7 @@
 package com.yoloo.server.user.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
-import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.common.util.AppengineUtil
+import com.yoloo.server.common.util.AppengineEnv
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.rest.exception.ServiceExceptions
 import com.yoloo.server.rest.exception.ServiceExceptions.checkConflict
@@ -36,7 +35,7 @@ class FollowUseCase(private val memcacheService: AsyncMemcacheService) {
         val saveFuture = ofy().save().entities(fromUser, toUser, relationship)
         val putFuture = memcacheService.put(Relationship.KEY_FILTER_RELATIONSHIP, relationshipFilter)
 
-        if (AppengineUtil.isTest()) {
+        if (AppengineEnv.isTest()) {
             putFuture.get()
             saveFuture.now()
         }

@@ -12,9 +12,9 @@ import net.cinnom.nanocuckoo.NanoCuckooFilter
 
 @NoArg
 @Entity
-class Relationship(
+data class Relationship(
     @Id
-    private var id: String,
+    var id: String,
 
     @Index
     var fromId: Long = extractFromId(id),
@@ -25,31 +25,7 @@ class Relationship(
     var displayName: DisplayName,
 
     var avatarImage: AvatarImage
-) : BaseEntity<String, Relationship>() {
-
-    override fun getId(): String {
-        return id
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Relationship
-
-        if (id != other.id) return false
-        if (fromId != other.fromId) return false
-        if (toId != other.toId) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + fromId.hashCode()
-        result = 31 * result + toId.hashCode()
-        return result
-    }
+) : BaseEntity<Relationship>() {
 
     companion object {
         const val KEY_FILTER_RELATIONSHIP = "FILTER_RELATIONSHIP"

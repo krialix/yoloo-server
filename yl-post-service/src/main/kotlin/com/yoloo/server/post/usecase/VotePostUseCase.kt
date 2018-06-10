@@ -1,7 +1,7 @@
 package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
-import com.yoloo.server.common.util.AppengineUtil
+import com.yoloo.server.common.util.AppengineEnv
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.entity.Vote
@@ -18,19 +18,19 @@ class VotePostUseCase(private val memcacheService: AsyncMemcacheService) {
         val votingDisabled = post.flags.contains(PostPermFlag.DISABLE_VOTING)
         ServiceExceptions.checkForbidden(!votingDisabled, "post.forbidden_voting")
 
-        val vote = Vote(Vote.createId(requesterId, postId, "p"), 1)
+        val vote = Vote.create(requesterId, postId, "p")
 
         val voteFilter = memcacheService.get(Vote.KEY_FILTER_VOTE).get() as NanoCuckooFilter
         voteFilter.insert(vote.id)
         val putFuture = memcacheService.put(Vote.KEY_FILTER_VOTE, voteFilter)
-        if (AppengineUtil.isTest()) {
-            putFuture.get()
-        }
 
         post.countData.voteCount = post.countData.voteCount.inc()
-        val result = ofy().save().entities(post, vote)
-        if (AppengineUtil.isTest()) {
-            result.now()
+
+        val saveFuture = ofy().save().entities(post, vote)
+
+        if (AppengineEnv.isTest()) {
+            putFuture.get()
+            saveFuture.now()
         }
     }
 }

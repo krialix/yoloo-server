@@ -2,7 +2,7 @@ package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.googlecode.objectify.Key
-import com.yoloo.server.common.util.AppengineUtil
+import com.yoloo.server.common.util.AppengineEnv
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Vote
@@ -22,23 +22,20 @@ class UnvoteCommentUseCase(private val memcacheService: AsyncMemcacheService) {
         ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
         ServiceExceptions.checkNotFound(vote != null, "vote.not_found")
 
-        val deleteResult = ofy().delete().key(voteKey)
-        if (AppengineUtil.isTest()) {
-            deleteResult.now()
-        }
+        val deleteFuture = ofy().delete().key(voteKey)
 
         val voteFilter = memcacheService.get(Vote.KEY_FILTER_VOTE).get() as NanoCuckooFilter
         voteFilter.delete(vote!!.id)
-
         val putFuture = memcacheService.put(Vote.KEY_FILTER_VOTE, voteFilter)
-        if (AppengineUtil.isTest()) {
-            putFuture.get()
-        }
 
         comment!!.voteCount = comment.voteCount.dec()
-        val saveResult = ofy().save().entity(comment)
-        if (AppengineUtil.isTest()) {
-            saveResult.now()
+
+        val saveFuture = ofy().save().entity(comment)
+
+        if (AppengineEnv.isTest()) {
+            saveFuture.now()
+            putFuture.get()
+            deleteFuture.now()
         }
     }
 }

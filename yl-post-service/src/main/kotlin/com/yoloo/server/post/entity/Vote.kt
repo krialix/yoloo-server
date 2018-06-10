@@ -25,6 +25,10 @@ data class Vote(
 
         const val KEY_FILTER_VOTE = "FILTER_VOTE"
 
+        fun create(userId: Long, votableId: Long, identifier: String): Vote {
+            return Vote(createId(userId, votableId, identifier))
+        }
+
         fun createId(userId: Long, votableId: Long, identifier: String): String {
             return "$userId:$votableId:$identifier"
         }

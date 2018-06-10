@@ -40,7 +40,8 @@ class PostController(
     fun insertPost(authentication: Authentication, @RequestBody @Valid request: InsertPostRequest): PostResponse {
         val jwtClaim = JwtClaims.from(authentication)
 
-        return insertPostUseCase.execute(jwtClaim.sub, request)
+        val requester = InsertPostUseCase.Requester(jwtClaim.sub, jwtClaim.displayName, jwtClaim.picture, false)
+        return insertPostUseCase.execute(requester, request)
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")

@@ -11,7 +11,7 @@ import java.util.*
 @NoArg
 @Cache
 @Entity
-class Group(
+data class Group(
     @Id
     var id: Long,
 
@@ -24,31 +24,12 @@ class Group(
     var owner: Owner? = null,
 
     var flags: Set<@JvmSuppressWildcards GroupFlag> = EnumSet.noneOf(GroupFlag::class.java)
-) : BaseEntity<Long, Group>() {
-
-    override fun getId(): Long {
-        return id
-    }
+) : BaseEntity<Group>() {
 
     override fun onLoad() {
         super.onLoad()
         @Suppress("USELESS_ELVIS")
         flags = flags ?: emptySet()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Group
-
-        if (id != other.id) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
     }
 
     companion object {

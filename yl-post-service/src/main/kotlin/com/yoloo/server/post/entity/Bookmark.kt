@@ -10,7 +10,7 @@ import net.cinnom.nanocuckoo.NanoCuckooFilter
 
 @NoArg
 @Entity
-class Bookmark(
+data class Bookmark(
     @Id
     private var id: String,
 
@@ -19,37 +19,17 @@ class Bookmark(
 
     @Index
     private var postId: Long = extractPostId(id)
-) : BaseEntity<String, Bookmark>() {
-
-    override fun getId(): String {
-        return id
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Bookmark
-
-        if (id != other.id) return false
-        if (userId != other.userId) return false
-        if (postId != other.postId) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + userId.hashCode()
-        result = 31 * result + postId.hashCode()
-        return result
-    }
+) : BaseEntity<Bookmark>() {
 
     companion object {
         const val KEY_FILTER_BOOKMARK = "FILTER_BOOKMARK"
 
         const val INDEX_USER_ID = "userId"
         const val INDEX_POST_ID = "postId"
+
+        fun create(userId: Long, postId: Long) : Bookmark {
+            return Bookmark(createId(userId, postId))
+        }
 
         fun createId(userId: Long, postId: Long): String {
             return "$userId:$postId"

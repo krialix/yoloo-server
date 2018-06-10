@@ -56,8 +56,8 @@ class ListCommentsUseCase(
             .map {
                 commentResponseMapper.apply(
                     it,
-                    checkIsSelf(requesterId, it),
-                    checkIsVoted(voteFilter, requesterId, it)
+                    isSelf(requesterId, it),
+                    isVoted(voteFilter, requesterId, it)
                 )
             }
             .toList()
@@ -96,17 +96,17 @@ class ListCommentsUseCase(
             val comment = ofy().load().type(Comment::class.java).id(it.value).now()
             return@let commentResponseMapper.apply(
                 comment,
-                checkIsSelf(requesterId, comment),
-                checkIsVoted(voteFilter, requesterId, comment)
+                isSelf(requesterId, comment),
+                isVoted(voteFilter, requesterId, comment)
             )
         }
     }
 
-    private fun checkIsSelf(requesterId: Long, comment: Comment): Boolean {
+    private fun isSelf(requesterId: Long, comment: Comment): Boolean {
         return requesterId == comment.author.id
     }
 
-    private fun checkIsVoted(
+    private fun isVoted(
         voteFilter: NanoCuckooFilter,
         requesterId: Long,
         comment: Comment

@@ -9,8 +9,6 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -18,16 +16,6 @@ import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class AppengineConfig {
-
-  @Autowired
-  public AppengineConfig(ApplicationEventPublisher eventPublisher) {
-    /*LifecycleManager.getInstance()
-    .setShutdownHook(
-        () -> {
-          LifecycleManager.getInstance().interruptAllRequests();
-          eventPublisher.publishEvent(new AppengineShutdownEvent(this));
-        });*/
-  }
 
   @Lazy
   @Bean

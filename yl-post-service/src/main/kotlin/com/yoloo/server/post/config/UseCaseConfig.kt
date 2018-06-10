@@ -3,14 +3,12 @@ package com.yoloo.server.post.config
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.common.util.Fetcher
-import com.yoloo.server.common.util.id.LongIdGenerator
+import com.yoloo.server.common.id.LongIdGenerator
+import com.yoloo.server.post.fetcher.GroupInfoFetcher
 import com.yoloo.server.post.mapper.CommentResponseMapper
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.usecase.*
 import com.yoloo.server.post.util.CircularFifoBuffer
-import com.yoloo.server.post.vo.GroupInfoResponse
-import com.yoloo.server.post.vo.UserInfoResponse
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate
 import org.springframework.context.annotation.Bean
@@ -22,8 +20,8 @@ class UseCaseConfig {
 
     @Lazy
     @Bean
-    fun approveCommentUseCase(): ApproveCommentUseCase {
-        return ApproveCommentUseCase()
+    fun approveCommentUseCase(objectMapper: ObjectMapper, pubSubTemplate: PubSubTemplate): ApproveCommentUseCase {
+        return ApproveCommentUseCase(objectMapper, pubSubTemplate)
     }
 
     @Lazy
@@ -66,20 +64,18 @@ class UseCaseConfig {
     @Bean
     fun insertCommentUseCase(
         @Qualifier("cached") idGenerator: LongIdGenerator,
-        userInfoFetcher: Fetcher<Long, UserInfoResponse>,
         commentResponseMapper: CommentResponseMapper,
         pubSubTemplate: PubSubTemplate,
         objectMapper: ObjectMapper
     ): InsertCommentUseCase {
-        return InsertCommentUseCase(idGenerator, userInfoFetcher, commentResponseMapper, pubSubTemplate, objectMapper)
+        return InsertCommentUseCase(idGenerator, commentResponseMapper, pubSubTemplate, objectMapper)
     }
 
     @Lazy
     @Bean
     fun insertPostUseCase(
         @Qualifier("cached") idGenerator: LongIdGenerator,
-        userInfoFetcher: Fetcher<Long, UserInfoResponse>,
-        groupInfoFetcher: Fetcher<Long, GroupInfoResponse>,
+        groupInfoFetcher: GroupInfoFetcher,
         pubSubTemplate: PubSubTemplate,
         objectMapper: ObjectMapper,
         postResponseMapper: PostResponseMapper
@@ -87,7 +83,6 @@ class UseCaseConfig {
         return InsertPostUseCase(
             idGenerator,
             postResponseMapper,
-            userInfoFetcher,
             groupInfoFetcher,
             pubSubTemplate,
             objectMapper
@@ -96,11 +91,20 @@ class UseCaseConfig {
 
     @Lazy
     @Bean
-    fun listBookmarkedPostsUseCase(
+    fun listBookmarkedFeedUseCase(
         postResponseMapper: PostResponseMapper,
         memcacheService: MemcacheService
-    ): ListBookmarkedPostsUseCase {
-        return ListBookmarkedPostsUseCase(postResponseMapper, memcacheService)
+    ): ListBookmarkedFeedUseCase {
+        return ListBookmarkedFeedUseCase(postResponseMapper, memcacheService)
+    }
+
+    @Lazy
+    @Bean
+    fun listBountyFeedUseCase(
+        postResponseMapper: PostResponseMapper,
+        memcacheService: MemcacheService
+    ): ListBountyFeedUseCase {
+        return ListBountyFeedUseCase(postResponseMapper, memcacheService)
     }
 
     @Lazy

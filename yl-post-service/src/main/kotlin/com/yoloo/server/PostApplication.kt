@@ -56,9 +56,6 @@ import org.springframework.boot.autoconfigure.web.embedded.EmbeddedWebServerFact
 import org.springframework.boot.autoconfigure.web.reactive.error.ErrorWebFluxAutoConfiguration
 import org.springframework.boot.runApplication
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
 
 /*@Import(
     value = [
@@ -124,11 +121,6 @@ import org.springframework.context.annotation.Profile
     ]
 )
 class PostApplication : SpringBootServletInitializer() {
-
-    @Configuration
-    @Profile("dev")
-    @ComponentScan(lazyInit = true)
-    internal class DevConfig
 
     /*@Profile("dev")
     @Bean*/

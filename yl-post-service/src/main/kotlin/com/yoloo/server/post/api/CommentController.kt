@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RequestMapping(
-    "/api/comments",
+    "/api/posts/{postId}/comments",
     produces = [MediaType.APPLICATION_JSON_UTF8_VALUE]
 )
 @RestController
@@ -32,44 +32,63 @@ class CommentController(
     @ResponseStatus(HttpStatus.CREATED)
     fun insertComment(
         authentication: Authentication,
+        @PathVariable("postId") postId: Long,
         @RequestBody @Valid request: InsertCommentRequest
     ): CommentResponse {
         val jwtClaim = JwtClaims.from(authentication)
 
-        return insertCommentUseCase.execute(jwtClaim.sub, request)
-    }
+        val requester = InsertCommentUseCase.Requester(jwtClaim.sub, jwtClaim.displayName, jwtClaim.picture, false)
 
-    @PreAuthorize("hasAuthority('MEMBER')")
-    @PatchMapping("/{commentId}/approve")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun approveComment(authentication: Authentication, @PathVariable("commentId") commentId: Long) {
-        val jwtClaim = JwtClaims.from(authentication)
-
-        approveCommentUseCase.execute(jwtClaim.sub, commentId)
-    }
-
-    @PreAuthorize("hasAuthority('MEMBER')")
-    @DeleteMapping("/{commentId}/approve")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun disapproveComment(authentication: Authentication, @PathVariable("commentId") commentId: Long) {
-        val jwtClaim = JwtClaims.from(authentication)
-
-        disapproveCommentUseCase.execute(jwtClaim.sub, commentId)
+        return insertCommentUseCase.execute(requester, postId, request)
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @DeleteMapping("/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteComment(authentication: Authentication, @PathVariable("commentId") commentId: Long) {
+    fun deleteComment(
+        authentication: Authentication,
+        @PathVariable("postId") postId: Long,
+        @PathVariable("commentId") commentId: Long
+    ) {
         val jwtClaim = JwtClaims.from(authentication)
 
-        deleteCommentUseCase.execute(jwtClaim.sub, commentId)
+        deleteCommentUseCase.execute(jwtClaim.sub, postId, commentId)
+    }
+
+    @PreAuthorize("hasAuthority('MEMBER')")
+    @PatchMapping("/{commentId}/approve")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun approveComment(
+        authentication: Authentication,
+        @PathVariable("postId") postId: Long,
+        @PathVariable("commentId") commentId: Long
+    ) {
+        val jwtClaim = JwtClaims.from(authentication)
+
+        approveCommentUseCase.execute(jwtClaim.sub, postId, commentId)
+    }
+
+    @PreAuthorize("hasAuthority('MEMBER')")
+    @DeleteMapping("/{commentId}/approve")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun disapproveComment(
+        authentication: Authentication,
+        @PathVariable("postId") postId: Long,
+        @PathVariable("commentId") commentId: Long
+    ) {
+        val jwtClaim = JwtClaims.from(authentication)
+
+        disapproveCommentUseCase.execute(jwtClaim.sub, postId, commentId)
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @PutMapping("/{commentId}/votes")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun voteComment(authentication: Authentication, @PathVariable("commentId") commentId: Long) {
+    fun voteComment(
+        authentication: Authentication,
+        @PathVariable("postId") postId: Long,
+        @PathVariable("commentId") commentId: Long
+    ) {
         val jwtClaim = JwtClaims.from(authentication)
 
         voteCommentUseCase.execute(jwtClaim.sub, commentId)
@@ -78,7 +97,11 @@ class CommentController(
     @PreAuthorize("hasAuthority('MEMBER')")
     @DeleteMapping("/{commentId}/votes")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun unvoteComment(authentication: Authentication, @PathVariable("commentId") commentId: Long) {
+    fun unvoteComment(
+        authentication: Authentication,
+        @PathVariable("postId") postId: Long,
+        @PathVariable("commentId") commentId: Long
+    ) {
         val jwtClaim = JwtClaims.from(authentication)
 
         unvoteCommentUseCase.execute(jwtClaim.sub, commentId)
@@ -88,7 +111,7 @@ class CommentController(
     @GetMapping
     fun listComments(
         authentication: Authentication,
-        @RequestParam("postId") postId: Long,
+        @PathVariable("postId") postId: Long,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CommentCollectionResponse {
         val jwtClaim = JwtClaims.from(authentication)

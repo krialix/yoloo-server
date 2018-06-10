@@ -2,7 +2,7 @@ package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.googlecode.objectify.Key
-import com.yoloo.server.common.util.AppengineUtil
+import com.yoloo.server.common.util.AppengineEnv
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Bookmark
 import com.yoloo.server.post.entity.Post
@@ -26,16 +26,14 @@ class BookmarkPostUseCase(private val memcacheService: AsyncMemcacheService) {
             memcacheService.get(Bookmark.KEY_FILTER_BOOKMARK).get() as NanoCuckooFilter
         bookmarkFilter.insert(bookmarkKey.name)
         val putFuture = memcacheService.put(Bookmark.KEY_FILTER_BOOKMARK, bookmarkFilter)
-        if (AppengineUtil.isTest()) {
+
+        val newBookmark = Bookmark.create(requesterId, postId)
+
+        val saveFuture = ofy().save().entities(post, newBookmark)
+
+        if (AppengineEnv.isTest()) {
+            saveFuture.now()
             putFuture.get()
-        }
-
-        val newBookmark = Bookmark(Bookmark.createId(requesterId, postId))
-
-        post!!.countData.voteCount = post.countData.voteCount.inc()
-        val result = ofy().save().entities(post, newBookmark)
-        if (AppengineUtil.isTest()) {
-            result.now()
         }
     }
 }

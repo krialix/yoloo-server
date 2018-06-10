@@ -2,7 +2,7 @@ package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.googlecode.objectify.Key
-import com.yoloo.server.common.util.AppengineUtil
+import com.yoloo.server.common.util.AppengineEnv
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Bookmark
 import com.yoloo.server.post.entity.Post
@@ -26,18 +26,13 @@ class UnbookmarkPostUseCase(private val memcacheService: AsyncMemcacheService) {
             memcacheService.get(Bookmark.KEY_FILTER_BOOKMARK).get() as NanoCuckooFilter
         bookmarkFilter.delete(bookmarkKey.name)
         val putFuture = memcacheService.put(Bookmark.KEY_FILTER_BOOKMARK, bookmarkFilter)
-        if (AppengineUtil.isTest()) {
-            putFuture.get()
-        }
 
-        post!!.countData.voteCount = post.countData.voteCount.dec()
-        val saveFuture = ofy().save().entities(post)
-        if (AppengineUtil.isTest()) {
-            saveFuture.now()
-        }
-
+        val saveFuture = ofy().save().entity(post)
         val deleteFuture = ofy().delete().entity(bookmark)
-        if (AppengineUtil.isTest()) {
+
+        if (AppengineEnv.isTest()) {
+            putFuture.get()
+            saveFuture.now()
             deleteFuture.now()
         }
     }

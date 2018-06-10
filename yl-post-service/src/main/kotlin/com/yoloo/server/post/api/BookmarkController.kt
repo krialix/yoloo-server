@@ -2,7 +2,7 @@ package com.yoloo.server.post.api
 
 import com.yoloo.server.common.vo.CollectionResponse
 import com.yoloo.server.post.usecase.BookmarkPostUseCase
-import com.yoloo.server.post.usecase.ListBookmarkedPostsUseCase
+import com.yoloo.server.post.usecase.ListBookmarkedFeedUseCase
 import com.yoloo.server.post.usecase.UnbookmarkPostUseCase
 import com.yoloo.server.post.usecase.WarmUpBookmarkCacheUseCase
 import com.yoloo.server.post.vo.JwtClaims
@@ -22,7 +22,7 @@ class BookmarkController(
     private val warmUpBookmarkCacheUseCase: WarmUpBookmarkCacheUseCase,
     private val bookmarkPostUseCase: BookmarkPostUseCase,
     private val unbookmarkPostUseCase: UnbookmarkPostUseCase,
-    private val listBookmarkedPostsUseCase: ListBookmarkedPostsUseCase
+    private val listBookmarkedFeedUseCase: ListBookmarkedFeedUseCase
 ) {
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -58,6 +58,6 @@ class BookmarkController(
     ): CollectionResponse<PostResponse> {
         val jwtClaim = JwtClaims.from(authentication)
 
-        return listBookmarkedPostsUseCase.execute(jwtClaim.sub, cursor)
+        return listBookmarkedFeedUseCase.execute(jwtClaim.sub, cursor)
     }
 }

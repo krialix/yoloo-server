@@ -1,37 +1,16 @@
 package com.yoloo.server.post.usecase
 
-import com.google.common.truth.Truth.assertThat
-import com.yoloo.server.common.util.AppEngineRule
-import com.yoloo.server.common.util.TestObjectifyService.fact
-import com.yoloo.server.common.util.TestObjectifyService.ofy
-import com.yoloo.server.common.util.id.CachedSnowflakeIdGenerator
-import com.yoloo.server.common.vo.AvatarImage
-import com.yoloo.server.common.vo.Url
-import com.yoloo.server.common.vo.attachment.SimpleAttachmentResponse
-import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory
-import com.yoloo.server.post.entity.Comment
-import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.fetcher.StubUserInfoFetcher
-import com.yoloo.server.post.mapper.CommentResponseMapper
-import com.yoloo.server.post.vo.*
-import com.yoloo.server.rest.exception.NotFoundException
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-
 class InsertCommentUseCaseIntegrationTest {
 
-    @get:Rule
+    /*@get:Rule
     val appEngineRule: AppEngineRule =
         AppEngineRule.builder().withDatastore().withMemcacheService().build()
 
     private val idGenerator by lazy(LazyThreadSafetyMode.NONE) { CachedSnowflakeIdGenerator() }
-    private val userInfoFetcher by lazy(LazyThreadSafetyMode.NONE) { StubUserInfoFetcher() }
     private val commentResponseMapper by lazy(LazyThreadSafetyMode.NONE) { CommentResponseMapper() }
     private val insertCommentUseCase by lazy(LazyThreadSafetyMode.NONE) {
         InsertCommentUseCase(
             idGenerator,
-            userInfoFetcher,
             commentResponseMapper
         )
     }
@@ -95,5 +74,5 @@ class InsertCommentUseCaseIntegrationTest {
         )
 
         ofy().save().entity(post).now()
-    }
+    }*/
 }

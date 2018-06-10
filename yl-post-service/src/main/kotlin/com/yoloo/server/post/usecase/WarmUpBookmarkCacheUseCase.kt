@@ -6,8 +6,6 @@ import com.yoloo.server.post.entity.Bookmark
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Component
 
 class WarmUpBookmarkCacheUseCase(private val memcacheService: AsyncMemcacheService) {
 

@@ -3,7 +3,7 @@ package com.yoloo.server.post.usecase
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.collect.ImmutableList
 import com.googlecode.objectify.Key
-import com.yoloo.server.common.util.AppengineUtil
+import com.yoloo.server.common.util.AppengineEnv
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Post
@@ -13,19 +13,22 @@ import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate
 
 class DeleteCommentUseCase(private val pubSubTemplate: PubSubTemplate, private val objectMapper: ObjectMapper) {
 
-    fun execute(requesterId: Long, commentId: Long) {
-        val comment = ofy().load().type(Comment::class.java).id(commentId).now()
+    fun execute(requesterId: Long, postId: Long, commentId: Long) {
+        val postKey = Key.create(Post::class.java, postId)
+        val commentKey = Key.create(Comment::class.java, commentId)
+        val map = ofy().load().keys(postKey, commentKey) as Map<*, *>
+
+        val post = map[postKey] as Post?
+        val comment = map[commentKey] as Comment?
 
         ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
         ServiceExceptions.checkForbidden(
-            comment.author.id == requesterId,
+            comment!!.author.id == requesterId,
             "comment.forbidden_delete"
         )
         ServiceExceptions.checkForbidden(!comment.approved, "comment.forbidden_delete_approved")
 
-        val post = ofy().load().type(Post::class.java).id(comment.postId.value).now()
-
-        post.countData.commentCount.dec()
+        post!!.countData.commentCount = post.countData.commentCount.dec()
 
         val voteKeys = getVoteKeysForComment(commentId)
 
@@ -39,7 +42,7 @@ class DeleteCommentUseCase(private val pubSubTemplate: PubSubTemplate, private v
 
         publishCommentDeletedEvent(comment)
 
-        if (AppengineUtil.isTest()) {
+        if (AppengineEnv.isTest()) {
             deleteFuture.now()
             saveFuture.now()
         }

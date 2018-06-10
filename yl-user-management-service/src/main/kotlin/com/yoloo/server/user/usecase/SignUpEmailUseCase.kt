@@ -2,14 +2,13 @@ package com.yoloo.server.user.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.common.util.id.LongIdGenerator
+import com.yoloo.server.common.id.LongIdGenerator
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.IP
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.rest.exception.ServiceExceptions
 import com.yoloo.server.user.entity.User
-import com.yoloo.server.user.entity.UserMeta
 import com.yoloo.server.user.event.GroupSubscriptionEvent
 import com.yoloo.server.user.event.RefreshFeedEvent
 import com.yoloo.server.user.event.RelationshipEvent
@@ -53,11 +52,9 @@ class SignUpEmailUseCase(
             groups = groups
         )
 
-        val userMeta = createUserMeta(user.id, metaData)
-
         addEmailToEmailFilter(emailFilter, email)
 
-        saveTx(user, userMeta, followedUsers, subscribedGroupIds)
+        saveTx(user, followedUsers, subscribedGroupIds)
 
         return getAccessToken(user)
     }
@@ -81,14 +78,9 @@ class SignUpEmailUseCase(
         return resourceOwnerPasswordResourceDetails
     }
 
-    private fun saveTx(
-        user: User,
-        userMeta: UserMeta,
-        followedUsers: Collection<User>,
-        subscribedGroupIds: List<Long>
-    ) {
+    private fun saveTx(user: User, followedUsers: Collection<User>, subscribedGroupIds: List<Long>) {
         ofy().transact {
-            ofy().save().entities(user, userMeta).now()
+            ofy().save().entity(user).now()
 
             publishGroupSubscriptionEvent(user)
             followedUsers.forEach { publishFollowEvent(user, it) }
@@ -103,6 +95,11 @@ class SignUpEmailUseCase(
         metadata: SignUpEmailRequest.UserMetadata,
         groups: List<UserGroup>
     ): User {
+        val app = metadata.app!!
+        val device = metadata.device!!
+        val screen = device.screen!!
+        val os = device.os!!
+
         return User(
             id = idGenerator.generateId(),
             email = Email(email),
@@ -118,18 +115,7 @@ class SignUpEmailUseCase(
                 gender = Gender.valueOf(metadata.gender!!.toUpperCase()),
                 locale = UserLocale(metadata.language!!, metadata.country!!)
             ),
-            subscribedGroups = groups
-        )
-    }
-
-    private fun createUserMeta(userId: Long, metadata: SignUpEmailRequest.UserMetadata): UserMeta {
-        val app = metadata.app!!
-        val device = metadata.device!!
-        val screen = device.screen!!
-        val os = device.os!!
-
-        return UserMeta(
-            id = userId,
+            subscribedGroups = groups,
             appInfo = AppInfo(
                 firstInstallTime = app.firstInstallTime!!,
                 lastUpdateTime = app.lastUpdateTime!!,

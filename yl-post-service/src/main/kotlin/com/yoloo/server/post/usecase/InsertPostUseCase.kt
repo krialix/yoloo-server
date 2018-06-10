@@ -1,12 +1,13 @@
 package com.yoloo.server.post.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.yoloo.server.common.util.Fetcher
-import com.yoloo.server.common.util.id.LongIdGenerator
+import com.yoloo.server.common.id.LongIdGenerator
+import com.yoloo.server.common.util.AppengineEnv
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
+import com.yoloo.server.post.fetcher.GroupInfoFetcher
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.*
 import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate
@@ -14,22 +15,24 @@ import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate
 class InsertPostUseCase(
     private val idGenerator: LongIdGenerator,
     private val postResponseMapper: PostResponseMapper,
-    private val userInfoFetcher: Fetcher<Long, UserInfoResponse>,
-    private val groupInfoFetcher: Fetcher<Long, GroupInfoResponse>,
+    private val groupInfoFetcher: GroupInfoFetcher,
     private val pubSubTemplate: PubSubTemplate,
     private val objectMapper: ObjectMapper
 ) {
 
-    fun execute(requesterId: Long, request: InsertPostRequest): PostResponse {
-        val userInfo = userInfoFetcher.fetch(requesterId)
+    fun execute(requester: Requester, request: InsertPostRequest): PostResponse {
         val groupInfo = groupInfoFetcher.fetch(request.groupId)
 
-        val post = createPost(request, requesterId, userInfo, groupInfo)
+        val post = createPost(request, requester, groupInfo)
 
         // TODO inc group post count
         // TODO If buddy post -> register in buddy search
 
-        ofy().save().entities(post)
+        val saveFuture = ofy().save().entities(post)
+
+        if (AppengineEnv.isTest()) {
+            saveFuture.now()
+        }
 
         publishPostCreatedEvent(post)
 
@@ -43,18 +46,17 @@ class InsertPostUseCase(
 
     private fun createPost(
         request: InsertPostRequest,
-        userId: Long,
-        userInfo: UserInfoResponse,
+        requester: Requester,
         groupInfo: GroupInfoResponse
     ): Post {
         return Post(
             id = idGenerator.generateId(),
             type = findPostType(request),
             author = Author(
-                id = userId,
-                displayName = userInfo.displayName,
-                avatar = AvatarImage(Url(userInfo.image)),
-                verified = userInfo.verified
+                id = requester.userId,
+                displayName = requester.displayName,
+                avatar = AvatarImage(Url(requester.avatarUrl)),
+                verified = requester.verified
             ),
             content = PostContent(request.content!!),
             title = PostTitle(request.title!!),
@@ -86,4 +88,11 @@ class InsertPostUseCase(
             dateRange = Range(buddyInfo.fromDate!!, buddyInfo.toDate!!)
         )
     }
+
+    data class Requester(
+        val userId: Long,
+        val displayName: String,
+        val avatarUrl: String,
+        val verified: Boolean
+    )
 }

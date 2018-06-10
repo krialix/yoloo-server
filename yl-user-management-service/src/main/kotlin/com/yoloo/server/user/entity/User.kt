@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 @Cache(expirationSeconds = User.CACHE_EXPIRATION_TIME)
 @NoArg
 @Entity
-class User(
+data class User(
     @Id var id: Long,
 
     var clientId: String,
@@ -47,12 +47,12 @@ class User(
 
     var profile: Profile,
 
-    var subscribedGroups: List<UserGroup>
-) : BaseEntity<Long, User>() {
+    var subscribedGroups: List<UserGroup>,
 
-    override fun getId(): Long {
-        return id
-    }
+    var appInfo: AppInfo,
+
+    var device: Device
+) : BaseEntity<User>() {
 
     override fun onLoad() {
         super.onLoad()
@@ -60,24 +60,6 @@ class User(
         profile.spokenLanguages = profile.spokenLanguages ?: emptyList()
         @Suppress("USELESS_ELVIS")
         subscribedGroups = subscribedGroups ?: emptyList()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as User
-
-        if (id != other.id) return false
-        if (email != other.email) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + email.hashCode()
-        return result
     }
 
     companion object {

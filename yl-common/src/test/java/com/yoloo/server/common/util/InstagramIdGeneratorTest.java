@@ -5,8 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.yoloo.server.common.util.id.IdGenerator;
-import com.yoloo.server.common.util.id.InstagramIdGenerator;
+import com.yoloo.server.common.id.IdGenerator;
+import com.yoloo.server.common.id.InstagramIdGenerator;
 import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
