@@ -10,3 +10,5 @@ include 'yl-search-service'
 include 'yl-group-service'
 include 'yl-oauth2-resource-server'
 include 'yl-firebase-auth'
+include 'yl-feed-core'
+

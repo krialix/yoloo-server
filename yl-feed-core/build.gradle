@@ -1,0 +1,13 @@
+plugins {
+    id 'java-library'
+}
+
+group 'com.yoloo.server'
+version '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+}
