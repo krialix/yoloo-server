@@ -6,9 +6,7 @@ import com.googlecode.objectify.annotation.Id
 import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.entity.BaseEntity
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.common.vo.IP
 import com.yoloo.server.user.vo.*
-import java.time.LocalDateTime
 
 @Cache(expirationSeconds = User.CACHE_EXPIRATION_TIME)
 @NoArg
@@ -18,30 +16,26 @@ data class User(
 
     var clientId: String,
 
-    var provider: Provider,
+    //var provider: Provider,
 
     @Index
     var email: Email,
 
-    var emailVerified: Boolean = false,
+    //var emailVerified: Boolean = false,
 
     var accountVerified: Boolean = false,
 
-    var password: Password? = null,
+    //var expired: Boolean = false,
 
-    var expired: Boolean = false,
+    //var credentialsExpired: Boolean = false,
 
-    var credentialsExpired: Boolean = false,
+    //var locked: Boolean = false,
 
-    var locked: Boolean = false,
+    //var disabled: Boolean = false,
 
-    var disabled: Boolean = false,
+    var roles: Set<@JvmSuppressWildcards Role>,
 
-    var authorities: Set<@JvmSuppressWildcards Authority>,
-
-    var lastSignInTime: LocalDateTime? = null,
-
-    var localIp: IP,
+    //var lastSignInTime: LocalDateTime? = null,
 
     var fcmToken: String,
 
@@ -65,12 +59,12 @@ data class User(
     companion object {
         const val CACHE_EXPIRATION_TIME = 7200
 
-        const val KEY_FILTER_EMAIL = "FILTER_EMAIL"
+        const val KEY_FILTER_USER_IDENTIFIER = "FILTER_IDENTIFIER"
 
         const val INDEX_EMAIL = "email.value"
     }
 
-    enum class Authority {
+    enum class Role {
         ANONYMOUS,
         MEMBER,
         ADMIN

@@ -32,7 +32,7 @@ class Oauth2UserDetailsService(private val passwordEncoder: PasswordEncoder) : U
             accountNonExpired = !user.expired,
             credentialsNonExpired = !user.credentialsExpired,
             accountNonLocked = !user.locked,
-            authorities = user.authorities.map { SimpleGrantedAuthority(it.name) },
+            roles = user.roles.map { SimpleGrantedAuthority(it.name) },
             fcmToken = user.fcmToken
         )*/
 

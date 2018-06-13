@@ -3,7 +3,7 @@ package com.yoloo.server.user.event.listener
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.google.appengine.api.taskqueue.Queue
 import com.google.appengine.api.taskqueue.TaskOptions
-import com.yoloo.server.user.entity.Relationship
+import com.yoloo.server.relationship.entity.Relationship
 import com.yoloo.server.user.event.RelationshipEvent
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.beans.factory.annotation.Qualifier

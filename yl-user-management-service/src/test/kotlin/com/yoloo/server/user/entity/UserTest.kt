@@ -31,7 +31,7 @@ class UserTest {
             fcmToken = "",
             localIp = IP(""),
             provider = Provider(null, Provider.Type.EMAIL),
-            authorities = setOf(),
+            roles = setOf(),
             profile = Profile(
                 displayName = DisplayName("name"),
                 image = AvatarImage(Url("http://url.com")),
@@ -54,7 +54,7 @@ class UserTest {
         assertThat(original.account.email).isEqualTo(loaded.account.email)
         assertThat(original.account.localIp).isEqualTo(loaded.account.localIp)
         assertThat(original.account.fcmToken).isEqualTo(loaded.account.fcmToken)
-        assertThat(original.account.authorities).isEqualTo(loaded.account.authorities)*//*
+        assertThat(original.account.roles).isEqualTo(loaded.account.roles)*//*
         assertThat(original.subscribedGroups).isEqualTo(loaded.subscribedGroups)
 
         assertThat(loaded.auditData.createdAt).isNotNull()

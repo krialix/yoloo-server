@@ -1,17 +1,15 @@
-package com.yoloo.server.user.api
+package com.yoloo.server.relationship.api
 
 import com.yoloo.server.common.vo.CollectionResponse
-import com.yoloo.server.user.usecase.*
-import com.yoloo.server.user.vo.*
-import org.springframework.http.HttpStatus
+import com.yoloo.server.relationship.usecase.FollowUseCase
+import com.yoloo.server.relationship.usecase.ListRelationshipUseCase
+import com.yoloo.server.relationship.usecase.UnfollowUseCase
+import com.yoloo.server.user.vo.JwtClaims
+import com.yoloo.server.user.vo.RelationshipResponse
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
-import org.springframework.security.oauth2.common.OAuth2AccessToken
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotNull
 
 @RestController
 @RequestMapping(

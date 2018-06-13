@@ -1,4 +1,4 @@
-package com.yoloo.server.user.entity
+package com.yoloo.server.relationship.entity
 
 import com.googlecode.objectify.Key
 import com.googlecode.objectify.annotation.Entity
@@ -7,6 +7,7 @@ import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.entity.BaseEntity
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.AvatarImage
+import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.vo.DisplayName
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 
@@ -38,11 +39,14 @@ data class Relationship(
         }
 
         fun createKey(fromId: Long, toId: Long): Key<Relationship> {
-            return Key.create(Relationship::class.java, createId(fromId, toId))
+            return Key.create(
+                Relationship::class.java,
+                createId(fromId, toId)
+            )
         }
 
         fun isFollowing(filter: NanoCuckooFilter, fromId: Long, toId: Long): Boolean {
-            return filter.contains(Relationship.createId(fromId, toId))
+            return filter.contains(createId(fromId, toId))
         }
 
         fun extractFromId(id: String): Long {

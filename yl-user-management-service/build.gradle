@@ -40,7 +40,7 @@ dependencies {
     implementation project(':yl-common-exception')
     implementation project(':yl-oauth2-resource-server')
 
-    implementation 'com.google.firebase:firebase-admin:6.1.0'
+    implementation 'com.google.firebase:firebase-admin:6.2.0'
 
     // App Engine
     implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
@@ -54,8 +54,6 @@ dependencies {
     //compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
     //kapt 'org.springframework:spring-context-indexer:5.0.6.RELEASE'
 
-    implementation 'com.lmax:disruptor:3.4.2'
-
     // Kotlin
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
@@ -65,6 +63,7 @@ dependencies {
     implementation 'com.auth0:java-jwt:3.3.0'
     implementation 'org.lognet:grpc-spring-boot-starter:2.3.2'
     //implementation 'de.codecentric:spring-boot-admin-starter-server:2.0.0'
+    implementation 'com.lmax:disruptor:3.4.2'
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

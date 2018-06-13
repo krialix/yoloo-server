@@ -1,11 +1,11 @@
-package com.yoloo.server.user.usecase
+package com.yoloo.server.relationship.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.yoloo.server.common.util.AppengineEnv
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.rest.exception.ServiceExceptions
 import com.yoloo.server.rest.exception.ServiceExceptions.checkNotFound
-import com.yoloo.server.user.entity.Relationship
+import com.yoloo.server.relationship.entity.Relationship
 import com.yoloo.server.user.entity.User
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 

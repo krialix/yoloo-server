@@ -1,11 +1,11 @@
-package com.yoloo.server.user.queue.pull
+package com.yoloo.server.relationship.queue
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.taskqueue.Queue
 import com.google.appengine.api.taskqueue.TaskHandle
 import com.googlecode.objectify.cmd.Query
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
-import com.yoloo.server.user.entity.Relationship
+import com.yoloo.server.relationship.entity.Relationship
 import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.event.RelationshipEvent
 import org.slf4j.LoggerFactory
@@ -21,7 +21,9 @@ class RelationshipPullServlet(
 ) : HttpServlet() {
 
     override fun doPost(req: HttpServletRequest, resp: HttpServletResponse) {
-        val tasks = queue.leaseTasks(3600, TimeUnit.SECONDS, NUMBER_OF_TASKS_TO_LEASE)
+        val tasks = queue.leaseTasks(3600, TimeUnit.SECONDS,
+            NUMBER_OF_TASKS_TO_LEASE
+        )
 
         processTasks(tasks, queue, mapper)
     }
@@ -50,7 +52,8 @@ class RelationshipPullServlet(
                         mapper.readValue(task.payload, RelationshipEvent.Follow.Payload::class.java)
                     LOGGER.info("Processing: taskName='{}'  payload='{}'", task.name, payload)
 
-                    val relationship = createRelationship(payload)
+                    val relationship =
+                        createRelationship(payload)
 
                     pendingSaves.add(relationship)
                     incCountUserIds.add(payload.toUserId)

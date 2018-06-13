@@ -10,9 +10,9 @@ import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 
 @NoArg
-data class SignInGoogleRequest(
+data class RegisterFacebookRequest(
     @field:NotBlank
-    val idToken: String?,
+    val accessToken: String?,
 
     @field:NumberFormat
     @field:UniqueElements

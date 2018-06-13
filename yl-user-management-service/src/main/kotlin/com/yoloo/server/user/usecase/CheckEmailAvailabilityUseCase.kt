@@ -9,7 +9,7 @@ import net.cinnom.nanocuckoo.NanoCuckooFilter
 class CheckEmailAvailabilityUseCase(private val memcacheService: MemcacheService) {
 
     fun execute(request: CheckEmailAvailabilityRequest) {
-        val emailFilter = memcacheService.get(User.KEY_FILTER_EMAIL) as NanoCuckooFilter
+        val emailFilter = memcacheService.get(User.KEY_FILTER_USER_IDENTIFIER) as NanoCuckooFilter
 
         ServiceExceptions.checkConflict(!emailFilter.contains(request.email), "user.email.conflict")
     }

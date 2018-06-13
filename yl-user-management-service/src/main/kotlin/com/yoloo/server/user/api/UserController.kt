@@ -1,19 +1,16 @@
 package com.yoloo.server.user.api
 
 import com.yoloo.server.common.vo.CollectionResponse
-import com.yoloo.server.user.usecase.GetUserUseCase
-import com.yoloo.server.user.usecase.PatchUserUseCase
-import com.yoloo.server.user.usecase.SearchUserUseCase
-import com.yoloo.server.user.vo.JwtClaims
-import com.yoloo.server.user.vo.PatchUserRequest
-import com.yoloo.server.user.vo.SearchUserResponse
-import com.yoloo.server.user.vo.UserResponse
+import com.yoloo.server.user.usecase.*
+import com.yoloo.server.user.vo.*
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
+import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
 @RestController
@@ -24,8 +21,21 @@ import javax.validation.constraints.NotNull
 class UserController(
     private val getUserUseCase: GetUserUseCase,
     private val searchUserUseCase: SearchUserUseCase,
-    private val patchUserUseCase: PatchUserUseCase
+    private val patchUserUseCase: PatchUserUseCase,
+    private val checkEmailAvailabilityUseCase: CheckEmailAvailabilityUseCase,
+    private val userRegisterUseCase: UserRegisterUseCase
 ) {
+
+    @PostMapping("/checkEmail")
+    fun checkEmail(@RequestBody @Valid @NotBlank request: CheckEmailAvailabilityRequest?) {
+        checkEmailAvailabilityUseCase.execute(request!!)
+    }
+
+    @PostMapping("/signUp")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun register(@RequestBody @Valid @NotNull request: UserRegisterRequest?): String {
+        return userRegisterUseCase.execute(request!!)
+    }
 
     @PreAuthorize("hasAnyAuthority('MEMBER')")
     @GetMapping("/{userId}")

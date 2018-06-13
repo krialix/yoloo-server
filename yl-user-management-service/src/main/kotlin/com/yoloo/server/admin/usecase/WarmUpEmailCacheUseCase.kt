@@ -28,7 +28,7 @@ class WarmUpEmailCacheUseCase(private val memcacheService: AsyncMemcacheService)
                 val cuckooFilter = NanoCuckooFilter.Builder(32).build()
                 it.forEach { cuckooFilter.insert(it) }
 
-                memcacheService.put(User.KEY_FILTER_EMAIL, cuckooFilter)
+                memcacheService.put(User.KEY_FILTER_USER_IDENTIFIER, cuckooFilter)
             }
     }
 

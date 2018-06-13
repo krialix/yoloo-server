@@ -1,8 +1,8 @@
 package com.yoloo.server.user.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.google.appengine.api.memcache.MemcacheService
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
 import com.yoloo.server.common.id.LongIdGenerator
 import com.yoloo.server.user.fetcher.GroupInfoFetcher
@@ -14,8 +14,7 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Lazy
-import org.springframework.security.oauth2.client.token.AccessTokenProvider
-import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails
+import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
 class UseCaseConfig {
@@ -28,26 +27,8 @@ class UseCaseConfig {
 
     @Lazy
     @Bean
-    fun followUseCase(memcacheService: AsyncMemcacheService): FollowUseCase {
-        return FollowUseCase(memcacheService)
-    }
-
-    @Lazy
-    @Bean
-    fun unfollowUseCase(memcacheService: AsyncMemcacheService): UnfollowUseCase {
-        return UnfollowUseCase(memcacheService)
-    }
-
-    @Lazy
-    @Bean
     fun getUserUseCase(memcacheService: MemcacheService, userResponseMapper: UserResponseMapper): GetUserUseCase {
         return GetUserUseCase(memcacheService, userResponseMapper)
-    }
-
-    @Lazy
-    @Bean
-    fun listRelationshipsUseCase(): ListRelationshipUseCase {
-        return ListRelationshipUseCase()
     }
 
     @Lazy
@@ -112,23 +93,22 @@ class UseCaseConfig {
 
     @Lazy
     @Bean
-    fun signUpEmailUseCase(
+    fun registerUserUseCase(
         groupInfoFetcher: GroupInfoFetcher,
         @Qualifier("cached") idGenerator: LongIdGenerator,
         eventPublisher: ApplicationEventPublisher,
         objectMapper: ObjectMapper,
         memcacheService: MemcacheService,
-        resourceOwnerPasswordResourceDetails: ResourceOwnerPasswordResourceDetails,
-        accessTokenProvider: AccessTokenProvider
-    ): SignUpEmailUseCase {
-        return SignUpEmailUseCase(
+        firebaseAuth: FirebaseAuth,
+        passwordEncoder: PasswordEncoder
+    ): UserRegisterUseCase {
+        return UserRegisterUseCase(
             groupInfoFetcher,
             idGenerator,
-            eventPublisher,
             objectMapper,
+            firebaseAuth,
             memcacheService,
-            resourceOwnerPasswordResourceDetails,
-            accessTokenProvider
+            passwordEncoder
         )
     }
 }

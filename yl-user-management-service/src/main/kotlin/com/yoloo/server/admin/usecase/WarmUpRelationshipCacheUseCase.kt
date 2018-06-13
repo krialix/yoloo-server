@@ -2,7 +2,7 @@ package com.yoloo.server.admin.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
-import com.yoloo.server.user.entity.Relationship
+import com.yoloo.server.relationship.entity.Relationship
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
