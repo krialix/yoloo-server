@@ -2,7 +2,7 @@ package com.yoloo.server.user.provider
 
 import com.google.firebase.auth.ImportUserRecord
 import com.google.firebase.auth.UserProvider
-import com.yoloo.server.common.id.LongIdGenerator
+import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.vo.UserRegisterRequest
 

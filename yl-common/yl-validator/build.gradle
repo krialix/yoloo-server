@@ -1,0 +1,12 @@
+group 'com.yoloo.server'
+version '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    implementation 'org.hibernate.validator:hibernate-validator:6.0.10.Final'
+    implementation 'commons-beanutils:commons-beanutils:1.9.3'
+
+    testImplementation 'junit:junit:4.12'
+}

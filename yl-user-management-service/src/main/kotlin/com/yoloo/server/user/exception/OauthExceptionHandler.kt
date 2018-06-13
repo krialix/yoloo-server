@@ -1,6 +1,6 @@
 package com.yoloo.server.user.exception
 
-import com.yoloo.server.rest.exception.ForbiddenException
+import com.yoloo.server.common.exception.exception.ForbiddenException
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.annotation.ExceptionHandler

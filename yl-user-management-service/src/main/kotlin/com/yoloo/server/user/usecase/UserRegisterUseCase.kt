@@ -3,12 +3,12 @@ package com.yoloo.server.user.usecase
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
 import com.google.firebase.auth.FirebaseAuth
-import com.yoloo.server.common.id.LongIdGenerator
+import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.IP
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
-import com.yoloo.server.rest.exception.ServiceExceptions
+import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.fetcher.GroupInfoFetcher
 import com.yoloo.server.user.provider.EmailUserRecordProvider

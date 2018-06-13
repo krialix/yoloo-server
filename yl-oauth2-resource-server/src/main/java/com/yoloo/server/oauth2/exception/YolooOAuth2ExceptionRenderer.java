@@ -1,7 +1,7 @@
 package com.yoloo.server.oauth2.exception;
 
-import com.yoloo.server.rest.api.Error;
-import com.yoloo.server.rest.api.ErrorResponse;
+import com.yoloo.server.common.exception.model.Error;
+import com.yoloo.server.common.exception.model.ErrorResponse;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;

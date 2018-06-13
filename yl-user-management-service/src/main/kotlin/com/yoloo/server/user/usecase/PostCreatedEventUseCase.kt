@@ -3,7 +3,7 @@ package com.yoloo.server.user.usecase
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
-import com.yoloo.server.common.util.AppengineEnv
+import com.yoloo.server.common.appengine.util.AppengineEnv
 import com.yoloo.server.common.vo.PubSubResponse
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.entity.User

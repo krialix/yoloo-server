@@ -1,0 +1,14 @@
+plugins {
+    id 'org.springframework.boot' version '2.0.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.5.RELEASE'
+}
+
+group 'com.yoloo.server'
+version '0.0.1-SNAPSHOT'
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "javax.servlet:javax.servlet-api:$javaxServletVersion"
+
+    testImplementation 'junit:junit:4.12'
+}

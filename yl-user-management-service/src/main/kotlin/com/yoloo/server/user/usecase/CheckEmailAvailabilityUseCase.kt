@@ -1,7 +1,7 @@
 package com.yoloo.server.user.usecase
 
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.rest.exception.ServiceExceptions
+import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.vo.CheckEmailAvailabilityRequest
 import net.cinnom.nanocuckoo.NanoCuckooFilter
