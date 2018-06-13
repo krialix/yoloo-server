@@ -23,7 +23,7 @@ class RelationshipController(
 ) {
 
     @PreAuthorize("hasAnyAuthority('MEMBER')")
-    @PutMapping("/following/{userId}")
+    @PutMapping("/follow/{userId}")
     fun follow(authentication: Authentication, @PathVariable("userId") userId: Long) {
         val jwtClaim = JwtClaims.from(authentication)
 
@@ -31,7 +31,7 @@ class RelationshipController(
     }
 
     @PreAuthorize("hasAnyAuthority('MEMBER')")
-    @DeleteMapping("/following/{userId}")
+    @DeleteMapping("/follow/{userId}")
     fun unfollow(authentication: Authentication, @PathVariable("userId") userId: Long) {
         val jwtClaim = JwtClaims.from(authentication)
 

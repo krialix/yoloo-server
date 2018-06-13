@@ -1,5 +1,6 @@
 package com.yoloo.server.group.api
 
+import com.yoloo.server.common.vo.CollectionResponse
 import com.yoloo.server.group.usecase.GetGroupUseCase
 import com.yoloo.server.group.usecase.SubscribeUseCase
 import com.yoloo.server.group.usecase.UnsubscribeUseCase
@@ -39,5 +40,15 @@ class GroupController(
         val jwtClaim = JwtClaims.from(authentication)
 
         unsubscribeUseCase.execute(jwtClaim.sub, groupId)
+    }
+
+    @GetMapping("/{groupId}/subscriptions")
+    fun listSubscriptions(
+        authentication: Authentication,
+        @PathVariable("groupId") groupId: Long
+    ): CollectionResponse<Any> {
+
+        // TODO Implement
+        return CollectionResponse.builder<Any>().build()
     }
 }
