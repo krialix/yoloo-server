@@ -1,12 +1,7 @@
 package com.yoloo.server.user.config
 
-import com.yoloo.server.oauth2.config.Oauth2ResourceServerConfig
-import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.http.SessionCreationPolicy
-
-@Configuration
-class UserOauth2ResourceServerConfig : Oauth2ResourceServerConfig() {
+//@Configuration
+class UserOauth2ResourceServerConfig /*: Oauth2ResourceServerConfig() {
 
     override fun configure(http: HttpSecurity) {
         http
@@ -29,4 +24,4 @@ class UserOauth2ResourceServerConfig : Oauth2ResourceServerConfig() {
             .antMatchers("/api/**")
             .authenticated()
     }
-}
+}*/

@@ -15,6 +15,6 @@ class EventConfig {
     }
 
     companion object {
-        const val EVENT_FILTER = "eventFilter"
+        const val EVENT_FILTER = "core-event-filter"
     }
 }

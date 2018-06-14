@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
 import com.yoloo.server.common.appengine.util.AppengineEnv
+import com.yoloo.server.common.util.FcmConstants
 import com.yoloo.server.common.vo.PubSubResponse
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.entity.User
@@ -44,7 +45,7 @@ class CommentCreatedEventUseCase(
 
             ofy().save().entity(commentUser)
 
-            sendCommentPostedNotification(commentResponse.postId.value, postUser.fcmToken)
+            sendNewCommentNotification(commentResponse.postId.value, postUser.fcmToken)
         } catch (e: IOException) {
             LOGGER.error("Couldn't parse response", e)
         }
@@ -52,10 +53,10 @@ class CommentCreatedEventUseCase(
         eventFilter.insert(messageId)
     }
 
-    private fun sendCommentPostedNotification(postId: String, postAuthorFcmToken: String) {
+    private fun sendNewCommentNotification(postId: String, postAuthorFcmToken: String) {
         val message = Message.builder()
-            .putData("FMC_TYPE", "TYPE_NEW_COMMENT")
-            .putData("FCM_POST_ID", postId)
+            .putData(FcmConstants.FCM_KEY_TYPE, FcmConstants.FcmType.FCM_TYPE_NEW_COMMENT.toString())
+            .putData("FCM_KEY_POST_ID", postId)
             .setToken(postAuthorFcmToken)
             .build()
 

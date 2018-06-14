@@ -1,6 +1,7 @@
 package com.yoloo.server.relationship.config
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
+import com.yoloo.server.common.appengine.service.NotificationService
 import com.yoloo.server.relationship.usecase.FollowUseCase
 import com.yoloo.server.relationship.usecase.ListRelationshipUseCase
 import com.yoloo.server.relationship.usecase.UnfollowUseCase
@@ -13,8 +14,8 @@ class UseCaseConfig {
 
     @Lazy
     @Bean
-    fun followUseCase(memcacheService: AsyncMemcacheService): FollowUseCase {
-        return FollowUseCase(memcacheService)
+    fun followUseCase(memcacheService: AsyncMemcacheService, notificationService: NotificationService): FollowUseCase {
+        return FollowUseCase(memcacheService, notificationService)
     }
 
     @Lazy

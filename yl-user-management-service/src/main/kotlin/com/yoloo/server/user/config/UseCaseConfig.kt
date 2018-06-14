@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
+import com.yoloo.server.common.appengine.service.NotificationService
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.user.fetcher.GroupInfoFetcher
 import com.yoloo.server.user.mapper.UserResponseMapper
@@ -33,8 +34,8 @@ class UseCaseConfig {
 
     @Lazy
     @Bean
-    fun patchUserUseCase(): PatchUserUseCase {
-        return PatchUserUseCase()
+    fun patchUserUseCase(memcacheService: MemcacheService): PatchUserUseCase {
+        return PatchUserUseCase(memcacheService)
     }
 
     @Lazy
@@ -70,10 +71,10 @@ class UseCaseConfig {
     @Bean
     fun commentApprovedEventUseCase(
         objectMapper: ObjectMapper,
-        firebaseMessaging: FirebaseMessaging,
+        notificationService: NotificationService,
         @Qualifier(EventConfig.EVENT_FILTER) eventFilter: NanoCuckooFilter
     ): CommentApprovedEventUseCase {
-        return CommentApprovedEventUseCase(objectMapper, firebaseMessaging, eventFilter)
+        return CommentApprovedEventUseCase(objectMapper, notificationService, eventFilter)
     }
 
     @Lazy

@@ -1,9 +1,9 @@
 package com.yoloo.server.user.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
-import com.yoloo.server.common.appengine.util.AppengineEnv
+import com.yoloo.server.common.appengine.service.NotificationService
+import com.yoloo.server.common.util.FcmConstants
 import com.yoloo.server.common.vo.PubSubResponse
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.user.entity.User
@@ -13,7 +13,7 @@ import java.io.IOException
 
 class CommentApprovedEventUseCase(
     private val objectMapper: ObjectMapper,
-    private val firebaseMessaging: FirebaseMessaging,
+    private val notificationService: NotificationService,
     private val eventFilter: NanoCuckooFilter
 ) {
 
@@ -47,13 +47,12 @@ class CommentApprovedEventUseCase(
 
     private fun sendCommentApprovedNotification(postId: String, commentAuthorFcmToken: String) {
         val message = Message.builder()
-            .putData("FCM_TYPE", "TYPE_APPROVE")
-            .putData("FCM_POST_ID", postId)
+            .putData(FcmConstants.FCM_KEY_TYPE, FcmConstants.FcmType.FCM_TYPE_COMMENT_APPROVE.toString())
+            .putData("FCM_KEY_POST_ID", postId)
             .setToken(commentAuthorFcmToken)
             .build()
 
-        val dryRun = !AppengineEnv.isProd()
-        firebaseMessaging.sendAsync(message, dryRun)
+        notificationService.sendAsync(message)
     }
 
     private data class CommentResponse(val postId: PostId, val author: Author) {

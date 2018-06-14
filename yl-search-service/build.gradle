@@ -8,8 +8,8 @@ group 'com.yoloo.server'
 version '0.0.1-SNAPSHOT'
 
 dependencies {
-    implementation project(':yl-common-old')
-    implementation project(':yl-common:yl-exception-config')
+    implementation project(':yl-common-utils')
+    implementation project(':yl-common-exception-config')
 
     compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
 

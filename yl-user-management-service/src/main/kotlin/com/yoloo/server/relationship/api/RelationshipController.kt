@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping(
-    "/api/users",
+    "/api/users/relationships",
     produces = [MediaType.APPLICATION_JSON_UTF8_VALUE]
 )
 class RelationshipController(
@@ -23,7 +23,7 @@ class RelationshipController(
 ) {
 
     @PreAuthorize("hasAnyAuthority('MEMBER')")
-    @PutMapping("/follow/{userId}")
+    @PutMapping("/{userId}")
     fun follow(authentication: Authentication, @PathVariable("userId") userId: Long) {
         val jwtClaim = JwtClaims.from(authentication)
 
@@ -31,7 +31,7 @@ class RelationshipController(
     }
 
     @PreAuthorize("hasAnyAuthority('MEMBER')")
-    @DeleteMapping("/follow/{userId}")
+    @DeleteMapping("/{userId}")
     fun unfollow(authentication: Authentication, @PathVariable("userId") userId: Long) {
         val jwtClaim = JwtClaims.from(authentication)
 

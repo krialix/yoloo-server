@@ -35,7 +35,7 @@ class QueueConfig(private val urlFetchService: URLFetchService) {
     //@Scheduled(fixedRate = 1000000)
     fun leaseRelationshipPullQueue() {
         LOGGER.info("Running 'leaseRelationshipPullQueue' cron")
-        val url = "http://localhost:8080/tasks/pull/relationship"
+        val url = "http://localhost:8080/_ah/tasks/pull/relationship"
         val httpResponse = urlFetchService.fetch(HTTPRequest(URL(url), HTTPMethod.POST))
         LOGGER.info("Response: {}", httpResponse.responseCode)
     }

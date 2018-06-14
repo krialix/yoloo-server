@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.yoloo.server.common.appengine.config.AppengineConfig,\
+  com.yoloo.server.common.appengine.config.FirebaseConfig
