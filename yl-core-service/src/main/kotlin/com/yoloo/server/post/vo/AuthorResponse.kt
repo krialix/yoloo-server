@@ -8,6 +8,5 @@ data class AuthorResponse(
     val id: Long,
     val self: Boolean,
     val displayName: String,
-    val verified: Boolean,
     val image: AttachmentResponse
 )

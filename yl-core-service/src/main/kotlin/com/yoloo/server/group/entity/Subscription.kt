@@ -7,6 +7,7 @@ import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.entity.BaseEntity
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.AvatarImage
+import com.yoloo.server.common.vo.Url
 import com.yoloo.server.group.vo.DisplayName
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 
@@ -14,7 +15,7 @@ import net.cinnom.nanocuckoo.NanoCuckooFilter
 @Entity
 data class Subscription(
     @Id
-    private var id: String,
+    var id: String,
 
     @Index
     var userId: Long = extractUserId(id),
@@ -32,6 +33,19 @@ data class Subscription(
 
         const val INDEX_USER_ID = "userId"
         const val INDEX_GROUP_ID = "groupId"
+
+        fun create(
+            requesterId: Long,
+            groupId: Long,
+            requesterDisplayName: String,
+            requesterAvatarImageUrl: String
+        ): Subscription {
+            return Subscription(
+                id = createId(requesterId, groupId),
+                displayName = DisplayName(requesterDisplayName),
+                avatarImage = AvatarImage(Url(requesterAvatarImageUrl))
+            )
+        }
 
         fun createId(userId: Long, groupId: Long): String {
             return "$userId:$groupId"

@@ -1,29 +1,28 @@
 package com.yoloo.server.comment.usecase
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.yoloo.server.BaseUseCase
 import com.yoloo.server.comment.entity.Comment
+import com.yoloo.server.comment.mapper.CommentResponseMapper
 import com.yoloo.server.comment.vo.CommentContent
 import com.yoloo.server.comment.vo.CommentResponse
 import com.yoloo.server.comment.vo.InsertCommentRequest
+import com.yoloo.server.common.event.PubSubEvent
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.id.generator.LongIdGenerator
+import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.mapper.CommentResponseMapper
 import com.yoloo.server.post.vo.Author
 import com.yoloo.server.post.vo.PostId
 import com.yoloo.server.post.vo.PostPermFlag
-import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate
+import org.springframework.context.ApplicationEventPublisher
 
 class InsertCommentUseCase(
     private val idGenerator: LongIdGenerator,
     private val commentResponseMapper: CommentResponseMapper,
-    pubSubTemplate: PubSubTemplate,
-    objectMapper: ObjectMapper
-) : BaseUseCase(objectMapper, pubSubTemplate) {
+    private val eventPublisher: ApplicationEventPublisher
+) {
 
     fun execute(requester: Requester, postId: Long, request: InsertCommentRequest): CommentResponse {
         val post = ofy().load().type(Post::class.java).id(postId).now()
@@ -39,10 +38,10 @@ class InsertCommentUseCase(
 
         post.countData.commentCount = post.countData.commentCount.inc()
 
-        val saveFuture = ofy().save().entities(comment, post)
-        putResult(saveFuture)
+        val saveResult = ofy().save().entities(comment, post)
+        TestUtil.saveResultsNowIfTest(saveResult)
 
-        publishEvent("comment.create", comment)
+        eventPublisher.publishEvent(PubSubEvent("comment.create", comment, this))
 
         return commentResponseMapper.apply(comment, true, false)
     }
@@ -58,8 +57,7 @@ class InsertCommentUseCase(
             author = Author(
                 id = requester.userId,
                 displayName = requester.displayName,
-                avatar = AvatarImage(Url(requester.avatarUrl)),
-                verified = requester.verified
+                avatar = AvatarImage(Url(requester.avatarUrl))
             ),
             content = CommentContent(request.content!!)
         )
@@ -68,7 +66,6 @@ class InsertCommentUseCase(
     data class Requester(
         val userId: Long,
         val displayName: String,
-        val avatarUrl: String,
-        val verified: Boolean
+        val avatarUrl: String
     )
 }

@@ -7,8 +7,6 @@ import com.yoloo.server.post.vo.postdataresponse.PostDataResponse
 import com.yoloo.server.post.vo.postdataresponse.RichPostDataResponse
 import com.yoloo.server.post.vo.postdataresponse.SponsoredPostDataResponse
 import com.yoloo.server.post.vo.postdataresponse.TextPostDataResponse
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Component
 
 class PostResponseMapper {
 
@@ -20,8 +18,7 @@ class PostResponseMapper {
                 id = from.author.id,
                 displayName = from.author.displayName,
                 image = SimpleAttachmentResponse(from.author.avatar.url.value),
-                self = self,
-                verified = from.author.verified
+                self = self
             ),
             content = from.content.value,
             data = when (from.type) {

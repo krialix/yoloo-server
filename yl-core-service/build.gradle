@@ -1,8 +1,8 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.2.41'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.41'
-    id 'org.jetbrains.kotlin.plugin.noarg' version '1.2.41'
-    id 'org.springframework.boot' version '2.0.2.RELEASE'
+    id 'org.jetbrains.kotlin.jvm' version '1.2.50'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.50'
+    id 'org.jetbrains.kotlin.plugin.noarg' version '1.2.50'
+    id 'org.springframework.boot' version '2.0.3.RELEASE'
     id 'io.spring.dependency-management' version '1.0.5.RELEASE'
     id 'war'
 }
@@ -12,13 +12,13 @@ version '0.0.1-SNAPSHOT'
 
 compileKotlin {
     kotlinOptions {
-        freeCompilerArgs = ["-Xjsr305=strict"]
+        freeCompilerArgs = ["-Xjsr305=strict",  "-Xprogressive"]
         jvmTarget = "1.8"
     }
 }
 compileTestKotlin {
     kotlinOptions {
-        freeCompilerArgs = ["-Xjsr305=strict"]
+        freeCompilerArgs = ["-Xjsr305=strict",  "-Xprogressive"]
         jvmTarget = "1.8"
     }
 }
@@ -32,7 +32,7 @@ dependencies {
     implementation project(':yl-common-utils')
     implementation project(':yl-common-exception-config')
     implementation project(':yl-common-id-generator')
-    implementation project(':yl-common-appengine-config')
+    implementation project(':yl-common-auth')
 
     // App Engine
     implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
@@ -42,14 +42,13 @@ dependencies {
     //implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
-    implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.1.RELEASE'
     implementation "org.springframework.cloud:spring-cloud-gcp-starter-pubsub:$pubsubVersion"
 
     implementation 'com.lmax:disruptor:3.4.2'
 
     // Kotlin
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.50'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.2.50'
 
     // Util
     implementation 'net.cinnom:nano-cuckoo:2.0.0'

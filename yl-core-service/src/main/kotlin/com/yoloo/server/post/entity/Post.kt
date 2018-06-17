@@ -9,6 +9,7 @@ import com.yoloo.server.comment.vo.ApprovedCommentId
 import com.yoloo.server.common.entity.BaseEntity
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.post.vo.*
+import java.time.LocalDateTime
 import java.util.*
 
 @NoArg
@@ -47,6 +48,10 @@ data class Post(
 
     var countData: PostCountData = PostCountData()
 ) : BaseEntity<Post>() {
+
+    fun markAsDeleted() {
+        this.auditData.deletedAt = LocalDateTime.now()
+    }
 
     override fun onLoad() {
         super.onLoad()

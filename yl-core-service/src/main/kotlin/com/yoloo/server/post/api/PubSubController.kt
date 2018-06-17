@@ -3,7 +3,7 @@ package com.yoloo.server.post.api
 import com.google.appengine.api.taskqueue.Queue
 import com.google.appengine.api.taskqueue.TaskOptions
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.post.config.QueueConfig
+import com.yoloo.server.post.config.PostQueueConfig
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cloud.gcp.pubsub.PubSubAdmin
@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest
 class PubSubController(
     private val pubSubTemplate: PubSubTemplate,
     private val pubSubAdmin: PubSubAdmin,
-    @Qualifier(QueueConfig.QUEUE_POST) private val postQueue: Queue
+    @Qualifier(PostQueueConfig.QUEUE_POST) private val postQueue: Queue
 ) {
 
     @PostMapping("/topics")

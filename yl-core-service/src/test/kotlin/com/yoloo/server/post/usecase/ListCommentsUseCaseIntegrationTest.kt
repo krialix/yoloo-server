@@ -14,8 +14,8 @@ import com.yoloo.server.comment.usecase.ListCommentsUseCase
 import com.yoloo.server.comment.vo.CommentContent
 import com.yoloo.server.comment.vo.CommentResponse
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.entity.Vote
-import com.yoloo.server.post.mapper.CommentResponseMapper
+import com.yoloo.server.vote.entity.Vote
+import com.yoloo.server.comment.mapper.CommentResponseMapper
 import com.yoloo.server.post.vo.*
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.junit.Before
@@ -96,8 +96,7 @@ class ListCommentsUseCaseIntegrationTest {
             author = Author(
                 id = 2,
                 displayName = "stub name",
-                avatar = AvatarImage(Url("")),
-                verified = false
+                avatar = AvatarImage(Url(""))
             ),
             title = PostTitle("lorem impsum title"),
             content = PostContent("lorem impsum content"),
@@ -122,8 +121,7 @@ class ListCommentsUseCaseIntegrationTest {
                     author = Author(
                         id = 3,
                         displayName = "",
-                        avatar = AvatarImage(Url("")),
-                        verified = false
+                        avatar = AvatarImage(Url(""))
                     ),
                     approved = false,
                     content = CommentContent("")

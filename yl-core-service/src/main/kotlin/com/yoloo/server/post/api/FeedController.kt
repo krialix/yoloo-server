@@ -1,10 +1,10 @@
 package com.yoloo.server.post.api
 
+import com.yoloo.server.auth.AuthUtil
 import com.yoloo.server.common.vo.CollectionResponse
 import com.yoloo.server.post.usecase.ListAnonymousMainFeedUseCase
 import com.yoloo.server.post.usecase.ListBountyFeedUseCase
 import com.yoloo.server.post.usecase.ListGroupFeedUseCase
-import com.yoloo.server.post.vo.JwtClaims
 import com.yoloo.server.post.vo.PostResponse
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -35,9 +35,9 @@ class FeedController(
         @PathVariable("groupId") groupId: Long,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CollectionResponse<PostResponse> {
-        val jwtClaim = JwtClaims.from(authentication)
+        val user = AuthUtil.from(authentication)
 
-        return listGroupFeedUseCase.execute(jwtClaim.sub, groupId, cursor)
+        return listGroupFeedUseCase.execute(user.userId, groupId, cursor)
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
@@ -46,9 +46,9 @@ class FeedController(
         authentication: Authentication,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CollectionResponse<PostResponse> {
-        val jwtClaim = JwtClaims.from(authentication)
+        val user = AuthUtil.from(authentication)
 
-        return listBountyFeedUseCase.execute(jwtClaim.sub, cursor)
+        return listBountyFeedUseCase.execute(user.userId, cursor)
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")

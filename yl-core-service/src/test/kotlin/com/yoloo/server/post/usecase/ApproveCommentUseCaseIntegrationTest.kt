@@ -63,8 +63,7 @@ class ApproveCommentUseCaseIntegrationTest {
             author = Author(
                 id = 2,
                 displayName = "stub name",
-                avatar = AvatarImage(Url("")),
-                verified = false
+                avatar = AvatarImage(Url(""))
             ),
             title = PostTitle("lorem impsum title"),
             content = PostContent("lorem impsum content"),
@@ -87,8 +86,7 @@ class ApproveCommentUseCaseIntegrationTest {
             author = Author(
                 id = 3,
                 displayName = "",
-                avatar = AvatarImage(Url("")),
-                verified = false
+                avatar = AvatarImage(Url(""))
             ),
             approved = approved,
             content = CommentContent("")

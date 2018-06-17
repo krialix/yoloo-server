@@ -9,9 +9,11 @@ import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.entity.Vote
+import com.yoloo.server.vote.entity.Vote
 import com.yoloo.server.post.vo.*
 import com.yoloo.server.common.exception.exception.NotFoundException
+import com.yoloo.server.vote.usecase.UnvotePostUseCase
+import com.yoloo.server.vote.usecase.VotePostUseCase
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.junit.Before
 import org.junit.Rule
@@ -24,7 +26,11 @@ class UnvotePostUseCaseIntegrationTest {
         AppEngineRule.builder().withDatastore().withMemcacheService().build()
 
     private val memcacheService by lazy(LazyThreadSafetyMode.NONE) { MemcacheServiceFactory.getAsyncMemcacheService() }
-    private val votePostUseCase by lazy(LazyThreadSafetyMode.NONE) { VotePostUseCase(memcacheService) }
+    private val votePostUseCase by lazy(LazyThreadSafetyMode.NONE) {
+        VotePostUseCase(
+            memcacheService
+        )
+    }
     private val unvotePostUseCase by lazy(LazyThreadSafetyMode.NONE) {
         UnvotePostUseCase(
             memcacheService
@@ -76,8 +82,7 @@ class UnvotePostUseCaseIntegrationTest {
             author = Author(
                 id = 2,
                 displayName = "demo author",
-                avatar = AvatarImage(Url("urlLink")),
-                verified = false
+                avatar = AvatarImage(Url("urlLink"))
             ),
             title = PostTitle("lorem impsum title"),
             content = PostContent("lorem impsum content"),

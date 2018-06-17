@@ -1,13 +1,13 @@
 package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.memcache.MemcacheService
+import com.yoloo.server.bookmark.entity.Bookmark
+import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
-import com.yoloo.server.post.entity.Bookmark
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.entity.Vote
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.PostResponse
-import com.yoloo.server.common.exception.exception.ServiceExceptions
+import com.yoloo.server.vote.entity.Vote
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 
 class GetPostUseCase(
@@ -21,13 +21,7 @@ class GetPostUseCase(
         ServiceExceptions.checkNotFound(post != null, "post.not_found")
         ServiceExceptions.checkNotFound(!post.auditData.isDeleted, "post.not_found")
 
-        val cacheMap =
-            memcacheService.getAll(
-                listOf(
-                    Vote.KEY_FILTER_VOTE,
-                    Bookmark.KEY_FILTER_BOOKMARK
-                )
-            ) as Map<String, *>
+        val cacheMap = getCache()
 
         val self = requesterId == post.author.id
 
@@ -38,5 +32,14 @@ class GetPostUseCase(
         val bookmarked = Bookmark.isBookmarked(bookmarkFilter, requesterId, postId)
 
         return postResponseMapper.apply(post, self, voted, bookmarked)
+    }
+
+    private fun getCache(): Map<String, *> {
+        return memcacheService.getAll(
+            listOf(
+                Vote.KEY_FILTER_VOTE,
+                Bookmark.KEY_FILTER_BOOKMARK
+            )
+        ) as Map<String, *>
     }
 }

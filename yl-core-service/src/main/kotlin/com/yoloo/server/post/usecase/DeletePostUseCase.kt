@@ -1,13 +1,13 @@
 package com.yoloo.server.post.usecase
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.yoloo.server.common.event.PubSubEvent
+import com.yoloo.server.common.exception.exception.ServiceExceptions
+import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.common.exception.exception.ServiceExceptions
-import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate
-import java.time.LocalDateTime
+import org.springframework.context.ApplicationEventPublisher
 
-class DeletePostUseCase(private val pubSubTemplate: PubSubTemplate, private val objectMapper: ObjectMapper) {
+class DeletePostUseCase(private val eventPublisher: ApplicationEventPublisher) {
 
     fun execute(requesterId: Long, postId: Long) {
         val post = ofy().load().type(Post::class.java).id(postId).now()
@@ -16,15 +16,11 @@ class DeletePostUseCase(private val pubSubTemplate: PubSubTemplate, private val 
         ServiceExceptions.checkNotFound(!post.auditData.isDeleted, "post.not_found")
         ServiceExceptions.checkForbidden(post.author.id == requesterId, "post.forbidden")
 
-        post.auditData.deletedAt = LocalDateTime.now()
+        post.markAsDeleted()
 
-        ofy().save().entity(post)
+        val saveResult = ofy().save().entity(post)
+        TestUtil.saveResultsNowIfTest(saveResult)
 
-        publishPostDeletedEvent(post)
-    }
-
-    private fun publishPostDeletedEvent(post: Post) {
-        val json = objectMapper.writeValueAsString(post)
-        pubSubTemplate.publish("post.delete", json, null)
+        eventPublisher.publishEvent(PubSubEvent("post.delete", post, this))
     }
 }

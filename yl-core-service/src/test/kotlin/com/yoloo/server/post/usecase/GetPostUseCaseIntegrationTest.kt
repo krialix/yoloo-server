@@ -8,9 +8,9 @@ import com.yoloo.server.common.util.TestObjectifyService.ofy
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory
-import com.yoloo.server.post.entity.Bookmark
+import com.yoloo.server.bookmark.entity.Bookmark
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.entity.Vote
+import com.yoloo.server.vote.entity.Vote
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.*
 import com.yoloo.server.common.exception.exception.NotFoundException
@@ -70,8 +70,7 @@ class GetPostUseCaseIntegrationTest {
             author = Author(
                 id = 2,
                 displayName = "demo author",
-                avatar = AvatarImage(Url("urlLink")),
-                verified = false
+                avatar = AvatarImage(Url("urlLink"))
             ),
             title = PostTitle("lorem impsum title"),
             content = PostContent("lorem impsum content"),

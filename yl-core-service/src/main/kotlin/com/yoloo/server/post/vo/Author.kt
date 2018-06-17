@@ -11,7 +11,5 @@ data class Author(
 
     var displayName: String,
 
-    var avatar: AvatarImage,
-
-    var verified: Boolean
+    var avatar: AvatarImage
 )

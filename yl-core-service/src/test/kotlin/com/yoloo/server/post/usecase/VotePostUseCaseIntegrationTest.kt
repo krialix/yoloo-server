@@ -8,12 +8,13 @@ import com.yoloo.server.common.util.TestObjectifyService.ofy
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory
-import com.yoloo.server.post.entity.Bookmark
+import com.yoloo.server.bookmark.entity.Bookmark
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.entity.Vote
+import com.yoloo.server.vote.entity.Vote
 import com.yoloo.server.post.vo.*
 import com.yoloo.server.common.exception.exception.ForbiddenException
 import com.yoloo.server.common.exception.exception.NotFoundException
+import com.yoloo.server.vote.usecase.VotePostUseCase
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.junit.Before
 import org.junit.Rule
@@ -27,7 +28,11 @@ class VotePostUseCaseIntegrationTest {
         AppEngineRule.builder().withDatastore().withMemcacheService().build()
 
     private val memcacheService by lazy(LazyThreadSafetyMode.NONE) { MemcacheServiceFactory.getAsyncMemcacheService() }
-    private val votePostUseCase by lazy(LazyThreadSafetyMode.NONE) { VotePostUseCase(memcacheService) }
+    private val votePostUseCase by lazy(LazyThreadSafetyMode.NONE) {
+        VotePostUseCase(
+            memcacheService
+        )
+    }
 
     @Before
     fun setUp() {
@@ -56,7 +61,15 @@ class VotePostUseCaseIntegrationTest {
 
         assertThat(fetchedPost.countData.voteCount).isEqualTo(1)
         assertThat(fetchedVote).isNotNull()
-        assertThat(fetchedVote).isEqualTo(Vote(Vote.createId(userId, post.id, "p"), 1))
+        assertThat(fetchedVote).isEqualTo(
+            Vote(
+                Vote.createId(
+                    userId,
+                    post.id,
+                    "p"
+                ), 1
+            )
+        )
 
         val voteFilter = memcacheService.get(Vote.KEY_FILTER_VOTE).get() as NanoCuckooFilter
         assertThat(voteFilter.contains(voteKey.name)).isTrue()
@@ -83,8 +96,7 @@ class VotePostUseCaseIntegrationTest {
             author = Author(
                 id = 2,
                 displayName = "demo author",
-                avatar = AvatarImage(Url("urlLink")),
-                verified = false
+                avatar = AvatarImage(Url("urlLink"))
             ),
             title = PostTitle("lorem impsum title"),
             content = PostContent("lorem impsum content"),
@@ -103,8 +115,7 @@ class VotePostUseCaseIntegrationTest {
             author = Author(
                 id = 2,
                 displayName = "demo author",
-                avatar = AvatarImage(Url("urlLink")),
-                verified = false
+                avatar = AvatarImage(Url("urlLink"))
             ),
             title = PostTitle("lorem impsum title"),
             content = PostContent("lorem impsum content"),

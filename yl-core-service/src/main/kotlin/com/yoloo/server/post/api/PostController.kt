@@ -1,8 +1,11 @@
 package com.yoloo.server.post.api
 
-import com.yoloo.server.post.usecase.*
+import com.yoloo.server.auth.AuthUtil
+import com.yoloo.server.post.usecase.DeletePostUseCase
+import com.yoloo.server.post.usecase.GetPostUseCase
+import com.yoloo.server.post.usecase.InsertPostUseCase
+import com.yoloo.server.post.usecase.UpdatePostUseCase
 import com.yoloo.server.post.vo.InsertPostRequest
-import com.yoloo.server.post.vo.JwtClaims
 import com.yoloo.server.post.vo.PostResponse
 import com.yoloo.server.post.vo.UpdatePostRequest
 import org.springframework.http.HttpStatus
@@ -21,27 +24,24 @@ class PostController(
     private val getPostUseCase: GetPostUseCase,
     private val insertPostUseCase: InsertPostUseCase,
     private val updatePostUseCase: UpdatePostUseCase,
-    private val deletePostUseCase: DeletePostUseCase,
-    private val votePostUseCase: VotePostUseCase,
-    private val unvotePostUseCase: UnvotePostUseCase
+    private val deletePostUseCase: DeletePostUseCase
 ) {
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/{postId}")
     fun getPost(authentication: Authentication, @PathVariable("postId") postId: Long): PostResponse {
-        val jwtClaim = JwtClaims.from(authentication)
+        val user = AuthUtil.from(authentication)
 
-        return getPostUseCase.execute(jwtClaim.sub, postId)
+        return getPostUseCase.execute(user.userId, postId)
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun insertPost(authentication: Authentication, @RequestBody @Valid request: InsertPostRequest): PostResponse {
-        val jwtClaim = JwtClaims.from(authentication)
+        val user = AuthUtil.from(authentication)
 
-        val requester = InsertPostUseCase.Requester(jwtClaim.sub, jwtClaim.displayName, jwtClaim.picture, false)
-        return insertPostUseCase.execute(requester, request)
+        return insertPostUseCase.execute(user.userId, request)
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
@@ -50,38 +50,18 @@ class PostController(
         authentication: Authentication,
         @PathVariable("postId") postId: Long,
         @RequestBody @Valid request: UpdatePostRequest
-    ): PostResponse {
-        val jwtClaim = JwtClaims.from(authentication)
+    ) {
+        val user = AuthUtil.from(authentication)
 
-        return updatePostUseCase.execute(jwtClaim.sub, postId, request)
+        updatePostUseCase.execute(user.userId, postId, request)
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{postId}")
     fun deletePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
-        val jwtClaim = JwtClaims.from(authentication)
+        val user = AuthUtil.from(authentication)
 
-        deletePostUseCase.execute(jwtClaim.sub, postId)
+        deletePostUseCase.execute(user.userId, postId)
     }
-
-    @PreAuthorize("hasAuthority('MEMBER')")
-    @PostMapping("/{postId}/votes")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun votePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
-        val jwtClaim = JwtClaims.from(authentication)
-
-        votePostUseCase.execute(jwtClaim.sub, postId)
-    }
-
-    @PreAuthorize("hasAuthority('MEMBER')")
-    @DeleteMapping("/{postId}/votes")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun unvotePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
-        val jwtClaim = JwtClaims.from(authentication)
-
-        unvotePostUseCase.execute(jwtClaim.sub, postId)
-    }
-
-    // TODO Implement search
 }

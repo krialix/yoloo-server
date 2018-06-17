@@ -10,12 +10,13 @@ import com.yoloo.server.common.util.TestObjectifyService.ofy
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory
-import com.yoloo.server.post.entity.Bookmark
+import com.yoloo.server.bookmark.entity.Bookmark
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.entity.Vote
+import com.yoloo.server.vote.entity.Vote
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.*
 import com.yoloo.server.post.vo.postdataresponse.TextPostDataResponse
+import com.yoloo.server.vote.usecase.VotePostUseCase
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.junit.Before
 import org.junit.Rule
@@ -114,8 +115,7 @@ class ListGroupFeedUseCaseIntegrationTest {
                     author = Author(
                         id = it.toLong(),
                         displayName = "user_$it",
-                        avatar = AvatarImage(Url("")),
-                        verified = false
+                        avatar = AvatarImage(Url(""))
                     ),
                     title = PostTitle("title_$it"),
                     content = PostContent("content_$it"),

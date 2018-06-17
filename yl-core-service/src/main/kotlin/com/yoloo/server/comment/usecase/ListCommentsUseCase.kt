@@ -3,14 +3,14 @@ package com.yoloo.server.comment.usecase
 import com.google.appengine.api.datastore.Cursor
 import com.google.appengine.api.datastore.QueryResultIterator
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.comment.entity.Comment
-import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.entity.Vote
-import com.yoloo.server.post.mapper.CommentResponseMapper
+import com.yoloo.server.comment.mapper.CommentResponseMapper
 import com.yoloo.server.comment.vo.CommentCollectionResponse
 import com.yoloo.server.comment.vo.CommentResponse
 import com.yoloo.server.common.exception.exception.ServiceExceptions
+import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.yoloo.server.post.entity.Post
+import com.yoloo.server.vote.entity.Vote
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 
 class ListCommentsUseCase(
@@ -30,7 +30,7 @@ class ListCommentsUseCase(
             return CommentCollectionResponse.builder().data(emptyList()).build()
         }
 
-        val voteFilter = memcacheService.get(Vote.KEY_FILTER_VOTE) as NanoCuckooFilter
+        val voteFilter = getVoteFilter()
 
         val approvedComment = getApprovedCommentResponse(post, requesterId, voteFilter)
 
@@ -41,6 +41,10 @@ class ListCommentsUseCase(
             approvedComment,
             cursor
         )
+    }
+
+    private fun getVoteFilter(): NanoCuckooFilter {
+        return memcacheService.get(Vote.KEY_FILTER_VOTE) as NanoCuckooFilter
     }
 
     private fun buildCommentCollectionResponse(

@@ -1,5 +1,6 @@
 package com.yoloo.server.group.entity
 
+import com.googlecode.objectify.Key
 import com.googlecode.objectify.annotation.Cache
 import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id
@@ -34,5 +35,9 @@ data class Group(
 
     companion object {
         const val KEY_FILTER_SUBSCRIPTION = "FILTER_SUBSCRIPTION"
+
+        fun createKey(groupId: Long): Key<Group> {
+            return Key.create(Group::class.java, groupId)
+        }
     }
 }

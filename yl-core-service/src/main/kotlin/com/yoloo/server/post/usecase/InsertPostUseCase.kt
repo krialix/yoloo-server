@@ -1,66 +1,60 @@
 package com.yoloo.server.post.usecase
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.googlecode.objectify.Key
+import com.yoloo.server.common.event.PubSubEvent
 import com.yoloo.server.common.id.generator.LongIdGenerator
-import com.yoloo.server.common.appengine.util.AppengineEnv
-import com.yoloo.server.common.vo.AvatarImage
-import com.yoloo.server.common.vo.Url
+import com.yoloo.server.common.util.TestUtil
+import com.yoloo.server.group.entity.Group
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.fetcher.GroupInfoFetcher
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.*
-import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate
+import com.yoloo.server.user.entity.User
+import org.springframework.context.ApplicationEventPublisher
 
 class InsertPostUseCase(
     private val idGenerator: LongIdGenerator,
     private val postResponseMapper: PostResponseMapper,
-    private val groupInfoFetcher: GroupInfoFetcher,
-    private val pubSubTemplate: PubSubTemplate,
-    private val objectMapper: ObjectMapper
+    private val eventPublisher: ApplicationEventPublisher
 ) {
 
-    fun execute(requester: Requester, request: InsertPostRequest): PostResponse {
-        val groupInfo = groupInfoFetcher.fetch(request.groupId)
+    fun execute(requesterId: Long, request: InsertPostRequest): PostResponse {
+        val userKey = User.createKey(requesterId)
+        val groupKey = Key.create(Group::class.java, request.groupId!!)
+        val map = ofy().load().keys(userKey, groupKey) as Map<*, *>
 
-        val post = createPost(request, requester, groupInfo)
+        val user = map[userKey] as User
+        val group = map[groupKey] as Group
 
-        // TODO inc group post count
-        // TODO If buddy post -> register in buddy search
+        group.countData.postCount = group.countData.postCount.inc()
+        user.profile.countData.postCount = user.profile.countData.postCount.inc()
 
-        val saveFuture = ofy().save().entities(post)
+        val post = createPost(request, user, group)
 
-        if (AppengineEnv.isTest()) {
-            saveFuture.now()
-        }
+        val saveResult = ofy().save().entities(post, group)
+        TestUtil.saveResultsNowIfTest(saveResult)
 
-        publishPostCreatedEvent(post)
+        eventPublisher.publishEvent(PubSubEvent("post.create", post, this))
 
         return postResponseMapper.apply(post, true, false, false)
     }
 
-    private fun publishPostCreatedEvent(post: Post) {
-        val json = objectMapper.writeValueAsString(post)
-        pubSubTemplate.publish("post.create", json, null)
-    }
-
     private fun createPost(
         request: InsertPostRequest,
-        requester: Requester,
-        groupInfo: GroupInfoResponse
+        user: User,
+        group: Group
     ): Post {
         return Post(
             id = idGenerator.generateId(),
             type = findPostType(request),
             author = Author(
-                id = requester.userId,
-                displayName = requester.displayName,
-                avatar = AvatarImage(Url(requester.avatarUrl)),
-                verified = requester.verified
+                id = user.id,
+                displayName = user.profile.displayName.value,
+                avatar = user.profile.image
             ),
             content = PostContent(request.content!!),
             title = PostTitle(request.title!!),
-            group = PostGroup(groupInfo.id, groupInfo.displayName),
+            group = PostGroup(group.id, group.displayName.value),
             tags = request.tags!!.map(::PostTag).toSet(),
             coin = if (request.coin == 0) null else PostCoin(request.coin),
             buddyRequest = when (request.buddyInfo) {
@@ -88,11 +82,4 @@ class InsertPostUseCase(
             dateRange = Range(buddyInfo.fromDate!!, buddyInfo.toDate!!)
         )
     }
-
-    data class Requester(
-        val userId: Long,
-        val displayName: String,
-        val avatarUrl: String,
-        val verified: Boolean
-    )
 }
