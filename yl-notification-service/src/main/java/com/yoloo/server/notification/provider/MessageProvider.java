@@ -2,8 +2,8 @@ package com.yoloo.server.notification.provider;
 
 import com.google.firebase.database.utilities.Pair;
 import com.google.firebase.messaging.Message;
-import com.yoloo.server.notification.payload.NotificationPayload;
 import com.yoloo.server.notification.entity.Notification;
+import com.yoloo.server.notification.payload.NotificationPayload;
 
 import java.util.Optional;
 
@@ -16,13 +16,9 @@ public abstract class MessageProvider {
     return next;
   }
 
-  protected abstract Optional<Pair<Message, Notification>> check(NotificationPayload payload);
+  public abstract Optional<Pair<Message, Notification>> check(NotificationPayload payload);
 
   protected Optional<Pair<Message, Notification>> checkNext(NotificationPayload payload) {
-    if (payload == null) {
-      return Optional.empty();
-    }
-
-    return next.check(payload);
+    return payload == null ? Optional.empty() : next.check(payload);
   }
 }

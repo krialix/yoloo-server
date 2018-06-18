@@ -1,4 +1,4 @@
-package com.yoloo.server.notification;
+package com.yoloo.server.notification.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -6,10 +6,10 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 
 @Configuration
-class SchedulerConfig {
+public class SchedulerConfig {
 
   @Bean
-  TaskScheduler taskScheduler() {
+  public TaskScheduler taskScheduler() {
     return new ConcurrentTaskScheduler();
   }
 }

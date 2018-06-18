@@ -12,7 +12,7 @@ public class FollowMessageProvider extends MessageProvider {
 
   @Override
   protected Optional<Pair<Message, Notification>> check(NotificationPayload payload) {
-    if (payload.getType().equals("follow")) {
+    if (payload.getType().equals("TYPE_FOLLOW")) {
       NotificationBody.Follow body = (NotificationBody.Follow) payload.getBody();
 
       Message message = Message.builder()
