@@ -5,7 +5,7 @@
   <threadsafe>true</threadsafe>
   <sessions-enabled>true</sessions-enabled>
   <async-session-persistence enabled="true"/>
-  <service>default</service>
+  <service>notification-service</service>
 
   <system-properties>
     <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>

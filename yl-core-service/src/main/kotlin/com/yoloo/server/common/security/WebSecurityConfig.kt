@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 
 @EnableFirebaseSecurity
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class WebSecurityConfig(
     firebaseAuthenticationProvider: FirebaseAuthenticationProvider
@@ -18,7 +18,7 @@ class WebSecurityConfig(
         super.configure(http)
         http
             .authorizeRequests()
-            .antMatchers("/api/users/signUp", "/api/users/checkEmail", "/_ah/**")
+            .antMatchers("/api/users/signUp", "/api/users/checkEmail", "/_ah/**", "/api/test/pubsub/**")
             .permitAll()
             .and()
             .authorizeRequests()

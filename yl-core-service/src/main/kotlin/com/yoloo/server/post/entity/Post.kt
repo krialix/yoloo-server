@@ -1,6 +1,7 @@
 package com.yoloo.server.post.entity
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.googlecode.objectify.Key
 import com.googlecode.objectify.annotation.*
 import com.googlecode.objectify.condition.IfEmpty
 import com.googlecode.objectify.condition.IfNotNull
@@ -66,5 +67,9 @@ data class Post(
         const val INDEX_COIN = "coin"
 
         const val CACHE_EXPIRATION_TIME = 7200
+
+        fun createKey(postId: Long): Key<Post> {
+            return Key.create(Post::class.java, postId)
+        }
     }
 }

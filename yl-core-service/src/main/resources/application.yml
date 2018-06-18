@@ -18,7 +18,7 @@ spring:
   cloud:
     gcp:
       pubsub:
-        emulator-host: http://localhost:8085
+        emulator-host: localhost:8085
 debug: false
 
 ---

@@ -16,6 +16,7 @@ import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.vo.Author
 import com.yoloo.server.post.vo.PostId
 import com.yoloo.server.post.vo.PostPermFlag
+import com.yoloo.server.user.entity.User
 import org.springframework.context.ApplicationEventPublisher
 
 class InsertCommentUseCase(
@@ -24,21 +25,34 @@ class InsertCommentUseCase(
     private val eventPublisher: ApplicationEventPublisher
 ) {
 
-    fun execute(requester: Requester, postId: Long, request: InsertCommentRequest): CommentResponse {
-        val post = ofy().load().type(Post::class.java).id(postId).now()
+    fun execute(
+        requesterUserId: Long,
+        requesterDisplayName: String,
+        requesterAvatarUrl: String,
+        postId: Long,
+        request: InsertCommentRequest
+    ): CommentResponse {
+        val userKey = User.createKey(requesterUserId)
+        val postKey = Post.createKey(postId)
+
+        val map = ofy().load().keys(userKey, postKey) as Map<*, *>
+
+        val user = map[userKey] as User
+        val post = map[postKey] as Post?
 
         ServiceExceptions.checkNotFound(post != null, "post.not_found")
-        ServiceExceptions.checkNotFound(!post.auditData.isDeleted, "post.not_found")
+        ServiceExceptions.checkNotFound(!post!!.auditData.isDeleted, "post.not_found")
         ServiceExceptions.checkForbidden(
             !post.flags.contains(PostPermFlag.DISABLE_COMMENTING),
             "post.forbidden_commenting"
         )
 
-        val comment = createComment(post, requester, request)
+        val comment = createComment(post, requesterUserId, requesterDisplayName, requesterAvatarUrl, request)
 
         post.countData.commentCount = post.countData.commentCount.inc()
+        user.profile.countData.commentCount = user.profile.countData.commentCount.inc()
 
-        val saveResult = ofy().save().entities(comment, post)
+        val saveResult = ofy().save().entities(comment, post, user)
         TestUtil.saveResultsNowIfTest(saveResult)
 
         eventPublisher.publishEvent(PubSubEvent("comment.create", comment, this))
@@ -48,24 +62,20 @@ class InsertCommentUseCase(
 
     private fun createComment(
         post: Post,
-        requester: Requester,
+        requesterUserId: Long,
+        requesterDisplayName: String,
+        requesterAvatarUrl: String,
         request: InsertCommentRequest
     ): Comment {
         return Comment(
             id = idGenerator.generateId(),
             postId = PostId(post.id, post.author.id),
             author = Author(
-                id = requester.userId,
-                displayName = requester.displayName,
-                avatar = AvatarImage(Url(requester.avatarUrl))
+                id = requesterUserId,
+                displayName = requesterDisplayName,
+                avatar = AvatarImage(Url(requesterAvatarUrl))
             ),
             content = CommentContent(request.content!!)
         )
     }
-
-    data class Requester(
-        val userId: Long,
-        val displayName: String,
-        val avatarUrl: String
-    )
 }

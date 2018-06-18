@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@RequestMapping("/api/search/events")
+@RequestMapping("/api/search/pubsub")
 @RestController
-public class EventController {
+public class SearchPubSubController {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(EventController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SearchPubSubController.class);
 
   private final PostCreatedEventUseCase postCreatedEventUseCase;
   private final PostUpdatedEventUseCase postUpdatedEventUseCase;
@@ -27,7 +27,7 @@ public class EventController {
   private final ObjectMapper mapper;
 
   @Autowired
-  public EventController(
+  public SearchPubSubController(
       PostCreatedEventUseCase postCreatedEventUseCase,
       PostUpdatedEventUseCase postUpdatedEventUseCase,
       PostDeletedEventUseCase postDeletedEventUseCase,

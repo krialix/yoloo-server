@@ -6,4 +6,5 @@ ext {
     springBootVersion = '2.0.3.RELEASE'
     pubsubVersion = '1.0.0.M3'
     firebaseAdminVersion = '6.2.0'
+    springCloudGcpVersion = '1.0.0.M3'
 }

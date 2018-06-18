@@ -8,18 +8,22 @@ import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
+import com.yoloo.server.user.entity.User
 import com.yoloo.server.vote.entity.Vote
 import org.springframework.context.ApplicationEventPublisher
 
 class DeleteCommentUseCase(private val eventPublisher: ApplicationEventPublisher) {
 
     fun execute(requesterId: Long, postId: Long, commentId: Long) {
-        val postKey = Key.create(Post::class.java, postId)
-        val commentKey = Key.create(Comment::class.java, commentId)
-        val map = ofy().load().keys(postKey, commentKey) as Map<*, *>
+        val postKey = Post.createKey(postId)
+        val commentKey = Comment.createKey(commentId)
+        val userKey = User.createKey(requesterId)
+
+        val map = ofy().load().keys(postKey, commentKey, userKey) as Map<*, *>
 
         val post = map[postKey] as Post?
         val comment = map[commentKey] as Comment?
+        val user = map[userKey] as User
 
         ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
         ServiceExceptions.checkForbidden(
@@ -29,6 +33,7 @@ class DeleteCommentUseCase(private val eventPublisher: ApplicationEventPublisher
         ServiceExceptions.checkForbidden(!comment.approved, "comment.forbidden_delete_approved")
 
         post!!.countData.commentCount = post.countData.commentCount.dec()
+        user.profile.countData.commentCount = user.profile.countData.commentCount.dec()
 
         val voteKeys = getVoteKeysForComment(commentId)
 
@@ -38,7 +43,7 @@ class DeleteCommentUseCase(private val eventPublisher: ApplicationEventPublisher
             .build()
 
         val deleteResult = ofy().delete().keys(pendingDeleteKeys)
-        val saveResult = ofy().save().entity(post)
+        val saveResult = ofy().save().entities(post, user)
         TestUtil.saveResultsNowIfTest(deleteResult, saveResult)
 
         eventPublisher.publishEvent(PubSubEvent("comment.delete", comment, this))

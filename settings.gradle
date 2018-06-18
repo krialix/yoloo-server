@@ -11,3 +11,5 @@ include 'yl-core-service'
 include 'yl-search-service'
 include 'yl-oauth2-resource-server'
 include 'yl-feed-core'
+include 'yl-notification-service'
+

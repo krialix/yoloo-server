@@ -1,5 +1,9 @@
 package com.yoloo.server
 
+import com.google.api.gax.grpc.GrpcTransportChannel
+import com.google.api.gax.rpc.FixedTransportChannelProvider
+import com.google.api.gax.rpc.TransportChannelProvider
+import io.grpc.ManagedChannelBuilder
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration
@@ -53,6 +57,9 @@ import org.springframework.boot.autoconfigure.solr.SolrAutoConfiguration
 import org.springframework.boot.autoconfigure.web.embedded.EmbeddedWebServerFactoryCustomizerAutoConfiguration
 import org.springframework.boot.autoconfigure.web.reactive.error.ErrorWebFluxAutoConfiguration
 import org.springframework.boot.runApplication
+import org.springframework.cloud.gcp.autoconfigure.pubsub.GcpPubSubProperties
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Profile
 
 @SpringBootApplication(
     exclude = [
@@ -111,11 +118,16 @@ import org.springframework.boot.runApplication
 )
 class CoreApplication {
 
-    /*@Profile("dev")
+    // WORKAROUND(6/18/2018): Spring Boot Google PubSub integration seems broken when PubSub emulator is active
+    @Profile("dev")
     @Bean
-    fun transportChannelProvider(): TransportChannelProvider {
-        return LocalChannelProvider()
-    }*/
+    fun transportChannelProvider(gcpPubSubProperties: GcpPubSubProperties): TransportChannelProvider {
+        val channel = ManagedChannelBuilder
+            .forTarget(gcpPubSubProperties.emulatorHost)
+            .usePlaintext(true)
+            .build()
+        return FixedTransportChannelProvider.create(GrpcTransportChannel.create(channel))
+    }
 }
 
 fun main(args: Array<String>) {

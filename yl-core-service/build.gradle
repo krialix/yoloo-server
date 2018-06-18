@@ -23,6 +23,10 @@ compileTestKotlin {
     }
 }
 
+noArg {
+    annotation("com.yoloo.server.common.util.NoArg")
+}
+
 configurations.all {
     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
 }
@@ -42,7 +46,8 @@ dependencies {
     //implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
-    implementation "org.springframework.cloud:spring-cloud-gcp-starter-pubsub:$pubsubVersion"
+    implementation "org.springframework.cloud:spring-cloud-gcp-starter-pubsub:$springCloudGcpVersion"
+    compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
 
     implementation 'com.lmax:disruptor:3.4.2'
 
@@ -52,6 +57,7 @@ dependencies {
 
     // Util
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

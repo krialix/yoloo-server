@@ -35,9 +35,7 @@ class CommentController(
     ): CommentResponse {
         val user = AuthUtil.from(authentication)
 
-        val requester = InsertCommentUseCase.Requester(user.userId, user.username, user.picture)
-
-        return insertCommentUseCase.execute(requester, postId, request)
+        return insertCommentUseCase.execute(user.userId, user.username, user.picture, postId, request)
     }
 
     @PreAuthorize("hasAnyRole('MEMBER')")

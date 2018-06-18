@@ -21,36 +21,6 @@ class PubsubController(
     private val commendApprovedEventUseCase: CommentApprovedEventUseCase
 ) {
 
-    @PostMapping("/post.delete")
-    fun postDeletedEvent(request: HttpServletRequest) {
-        try {
-            val pubSubResponse = PubSubResponse.from(objectMapper, request.inputStream)
-            postDeletedEventUseCase.execute(pubSubResponse)
-        } catch (e: IOException) {
-            LOGGER.error("Couldn't parse response", e)
-        }
-    }
-
-    @PostMapping("/comment.create")
-    fun commentCreatedEvent(request: HttpServletRequest) {
-        try {
-            val pubSubResponse = PubSubResponse.from(objectMapper, request.inputStream)
-            commentCreatedEventUseCase.execute(pubSubResponse)
-        } catch (e: IOException) {
-            LOGGER.error("Couldn't parse response", e)
-        }
-    }
-
-    @PostMapping("/comment.delete")
-    fun commentDeletedEvent(request: HttpServletRequest) {
-        try {
-            val pubSubResponse = PubSubResponse.from(objectMapper, request.inputStream)
-            commentDeletedEventUseCase.execute(pubSubResponse)
-        } catch (e: IOException) {
-            LOGGER.error("Couldn't parse response", e)
-        }
-    }
-
     @PostMapping("/comment.approved")
     fun commentApprovedEvent(request: HttpServletRequest) {
         try {

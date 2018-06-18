@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 
 @RequestMapping(
-    "/api/v1/pubsub",
+    "/api/test/pubsub",
     produces = [MediaType.APPLICATION_JSON_UTF8_VALUE]
 )
 @RestController
