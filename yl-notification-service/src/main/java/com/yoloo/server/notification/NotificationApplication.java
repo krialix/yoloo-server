@@ -14,15 +14,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @SpringBootApplication
-class NotificationApplication {
+public class NotificationApplication {
 
-  static void main(String[] args) {
+  public static void main(String[] args) {
     SpringApplication.run(NotificationApplication.class, args);
   }
 
   @Profile("dev")
   @Bean
-  TransportChannelProvider transportChannelProvider(
+  public TransportChannelProvider transportChannelProvider(
       GcpPubSubProperties gcpPubSubProperties) {
     ManagedChannel channel =
         ManagedChannelBuilder.forTarget(gcpPubSubProperties.getEmulatorHost())

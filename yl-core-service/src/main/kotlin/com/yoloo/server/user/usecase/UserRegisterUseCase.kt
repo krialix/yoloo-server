@@ -5,6 +5,7 @@ import com.google.api.core.ApiFuture
 import com.google.appengine.api.memcache.MemcacheService
 import com.google.firebase.auth.FirebaseAuth
 import com.yoloo.server.common.exception.exception.ServiceExceptions
+import com.yoloo.server.common.id.config.IdGenQualifier
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.IP
@@ -27,7 +28,7 @@ import java.lang.IllegalArgumentException
 
 class UserRegisterUseCase(
     private val groupInfoFetcher: GroupInfoFetcher,
-    @Qualifier("cached") private val idGenerator: LongIdGenerator,
+    @Qualifier(IdGenQualifier.CACHED) private val idGenerator: LongIdGenerator,
     private val objectMapper: ObjectMapper,
     private val firebaseAuth: FirebaseAuth,
     private val memcacheService: MemcacheService,

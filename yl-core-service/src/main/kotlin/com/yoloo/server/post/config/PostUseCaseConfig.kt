@@ -1,6 +1,7 @@
 package com.yoloo.server.post.config
 
 import com.google.appengine.api.memcache.MemcacheService
+import com.yoloo.server.common.id.config.IdGenQualifier
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.usecase.*
@@ -23,7 +24,7 @@ class PostUseCaseConfig {
     @Lazy
     @Bean
     fun insertPostUseCase(
-        @Qualifier("cached") idGenerator: LongIdGenerator,
+        @Qualifier(IdGenQualifier.CACHED) idGenerator: LongIdGenerator,
         eventPublisher: ApplicationEventPublisher,
         postResponseMapper: PostResponseMapper
     ): InsertPostUseCase {

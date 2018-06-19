@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.cache.NullUserCache;
 @Configuration
 public class AuthConfig {
 
-  @ConditionalOnMissingBean(FirebaseAuthenticationProvider.class)
+  @ConditionalOnMissingBean
   @Bean
   public FirebaseAuthenticationProvider firebaseAuthenticationProvider(FirebaseAuth firebaseAuth) {
     FirebaseAuthenticationProvider provider = new FirebaseAuthenticationProvider(firebaseAuth);

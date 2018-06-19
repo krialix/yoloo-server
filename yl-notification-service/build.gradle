@@ -17,6 +17,7 @@ configurations.all {
 dependencies {
     implementation project(':objectify')
     implementation project(':yl-common-firebase-config')
+    implementation project(':yl-common-id-generator')
 
     // App Engine
     implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
@@ -30,6 +31,7 @@ dependencies {
 
     implementation 'com.lmax:disruptor:3.4.2'
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
+    implementation "com.google.firebase:firebase-admin:$firebaseAdminVersion"
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.yoloo.server.common.id.config.IdGeneratorConfig
+  com.yoloo.server.common.id.config.IdGeneratorAutoConfiguration

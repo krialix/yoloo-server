@@ -4,10 +4,12 @@ import com.google.firebase.database.utilities.Pair;
 import com.google.firebase.messaging.Message;
 import com.yoloo.server.notification.entity.Notification;
 import com.yoloo.server.notification.payload.NotificationPayload;
-
-import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class MessageProvider {
+
+  protected static final Logger LOGGER = LogManager.getLogger();
 
   private MessageProvider next;
 
@@ -16,9 +18,13 @@ public abstract class MessageProvider {
     return next;
   }
 
-  public abstract Optional<Pair<Message, Notification>> check(NotificationPayload payload);
+  public abstract Pair<Message, Notification> check(NotificationPayload payload);
 
-  protected Optional<Pair<Message, Notification>> checkNext(NotificationPayload payload) {
-    return payload == null ? Optional.empty() : next.check(payload);
+  protected Pair<Message, Notification> checkNext(NotificationPayload payload) {
+    if (next == null) {
+      return null;
+    }
+    LOGGER.info("Processing next message provider: {}", next.getClass().getSimpleName());
+    return next.check(payload);
   }
 }

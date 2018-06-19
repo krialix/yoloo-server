@@ -3,6 +3,7 @@ package com.yoloo.server.comment.config
 import com.google.appengine.api.memcache.MemcacheService
 import com.yoloo.server.comment.mapper.CommentResponseMapper
 import com.yoloo.server.comment.usecase.*
+import com.yoloo.server.common.id.config.IdGenQualifier
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.ApplicationEventPublisher
@@ -16,7 +17,7 @@ class CommentUseCaseConfig {
     @Lazy
     @Bean
     fun insertCommentUseCase(
-        @Qualifier("cached") idGenerator: LongIdGenerator,
+        @Qualifier(IdGenQualifier.CACHED) idGenerator: LongIdGenerator,
         commentResponseMapper: CommentResponseMapper,
         eventPublisher: ApplicationEventPublisher
     ): InsertCommentUseCase {

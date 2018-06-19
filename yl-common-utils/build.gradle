@@ -28,8 +28,6 @@ noArg {
 dependencies {
     implementation fileTree(dir: 'libs', includes: ['*.jar'])
 
-    api project(':yl-common-firebase-config')
-
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.50'
 
     // Spring

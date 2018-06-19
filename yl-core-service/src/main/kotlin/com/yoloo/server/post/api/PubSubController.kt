@@ -1,27 +1,14 @@
 package com.yoloo.server.post.api
 
-import com.google.appengine.api.taskqueue.Queue
-import com.google.appengine.api.taskqueue.TaskOptions
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.post.config.PostQueueConfig
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cloud.gcp.pubsub.PubSubAdmin
 import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate
-import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
-import javax.servlet.http.HttpServletRequest
 
-@RequestMapping(
-    "/api/test/pubsub",
-    produces = [MediaType.APPLICATION_JSON_UTF8_VALUE]
-)
+@RequestMapping("/api/test/pubsub")
 @RestController
-class PubSubController(
-    private val pubSubTemplate: PubSubTemplate,
-    private val pubSubAdmin: PubSubAdmin,
-    @Qualifier(PostQueueConfig.QUEUE_POST) private val postQueue: Queue
-) {
+class PubSubController(private val pubSubTemplate: PubSubTemplate, private val pubSubAdmin: PubSubAdmin) {
 
     @PostMapping("/topics")
     fun createTopic(@RequestBody request: CreateTopicRequest) {
@@ -58,24 +45,12 @@ class PubSubController(
 
     @PostMapping("/subscriptions/{subscription}/subscribe")
     fun subscribe(@PathVariable("subscription") subscription: String) {
-        pubSubTemplate.subscribe(subscription, { pubsubMessage, ackReplyConsumer ->
+        pubSubTemplate.subscribe(subscription) { pubsubMessage, ackReplyConsumer ->
             LOGGER.info(
                 "Message received from $subscription subscription. ${pubsubMessage.data.toStringUtf8()}"
             )
             ackReplyConsumer.ack()
-        })
-    }
-
-    @GetMapping("/queue/{message}")
-    fun queue(@PathVariable("message") message: String) {
-        postQueue.add(TaskOptions.Builder.withUrl("/api/v1/pubsub/queue/read").param("key", "key"))
-    }
-
-    @PostMapping("/queue/read")
-    fun read(request: HttpServletRequest) {
-        val key = request.getParameter("key")
-
-        LOGGER.info("KEY: {}", key)
+        }
     }
 
     companion object {

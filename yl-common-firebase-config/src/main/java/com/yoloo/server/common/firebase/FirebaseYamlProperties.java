@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "firebase")
-public class FirebaseYAMLConfig {
+public class FirebaseYamlProperties {
 
   private String databaseUrl;
   private String serviceAccountKeyName;

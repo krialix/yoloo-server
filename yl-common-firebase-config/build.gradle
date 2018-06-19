@@ -9,7 +9,7 @@ version '0.0.1-SNAPSHOT'
 dependencies {
     implementation 'commons-io:commons-io:2.6'
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
-    api "com.google.firebase:firebase-admin:$firebaseAdminVersion"
+    compileOnly "com.google.firebase:firebase-admin:$firebaseAdminVersion"
 
     compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
 

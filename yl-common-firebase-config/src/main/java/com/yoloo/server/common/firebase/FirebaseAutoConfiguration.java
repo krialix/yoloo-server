@@ -6,7 +6,9 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -17,15 +19,17 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Configuration
+@ConditionalOnClass(FirebaseApp.class)
+@EnableConfigurationProperties(FirebaseYamlProperties.class)
 public class FirebaseAutoConfiguration {
 
-  private final FirebaseYAMLConfig yamlConfig;
+  private final FirebaseYamlProperties yamlConfig;
 
-  public FirebaseAutoConfiguration(FirebaseYAMLConfig yamlConfig) {
+  public FirebaseAutoConfiguration(FirebaseYamlProperties yamlConfig) {
     this.yamlConfig = yamlConfig;
   }
 
-  @ConditionalOnMissingBean(FirebaseApp.class)
+  @ConditionalOnMissingBean
   @Bean
   public FirebaseApp firebaseApp() throws IOException {
     File file =
@@ -43,14 +47,14 @@ public class FirebaseAutoConfiguration {
     return FirebaseApp.initializeApp(options);
   }
 
-  @ConditionalOnMissingBean(FirebaseMessaging.class)
+  @ConditionalOnMissingBean
   @Lazy
   @Bean
   public FirebaseMessaging firebaseMessaging(FirebaseApp app) {
     return FirebaseMessaging.getInstance(app);
   }
 
-  @ConditionalOnMissingBean(FirebaseAuth.class)
+  @ConditionalOnMissingBean
   @Bean
   public FirebaseAuth firebaseAuth(FirebaseApp app) {
     return FirebaseAuth.getInstance(app);

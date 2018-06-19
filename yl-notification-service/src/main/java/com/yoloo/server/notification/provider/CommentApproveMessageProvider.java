@@ -7,41 +7,36 @@ import com.yoloo.server.notification.entity.Notification;
 import com.yoloo.server.notification.payload.NotificationBody;
 import com.yoloo.server.notification.payload.NotificationPayload;
 
-public class FollowMessageProvider extends MessageProvider {
+public class CommentApproveMessageProvider extends MessageProvider {
 
   private final LongIdGenerator idGenerator;
 
-  public FollowMessageProvider(LongIdGenerator idGenerator) {
+  public CommentApproveMessageProvider(LongIdGenerator idGenerator) {
     this.idGenerator = idGenerator;
   }
 
   @Override
   public Pair<Message, Notification> check(NotificationPayload payload) {
-    if (payload.getType().equals("TYPE_FOLLOW")) {
-      NotificationBody.Follow body = (NotificationBody.Follow) payload.getBody();
+    if (payload.getType().equals("TYPE_APPROVE")) {
+      NotificationBody.Approve body = (NotificationBody.Approve) payload.getBody();
 
       Message message =
           Message.builder()
               .setToken(body.getToken())
-              .putData("FCM_KEY_TYPE", "TYPE_FOLLOW")
-              .putData("FCM_KEY_FOLLOWER_ID", body.getFollowerId())
-              .putData("FCM_KEY_FOLLOWER_NAME", body.getFollowerName())
-              .putData("FCM_KEY_FOLLOWER_IMAGE", body.getFollowerImage())
+              .putData("FCM_KEY_TYPE", "TYPE_APPROVE")
+              .putData("FCM_KEY_POST_ID", body.getPostId())
+              .putData("FCM_KEY_COMMENT_CONTENT", body.getTrimmedCommentContent())
               .build();
 
       Notification notification =
           Notification.newBuilder()
               .id(idGenerator.generateId())
-              .type(Notification.EntityType.FOLLOWED)
+              .type(Notification.EntityType.COMMENT_APPROVED)
               .actor(
-                  Notification.Actor.newBuilder()
-                      .id(Long.parseLong(body.getFollowerId()))
-                      .displayName(body.getFollowerName())
-                      .avatarUrl(body.getFollowerImage())
-                      .build())
+                  Notification.Actor.newBuilder().id(Long.parseLong(body.getPostOwnerId())).build())
               .receiver(
                   Notification.Receiver.newBuilder()
-                      .id(Long.parseLong(body.getFollowingId()))
+                      .id(Long.parseLong(body.getCommentOwnerId()))
                       .build())
               .build();
 
