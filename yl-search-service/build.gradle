@@ -7,6 +7,10 @@ plugins {
 group 'com.yoloo.server'
 version '0.0.1-SNAPSHOT'
 
+configurations.all {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+}
+
 dependencies {
     implementation project(':yl-common-utils')
     implementation project(':yl-common-exception-config')
@@ -16,9 +20,12 @@ dependencies {
     // Spring Boot
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
     implementation 'org.springframework.data:spring-data-solr:4.0.0.M3'
     implementation 'org.springframework.data:spring-data-commons:2.1.0.M3'
     implementation 'org.springframework.cloud:spring-cloud-gcp-starter-pubsub:1.0.0.M3'
+
+    implementation 'com.lmax:disruptor:3.4.2'
 
     implementation('org.apache.solr:solr-core:7.3.1', {
         exclude group: 'org.eclipse.jetty'

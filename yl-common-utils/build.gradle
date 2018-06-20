@@ -38,7 +38,6 @@ dependencies {
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly "com.googlecode.objectify:objectify:$objectifyVersion"
-    //api 'com.google.firebase:firebase-admin:6.2.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.6'
 
     // Test
