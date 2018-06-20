@@ -42,6 +42,8 @@ interface PubSubState {
     }
   }
 
+  class Empty implements PubSubState {}
+
   class Error implements PubSubState {
     private final Throwable throwable;
 

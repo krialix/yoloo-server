@@ -15,7 +15,7 @@ public abstract class MessageProvider {
 
   public MessageProvider setNext(MessageProvider next) {
     this.next = next;
-    return next;
+    return this;
   }
 
   public abstract Pair<Message, Notification> check(NotificationPayload payload);

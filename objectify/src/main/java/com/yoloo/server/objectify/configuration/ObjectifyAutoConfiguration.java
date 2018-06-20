@@ -1,7 +1,5 @@
 package com.yoloo.server.objectify.configuration;
 
-import static com.yoloo.server.objectify.ObjectifyProxy.factory;
-
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyFilter;
@@ -12,10 +10,6 @@ import com.yoloo.server.objectify.translators.LocalDateDateTranslatorFactory;
 import com.yoloo.server.objectify.translators.LocalDateTimeDateTranslatorFactory;
 import com.yoloo.server.objectify.translators.OffsetDateTimeDateTranslatorFactory;
 import com.yoloo.server.objectify.translators.ZonedDateTimeDateTranslatorFactory;
-import java.util.Arrays;
-import java.util.Collection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -24,6 +18,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import static com.yoloo.server.objectify.ObjectifyProxy.factory;
 
 /**
  * Automatic objectify configuration. Provides the following beans and services:
@@ -39,8 +38,6 @@ import org.springframework.context.annotation.DependsOn;
 @ConditionalOnMissingBean(ObjectifyProxy.class)
 public class ObjectifyAutoConfiguration {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ObjectifyAutoConfiguration.class);
-
   private final Collection<ObjectifyConfigurer> configurers;
 
   @Autowired
@@ -50,7 +47,9 @@ public class ObjectifyAutoConfiguration {
 
   @Bean("ofyFilter")
   public FilterRegistrationBean<ObjectifyFilter> objectifyFilterRegistration() {
-    return new FilterRegistrationBean<>(new ObjectifyFilter());
+    FilterRegistrationBean<ObjectifyFilter> bean = new FilterRegistrationBean<>(new ObjectifyFilter());
+    bean.setOrder(Integer.MIN_VALUE); // must ensure loaded prior to security filter
+    return bean;
   }
 
   @DependsOn("ofyFilter")
@@ -79,10 +78,6 @@ public class ObjectifyAutoConfiguration {
         .map(ObjectifyConfigurer::registerTranslators)
         .flatMap(Collection::stream)
         .distinct()
-        .peek(
-            translatorFactory ->
-                LOGGER.info(
-                    "{} added to translators", translatorFactory.getClass().getSimpleName()))
         .forEach(translators::add);
   }
 

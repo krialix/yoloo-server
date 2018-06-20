@@ -42,6 +42,7 @@ dependencies {
     // App Engine
     implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
     compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
+    implementation "com.googlecode.objectify:objectify:$objectifyVersion"
 
     // Spring Boot
     //implementation 'org.springframework.boot:spring-boot-starter-actuator'

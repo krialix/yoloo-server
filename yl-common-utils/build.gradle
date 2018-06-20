@@ -37,7 +37,7 @@ dependencies {
     compileOnly "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    api "com.googlecode.objectify:objectify:$objectifyVersion"
+    compileOnly "com.googlecode.objectify:objectify:$objectifyVersion"
     //api 'com.google.firebase:firebase-admin:6.2.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.6'
 

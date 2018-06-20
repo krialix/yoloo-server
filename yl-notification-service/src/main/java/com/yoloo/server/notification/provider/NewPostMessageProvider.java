@@ -12,7 +12,6 @@ public class NewPostMessageProvider extends MessageProvider {
   public Pair<Message, Notification> check(NotificationPayload payload) {
     if (payload.getType().equals("TYPE_NEW_POST")) {
       NotificationBody.NewPost body = (NotificationBody.NewPost) payload.getBody();
-      LOGGER.info("NewPostMessageProvider(): {}", body);
 
       Message message =
           Message.builder()
