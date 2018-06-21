@@ -60,12 +60,12 @@ dependencies {
     // Util
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
-    implementation "com.google.firebase:firebase-admin:$firebaseAdminVersion"
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
     testImplementation 'com.google.truth:truth:0.40'
+    testImplementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
     testImplementation "com.google.appengine:appengine-api-stubs:$appengineVersion"
     testImplementation "com.google.appengine:appengine-testing:$appengineVersion"
     testImplementation "com.google.appengine:appengine-tools-sdk:$appengineVersion"

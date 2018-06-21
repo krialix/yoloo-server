@@ -11,10 +11,10 @@ public class NotificationPayload {
       include = JsonTypeInfo.As.EXTERNAL_PROPERTY,
       property = "type")
   @JsonSubTypes({
-    @JsonSubTypes.Type(value = NotificationBody.NewPost.class, name = "TYPE_NEW_POST"),
-    @JsonSubTypes.Type(value = NotificationBody.NewComment.class, name = "TYPE_NEW_COMMENT"),
-    @JsonSubTypes.Type(value = NotificationBody.Approve.class, name = "TYPE_APPROVE"),
-    @JsonSubTypes.Type(value = NotificationBody.Follow.class, name = "TYPE_FOLLOW"),
+    @JsonSubTypes.Type(value = NewPostBody.class, name = "TYPE_NEW_POST"),
+    @JsonSubTypes.Type(value = NewCommentBody.class, name = "TYPE_NEW_COMMENT"),
+    @JsonSubTypes.Type(value = ApproveBody.class, name = "TYPE_APPROVE"),
+    @JsonSubTypes.Type(value = FollowBody.class, name = "TYPE_FOLLOW"),
   })
   private NotificationBody body;
 

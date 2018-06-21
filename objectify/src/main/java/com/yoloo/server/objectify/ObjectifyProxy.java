@@ -43,7 +43,7 @@ public interface ObjectifyProxy {
    * @param <R> Result type.
    * @return Result of running unit of work.
    */
-  default <R> R run(Work<R> work) {
+  static <R> R run(Work<R> work) {
     return ObjectifyService.run(work);
   }
 
@@ -56,7 +56,7 @@ public interface ObjectifyProxy {
    * @param <R> Result type.
    * @return Result of running unit of work.
    */
-  default <R> R run(Supplier<R> work) {
+  static <R> R run(Supplier<R> work) {
     return ObjectifyService.run(work::get);
   }
 
@@ -67,7 +67,7 @@ public interface ObjectifyProxy {
    *
    * @param work Unit of work.
    */
-  default void run(Runnable work) {
+  static void run(Runnable work) {
     run(
         (Work<Void>)
             () -> {
@@ -83,7 +83,7 @@ public interface ObjectifyProxy {
    *
    * @return Closeable used to close the unit of work.
    */
-  default Closeable begin() {
+  static Closeable begin() {
     return ObjectifyService.begin();
   }
 }

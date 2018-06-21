@@ -4,7 +4,7 @@ import com.google.firebase.database.utilities.Pair;
 import com.google.firebase.messaging.Message;
 import com.yoloo.server.common.id.generator.LongIdGenerator;
 import com.yoloo.server.notification.entity.Notification;
-import com.yoloo.server.notification.payload.NotificationBody;
+import com.yoloo.server.notification.payload.ApproveBody;
 import com.yoloo.server.notification.payload.NotificationPayload;
 
 public class CommentApproveMessageProvider extends MessageProvider {
@@ -18,7 +18,7 @@ public class CommentApproveMessageProvider extends MessageProvider {
   @Override
   public Pair<Message, Notification> check(NotificationPayload payload) {
     if (payload.getType().equals("TYPE_APPROVE")) {
-      NotificationBody.Approve body = (NotificationBody.Approve) payload.getBody();
+      ApproveBody body = (ApproveBody) payload.getBody();
 
       Message message =
           Message.builder()

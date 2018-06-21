@@ -7,6 +7,8 @@ import com.googlecode.objectify.annotation.Index;
 @Entity
 public class Notification {
 
+  public static final String INDEX_RECEIVER_ID = "receiver.id";
+
   @Id private long id;
 
   private Actor actor;

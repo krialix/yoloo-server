@@ -1,4 +1,4 @@
-package com.yoloo.server.common.util;
+package com.yoloo.server.common.util.objectify;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;

@@ -38,10 +38,11 @@ dependencies {
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly "com.googlecode.objectify:objectify:$objectifyVersion"
-    //api 'com.google.firebase:firebase-admin:6.2.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.6'
 
     // Test
+    testCompile "com.googlecode.objectify:objectify:$objectifyVersion"
+    testCompile "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20180130'
     testImplementation "com.google.appengine:appengine-testing:$appengineVersion"

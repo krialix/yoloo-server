@@ -1,4 +1,4 @@
-package com.yoloo.server.common.util;
+package com.yoloo.server.common.util.appengine;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.json.XML.toJSONObject;
@@ -23,6 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
+
+import com.yoloo.server.common.util.objectify.TestObjectifyService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

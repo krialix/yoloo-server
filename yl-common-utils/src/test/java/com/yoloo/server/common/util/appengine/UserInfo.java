@@ -1,4 +1,4 @@
-package com.yoloo.server.common.util;
+package com.yoloo.server.common.util.appengine;
 
 public class UserInfo {
 

@@ -4,6 +4,11 @@ spring:
 firebase:
   service-account-key-name: yolooapp-dev-firebase-adminsdk.json
   database-url: https://yolooapp-dev.firebaseio.com
+yoloo:
+  notification:
+    scheduler:
+      fixed-rate: 5000
+      initial-delay: 5000
 
 ---
 

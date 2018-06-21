@@ -9,9 +9,22 @@ version '0.0.1-SNAPSHOT'
 dependencies {
     implementation 'commons-io:commons-io:2.6'
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
-    compileOnly "com.google.firebase:firebase-admin:$firebaseAdminVersion"
+    api "com.google.firebase:firebase-admin:$firebaseAdminVersion"
 
     compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation 'junit:junit:4.12'
 }
+
+// https://stackoverflow.com/a/50472004/3154765
+/*task copyConfigurationMetadata(type: Copy) {
+    from(compileJava) {
+        include 'META-INF/spring-configuration-metadata.json'
+    }
+    into 'out/production/classes'
+}
+compileJava {
+    dependsOn processResources
+    finalizedBy copyConfigurationMetadata
+}*/

@@ -1,4 +1,4 @@
-package com.yoloo.server.common.util;
+package com.yoloo.server.common.util.objectify;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;

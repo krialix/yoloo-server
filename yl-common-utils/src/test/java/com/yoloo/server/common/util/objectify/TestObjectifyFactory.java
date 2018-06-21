@@ -1,4 +1,4 @@
-package com.yoloo.server.common.util;
+package com.yoloo.server.common.util.objectify;
 
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;

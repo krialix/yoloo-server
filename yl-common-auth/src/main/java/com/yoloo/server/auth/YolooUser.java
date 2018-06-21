@@ -21,6 +21,7 @@ public class YolooUser implements UserDetails {
   }
 
   private static List<GrantedAuthority> extractAuthorities(FirebaseToken token) {
+    //noinspection unchecked
     List<String> roles =
         (List<String>) token.getClaims().getOrDefault("roles", Collections.emptyList());
     return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());

@@ -3,7 +3,7 @@ package com.yoloo.server.notification.provider;
 import com.google.firebase.database.utilities.Pair;
 import com.google.firebase.messaging.Message;
 import com.yoloo.server.notification.entity.Notification;
-import com.yoloo.server.notification.payload.NotificationBody;
+import com.yoloo.server.notification.payload.NewPostBody;
 import com.yoloo.server.notification.payload.NotificationPayload;
 
 public class NewPostMessageProvider extends MessageProvider {
@@ -11,7 +11,7 @@ public class NewPostMessageProvider extends MessageProvider {
   @Override
   public Pair<Message, Notification> check(NotificationPayload payload) {
     if (payload.getType().equals("TYPE_NEW_POST")) {
-      NotificationBody.NewPost body = (NotificationBody.NewPost) payload.getBody();
+      NewPostBody body = (NewPostBody) payload.getBody();
 
       Message message =
           Message.builder()

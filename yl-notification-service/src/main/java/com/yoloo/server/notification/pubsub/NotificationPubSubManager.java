@@ -9,15 +9,14 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.pubsub.v1.PubsubMessage;
 import com.googlecode.objectify.Key;
-import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.Result;
-import com.googlecode.objectify.VoidWork;
 import com.yoloo.server.common.id.config.IdGenQualifier;
 import com.yoloo.server.common.id.generator.LongIdGenerator;
 import com.yoloo.server.notification.entity.Notification;
 import com.yoloo.server.notification.payload.NotificationPayload;
 import com.yoloo.server.notification.provider.*;
 import com.yoloo.server.notification.util.AppengineEnv;
+import com.yoloo.server.objectify.ObjectifyProxy;
 import net.cinnom.nanocuckoo.NanoCuckooFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,8 +37,6 @@ import static com.yoloo.server.objectify.ObjectifyProxy.ofy;
 public class NotificationPubSubManager {
 
   private static final Logger LOGGER = LogManager.getLogger();
-
-  private static final long PUBSUB_CONSUME_INTERVAL = 5000;
 
   private final PubSubTemplate pubSubTemplate;
   private final ObjectMapper mapper;
@@ -75,7 +72,9 @@ public class NotificationPubSubManager {
                         .setNext(new CommentApproveMessageProvider(idGenerator))));
   }
 
-  @Scheduled(fixedRate = PUBSUB_CONSUME_INTERVAL)
+  @Scheduled(
+      fixedRateString = "${yoloo.notification.scheduler.fixed-rate}",
+      initialDelayString = "${yoloo.notification.scheduler.initial-delay}")
   public void pullPubSubEvents() {
     LOGGER.info("pullPubSubEvents() is running!");
 
@@ -109,18 +108,15 @@ public class NotificationPubSubManager {
 
   private void saveNotifications(List<Notification> notifications) {
     if (!notifications.isEmpty()) {
-      ObjectifyService.run(
-          new VoidWork() {
-            @Override
-            public void vrun() {
-              Result<Map<Key<Notification>, Notification>> saveResult =
-                  ofy().save().entities(notifications);
-              if (AppengineEnv.isTest()) {
-                saveResult.now();
-              }
-
-              notifications.clear();
+      ObjectifyProxy.run(
+          () -> {
+            Result<Map<Key<Notification>, Notification>> saveResult =
+                ofy().save().entities(notifications);
+            if (AppengineEnv.isTest()) {
+              saveResult.now();
             }
+
+            notifications.clear();
           });
     }
   }
