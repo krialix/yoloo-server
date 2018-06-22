@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,12 +22,18 @@ import java.util.stream.Collectors;
  * appropriate {@linkplain ResponseEntity}s with a suitable HTTP status code.
  */
 @ControllerAdvice
-class CommonExceptionHandler extends ResponseEntityExceptionHandler {
+public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(ServiceException.class)
   public ResponseEntity<Object> handleServiceExceptions(
       ServiceException ex, HttpHeaders headers, WebRequest request) {
     return handleExceptionInternal(ex, null, headers, ex.getHttpStatus(), request);
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  public ResponseEntity<Object> handleConstraintViolationExceptions(
+      ConstraintViolationException ex) {
+    return handleExceptionInternal(ex, null, null, HttpStatus.BAD_REQUEST, null);
   }
 
   @Override
@@ -48,6 +55,29 @@ class CommonExceptionHandler extends ResponseEntityExceptionHandler {
                           .field(objectError.getField())
                           .rejectedValue(objectError.getRejectedValue())
                           .build())
+              .collect(Collectors.toList());
+
+      ErrorResponse errorResponse = ErrorResponse.of(errors);
+      return super.handleExceptionInternal(ex, errorResponse, headers, status, request);
+    } else if (ex instanceof ConstraintViolationException) {
+      ConstraintViolationException exception = (ConstraintViolationException) ex;
+
+      List<Error> errors =
+          exception
+              .getConstraintViolations()
+              .stream()
+              .map(
+                  violation -> {
+                    String dumbFieldName = violation.getPropertyPath().toString();
+                    dumbFieldName
+
+                    return Error.builder()
+                        .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                        .message(violation.getMessage())
+                        .field(violation.getPropertyPath().toString().substring())
+                        .rejectedValue(violation.getInvalidValue())
+                        .build();
+                  })
               .collect(Collectors.toList());
 
       ErrorResponse errorResponse = ErrorResponse.of(errors);

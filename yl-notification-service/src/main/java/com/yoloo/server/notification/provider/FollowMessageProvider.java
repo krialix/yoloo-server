@@ -32,7 +32,7 @@ public class FollowMessageProvider extends MessageProvider {
       Notification notification =
           Notification.newBuilder()
               .id(idGenerator.generateId())
-              .type(Notification.EntityType.FOLLOWED)
+              .type(Notification.EntityType.FOLLOW)
               .actor(
                   Notification.Actor.newBuilder()
                       .id(Long.parseLong(body.getFollowerId()))

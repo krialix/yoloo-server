@@ -31,7 +31,7 @@ public class CommentApproveMessageProvider extends MessageProvider {
       Notification notification =
           Notification.newBuilder()
               .id(idGenerator.generateId())
-              .type(Notification.EntityType.COMMENT_APPROVED)
+              .type(Notification.EntityType.COMMENT_APPROVE)
               .actor(
                   Notification.Actor.newBuilder().id(Long.parseLong(body.getPostOwnerId())).build())
               .receiver(

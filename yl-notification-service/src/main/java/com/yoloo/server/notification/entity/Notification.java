@@ -61,11 +61,11 @@ public class Notification {
   }
 
   public enum EntityType {
-    FOLLOWED(Entity.RELATIONSHIP),
-    COMMENTED(Entity.POST),
-    COMMENT_APPROVED(Entity.POST),
-    MENTIONED(Entity.POST),
-    EARNED_POINTS(Entity.GAMIFICATION);
+    FOLLOW(Entity.RELATIONSHIP),
+    COMMENT(Entity.POST),
+    COMMENT_APPROVE(Entity.POST),
+    MENTION(Entity.POST),
+    EARN_POINT(Entity.GAMIFICATION);
 
     private final Entity parent;
 

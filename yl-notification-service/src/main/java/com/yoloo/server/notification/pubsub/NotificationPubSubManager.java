@@ -38,6 +38,8 @@ public class NotificationPubSubManager {
 
   private static final Logger LOGGER = LogManager.getLogger();
 
+  private static final long DUPLICATE_FILTER_CAPACITY = 100_000L;
+
   private final PubSubTemplate pubSubTemplate;
   private final ObjectMapper mapper;
   private final MessageProvider messageProvider;
@@ -60,7 +62,7 @@ public class NotificationPubSubManager {
   }
 
   private static NanoCuckooFilter buildDuplicateFilter() {
-    return new NanoCuckooFilter.Builder(32).build();
+    return new NanoCuckooFilter.Builder(DUPLICATE_FILTER_CAPACITY).build();
   }
 
   private static MessageProvider buildProviders(LongIdGenerator idGenerator) {

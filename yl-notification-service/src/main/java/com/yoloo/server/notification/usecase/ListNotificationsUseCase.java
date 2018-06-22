@@ -6,6 +6,12 @@ import com.googlecode.objectify.cmd.Query;
 import com.yoloo.server.notification.entity.Notification;
 import com.yoloo.server.notification.mapper.NotificationResponseMapper;
 import com.yoloo.server.notification.vo.NotificationCollectionResponse;
+import com.yoloo.server.notification.vo.NotificationResponse;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static com.yoloo.server.objectify.ObjectifyProxy.ofy;
 
@@ -18,15 +24,33 @@ public class ListNotificationsUseCase {
   }
 
   public NotificationCollectionResponse execute(long userId, String cursor) {
-    return NotificationCollectionResponse.builder().build();
+    QueryResultIterator<Notification> queryResultIterator = getQueryResultIterator(userId, cursor);
+
+    if (!queryResultIterator.hasNext()) {
+      return NotificationCollectionResponse.builder().data(Collections.emptyList()).build();
+    }
+
+    Iterable<Notification> iterable = () -> queryResultIterator;
+
+    List<NotificationResponse> responses =
+        StreamSupport.stream(iterable.spliterator(), false)
+            .map(mapper::apply)
+            .collect(Collectors.toList());
+
+    return NotificationCollectionResponse.builder()
+        .data(responses)
+        .prevPageToken(cursor)
+        .nextPageToken(queryResultIterator.getCursor().toWebSafeString())
+        .build();
   }
 
-  private QueryResultIterator<Notification> getNotificationQueryResultIterator(long userId, String cursor) {
-    Query<Notification> query = ofy()
-        .load()
-        .type(Notification.class)
-        .filter(Notification.INDEX_RECEIVER_ID, userId)
-        .orderKey(true);
+  private QueryResultIterator<Notification> getQueryResultIterator(long userId, String cursor) {
+    Query<Notification> query =
+        ofy()
+            .load()
+            .type(Notification.class)
+            .filter(Notification.INDEX_RECEIVER_ID, userId)
+            .orderKey(true);
 
     if (cursor != null) {
       query = query.startAt(Cursor.fromWebSafeString(cursor));

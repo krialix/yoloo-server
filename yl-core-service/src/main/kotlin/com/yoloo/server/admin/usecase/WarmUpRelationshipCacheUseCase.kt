@@ -14,10 +14,14 @@ class WarmUpRelationshipCacheUseCase(private val memcacheService: AsyncMemcacheS
             .keys()
             .iterable()
             .let {
-                val filter = NanoCuckooFilter.Builder(32).build()
+                val filter = NanoCuckooFilter.Builder(RELATIONSHIP_FILTER_CAPACITY).build()
                 it.forEach { filter.insert(it.name) }
 
                 memcacheService.put(Relationship.KEY_FILTER_RELATIONSHIP, filter)
             }
+    }
+
+    companion object {
+        private const val RELATIONSHIP_FILTER_CAPACITY = 1_000_000L
     }
 }

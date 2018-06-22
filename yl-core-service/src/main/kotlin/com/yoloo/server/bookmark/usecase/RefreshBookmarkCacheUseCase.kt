@@ -22,7 +22,7 @@ class RefreshBookmarkCacheUseCase(private val memcacheService: AsyncMemcacheServ
             .toList()
             .let {
                 LOGGER.info("Created cuckoo filter for bookmarks")
-                val cuckooFilter = NanoCuckooFilter.Builder(32).build()
+                val cuckooFilter = NanoCuckooFilter.Builder(BOOKMARK_FILTER_CAPACITY).build()
                 it.forEach { cuckooFilter.insert(it) }
 
                 memcacheService.put(Bookmark.KEY_FILTER_BOOKMARK, cuckooFilter)
@@ -31,5 +31,7 @@ class RefreshBookmarkCacheUseCase(private val memcacheService: AsyncMemcacheServ
 
     companion object {
         private val LOGGER: Logger = LogManager.getLogger()
+
+        private const val BOOKMARK_FILTER_CAPACITY = 1_000_000L
     }
 }
