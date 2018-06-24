@@ -7,16 +7,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Error {
 
   @JsonProperty("error")
-  private String error;
+  private final String error;
 
   @JsonProperty("message")
-  private String message;
+  private final String message;
 
   @JsonProperty("field")
-  private String field;
+  private final String field;
 
   @JsonProperty("rejectedValue")
-  private Object rejectedValue;
+  private final Object rejectedValue;
 
   private Error(Builder builder) {
     this.error = builder.error;
@@ -46,14 +46,12 @@ public class Error {
   }
 
   public static class Builder {
-
     private String error;
     private String message;
     private String field;
     private Object rejectedValue;
 
-    Builder() {
-    }
+    Builder() {}
 
     public Builder error(String error) {
       this.error = error;

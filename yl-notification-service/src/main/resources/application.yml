@@ -1,14 +1,6 @@
 spring:
   profiles:
     active: dev
-firebase:
-  service-account-key-name: yolooapp-dev-firebase-adminsdk.json
-  database-url: https://yolooapp-dev.firebaseio.com
-yoloo:
-  notification:
-    scheduler:
-      fixed-rate: 5000
-      initial-delay: 5000
 
 ---
 
@@ -18,14 +10,31 @@ spring:
     gcp:
       pubsub:
         emulator-host: localhost:8085
-debug: false
+yoloo:
+  notification:
+    scheduler:
+      fixed-rate: 5000
+      initial-delay: 5000
+firebase:
+  service-account-key-name: yolooapp-dev-firebase-adminsdk.json
+  database-url: https://yolooapp-dev.firebaseio.com
 
 ---
 
 spring:
   profiles: staging
+yoloo:
+  notification:
+    scheduler:
+      fixed-rate: 15000
+      initial-delay: 5000
 
 ---
 
 spring:
   profiles: prod
+yoloo:
+  notification:
+    scheduler:
+      fixed-rate: 15000
+      initial-delay: 5000

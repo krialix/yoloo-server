@@ -10,13 +10,13 @@ import org.springframework.context.annotation.Primary;
 public class IdGeneratorAutoConfiguration {
 
   @Lazy
-  @Bean(IdGenQualifier.TIMESTAMP)
+  @Bean(IdBeanQualifier.TIMESTAMP)
   public StringIdGenerator timestampUUIDGenerator() {
     return new TimestampUUIDGenerator();
   }
 
   @Lazy
-  @Bean(IdGenQualifier.CACHED)
+  @Bean(IdBeanQualifier.CACHED)
   public LongIdGenerator cachedSnowflakeIdGenerator() {
     return new CachedSnowflakeIdGenerator();
   }
@@ -29,7 +29,7 @@ public class IdGeneratorAutoConfiguration {
   }
 
   @Lazy
-  @Bean(IdGenQualifier.INSTAGRAM)
+  @Bean(IdBeanQualifier.INSTAGRAM)
   public LongIdGenerator instagramIdGenerator() {
     return new InstagramIdGenerator();
   }

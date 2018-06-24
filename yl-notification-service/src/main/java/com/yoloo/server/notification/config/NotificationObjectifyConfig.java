@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.Collections;
 
-@Component
 public class NotificationObjectifyConfig implements ObjectifyConfigurer {
 
   @Override

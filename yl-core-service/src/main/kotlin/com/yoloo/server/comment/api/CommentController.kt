@@ -18,7 +18,7 @@ import javax.validation.Valid
 )
 @RestController
 class CommentController(
-    private val insertCommentUseCase: InsertCommentUseCase,
+    private val createCommentUseCase: CreateCommentUseCase,
     private val approveCommentUseCase: ApproveCommentUseCase,
     private val disapproveCommentUseCase: DisapproveCommentUseCase,
     private val deleteCommentUseCase: DeleteCommentUseCase,
@@ -28,14 +28,14 @@ class CommentController(
     @PreAuthorize("hasAnyRole('MEMBER')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun insertComment(
+    fun createComment(
         authentication: Authentication,
         @PathVariable("postId") postId: Long,
         @RequestBody @Valid request: InsertCommentRequest
     ): CommentResponse {
         val user = AuthUtil.from(authentication)
 
-        return insertCommentUseCase.execute(user.userId, user.username, user.picture, postId, request)
+        return createCommentUseCase.execute(user.userId, user.username, user.picture, postId, request)
     }
 
     @PreAuthorize("hasAnyRole('MEMBER')")

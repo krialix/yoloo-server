@@ -1,8 +1,11 @@
 package com.yoloo.server.post.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.common.id.config.IdGenQualifier
+import com.google.appengine.api.taskqueue.Queue
+import com.yoloo.server.common.id.config.IdBeanQualifier
 import com.yoloo.server.common.id.generator.LongIdGenerator
+import com.yoloo.server.common.queue.config.QueueBeanQualifier
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.usecase.*
 import com.yoloo.server.post.util.CircularFifoBuffer
@@ -24,23 +27,31 @@ class PostUseCaseConfig {
     @Lazy
     @Bean
     fun insertPostUseCase(
-        @Qualifier(IdGenQualifier.CACHED) idGenerator: LongIdGenerator,
-        eventPublisher: ApplicationEventPublisher,
-        postResponseMapper: PostResponseMapper
-    ): InsertPostUseCase {
-        return InsertPostUseCase(idGenerator, postResponseMapper, eventPublisher)
+        @Qualifier(IdBeanQualifier.CACHED) idGenerator: LongIdGenerator,
+        postResponseMapper: PostResponseMapper,
+        @Qualifier(QueueBeanQualifier.NOTIFICATION) notificationQueue: Queue,
+        @Qualifier(QueueBeanQualifier.SEARCH) searchQueue: Queue,
+        objectMapper: ObjectMapper
+    ): CreatePostUseCase {
+        return CreatePostUseCase(idGenerator, postResponseMapper, notificationQueue, searchQueue, objectMapper)
     }
 
     @Lazy
     @Bean
-    fun updatePostUseCase(eventPublisher: ApplicationEventPublisher): UpdatePostUseCase {
-        return UpdatePostUseCase(eventPublisher)
+    fun updatePostUseCase(
+        @Qualifier(QueueBeanQualifier.SEARCH) searchQueue: Queue,
+        objectMapper: ObjectMapper
+    ): UpdatePostUseCase {
+        return UpdatePostUseCase(searchQueue, objectMapper)
     }
 
     @Lazy
     @Bean
-    fun deletePostUseCase(eventPublisher: ApplicationEventPublisher): DeletePostUseCase {
-        return DeletePostUseCase(eventPublisher)
+    fun deletePostUseCase(
+        @Qualifier(QueueBeanQualifier.SEARCH) searchQueue: Queue,
+        objectMapper: ObjectMapper
+    ): DeletePostUseCase {
+        return DeletePostUseCase(searchQueue, objectMapper)
     }
 
     @Lazy

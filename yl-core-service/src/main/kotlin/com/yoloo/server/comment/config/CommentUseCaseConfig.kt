@@ -1,10 +1,13 @@
 package com.yoloo.server.comment.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
+import com.google.appengine.api.taskqueue.Queue
 import com.yoloo.server.comment.mapper.CommentResponseMapper
 import com.yoloo.server.comment.usecase.*
-import com.yoloo.server.common.id.config.IdGenQualifier
+import com.yoloo.server.common.id.config.IdBeanQualifier
 import com.yoloo.server.common.id.generator.LongIdGenerator
+import com.yoloo.server.common.queue.config.QueueBeanQualifier
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.annotation.Bean
@@ -17,14 +20,16 @@ class CommentUseCaseConfig {
     @Lazy
     @Bean
     fun insertCommentUseCase(
-        @Qualifier(IdGenQualifier.CACHED) idGenerator: LongIdGenerator,
+        @Qualifier(IdBeanQualifier.CACHED) idGenerator: LongIdGenerator,
         commentResponseMapper: CommentResponseMapper,
-        eventPublisher: ApplicationEventPublisher
-    ): InsertCommentUseCase {
-        return InsertCommentUseCase(
+        @Qualifier(QueueBeanQualifier.NOTIFICATION) notificationQueue: Queue,
+        objectMapper: ObjectMapper
+    ): CreateCommentUseCase {
+        return CreateCommentUseCase(
             idGenerator,
             commentResponseMapper,
-            eventPublisher
+            notificationQueue,
+            objectMapper
         )
     }
 

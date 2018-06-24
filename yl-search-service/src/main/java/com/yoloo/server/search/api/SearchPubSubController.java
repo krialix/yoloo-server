@@ -2,9 +2,9 @@ package com.yoloo.server.search.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yoloo.server.common.vo.PubSubResponse;
-import com.yoloo.server.search.usecase.PostCreatedEventUseCase;
-import com.yoloo.server.search.usecase.PostDeletedEventUseCase;
-import com.yoloo.server.search.usecase.PostUpdatedEventUseCase;
+import com.yoloo.server.search.post.usecase.PostCreatedEventUseCase;
+import com.yoloo.server.search.post.usecase.PostDeletedEventUseCase;
+import com.yoloo.server.search.post.usecase.PostUpdatedEventUseCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@RequestMapping("/api/search/pubsub")
-@RestController
+//@RequestMapping("/api/search/pubsub")
+//@RestController
 public class SearchPubSubController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SearchPubSubController.class);
@@ -26,7 +26,7 @@ public class SearchPubSubController {
   private final PostDeletedEventUseCase postDeletedEventUseCase;
   private final ObjectMapper mapper;
 
-  @Autowired
+  //@Autowired
   public SearchPubSubController(
       PostCreatedEventUseCase postCreatedEventUseCase,
       PostUpdatedEventUseCase postUpdatedEventUseCase,

@@ -3,9 +3,9 @@ package com.yoloo.server.post.api
 import com.yoloo.server.auth.AuthUtil
 import com.yoloo.server.post.usecase.DeletePostUseCase
 import com.yoloo.server.post.usecase.GetPostUseCase
-import com.yoloo.server.post.usecase.InsertPostUseCase
+import com.yoloo.server.post.usecase.CreatePostUseCase
 import com.yoloo.server.post.usecase.UpdatePostUseCase
-import com.yoloo.server.post.vo.InsertPostRequest
+import com.yoloo.server.post.vo.CreatePostRequest
 import com.yoloo.server.post.vo.PostResponse
 import com.yoloo.server.post.vo.UpdatePostRequest
 import org.springframework.http.HttpStatus
@@ -22,7 +22,7 @@ import javax.validation.Valid
 @RestController
 class PostController(
     private val getPostUseCase: GetPostUseCase,
-    private val insertPostUseCase: InsertPostUseCase,
+    private val createPostUseCase: CreatePostUseCase,
     private val updatePostUseCase: UpdatePostUseCase,
     private val deletePostUseCase: DeletePostUseCase
 ) {
@@ -38,10 +38,10 @@ class PostController(
     @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun insertPost(authentication: Authentication, @RequestBody @Valid request: InsertPostRequest): PostResponse {
+    fun insertPost(authentication: Authentication, @RequestBody @Valid request: CreatePostRequest): PostResponse {
         val user = AuthUtil.from(authentication)
 
-        return insertPostUseCase.execute(user.userId, request)
+        return createPostUseCase.execute(user.userId, request)
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")

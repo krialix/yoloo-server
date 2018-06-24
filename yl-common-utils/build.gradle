@@ -1,4 +1,5 @@
 plugins {
+    id 'java-library'
     id 'org.jetbrains.kotlin.jvm' version '1.2.50'
     id 'org.jetbrains.kotlin.plugin.noarg' version '1.2.50'
     id 'org.springframework.boot' version '2.0.3.RELEASE'
@@ -7,6 +8,9 @@ plugins {
 
 group 'com.yoloo.server'
 version '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 compileKotlin {
     kotlinOptions {
@@ -42,7 +46,6 @@ dependencies {
 
     // Test
     testCompile "com.googlecode.objectify:objectify:$objectifyVersion"
-    testCompile "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20180130'
     testImplementation "com.google.appengine:appengine-testing:$appengineVersion"

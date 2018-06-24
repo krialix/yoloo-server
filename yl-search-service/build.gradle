@@ -1,4 +1,5 @@
 plugins {
+    id 'java-library'
     id 'org.springframework.boot' version '2.0.3.RELEASE'
     id 'io.spring.dependency-management' version '1.0.5.RELEASE'
     id 'war'
@@ -7,6 +8,9 @@ plugins {
 group 'com.yoloo.server'
 version '0.0.1-SNAPSHOT'
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 configurations.all {
     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
 }
@@ -14,7 +18,9 @@ configurations.all {
 dependencies {
     implementation project(':yl-common-utils')
     implementation project(':yl-common-exception-config')
+    implementation project(':yl-common-queue-api')
 
+    implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
     compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
 
     // Spring Boot
@@ -26,6 +32,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-gcp-starter-pubsub:1.0.0.M3'
 
     implementation 'com.lmax:disruptor:3.4.2'
+    implementation 'net.cinnom:nano-cuckoo:2.0.0'
 
     implementation('org.apache.solr:solr-core:7.3.1', {
         exclude group: 'org.eclipse.jetty'

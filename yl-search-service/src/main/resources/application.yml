@@ -1,0 +1,22 @@
+spring:
+  profiles:
+    active: dev
+
+---
+
+spring:
+  profiles: dev
+  cloud:
+    gcp:
+      pubsub:
+        emulator-host: localhost:8085
+
+---
+
+spring:
+  profiles: staging
+
+---
+
+spring:
+  profiles: prod

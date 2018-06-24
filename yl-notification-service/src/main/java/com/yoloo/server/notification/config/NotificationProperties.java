@@ -23,8 +23,13 @@ public class NotificationProperties {
   }
 
   public static class Scheduler {
-    @Positive private long fixedRate = 5000;
-    @Positive private long initialDelay = 5000;
+    @Positive private long fixedRate;
+    @Positive private long initialDelay;
+
+    public Scheduler() {
+      this.fixedRate = 5000;
+      this.initialDelay = 5000;
+    }
 
     public long getFixedRate() {
       return fixedRate;

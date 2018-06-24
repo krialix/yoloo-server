@@ -69,12 +69,12 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
               .map(
                   violation -> {
                     String dumbFieldName = violation.getPropertyPath().toString();
-                    dumbFieldName
+                    String fieldName = dumbFieldName.substring(dumbFieldName.indexOf(".") + 1);
 
                     return Error.builder()
                         .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                         .message(violation.getMessage())
-                        .field(violation.getPropertyPath().toString().substring())
+                        .field(fieldName)
                         .rejectedValue(violation.getInvalidValue())
                         .build();
                   })

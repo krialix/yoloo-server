@@ -10,7 +10,7 @@ import com.google.firebase.messaging.Message;
 import com.google.pubsub.v1.PubsubMessage;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Result;
-import com.yoloo.server.common.id.config.IdGenQualifier;
+import com.yoloo.server.common.id.config.IdBeanQualifier;
 import com.yoloo.server.common.id.generator.LongIdGenerator;
 import com.yoloo.server.notification.entity.Notification;
 import com.yoloo.server.notification.payload.NotificationPayload;
@@ -52,7 +52,7 @@ public class NotificationPubSubManager {
       PubSubTemplate pubSubTemplate,
       ObjectMapper mapper,
       FirebaseMessaging firebaseMessaging,
-      @Qualifier(IdGenQualifier.CACHED) LongIdGenerator idGenerator) {
+      @Qualifier(IdBeanQualifier.CACHED) LongIdGenerator idGenerator) {
     this.pubSubTemplate = pubSubTemplate;
     this.mapper = mapper;
     this.firebaseMessaging = firebaseMessaging;

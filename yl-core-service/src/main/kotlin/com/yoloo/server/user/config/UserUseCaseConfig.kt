@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
-import com.yoloo.server.common.id.config.IdGenQualifier
+import com.yoloo.server.common.id.config.IdBeanQualifier
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.user.fetcher.GroupInfoFetcher
 import com.yoloo.server.user.mapper.UserResponseMapper
@@ -96,7 +96,7 @@ class UserUseCaseConfig {
     @Bean
     fun registerUserUseCase(
         groupInfoFetcher: GroupInfoFetcher,
-        @Qualifier(IdGenQualifier.CACHED) idGenerator: LongIdGenerator,
+        @Qualifier(IdBeanQualifier.CACHED) idGenerator: LongIdGenerator,
         eventPublisher: ApplicationEventPublisher,
         objectMapper: ObjectMapper,
         memcacheService: MemcacheService,

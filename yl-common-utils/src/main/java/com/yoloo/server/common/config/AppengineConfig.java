@@ -40,11 +40,4 @@ public class AppengineConfig {
   public AsyncMemcacheService asyncMemcacheService() {
     return MemcacheServiceFactory.getAsyncMemcacheService();
   }
-
-  @Lazy
-  @Primary
-  @Bean
-  public Queue defaultQueue() {
-    return QueueFactory.getDefaultQueue();
-  }
 }
