@@ -1,15 +1,12 @@
 package com.yoloo.server.comment.config
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
-import com.google.appengine.api.taskqueue.Queue
 import com.yoloo.server.comment.mapper.CommentResponseMapper
 import com.yoloo.server.comment.usecase.*
 import com.yoloo.server.common.id.config.IdBeanQualifier
 import com.yoloo.server.common.id.generator.LongIdGenerator
-import com.yoloo.server.common.queue.config.QueueBeanQualifier
+import com.yoloo.server.common.queue.service.NotificationService
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Lazy
@@ -22,21 +19,15 @@ class CommentUseCaseConfig {
     fun insertCommentUseCase(
         @Qualifier(IdBeanQualifier.CACHED) idGenerator: LongIdGenerator,
         commentResponseMapper: CommentResponseMapper,
-        @Qualifier(QueueBeanQualifier.NOTIFICATION) notificationQueue: Queue,
-        objectMapper: ObjectMapper
+        notificationService: NotificationService
     ): CreateCommentUseCase {
-        return CreateCommentUseCase(
-            idGenerator,
-            commentResponseMapper,
-            notificationQueue,
-            objectMapper
-        )
+        return CreateCommentUseCase(idGenerator, commentResponseMapper, notificationService)
     }
 
     @Lazy
     @Bean
-    fun approveCommentUseCase(eventPublisher: ApplicationEventPublisher): ApproveCommentUseCase {
-        return ApproveCommentUseCase(eventPublisher)
+    fun approveCommentUseCase(notificationService: NotificationService): ApproveCommentUseCase {
+        return ApproveCommentUseCase(notificationService)
     }
 
     @Lazy
@@ -47,8 +38,8 @@ class CommentUseCaseConfig {
 
     @Lazy
     @Bean
-    fun deleteCommentUseCase(eventPublisher: ApplicationEventPublisher): DeleteCommentUseCase {
-        return DeleteCommentUseCase(eventPublisher)
+    fun deleteCommentUseCase(): DeleteCommentUseCase {
+        return DeleteCommentUseCase()
     }
 
     @Lazy

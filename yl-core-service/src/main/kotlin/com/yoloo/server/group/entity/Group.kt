@@ -20,6 +20,8 @@ data class Group(
 
     var description: Description,
 
+    var topicName: String,
+
     var countData: GroupCountData = GroupCountData(),
 
     var owner: Owner? = null,
@@ -34,8 +36,6 @@ data class Group(
     }
 
     companion object {
-        const val KEY_FILTER_SUBSCRIPTION = "FILTER_SUBSCRIPTION"
-
         fun createKey(groupId: Long): Key<Group> {
             return Key.create(Group::class.java, groupId)
         }

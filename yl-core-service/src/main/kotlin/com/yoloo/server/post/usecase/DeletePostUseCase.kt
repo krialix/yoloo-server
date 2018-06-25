@@ -1,20 +1,14 @@
 package com.yoloo.server.post.usecase
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.appengine.api.taskqueue.Queue
-import com.google.appengine.api.taskqueue.TaskOptions
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.queue.api.EventType
 import com.yoloo.server.common.queue.api.YolooEvent
-import com.yoloo.server.common.queue.config.QueueEndpoint
+import com.yoloo.server.common.queue.service.SearchService
 import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
 
-class DeletePostUseCase(
-    private val searchQueue: Queue,
-    private val objectMapper: ObjectMapper
-) {
+class DeletePostUseCase(private val searchService: SearchService) {
 
     fun execute(requesterId: Long, postId: Long) {
         val post = ofy().load().type(Post::class.java).id(postId).now()
@@ -36,11 +30,6 @@ class DeletePostUseCase(
             .addData("id", post.id.toString())
             .build()
 
-        val json = objectMapper.writeValueAsString(event)
-        searchQueue.addAsync(
-            TaskOptions.Builder
-                .withUrl(QueueEndpoint.QUEUE_SEARCH_ENDPOINT)
-                .param("data", json)
-        )
+        searchService.addQueueAsync(event)
     }
 }

@@ -1,24 +1,18 @@
 package com.yoloo.server.comment.usecase
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.appengine.api.taskqueue.Queue
-import com.google.appengine.api.taskqueue.TaskOptions
 import com.googlecode.objectify.Key
 import com.yoloo.server.comment.entity.Comment
 import com.yoloo.server.comment.vo.ApprovedCommentId
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.queue.api.EventType
 import com.yoloo.server.common.queue.api.YolooEvent
-import com.yoloo.server.common.queue.config.QueueEndpoint
+import com.yoloo.server.common.queue.service.NotificationService
 import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.user.entity.User
 
-class ApproveCommentUseCase(
-    private val notificationQueue: Queue,
-    private val objectMapper: ObjectMapper
-) {
+class ApproveCommentUseCase(private val notificationService: NotificationService) {
 
     fun execute(requesterId: Long, postId: Long, commentId: Long) {
         val postKey = Key.create(Post::class.java, postId)
@@ -51,11 +45,6 @@ class ApproveCommentUseCase(
             .addData("commentAuthorFcmToken", commentAuthorFcmToken)
             .build()
 
-        val json = objectMapper.writeValueAsString(event)
-        notificationQueue.addAsync(
-            TaskOptions.Builder
-                .withUrl(QueueEndpoint.QUEUE_NOTIFICATION_ENDPOINT)
-                .param("data", json)
-        )
+        notificationService.addQueueAsync(event)
     }
 }

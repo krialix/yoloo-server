@@ -1,13 +1,11 @@
 package com.yoloo.server.post.usecase
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.appengine.api.taskqueue.Queue
-import com.google.appengine.api.taskqueue.TaskOptions
 import com.googlecode.objectify.Key
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.queue.api.EventType
 import com.yoloo.server.common.queue.api.YolooEvent
-import com.yoloo.server.common.queue.config.QueueEndpoint
+import com.yoloo.server.common.queue.service.NotificationService
+import com.yoloo.server.common.queue.service.SearchService
 import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.group.entity.Group
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
@@ -19,9 +17,8 @@ import com.yoloo.server.user.entity.User
 class CreatePostUseCase(
     private val idGenerator: LongIdGenerator,
     private val postResponseMapper: PostResponseMapper,
-    private val notificationQueue: Queue,
-    private val searchQueue: Queue,
-    private val objectMapper: ObjectMapper
+    private val searchService: SearchService,
+    private val notificationService: NotificationService
 ) {
 
     fun execute(requesterId: Long, request: CreatePostRequest): PostResponse {
@@ -41,25 +38,21 @@ class CreatePostUseCase(
         TestUtil.saveResultsNowIfTest(saveResult)
 
         addToSearchQueue(post)
-        addToNotificationQueue(post)
+        addToNotificationQueue(post, group.topicName)
 
         return postResponseMapper.apply(post, true, false, false)
     }
 
-    private fun addToNotificationQueue(post: Post) {
+    private fun addToNotificationQueue(post: Post, topicName: String) {
         val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_POST))
             .addData("id", post.id.toString())
             .addData("title", post.title.value)
             .addData("content", post.content.value)
             .addData("authorDisplayName", post.author.displayName)
+            .addData("topic", topicName)
             .build()
 
-        val json = objectMapper.writeValueAsString(event)
-        notificationQueue.addAsync(
-            TaskOptions.Builder
-                .withUrl(QueueEndpoint.QUEUE_NOTIFICATION_ENDPOINT)
-                .param("data", json)
-        )
+        notificationService.addQueueAsync(event)
     }
 
     private fun addToSearchQueue(post: Post) {
@@ -71,12 +64,7 @@ class CreatePostUseCase(
             .addData("buddyRequest", post.buddyRequest)
             .build()
 
-        val json = objectMapper.writeValueAsString(event)
-        searchQueue.addAsync(
-            TaskOptions.Builder
-                .withUrl(QueueEndpoint.QUEUE_SEARCH_ENDPOINT)
-                .param("data", json)
-        )
+        searchService.addQueueAsync(event)
     }
 
     private fun createPost(
