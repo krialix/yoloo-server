@@ -1,15 +1,15 @@
 package com.yoloo.server.search.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yoloo.server.search.post.PostRepository;
 import com.yoloo.server.search.post.usecase.PostCreatedEventUseCase;
 import com.yoloo.server.search.post.usecase.PostDeletedEventUseCase;
 import com.yoloo.server.search.post.usecase.PostUpdatedEventUseCase;
 import com.yoloo.server.search.post.usecase.SearchPostUseCase;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
-//@Configuration
+@Configuration
 public class PostUseCaseConfig {
 
   @Lazy

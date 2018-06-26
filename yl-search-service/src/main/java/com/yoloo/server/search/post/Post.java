@@ -1,28 +1,24 @@
 package com.yoloo.server.search.post;
 
-import java.util.List;
-import java.util.Objects;
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
+import java.util.List;
+import java.util.Objects;
+
 @SolrDocument(collection = "post")
 public class Post {
 
-  @Id
-  private String id;
+  @Id private String id;
 
-  @Field
-  private String title;
+  @Field private String title;
 
-  @Field
-  private String content;
+  @Field private String content;
 
-  @Field
-  private List<String> tags;
+  @Field private List<String> tags;
 
-  private Post() {
-  }
+  private Post() {}
 
   private Post(Builder builder) {
     id = builder.id;
@@ -98,8 +94,7 @@ public class Post {
     private String content;
     private List<String> tags;
 
-    private Builder() {
-    }
+    private Builder() {}
 
     public Builder id(String val) {
       id = val;

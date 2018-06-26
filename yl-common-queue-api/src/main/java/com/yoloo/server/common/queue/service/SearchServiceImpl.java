@@ -22,7 +22,7 @@ public class SearchServiceImpl implements SearchService {
     try {
       String json = mapper.writeValueAsString(event);
       queue.addAsync(
-          TaskOptions.Builder.withUrl(QueueEndpoint.QUEUE_SEARCH_ENDPOINT).param("data", json));
+          TaskOptions.Builder.withUrl(QueueEndpoint.QUEUE_SEARCH_ENDPOINT).payload(json));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

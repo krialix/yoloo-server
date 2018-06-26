@@ -4,19 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yoloo.server.search.post.Post;
 import com.yoloo.server.search.post.PostRepository;
 import com.yoloo.server.search.post.PostUtil;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import javax.xml.parsers.ParserConfigurationException;
 import org.apache.solr.client.solrj.SolrClient;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.server.support.EmbeddedSolrServerFactory;
 import org.springframework.util.ResourceUtils;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 @Configuration
 public class SolrConfig {
@@ -45,8 +45,8 @@ public class SolrConfig {
     return new SolrTemplate(client);
   }
 
-  @Profile("dev")
-  @Bean
+  /*@Profile("dev")
+  @Bean*/
   public CommandLineRunner runner(PostRepository postRepository, ObjectMapper mapper) {
     return args -> {
       postRepository.deleteAll();
