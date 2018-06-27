@@ -40,4 +40,10 @@ public class QueueAutoConfiguration {
   public Queue feedQueue() {
     return QueueFactory.getQueue(QueueBeanQualifier.FEED);
   }
+
+  @Lazy
+  @Bean(QueueBeanQualifier.PULL_QUEUE)
+  public Queue pullQueue() {
+    return QueueFactory.getQueue(QueueBeanQualifier.PULL_QUEUE);
+  }
 }

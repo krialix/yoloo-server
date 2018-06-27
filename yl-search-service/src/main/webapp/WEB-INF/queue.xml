@@ -2,6 +2,6 @@
 <queue-entries>
     <queue>
         <name>search-queue</name>
-        <rate>35/s</rate>
+        <mode>pull</mode>
     </queue>
 </queue-entries>
