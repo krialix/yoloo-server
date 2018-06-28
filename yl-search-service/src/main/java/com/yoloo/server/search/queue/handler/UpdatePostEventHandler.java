@@ -1,5 +1,6 @@
 package com.yoloo.server.search.queue.handler;
 
+import com.google.common.collect.Lists;
 import com.yoloo.server.common.queue.api.EventType;
 import com.yoloo.server.common.queue.api.YolooEvent;
 import com.yoloo.server.search.post.Post;
@@ -24,12 +25,29 @@ public class UpdatePostEventHandler extends EventHandler {
 
   @Override
   public void process(List<YolooEvent> events) {
-    List<String> posts =
+    Map<String, Post> posts =
         events
             .stream()
             .map(YolooEvent::getPayload)
             .map(map -> (String) map.get("id"))
-            .collect(Collectors.toList());
+            .collect(
+                Collectors.collectingAndThen(
+                    Collectors.toList(),
+                    ids ->
+                        Lists.newArrayList(postRepository.findAllById(ids))
+                            .stream()
+                            .collect(Collectors.toMap(Post::getId, post -> post))));
+
+    List<Post> updatedPosts = events
+        .stream()
+        .map(YolooEvent::getPayload)
+        .map(map -> {
+          String id = (String) map.get("id");
+          return posts.computeIfPresent(id, (s, post) -> updatePost(post, map));
+        })
+        .collect(Collectors.toList());
+
+    postRepository.saveAll(updatedPosts);
   }
 
   private Post updatePost(Post post, Map<String, Object> payload) {
