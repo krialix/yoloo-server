@@ -17,6 +17,16 @@ public class NewPostEventHandler extends EventHandler {
     this.postRepository = postRepository;
   }
 
+  private static Post createPost(Map<String, Object> payload) {
+    //noinspection unchecked
+    return Post.newBuilder()
+        .id((String) payload.get("id"))
+        .title((String) payload.get("title"))
+        .content((String) payload.get("content"))
+        .tags((List<String>) payload.get("tags"))
+        .build();
+  }
+
   @Override
   protected boolean isHandled(EventType eventType) {
     return eventType == EventType.NEW_POST;
@@ -28,19 +38,9 @@ public class NewPostEventHandler extends EventHandler {
         events
             .stream()
             .map(YolooEvent::getPayload)
-            .map(this::createPost)
+            .map(NewPostEventHandler::createPost)
             .collect(Collectors.toList());
 
     postRepository.saveAll(posts);
-  }
-
-  private Post createPost(Map<String, Object> payload) {
-    //noinspection unchecked
-    return Post.newBuilder()
-        .id((String) payload.get("id"))
-        .title((String) payload.get("title"))
-        .content((String) payload.get("content"))
-        .tags((List<String>) payload.get("tags"))
-        .build();
   }
 }

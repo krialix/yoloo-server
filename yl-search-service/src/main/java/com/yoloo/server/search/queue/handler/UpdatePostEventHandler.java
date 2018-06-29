@@ -18,6 +18,15 @@ public class UpdatePostEventHandler extends EventHandler {
     this.postRepository = postRepository;
   }
 
+  private static Post updatePost(Post post, Map<String, Object> payload) {
+    //noinspection unchecked
+    return post.toBuilder()
+        .title((String) payload.get("title"))
+        .content((String) payload.get("content"))
+        .tags((List<String>) payload.get("tags"))
+        .build();
+  }
+
   @Override
   protected boolean isHandled(EventType eventType) {
     return eventType == EventType.UPDATE_POST;
@@ -38,24 +47,17 @@ public class UpdatePostEventHandler extends EventHandler {
                             .stream()
                             .collect(Collectors.toMap(Post::getId, post -> post))));
 
-    List<Post> updatedPosts = events
-        .stream()
-        .map(YolooEvent::getPayload)
-        .map(map -> {
-          String id = (String) map.get("id");
-          return posts.computeIfPresent(id, (s, post) -> updatePost(post, map));
-        })
-        .collect(Collectors.toList());
+    List<Post> updatedPosts =
+        events
+            .stream()
+            .map(YolooEvent::getPayload)
+            .map(
+                map -> {
+                  String id = (String) map.get("id");
+                  return posts.computeIfPresent(id, (s, post) -> updatePost(post, map));
+                })
+            .collect(Collectors.toList());
 
     postRepository.saveAll(updatedPosts);
-  }
-
-  private Post updatePost(Post post, Map<String, Object> payload) {
-    //noinspection unchecked
-    return post.toBuilder()
-        .title((String) payload.get("title"))
-        .content((String) payload.get("content"))
-        .tags((List<String>) payload.get("tags"))
-        .build();
   }
 }
