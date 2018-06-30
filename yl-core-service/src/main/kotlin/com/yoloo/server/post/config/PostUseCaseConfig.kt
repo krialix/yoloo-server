@@ -3,8 +3,8 @@ package com.yoloo.server.post.config
 import com.google.appengine.api.memcache.MemcacheService
 import com.yoloo.server.common.id.config.IdBeanQualifier
 import com.yoloo.server.common.id.generator.LongIdGenerator
-import com.yoloo.server.common.queue.service.NotificationService
-import com.yoloo.server.common.queue.service.SearchService
+import com.yoloo.server.common.queue.service.NotificationQueueService
+import com.yoloo.server.common.queue.service.SearchQueueService
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.usecase.*
 import com.yoloo.server.post.util.CircularFifoBuffer
@@ -27,22 +27,22 @@ class PostUseCaseConfig {
     fun createPostUseCase(
         @Qualifier(IdBeanQualifier.CACHED) idGenerator: LongIdGenerator,
         postResponseMapper: PostResponseMapper,
-        searchService: SearchService,
-        notificationService: NotificationService
+        searchQueueService: SearchQueueService,
+        notificationQueueService: NotificationQueueService
     ): CreatePostUseCase {
-        return CreatePostUseCase(idGenerator, postResponseMapper, searchService, notificationService)
+        return CreatePostUseCase(idGenerator, postResponseMapper, searchQueueService, notificationQueueService)
     }
 
     @Lazy
     @Bean
-    fun updatePostUseCase(searchService: SearchService): UpdatePostUseCase {
-        return UpdatePostUseCase(searchService)
+    fun updatePostUseCase(searchQueueService: SearchQueueService): UpdatePostUseCase {
+        return UpdatePostUseCase(searchQueueService)
     }
 
     @Lazy
     @Bean
-    fun deletePostUseCase(searchService: SearchService): DeletePostUseCase {
-        return DeletePostUseCase(searchService)
+    fun deletePostUseCase(searchQueueService: SearchQueueService): DeletePostUseCase {
+        return DeletePostUseCase(searchQueueService)
     }
 
     @Lazy

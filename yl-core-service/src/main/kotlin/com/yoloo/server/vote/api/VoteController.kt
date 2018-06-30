@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*
     produces = [MediaType.APPLICATION_JSON_UTF8_VALUE]
 )
 @RestController
-@ResponseStatus(HttpStatus.NO_CONTENT)
 @PreAuthorize("hasAuthority('MEMBER')")
 class VoteController(
     private val votePostUseCase: VotePostUseCase,

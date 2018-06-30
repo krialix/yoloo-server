@@ -7,9 +7,9 @@ import com.yoloo.server.comment.vo.CommentResponse
 import com.yoloo.server.comment.vo.InsertCommentRequest
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.id.generator.LongIdGenerator
-import com.yoloo.server.common.queue.api.EventType
-import com.yoloo.server.common.queue.api.YolooEvent
-import com.yoloo.server.common.queue.service.NotificationService
+import com.yoloo.server.common.queue.vo.EventType
+import com.yoloo.server.common.queue.vo.YolooEvent
+import com.yoloo.server.common.queue.service.NotificationQueueService
 import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
@@ -23,7 +23,7 @@ import com.yoloo.server.user.entity.User
 class CreateCommentUseCase(
     private val idGenerator: LongIdGenerator,
     private val commentResponseMapper: CommentResponseMapper,
-    private val notificationService: NotificationService
+    private val notificationQueueService: NotificationQueueService
 ) {
 
     fun execute(
@@ -56,7 +56,7 @@ class CreateCommentUseCase(
         user.profile.countData.commentCount = user.profile.countData.commentCount.inc()
 
         val saveResult = ofy().save().entities(comment, post, user)
-        TestUtil.saveResultsNowIfTest(saveResult)
+        TestUtil.saveNow(saveResult)
 
         addToNotificationQueue(comment, postUser.fcmToken)
 
@@ -90,6 +90,6 @@ class CreateCommentUseCase(
             .addData("postAuthorFcmToken", postAuthorFcmToken)
             .build()
 
-        notificationService.addQueueAsync(event)
+        notificationQueueService.addQueueAsync(event)
     }
 }

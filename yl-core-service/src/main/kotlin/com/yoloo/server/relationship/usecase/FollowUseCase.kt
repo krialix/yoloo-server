@@ -1,20 +1,20 @@
 package com.yoloo.server.relationship.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
-import com.google.firebase.messaging.Message
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.exception.exception.ServiceExceptions.checkConflict
-import com.yoloo.server.common.util.FcmConstants
+import com.yoloo.server.common.queue.vo.EventType
+import com.yoloo.server.common.queue.vo.YolooEvent
+import com.yoloo.server.common.queue.service.NotificationQueueService
 import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.relationship.entity.Relationship
 import com.yoloo.server.user.entity.User
 import net.cinnom.nanocuckoo.NanoCuckooFilter
-import org.springframework.context.ApplicationEventPublisher
 
 class FollowUseCase(
     private val memcacheService: AsyncMemcacheService,
-    private val eventPublisher: ApplicationEventPublisher
+    private val notificationQueueService: NotificationQueueService
 ) {
 
     fun execute(requesterId: Long, userId: Long) {
@@ -40,10 +40,10 @@ class FollowUseCase(
         val saveResult = ofy().save().entities(fromUser, toUser, relationship)
         val putFuture = memcacheService.put(Relationship.KEY_FILTER_RELATIONSHIP, relationshipFilter)
 
-        TestUtil.saveResultsNowIfTest(saveResult)
-        TestUtil.saveFuturesNowIfTest(putFuture)
+        TestUtil.saveNow(saveResult)
+        TestUtil.saveNow(putFuture)
 
-        sendFollowNotification(toUser.fcmToken, fromUser.profile.displayName.value)
+        addToNotificationQueue(toUser.fcmToken, fromUser)
     }
 
     private fun getRelationshipFilter(): NanoCuckooFilter {
@@ -60,13 +60,13 @@ class FollowUseCase(
         )
     }
 
-    private fun sendFollowNotification(toUserFcmToken: String, followerName: String) {
-        val message = Message.builder()
-            .setToken(toUserFcmToken)
-            .putData(FcmConstants.FCM_KEY_TYPE, FcmConstants.FcmType.FCM_TYPE_FOLLOW.toString())
-            .putData("FCM_KEY_FOLLOWER_NAME", followerName)
+    private fun addToNotificationQueue(toUserFcmToken: String, fromUser: User) {
+        val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.FOLLOW_USER))
+            .addData("fromUserId", fromUser.id.toString())
+            .addData("fromUserDisplayName", fromUser.profile.displayName.value)
+            .addData("toUserFcmToken", toUserFcmToken)
             .build()
 
-        // TODO Send notification
+        notificationQueueService.addQueueAsync(event)
     }
 }

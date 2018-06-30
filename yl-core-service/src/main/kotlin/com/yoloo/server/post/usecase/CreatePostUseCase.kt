@@ -2,10 +2,10 @@ package com.yoloo.server.post.usecase
 
 import com.googlecode.objectify.Key
 import com.yoloo.server.common.id.generator.LongIdGenerator
-import com.yoloo.server.common.queue.api.EventType
-import com.yoloo.server.common.queue.api.YolooEvent
-import com.yoloo.server.common.queue.service.NotificationService
-import com.yoloo.server.common.queue.service.SearchService
+import com.yoloo.server.common.queue.vo.EventType
+import com.yoloo.server.common.queue.vo.YolooEvent
+import com.yoloo.server.common.queue.service.NotificationQueueService
+import com.yoloo.server.common.queue.service.SearchQueueService
 import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.group.entity.Group
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
@@ -17,8 +17,8 @@ import com.yoloo.server.user.entity.User
 class CreatePostUseCase(
     private val idGenerator: LongIdGenerator,
     private val postResponseMapper: PostResponseMapper,
-    private val searchService: SearchService,
-    private val notificationService: NotificationService
+    private val searchQueueService: SearchQueueService,
+    private val notificationQueueService: NotificationQueueService
 ) {
 
     fun execute(requesterId: Long, request: CreatePostRequest): PostResponse {
@@ -35,7 +35,7 @@ class CreatePostUseCase(
         val post = createPost(request, user, group)
 
         val saveResult = ofy().save().entities(post, group)
-        TestUtil.saveResultsNowIfTest(saveResult)
+        TestUtil.saveNow(saveResult)
 
         addToSearchQueue(post)
         addToNotificationQueue(post, group.topicName)
@@ -52,7 +52,7 @@ class CreatePostUseCase(
             .addData("topic", topicName)
             .build()
 
-        notificationService.addQueueAsync(event)
+        notificationQueueService.addQueueAsync(event)
     }
 
     private fun addToSearchQueue(post: Post) {
@@ -64,7 +64,7 @@ class CreatePostUseCase(
             .addData("buddyRequest", post.buddyRequest)
             .build()
 
-        searchService.addQueueAsync(event)
+        searchQueueService.addQueueAsync(event)
     }
 
     private fun createPost(

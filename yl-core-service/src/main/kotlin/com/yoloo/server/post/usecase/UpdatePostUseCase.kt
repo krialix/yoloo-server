@@ -1,16 +1,16 @@
 package com.yoloo.server.post.usecase
 
 import com.yoloo.server.common.exception.exception.ServiceExceptions
-import com.yoloo.server.common.queue.api.EventType
-import com.yoloo.server.common.queue.api.YolooEvent
-import com.yoloo.server.common.queue.service.SearchService
+import com.yoloo.server.common.queue.vo.EventType
+import com.yoloo.server.common.queue.vo.YolooEvent
+import com.yoloo.server.common.queue.service.SearchQueueService
 import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.vo.PostTag
 import com.yoloo.server.post.vo.UpdatePostRequest
 
-class UpdatePostUseCase(private val searchService: SearchService) {
+class UpdatePostUseCase(private val searchQueueService: SearchQueueService) {
 
     fun execute(requesterId: Long, postId: Long, request: UpdatePostRequest) {
         val post = ofy().load().type(Post::class.java).id(postId).now()
@@ -26,7 +26,7 @@ class UpdatePostUseCase(private val searchService: SearchService) {
         request.tags?.map { PostTag(it) }?.toSet()?.let { post.tags = it }
 
         val saveResult = ofy().save().entity(post)
-        TestUtil.saveResultsNowIfTest(saveResult)
+        TestUtil.saveNow(saveResult)
 
         addToSearchQueue(post)
     }
@@ -40,6 +40,6 @@ class UpdatePostUseCase(private val searchService: SearchService) {
             .addData("buddyRequest", post.buddyRequest)
             .build()
 
-        searchService.addQueueAsync(event)
+        searchQueueService.addQueueAsync(event)
     }
 }

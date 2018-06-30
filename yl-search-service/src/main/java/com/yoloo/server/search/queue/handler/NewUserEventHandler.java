@@ -1,7 +1,7 @@
 package com.yoloo.server.search.queue.handler;
 
-import com.yoloo.server.common.queue.api.EventType;
-import com.yoloo.server.common.queue.api.YolooEvent;
+import com.yoloo.server.common.queue.vo.EventType;
+import com.yoloo.server.common.queue.vo.YolooEvent;
 import com.yoloo.server.search.user.User;
 import com.yoloo.server.search.user.UserRepository;
 
@@ -13,7 +13,7 @@ public class NewUserEventHandler extends EventHandler {
   private final UserRepository userRepository;
 
   public NewUserEventHandler(EventType eventType, UserRepository userRepository) {
-    super(eventType);
+    super();
     this.userRepository = userRepository;
   }
 
@@ -25,19 +25,18 @@ public class NewUserEventHandler extends EventHandler {
   }
 
   @Override
-  protected boolean isHandled(EventType eventType) {
-    return eventType == EventType.NEW_USER;
-  }
+  public void process(EventType eventType, List<YolooEvent> events) {
+    if (eventType == EventType.NEW_USER) {
+      List<User> users =
+          events
+              .stream()
+              .map(YolooEvent::getPayload)
+              .map(NewUserEventHandler::createUser)
+              .collect(Collectors.toList());
 
-  @Override
-  public void process(List<YolooEvent> events) {
-    List<User> users =
-        events
-            .stream()
-            .map(YolooEvent::getPayload)
-            .map(NewUserEventHandler::createUser)
-            .collect(Collectors.toList());
+      userRepository.saveAll(users);
+    }
 
-    userRepository.saveAll(users);
+    processNext(eventType, events);
   }
 }

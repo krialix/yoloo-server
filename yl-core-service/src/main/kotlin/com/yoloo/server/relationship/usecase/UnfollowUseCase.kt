@@ -9,7 +9,6 @@ import com.yoloo.server.relationship.entity.Relationship
 import com.yoloo.server.user.entity.User
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 
-// TODO needs test
 class UnfollowUseCase(private val memcacheService: AsyncMemcacheService) {
 
     fun execute(requesterId: Long, userId: Long) {

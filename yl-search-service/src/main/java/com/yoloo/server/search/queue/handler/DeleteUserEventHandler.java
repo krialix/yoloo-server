@@ -1,7 +1,7 @@
 package com.yoloo.server.search.queue.handler;
 
-import com.yoloo.server.common.queue.api.EventType;
-import com.yoloo.server.common.queue.api.YolooEvent;
+import com.yoloo.server.common.queue.vo.EventType;
+import com.yoloo.server.common.queue.vo.YolooEvent;
 import com.yoloo.server.search.user.UserRepository;
 
 import java.util.List;
@@ -11,24 +11,23 @@ public class DeleteUserEventHandler extends EventHandler {
   private final UserRepository userRepository;
 
   public DeleteUserEventHandler(EventType eventType, UserRepository userRepository) {
-    super(eventType);
+    super();
     this.userRepository = userRepository;
   }
 
   @Override
-  protected boolean isHandled(EventType eventType) {
-    return eventType == EventType.DELETE_USER;
-  }
+  public void process(EventType eventType, List<YolooEvent> events) {
+    if (eventType == EventType.DELETE_USER) {
+      List<String> postIds =
+          events
+              .stream()
+              .map(YolooEvent::getPayload)
+              .map(map -> (String) map.get("id"))
+              .collect(Collectors.toList());
 
-  @Override
-  public void process(List<YolooEvent> events) {
-    List<String> postIds =
-        events
-            .stream()
-            .map(YolooEvent::getPayload)
-            .map(map -> (String) map.get("id"))
-            .collect(Collectors.toList());
+      userRepository.deleteUsersByIdIn(postIds);
+    }
 
-    userRepository.deleteUsersByIdIn(postIds);
+    processNext(eventType, events);
   }
 }

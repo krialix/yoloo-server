@@ -1,4 +1,4 @@
-package com.yoloo.server.common.queue.api;
+package com.yoloo.server.common.queue.vo;
 
 public enum EventType {
   NEW_POST,

@@ -29,8 +29,8 @@ class VoteCommentUseCase(private val memcacheService: AsyncMemcacheService) {
 
         val saveResult = ofy().save().entities(comment, vote)
 
-        TestUtil.saveFuturesNowIfTest(putFuture)
-        TestUtil.saveResultsNowIfTest(saveResult)
+        TestUtil.saveNow(putFuture)
+        TestUtil.saveNow(saveResult)
     }
 
     private fun getVoteFilter(): NanoCuckooFilter {

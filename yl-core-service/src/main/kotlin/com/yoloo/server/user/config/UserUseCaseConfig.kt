@@ -28,72 +28,6 @@ class UserUseCaseConfig {
 
     @Lazy
     @Bean
-    fun getUserUseCase(memcacheService: MemcacheService, userResponseMapper: UserResponseMapper): GetUserUseCase {
-        return GetUserUseCase(memcacheService, userResponseMapper)
-    }
-
-    @Lazy
-    @Bean
-    fun patchUserUseCase(memcacheService: MemcacheService): PatchUserUseCase {
-        return PatchUserUseCase(memcacheService)
-    }
-
-    @Lazy
-    @Bean
-    fun postCreatedEventUseCase(
-        objectMapper: ObjectMapper,
-        firebaseMessaging: FirebaseMessaging,
-        @Qualifier(UserEventConfig.EVENT_FILTER) eventFilter: NanoCuckooFilter
-    ): PostCreatedEventUseCase {
-        return PostCreatedEventUseCase(objectMapper, firebaseMessaging, eventFilter)
-    }
-
-    @Lazy
-    @Bean
-    fun postDeletedEventUseCase(
-        objectMapper: ObjectMapper,
-        @Qualifier(UserEventConfig.EVENT_FILTER) eventFilter: NanoCuckooFilter
-    ): PostDeletedEventUseCase {
-        return PostDeletedEventUseCase(objectMapper, eventFilter)
-    }
-
-    @Lazy
-    @Bean
-    fun commentCreatedEventUseCase(
-        objectMapper: ObjectMapper,
-        firebaseMessaging: FirebaseMessaging,
-        @Qualifier(UserEventConfig.EVENT_FILTER) eventFilter: NanoCuckooFilter
-    ): CommentCreatedEventUseCase {
-        return CommentCreatedEventUseCase(objectMapper, firebaseMessaging, eventFilter)
-    }
-
-    @Lazy
-    @Bean
-    fun commentApprovedEventUseCase(
-        objectMapper: ObjectMapper,
-        eventPublisher: ApplicationEventPublisher,
-        @Qualifier(UserEventConfig.EVENT_FILTER) eventFilter: NanoCuckooFilter
-    ): CommentApprovedEventUseCase {
-        return CommentApprovedEventUseCase(objectMapper, eventPublisher, eventFilter)
-    }
-
-    @Lazy
-    @Bean
-    fun commentDeletedEventUseCase(
-        objectMapper: ObjectMapper,
-        @Qualifier(UserEventConfig.EVENT_FILTER) eventFilter: NanoCuckooFilter
-    ): CommentDeletedEventUseCase {
-        return CommentDeletedEventUseCase(objectMapper, eventFilter)
-    }
-
-    @Lazy
-    @Bean
-    fun searchUserUseCase(): SearchUserUseCase {
-        return SearchUserUseCase()
-    }
-
-    @Lazy
-    @Bean
     fun registerUserUseCase(
         groupInfoFetcher: GroupInfoFetcher,
         @Qualifier(IdBeanQualifier.CACHED) idGenerator: LongIdGenerator,
@@ -113,5 +47,23 @@ class UserUseCaseConfig {
             passwordEncoder,
             userResponseMapper
         )
+    }
+
+    @Lazy
+    @Bean
+    fun getUserUseCase(memcacheService: MemcacheService, userResponseMapper: UserResponseMapper): GetUserUseCase {
+        return GetUserUseCase(memcacheService, userResponseMapper)
+    }
+
+    @Lazy
+    @Bean
+    fun patchUserUseCase(memcacheService: MemcacheService): PatchUserUseCase {
+        return PatchUserUseCase(memcacheService)
+    }
+
+    @Lazy
+    @Bean
+    fun searchUserUseCase(): SearchUserUseCase {
+        return SearchUserUseCase()
     }
 }

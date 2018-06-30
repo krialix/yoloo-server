@@ -42,7 +42,7 @@ class DeleteCommentUseCase {
 
         val deleteResult = ofy().delete().keys(pendingDeleteKeys)
         val saveResult = ofy().save().entities(post, user)
-        TestUtil.saveResultsNowIfTest(deleteResult, saveResult)
+        TestUtil.saveNow(deleteResult, saveResult)
     }
 
     // TODO Batch deletion of vote keys at the end of the day

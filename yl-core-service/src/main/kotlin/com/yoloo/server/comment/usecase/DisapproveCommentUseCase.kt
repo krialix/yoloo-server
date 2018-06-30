@@ -26,6 +26,6 @@ class DisapproveCommentUseCase {
         post.approvedCommentId = null
 
         val saveResult = ofy().save().entities(post, comment)
-        TestUtil.saveResultsNowIfTest(saveResult)
+        TestUtil.saveNow(saveResult)
     }
 }

@@ -37,8 +37,8 @@ class UnsubscribeUseCase(private val memcacheService: AsyncMemcacheService) {
 
         val saveResult = ofy().save().entities(group, user)
 
-        TestUtil.saveResultsNowIfTest(deleteResult, saveResult)
-        TestUtil.saveFuturesNowIfTest(putFuture)
+        TestUtil.saveNow(deleteResult, saveResult)
+        TestUtil.saveNow(putFuture)
     }
 
     private fun getSubscriptionFilter(): NanoCuckooFilter {

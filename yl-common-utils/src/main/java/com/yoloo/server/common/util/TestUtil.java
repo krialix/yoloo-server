@@ -8,13 +8,13 @@ import java.util.concurrent.Future;
 
 public interface TestUtil {
 
-  static void saveResultsNowIfTest(Result<?>... results) {
+  static void saveNow(Result<?>... results) {
     if (AppengineEnv.isTest()) {
       Arrays.asList(results).forEach(Result::now);
     }
   }
 
-  static void saveFuturesNowIfTest(Future<?>... futures) {
+  static void saveNow(Future<?>... futures) {
     if (AppengineEnv.isTest()) {
       Arrays.asList(futures).forEach(future -> {
         try {

@@ -5,7 +5,7 @@ import com.yoloo.server.comment.mapper.CommentResponseMapper
 import com.yoloo.server.comment.usecase.*
 import com.yoloo.server.common.id.config.IdBeanQualifier
 import com.yoloo.server.common.id.generator.LongIdGenerator
-import com.yoloo.server.common.queue.service.NotificationService
+import com.yoloo.server.common.queue.service.NotificationQueueService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -19,15 +19,15 @@ class CommentUseCaseConfig {
     fun insertCommentUseCase(
         @Qualifier(IdBeanQualifier.CACHED) idGenerator: LongIdGenerator,
         commentResponseMapper: CommentResponseMapper,
-        notificationService: NotificationService
+        notificationQueueService: NotificationQueueService
     ): CreateCommentUseCase {
-        return CreateCommentUseCase(idGenerator, commentResponseMapper, notificationService)
+        return CreateCommentUseCase(idGenerator, commentResponseMapper, notificationQueueService)
     }
 
     @Lazy
     @Bean
-    fun approveCommentUseCase(notificationService: NotificationService): ApproveCommentUseCase {
-        return ApproveCommentUseCase(notificationService)
+    fun approveCommentUseCase(notificationQueueService: NotificationQueueService): ApproveCommentUseCase {
+        return ApproveCommentUseCase(notificationQueueService)
     }
 
     @Lazy

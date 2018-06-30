@@ -30,7 +30,7 @@ class BookmarkPostUseCase(private val memcacheService: AsyncMemcacheService) {
         val newBookmark = Bookmark.create(requesterId, postId)
 
         val saveResult = ofy().save().entities(post, newBookmark)
-        TestUtil.saveResultsNowIfTest(saveResult)
-        TestUtil.saveFuturesNowIfTest(putFuture)
+        TestUtil.saveNow(saveResult)
+        TestUtil.saveNow(putFuture)
     }
 }

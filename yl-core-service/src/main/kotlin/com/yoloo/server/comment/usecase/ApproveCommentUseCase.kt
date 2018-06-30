@@ -4,15 +4,15 @@ import com.googlecode.objectify.Key
 import com.yoloo.server.comment.entity.Comment
 import com.yoloo.server.comment.vo.ApprovedCommentId
 import com.yoloo.server.common.exception.exception.ServiceExceptions
-import com.yoloo.server.common.queue.api.EventType
-import com.yoloo.server.common.queue.api.YolooEvent
-import com.yoloo.server.common.queue.service.NotificationService
+import com.yoloo.server.common.queue.vo.EventType
+import com.yoloo.server.common.queue.vo.YolooEvent
+import com.yoloo.server.common.queue.service.NotificationQueueService
 import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.user.entity.User
 
-class ApproveCommentUseCase(private val notificationService: NotificationService) {
+class ApproveCommentUseCase(private val notificationQueueService: NotificationQueueService) {
 
     fun execute(requesterId: Long, postId: Long, commentId: Long) {
         val postKey = Key.create(Post::class.java, postId)
@@ -33,7 +33,7 @@ class ApproveCommentUseCase(private val notificationService: NotificationService
         post.approvedCommentId = ApprovedCommentId(commentId)
 
         val saveResult = ofy().save().entities(post, comment)
-        TestUtil.saveResultsNowIfTest(saveResult)
+        TestUtil.saveNow(saveResult)
 
         addToNotificationQueue(comment, commentUser.fcmToken)
     }
@@ -45,6 +45,6 @@ class ApproveCommentUseCase(private val notificationService: NotificationService
             .addData("commentAuthorFcmToken", commentAuthorFcmToken)
             .build()
 
-        notificationService.addQueueAsync(event)
+        notificationQueueService.addQueueAsync(event)
     }
 }

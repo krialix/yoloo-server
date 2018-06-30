@@ -3,11 +3,12 @@ package com.yoloo.server.search.queue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.TaskHandle;
-import com.yoloo.server.common.queue.api.EventType;
-import com.yoloo.server.common.queue.api.YolooEvent;
 import com.yoloo.server.common.queue.config.QueueBeanQualifier;
+import com.yoloo.server.common.queue.vo.YolooEvent;
+import com.yoloo.server.search.queue.handler.EventHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Component
-public class QueueLeaser {
+public class SearchQueueLeaser {
   private static final Logger LOGGER = LogManager.getLogger();
 
   private static final int NUMBER_OF_TASK_TO_LEASE = 100;
@@ -28,11 +29,15 @@ public class QueueLeaser {
 
   private final Queue pullQueue;
   private final ObjectMapper objectMapper;
+  private final EventHandler eventHandlerChain;
 
-  public QueueLeaser(
-      @Qualifier(QueueBeanQualifier.PULL_QUEUE) Queue pullQueue, ObjectMapper objectMapper) {
+  public SearchQueueLeaser(
+      @Qualifier(QueueBeanQualifier.PULL_QUEUE) Queue pullQueue,
+      ObjectMapper objectMapper,
+      EventHandler eventHandlerChain) {
     this.pullQueue = pullQueue;
     this.objectMapper = objectMapper;
+    this.eventHandlerChain = eventHandlerChain;
   }
 
   private static void logState(EventState state) {
@@ -52,13 +57,13 @@ public class QueueLeaser {
         .leaseTasksByTag(3600, TimeUnit.SECONDS, NUMBER_OF_TASK_TO_LEASE, "search")
         .stream()
         .map(this::mapToEventState)
-        .peek(QueueLeaser::logState)
+        .peek(SearchQueueLeaser::logState)
         .filter(state -> state instanceof EventState.Data)
         .map(state -> (EventState.Data) state)
         .peek(state -> pendingTasksToDelete.add(state.task))
         .map(state -> state.event)
         .collect(Collectors.groupingBy(event -> event.getMetadata().getType()))
-        .forEach(this::consumeEvents);
+        .forEach(eventHandlerChain::process);
 
     int size = pendingTasksToDelete.size();
     if (size == 0) {
@@ -75,35 +80,6 @@ public class QueueLeaser {
       return new EventState.Data(task, objectMapper.readValue(task.getPayload(), YolooEvent.class));
     } catch (IOException e) {
       return new EventState.Error(task, e);
-    }
-  }
-
-  private void consumeEvents(EventType eventType, List<YolooEvent> events) {
-    switch (eventType) {
-      case NEW_POST:
-        break;
-      case UPDATE_POST:
-        break;
-      case DELETE_POST:
-        break;
-      case NEW_BUDDY_REQUEST:
-        break;
-      case UPDATE_BUDDY_REQUEST:
-        break;
-      case DELETE_BUDDY_REQUEST:
-        break;
-      case NEW_USER:
-        break;
-      case UPDATE_USER:
-        break;
-      case DELETE_USER:
-        break;
-      case FOLLOW_USER:
-        break;
-      case NEW_COMMENT:
-        break;
-      case APPROVE_COMMENT:
-        break;
     }
   }
 

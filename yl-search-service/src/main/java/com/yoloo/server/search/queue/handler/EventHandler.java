@@ -1,31 +1,24 @@
 package com.yoloo.server.search.queue.handler;
 
-import com.yoloo.server.common.queue.api.EventType;
-import com.yoloo.server.common.queue.api.YolooEvent;
+import com.yoloo.server.common.queue.vo.EventType;
+import com.yoloo.server.common.queue.vo.YolooEvent;
 
 import java.util.List;
 
 public abstract class EventHandler {
 
-  private final EventType eventType;
+  private EventHandler next;
 
-  private EventHandler eventHandler;
-
-  public EventHandler(EventType eventType) {
-    this.eventType = eventType;
+  public EventHandler setNext(EventHandler next) {
+    this.next = next;
+    return this;
   }
 
-  public void setNextEventHandler(EventHandler eventHandler) {
-    this.eventHandler = eventHandler;
-  }
+  public abstract void process(EventType eventType, List<YolooEvent> events);
 
-  protected abstract boolean isHandled(EventType eventType);
-
-  private void processNext(List<YolooEvent> events) {
-    if (eventHandler != null && isHandled(eventType)) {
-      eventHandler.process(events);
+  protected void processNext(EventType eventType, List<YolooEvent> events) {
+    if (next != null) {
+      next.process(eventType, events);
     }
   }
-
-  public abstract void process(List<YolooEvent> events);
 }

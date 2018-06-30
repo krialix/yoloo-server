@@ -32,8 +32,8 @@ class UnvoteCommentUseCase(private val memcacheService: AsyncMemcacheService) {
 
         val saveResult = ofy().save().entity(comment)
 
-        TestUtil.saveResultsNowIfTest(saveResult, deleteFuture)
-        TestUtil.saveFuturesNowIfTest(putFuture)
+        TestUtil.saveNow(saveResult, deleteFuture)
+        TestUtil.saveNow(putFuture)
     }
 
     private fun getVoteFilter(): NanoCuckooFilter {

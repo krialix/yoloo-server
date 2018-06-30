@@ -30,7 +30,7 @@ class UnbookmarkPostUseCase(private val memcacheService: AsyncMemcacheService) {
         val saveResult = ofy().save().entity(post)
         val deleteResult = ofy().delete().entity(bookmark)
 
-        TestUtil.saveResultsNowIfTest(saveResult, deleteResult)
-        TestUtil.saveFuturesNowIfTest(putFuture)
+        TestUtil.saveNow(saveResult, deleteResult)
+        TestUtil.saveNow(putFuture)
     }
 }
