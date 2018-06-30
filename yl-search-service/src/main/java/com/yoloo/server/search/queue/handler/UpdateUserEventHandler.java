@@ -13,8 +13,7 @@ import java.util.stream.Collectors;
 public class UpdateUserEventHandler extends EventHandler {
   private final UserRepository userRepository;
 
-  public UpdateUserEventHandler(EventType eventType, UserRepository userRepository) {
-    super();
+  public UpdateUserEventHandler(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 

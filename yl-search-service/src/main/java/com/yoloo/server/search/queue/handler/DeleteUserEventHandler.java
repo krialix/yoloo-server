@@ -10,8 +10,7 @@ import java.util.stream.Collectors;
 public class DeleteUserEventHandler extends EventHandler {
   private final UserRepository userRepository;
 
-  public DeleteUserEventHandler(EventType eventType, UserRepository userRepository) {
-    super();
+  public DeleteUserEventHandler(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 

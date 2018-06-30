@@ -8,7 +8,6 @@ import com.yoloo.server.common.queue.vo.YolooEvent;
 import com.yoloo.server.search.queue.handler.EventHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -25,16 +24,16 @@ public class SearchQueueLeaser {
 
   private static final int NUMBER_OF_TASK_TO_LEASE = 100;
 
-  private final List<TaskHandle> pendingTasksToDelete = new ArrayList<>();
-
+  private final List<TaskHandle> pendingTasksToDelete;
   private final Queue pullQueue;
   private final ObjectMapper objectMapper;
   private final EventHandler eventHandlerChain;
 
   public SearchQueueLeaser(
-      @Qualifier(QueueBeanQualifier.PULL_QUEUE) Queue pullQueue,
+      @Qualifier(QueueBeanQualifier.SEARCH) Queue pullQueue,
       ObjectMapper objectMapper,
       EventHandler eventHandlerChain) {
+    this.pendingTasksToDelete = new ArrayList<>();
     this.pullQueue = pullQueue;
     this.objectMapper = objectMapper;
     this.eventHandlerChain = eventHandlerChain;
@@ -54,25 +53,29 @@ public class SearchQueueLeaser {
     LOGGER.info("Pulling {} Tasks from the Task Queue", NUMBER_OF_TASK_TO_LEASE);
 
     pullQueue
-        .leaseTasksByTag(3600, TimeUnit.SECONDS, NUMBER_OF_TASK_TO_LEASE, "search")
+        .leaseTasks(3600, TimeUnit.SECONDS, NUMBER_OF_TASK_TO_LEASE)
         .stream()
         .map(this::mapToEventState)
         .peek(SearchQueueLeaser::logState)
         .filter(state -> state instanceof EventState.Data)
         .map(state -> (EventState.Data) state)
-        .peek(state -> pendingTasksToDelete.add(state.task))
-        .map(state -> state.event)
+        .peek(state -> pendingTasksToDelete.add(state.getTask()))
+        .map(EventState.Data::getEvent)
         .collect(Collectors.groupingBy(event -> event.getMetadata().getType()))
         .forEach(eventHandlerChain::process);
 
+    logStatus();
+
+    pullQueue.deleteTaskAsync(pendingTasksToDelete);
+  }
+
+  private void logStatus() {
     int size = pendingTasksToDelete.size();
     if (size == 0) {
       LOGGER.info("Task Queue has no tasks available for lease.");
     } else {
       LOGGER.info("Processed and deleted '{}' tasks from the pull queue", size);
     }
-
-    pullQueue.deleteTaskAsync(pendingTasksToDelete);
   }
 
   private EventState mapToEventState(TaskHandle task) {
@@ -80,48 +83,6 @@ public class SearchQueueLeaser {
       return new EventState.Data(task, objectMapper.readValue(task.getPayload(), YolooEvent.class));
     } catch (IOException e) {
       return new EventState.Error(task, e);
-    }
-  }
-
-  private interface EventState {
-    TaskHandle getTask();
-
-    final class Data implements EventState {
-      private final TaskHandle task;
-      private final YolooEvent event;
-
-      Data(TaskHandle task, YolooEvent event) {
-        this.task = task;
-        this.event = event;
-      }
-
-      @Override
-      public TaskHandle getTask() {
-        return task;
-      }
-
-      YolooEvent getEvent() {
-        return event;
-      }
-    }
-
-    final class Error implements EventState {
-      private final TaskHandle task;
-      private final Throwable error;
-
-      Error(TaskHandle task, Throwable error) {
-        this.task = task;
-        this.error = error;
-      }
-
-      @Override
-      public TaskHandle getTask() {
-        return task;
-      }
-
-      Throwable getError() {
-        return error;
-      }
     }
   }
 }

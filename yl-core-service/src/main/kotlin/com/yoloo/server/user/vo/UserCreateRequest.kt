@@ -8,7 +8,7 @@ import javax.validation.constraints.*
 import javax.validation.constraints.Email
 
 @NoArg
-class UserRegisterRequest(
+class UserCreateRequest(
     @field:NotBlank
     val displayName: String?,
 

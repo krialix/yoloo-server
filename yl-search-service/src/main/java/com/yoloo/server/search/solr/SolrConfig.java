@@ -1,4 +1,4 @@
-package com.yoloo.server.search.config;
+package com.yoloo.server.search.solr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yoloo.server.search.post.Post;

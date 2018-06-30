@@ -20,9 +20,9 @@ import javax.validation.Valid
 class UserController(
     private val getUserUseCase: GetUserUseCase,
     private val searchUserUseCase: SearchUserUseCase,
-    private val patchUserUseCase: PatchUserUseCase,
+    private val updateUserUseCase: UpdateUserUseCase,
     private val checkEmailAvailabilityUseCase: CheckEmailAvailabilityUseCase,
-    private val userRegisterUseCase: UserRegisterUseCase
+    private val createUserUseCase: CreateUserUseCase
 ) {
 
     @PostMapping("/checkEmail")
@@ -34,10 +34,10 @@ class UserController(
 
     @PreAuthorize("hasAnyRole('ANONYMOUS')")
     @PostMapping("/signUp")
-    fun register(@RequestBody @Valid request: UserRegisterRequest?): ResponseEntity<UserResponse> {
+    fun register(@RequestBody @Valid request: UserCreateRequest?): ResponseEntity<UserResponse> {
         ServiceExceptions.checkBadRequest(request != null, "request.body.empty")
 
-        return userRegisterUseCase.execute(request!!)
+        return createUserUseCase.execute(request!!)
     }
 
     @PreAuthorize("hasAnyRole('MEMBER')")
@@ -53,7 +53,7 @@ class UserController(
     fun patchUser(authentication: Authentication, @RequestBody @Valid request: PatchUserRequest?) {
         val user = AuthUtil.from(authentication)
 
-        patchUserUseCase.execute(user.userId, request!!)
+        updateUserUseCase.execute(user.userId, request!!)
     }
 
     @PreAuthorize("hasAnyAuthority('MEMBER')")

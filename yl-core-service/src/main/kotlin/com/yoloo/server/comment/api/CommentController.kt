@@ -4,7 +4,7 @@ import com.yoloo.server.auth.AuthUtil
 import com.yoloo.server.comment.usecase.*
 import com.yoloo.server.comment.vo.CommentCollectionResponse
 import com.yoloo.server.comment.vo.CommentResponse
-import com.yoloo.server.comment.vo.InsertCommentRequest
+import com.yoloo.server.comment.vo.CreateCommentRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -31,7 +31,7 @@ class CommentController(
     fun createComment(
         authentication: Authentication,
         @PathVariable("postId") postId: Long,
-        @RequestBody @Valid request: InsertCommentRequest
+        @RequestBody @Valid request: CreateCommentRequest
     ): CommentResponse {
         val user = AuthUtil.from(authentication)
 

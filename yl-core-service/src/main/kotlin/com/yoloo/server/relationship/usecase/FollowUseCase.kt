@@ -3,9 +3,9 @@ package com.yoloo.server.relationship.usecase
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.exception.exception.ServiceExceptions.checkConflict
+import com.yoloo.server.common.queue.service.NotificationQueueService
 import com.yoloo.server.common.queue.vo.EventType
 import com.yoloo.server.common.queue.vo.YolooEvent
-import com.yoloo.server.common.queue.service.NotificationQueueService
 import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.relationship.entity.Relationship
@@ -34,7 +34,8 @@ class FollowUseCase(
         fromUser!!.profile.countData.followingCount = fromUser.profile.countData.followingCount.inc()
         toUser!!.profile.countData.followerCount = fromUser.profile.countData.followerCount.inc()
 
-        val relationship = createRelationship(fromUser, toUser)
+        val relationship =
+            Relationship.create(fromUser.id, fromUser.profile.displayName, fromUser.profile.image, toUser.id)
         relationshipFilter.insert(relationship.id)
 
         val saveResult = ofy().save().entities(fromUser, toUser, relationship)
@@ -48,16 +49,6 @@ class FollowUseCase(
 
     private fun getRelationshipFilter(): NanoCuckooFilter {
         return memcacheService.get(Relationship.KEY_FILTER_RELATIONSHIP).get() as NanoCuckooFilter
-    }
-
-    private fun createRelationship(fromUser: User, toUser: User): Relationship {
-        return Relationship(
-            id = Relationship.createId(fromUser.id, toUser.id),
-            fromId = fromUser.id,
-            toId = toUser.id,
-            displayName = fromUser.profile.displayName,
-            avatarImage = fromUser.profile.image
-        )
     }
 
     private fun addToNotificationQueue(toUserFcmToken: String, fromUser: User) {

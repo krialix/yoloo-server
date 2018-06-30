@@ -4,7 +4,7 @@ import com.yoloo.server.comment.entity.Comment
 import com.yoloo.server.comment.mapper.CommentResponseMapper
 import com.yoloo.server.comment.vo.CommentContent
 import com.yoloo.server.comment.vo.CommentResponse
-import com.yoloo.server.comment.vo.InsertCommentRequest
+import com.yoloo.server.comment.vo.CreateCommentRequest
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.common.queue.vo.EventType
@@ -31,7 +31,7 @@ class CreateCommentUseCase(
         requesterDisplayName: String,
         requesterAvatarUrl: String,
         postId: Long,
-        request: InsertCommentRequest
+        request: CreateCommentRequest
     ): CommentResponse {
         val userKey = User.createKey(requesterUserId)
         val postKey = Post.createKey(postId)
@@ -68,7 +68,7 @@ class CreateCommentUseCase(
         requesterUserId: Long,
         requesterDisplayName: String,
         requesterAvatarUrl: String,
-        request: InsertCommentRequest
+        request: CreateCommentRequest
     ): Comment {
         return Comment(
             id = idGenerator.generateId(),

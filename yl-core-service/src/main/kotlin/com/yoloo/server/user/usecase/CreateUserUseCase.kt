@@ -1,18 +1,24 @@
 package com.yoloo.server.user.usecase
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.api.core.ApiFuture
-import com.google.appengine.api.memcache.MemcacheService
+import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.google.firebase.auth.FirebaseAuth
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.id.config.IdBeanQualifier
 import com.yoloo.server.common.id.generator.LongIdGenerator
+import com.yoloo.server.common.queue.service.NotificationQueueService
+import com.yoloo.server.common.queue.service.SearchQueueService
+import com.yoloo.server.common.queue.vo.EventType
+import com.yoloo.server.common.queue.vo.YolooEvent
+import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.IP
 import com.yoloo.server.common.vo.Url
+import com.yoloo.server.group.entity.Group
+import com.yoloo.server.group.entity.Subscription
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.yoloo.server.relationship.entity.Relationship
 import com.yoloo.server.user.entity.User
-import com.yoloo.server.user.fetcher.GroupInfoFetcher
 import com.yoloo.server.user.mapper.UserResponseMapper
 import com.yoloo.server.user.provider.EmailUserRecordProvider
 import com.yoloo.server.user.provider.FacebookUserRecordProvider
@@ -26,31 +32,66 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.lang.IllegalArgumentException
 
-class UserRegisterUseCase(
-    private val groupInfoFetcher: GroupInfoFetcher,
+class CreateUserUseCase(
     @Qualifier(IdBeanQualifier.CACHED) private val idGenerator: LongIdGenerator,
-    private val objectMapper: ObjectMapper,
     private val firebaseAuth: FirebaseAuth,
-    private val memcacheService: MemcacheService,
+    private val memcacheService: AsyncMemcacheService,
     private val passwordEncoder: PasswordEncoder,
-    private val userResponseMapper: UserResponseMapper
+    private val userResponseMapper: UserResponseMapper,
+    private val notificationQueueService: NotificationQueueService,
+    private val searchQueueService: SearchQueueService
 ) {
 
-    fun execute(request: UserRegisterRequest): ResponseEntity<UserResponse> {
-        val userIdentityFilter = getUserIdentityFilter()
+    fun execute(request: UserCreateRequest): ResponseEntity<UserResponse> {
+        val cacheMap = memcacheService.getAll(
+            listOf(
+                User.KEY_FILTER_USER_IDENTIFIER,
+                Subscription.KEY_FILTER_SUBSCRIPTION,
+                Relationship.KEY_FILTER_RELATIONSHIP
+            )
+        ).get()
+
+        val userIdentityFilter = cacheMap[User.KEY_FILTER_USER_IDENTIFIER] as NanoCuckooFilter
+        val subcriptionFilter = cacheMap[Subscription.KEY_FILTER_SUBSCRIPTION] as NanoCuckooFilter
+        val relationshipFilter = cacheMap[Relationship.KEY_FILTER_RELATIONSHIP] as NanoCuckooFilter
 
         ServiceExceptions.checkConflict(!userIdentityFilter.contains(User.KEY_FILTER_USER_IDENTIFIER), "user.conflict")
 
         createFirebaseUser(request)
 
-        val subscribedGroupIds = request.subscribedGroupIds!!
-        val groups = groupInfoFetcher.fetch(subscribedGroupIds)
+        val subscribedGroups = ofy()
+            .load()
+            .type(Group::class.java)
+            .ids(request.subscribedGroupIds)
+            .values
+            .toList()
+
         val followedUsers = getFollowedUsers(request.followedUserIds.orEmpty())
 
-        val user = createDbUser(request, groups)
+        val user = createDbUser(request, subscribedGroups, followedUsers.size)
         val accessTokenFuture = createCustomToken(user.id)
 
-        saveTx(user, userIdentityFilter, followedUsers, subscribedGroupIds)
+        val updatedGroups = subscribedGroups
+            .asSequence()
+            .map { it.countData.subscriberCount.inc() }
+            .asIterable()
+
+        val subscriptions = subscribedGroups
+            .asSequence()
+            .map { Subscription.create(user.id, it.id, user.profile.displayName.value, user.profile.image.url.value) }
+            .toList()
+
+        val updatedUsers = followedUsers
+            .asSequence()
+            .map { it.profile.countData.followerCount.inc() }
+            .toList()
+
+        val relationships = followedUsers
+            .asSequence()
+            .map { Relationship.create(user.id, user.profile.displayName, user.profile.image, it.id) }
+            .toList()
+
+        saveTx(user, userIdentityFilter)
 
         val userResponse = userResponseMapper.apply(user, true, false)
 
@@ -60,7 +101,7 @@ class UserRegisterUseCase(
         return ResponseEntity(userResponse, httpHeaders, HttpStatus.CREATED)
     }
 
-    private fun createFirebaseUser(request: UserRegisterRequest) {
+    private fun createFirebaseUser(request: UserCreateRequest) {
         val userRecordProvider = when (request.providerId) {
             "google" -> GoogleUserRecordProvider(idGenerator)
             "facebook" -> FacebookUserRecordProvider(idGenerator)
@@ -72,11 +113,15 @@ class UserRegisterUseCase(
         firebaseAuth.importUsersAsync(listOf(userRecord), importOptions)
     }
 
-    private fun createDbUser(request: UserRegisterRequest, groups: List<UserGroup>): User {
+    private fun createDbUser(request: UserCreateRequest, groups: List<Group>, followingCount: Int): User {
         val app = request.app!!
         val device = request.device!!
         val screen = device.screen!!
         val os = device.os!!
+        val countData = when (followingCount) {
+            0 -> UserCountData()
+            else -> UserCountData(followingCount = followingCount.toLong())
+        }
 
         return User(
             id = idGenerator.generateId(),
@@ -88,9 +133,10 @@ class UserRegisterUseCase(
                 displayName = DisplayName(request.displayName!!),
                 image = AvatarImage(Url(request.photoUrl!!)),
                 gender = Gender.valueOf(request.gender!!.toUpperCase()),
-                locale = UserLocale(language = request.language!!, country = request.country!!)
+                locale = UserLocale(language = request.language!!, country = request.country!!),
+                countData = countData
             ),
-            subscribedGroups = groups,
+            subscribedGroups = groups.map { UserGroup(it.id, it.imageUrl.value, it.displayName.value) },
             appInfo = AppInfo(
                 googleAdsId = app.googleAdvertisingId!!
             ),
@@ -121,14 +167,15 @@ class UserRegisterUseCase(
 
     private fun saveTx(
         user: User,
-        filter: NanoCuckooFilter,
-        followedUsers: Collection<User>,
-        subscribedGroupIds: List<Long>
+        filter: NanoCuckooFilter
     ) {
         ofy().transact {
             saveEmailFilter(filter, user.email.value)
 
-            ofy().save().entity(user)
+            addToSearchQueue(user)
+
+            val saveResult = ofy().save().entity(user)
+            TestUtil.saveNow(saveResult)
         }
     }
 
@@ -144,7 +191,21 @@ class UserRegisterUseCase(
         }
     }
 
-    private fun getUserIdentityFilter(): NanoCuckooFilter {
-        return memcacheService.get(User.KEY_FILTER_USER_IDENTIFIER) as NanoCuckooFilter
+    private fun addToSearchQueue(user: User) {
+        val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_USER))
+            .addData("id", user.id.toString())
+            .addData("displayName", user.profile.displayName.value)
+            .build()
+
+        searchQueueService.addQueueAsync(event)
+    }
+
+    private fun addToNotificationQueue(user: User) {
+        val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_USER))
+            .addData("id", user.id.toString())
+            .addData("displayName", user.profile.displayName.value)
+            .build()
+
+        searchQueueService.addQueueAsync(event)
     }
 }

@@ -1,4 +1,4 @@
-package com.yoloo.server.search.config;
+package com.yoloo.server.search.solr;
 
 import org.springframework.context.annotation.Configuration;
 

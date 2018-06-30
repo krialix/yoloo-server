@@ -22,13 +22,14 @@ class UserResponseMapper {
             ),
             self = self,
             following = following,
-            subscribedGroups = from.subscribedGroups.map {
-                UserGroupResponse(
-                    it.id,
-                    it.displayName,
-                    it.imageUrl
-                )
-            },
+            subscribedGroups = from.subscribedGroups
+                .map {
+                    UserGroupResponse(
+                        it.id,
+                        it.displayName,
+                        it.imageUrl
+                    )
+                },
             spokenLanguages = from.profile.spokenLanguages.map { LanguageResponse(it.value) }
         )
     }

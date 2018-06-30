@@ -10,8 +10,7 @@ import java.util.stream.Collectors;
 public class DeletePostEventHandler extends EventHandler {
   private final PostRepository postRepository;
 
-  public DeletePostEventHandler(EventType eventType, PostRepository postRepository) {
-    super();
+  public DeletePostEventHandler(PostRepository postRepository) {
     this.postRepository = postRepository;
   }
 

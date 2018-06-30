@@ -6,6 +6,7 @@ import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id
 import com.yoloo.server.common.entity.BaseEntity
 import com.yoloo.server.common.util.NoArg
+import com.yoloo.server.common.vo.Url
 import com.yoloo.server.group.vo.*
 import java.util.*
 
@@ -17,6 +18,8 @@ data class Group(
     var id: Long,
 
     var displayName: DisplayName,
+
+    var imageUrl: Url,
 
     var description: Description,
 

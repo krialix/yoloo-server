@@ -23,9 +23,9 @@ data class Relationship(
     @Index
     var toId: Long = extractToId(id),
 
-    var displayName: DisplayName,
+    var fromDisplayName: DisplayName,
 
-    var avatarImage: AvatarImage
+    var fromAvatarImage: AvatarImage
 ) : BaseEntity<Relationship>() {
 
     companion object {
@@ -33,6 +33,19 @@ data class Relationship(
 
         const val INDEX_FROM_ID = "fromId"
         const val INDEX_TO_ID = "toId"
+
+        fun create(
+            fromId: Long,
+            fromDisplayName: DisplayName,
+            fromAvatarImage: AvatarImage,
+            toId: Long
+        ): Relationship {
+            return Relationship(
+                id = Relationship.createId(fromId, toId),
+                fromDisplayName = fromDisplayName,
+                fromAvatarImage = fromAvatarImage
+            )
+        }
 
         fun createId(fromId: Long, toId: Long): String {
             return "$fromId:$toId"

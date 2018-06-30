@@ -12,8 +12,7 @@ import java.util.stream.Collectors;
 public class NewUserEventHandler extends EventHandler {
   private final UserRepository userRepository;
 
-  public NewUserEventHandler(EventType eventType, UserRepository userRepository) {
-    super();
+  public NewUserEventHandler(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 

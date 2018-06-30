@@ -1,17 +1,14 @@
 package com.yoloo.server.user.config
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.memcache.MemcacheService
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.messaging.FirebaseMessaging
 import com.yoloo.server.common.id.config.IdBeanQualifier
 import com.yoloo.server.common.id.generator.LongIdGenerator
-import com.yoloo.server.user.fetcher.GroupInfoFetcher
+import com.yoloo.server.common.queue.service.NotificationQueueService
+import com.yoloo.server.common.queue.service.SearchQueueService
 import com.yoloo.server.user.mapper.UserResponseMapper
 import com.yoloo.server.user.usecase.*
-import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Lazy
@@ -29,23 +26,22 @@ class UserUseCaseConfig {
     @Lazy
     @Bean
     fun registerUserUseCase(
-        groupInfoFetcher: GroupInfoFetcher,
         @Qualifier(IdBeanQualifier.CACHED) idGenerator: LongIdGenerator,
-        eventPublisher: ApplicationEventPublisher,
-        objectMapper: ObjectMapper,
         memcacheService: MemcacheService,
         firebaseAuth: FirebaseAuth,
         passwordEncoder: PasswordEncoder,
-        userResponseMapper: UserResponseMapper
-    ): UserRegisterUseCase {
-        return UserRegisterUseCase(
-            groupInfoFetcher,
+        userResponseMapper: UserResponseMapper,
+        notificationQueueService: NotificationQueueService,
+        searchQueueService: SearchQueueService
+    ): CreateUserUseCase {
+        return CreateUserUseCase(
             idGenerator,
-            objectMapper,
             firebaseAuth,
             memcacheService,
             passwordEncoder,
-            userResponseMapper
+            userResponseMapper,
+            notificationQueueService,
+            searchQueueService
         )
     }
 
@@ -57,8 +53,8 @@ class UserUseCaseConfig {
 
     @Lazy
     @Bean
-    fun patchUserUseCase(memcacheService: MemcacheService): PatchUserUseCase {
-        return PatchUserUseCase(memcacheService)
+    fun updateUserUseCase(memcacheService: MemcacheService, searchQueueService: SearchQueueService): UpdateUserUseCase {
+        return UpdateUserUseCase(memcacheService, searchQueueService)
     }
 
     @Lazy

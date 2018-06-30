@@ -1,17 +1,16 @@
 package com.yoloo.server.user.provider
 
 import com.google.firebase.auth.ImportUserRecord
-import com.google.firebase.auth.UserImportHash
 import com.google.firebase.auth.UserImportOptions
 import com.google.firebase.auth.UserProvider
 import com.yoloo.server.common.id.generator.LongIdGenerator
 import com.yoloo.server.user.entity.User
-import com.yoloo.server.user.vo.UserRegisterRequest
+import com.yoloo.server.user.vo.UserCreateRequest
 
 class FacebookUserRecordProvider(private val idGenerator: LongIdGenerator) :
     FirebaseUserRecordProvider {
 
-    override fun provide(request: UserRegisterRequest): Pair<ImportUserRecord, UserImportOptions?> {
+    override fun provide(request: UserCreateRequest): Pair<ImportUserRecord, UserImportOptions?> {
         val userRecord = ImportUserRecord.builder()
             .setUid(idGenerator.toString())
             .setDisplayName(request.displayName)

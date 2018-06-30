@@ -12,12 +12,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
 @Configuration
-public class ServiceAutoConfiguration {
+public class QueueServiceAutoConfiguration {
 
   @Lazy
   @Bean
   public NotificationQueueService notificationService(
-      @Qualifier(QueueBeanQualifier.PULL_QUEUE) Queue notificationQueue,
+      @Qualifier(QueueBeanQualifier.NOTIFICATION) Queue notificationQueue,
       ObjectMapper objectMapper) {
     return new NotificationQueueServiceImpl(notificationQueue, objectMapper);
   }
@@ -25,7 +25,7 @@ public class ServiceAutoConfiguration {
   @Lazy
   @Bean
   public SearchQueueService searchService(
-      @Qualifier(QueueBeanQualifier.PULL_QUEUE) Queue searchQueue, ObjectMapper objectMapper) {
+      @Qualifier(QueueBeanQualifier.SEARCH) Queue searchQueue, ObjectMapper objectMapper) {
     return new SearchQueueServiceImpl(searchQueue, objectMapper);
   }
 }
