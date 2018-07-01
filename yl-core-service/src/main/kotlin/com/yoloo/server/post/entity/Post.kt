@@ -1,6 +1,5 @@
 package com.yoloo.server.post.entity
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.googlecode.objectify.Key
 import com.googlecode.objectify.annotation.*
 import com.googlecode.objectify.condition.IfEmpty
@@ -14,14 +13,12 @@ import java.time.LocalDateTime
 import java.util.*
 
 @NoArg
-@Cache(expirationSeconds = Post.CACHE_EXPIRATION_TIME)
+@Cache(expirationSeconds = Post.CACHE_TTL)
 @Entity
 data class Post(
-    @JsonProperty("id")
     @Id
     var id: Long,
 
-    @JsonProperty("type")
     var type: PostType,
 
     var author: Author,
@@ -40,7 +37,7 @@ data class Post(
     var approvedCommentId: ApprovedCommentId? = null,
 
     @Index(IfNotNull::class)
-    var coin: PostCoin? = null,
+    var bounty: PostBounty? = null,
 
     @IgnoreSave(IfEmpty::class)
     var attachments: List<@JvmSuppressWildcards PostAttachment> = emptyList(),
@@ -64,9 +61,9 @@ data class Post(
 
     companion object {
         const val INDEX_GROUP_ID = "group.id"
-        const val INDEX_COIN = "coin"
+        const val INDEX_BOUNTY = "bounty"
 
-        const val CACHE_EXPIRATION_TIME = 7200
+        const val CACHE_TTL = 7200
 
         fun createKey(postId: Long): Key<Post> {
             return Key.create(Post::class.java, postId)

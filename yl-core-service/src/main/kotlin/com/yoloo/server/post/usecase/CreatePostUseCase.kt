@@ -84,7 +84,7 @@ class CreatePostUseCase(
             title = PostTitle(request.title!!),
             group = PostGroup(group.id, group.displayName.value),
             tags = request.tags!!.map(::PostTag).toSet(),
-            coin = if (request.coin == 0) null else PostCoin(request.coin),
+            bounty = if (request.coin == 0) null else PostBounty(request.coin),
             buddyRequest = when (request.buddyInfo) {
                 null -> null
                 else -> createBuddyRequest(request.buddyInfo)

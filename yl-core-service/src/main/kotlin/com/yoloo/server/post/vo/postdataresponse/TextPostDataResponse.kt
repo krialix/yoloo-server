@@ -9,7 +9,7 @@ open class TextPostDataResponse(
     open var group: PostGroupResponse,
     open var tags: List<String>,
     open var approvedCommentId: Long?,
-    open var coin: Int,
+    open var bounty: Int,
     open var count: PostCountResponse,
     open var voted: Boolean,
     open var bookmarked: Boolean,

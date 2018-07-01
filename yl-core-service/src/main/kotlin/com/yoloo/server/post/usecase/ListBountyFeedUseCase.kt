@@ -48,7 +48,7 @@ class ListBountyFeedUseCase(
         var query = ofy()
             .load()
             .type(Post::class.java)
-            .filter("${Post.INDEX_COIN} !=", null)
+            .filter("${Post.INDEX_BOUNTY} !=", null)
             .orderKey(true)
 
         cursor?.let { query = query.startAt(Cursor.fromWebSafeString(it)) }
