@@ -11,7 +11,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    implementation project(":yl-common-firebase-config")
+    implementation project(":yl-common:yl-common-firebase-config")
 
     compileOnly 'org.springframework.boot:spring-boot-starter-web'
     api 'org.springframework.boot:spring-boot-starter-security'
