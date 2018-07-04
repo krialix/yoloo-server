@@ -16,9 +16,9 @@ configurations.all {
 }
 
 dependencies {
-    implementation project(':yl-common:yl-common-utils')
-    implementation project(':yl-common:yl-common-exception-config')
-    implementation project(':yl-common:yl-common-queue-api')
+    implementation project(':yl-common:yl-utils')
+    implementation project(':yl-common:yl-exception-config')
+    implementation project(':yl-common:yl-queue-api')
 
     implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
     compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"

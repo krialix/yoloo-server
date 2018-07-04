@@ -1,16 +1,28 @@
 rootProject.name = 'yoloo-server'
 
 include 'objectify'
-include 'yl-common:yl-common-utils'
-include 'yl-common:yl-common-validator'
-include 'yl-common:yl-common-exception-config'
-include 'yl-common:yl-common-id-generator'
-include 'yl-common:yl-common-firebase-config'
-include 'yl-common:yl-common-queue-api'
-include 'yl-common:yl-common-auth'
+include 'yl-common:yl-utils'
+include 'yl-common:yl-validator'
+include 'yl-common:yl-exception-config'
+include 'yl-common:yl-id-generator'
+include 'yl-common:yl-firebase-config'
+include 'yl-common:yl-queue-api'
+include 'yl-common:yl-auth-config'
 include 'yl-core-service'
 include 'yl-search-service'
 include 'yl-notification-service'
 include 'yl-feed-service'
 //include 'yl-oauth2-resource-server'
 
+project(':objectify').projectDir = "$rootDir/objectify" as File
+project(':yl-common:yl-utils').projectDir = "$rootDir/yl-common/yl-utils" as File
+project(':yl-common:yl-validator').projectDir = "$rootDir/yl-common/yl-validator" as File
+project(':yl-common:yl-exception-config').projectDir = "$rootDir/yl-common/yl-exception-config" as File
+project(':yl-common:yl-id-generator').projectDir = "$rootDir/yl-common/yl-id-generator" as File
+project(':yl-common:yl-firebase-config').projectDir = "$rootDir/yl-common/yl-firebase-config" as File
+project(':yl-common:yl-queue-api').projectDir = "$rootDir/yl-common/yl-queue-api" as File
+project(':yl-common:yl-auth-config').projectDir = "$rootDir/yl-common/yl-auth-config" as File
+project(':yl-core-service').projectDir = "$rootDir/yl-core-service" as File
+project(':yl-search-service').projectDir = "$rootDir/yl-search-service" as File
+project(':yl-notification-service').projectDir = "$rootDir/yl-notification-service" as File
+project(':yl-feed-service').projectDir = "$rootDir/yl-feed-service" as File

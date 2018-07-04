@@ -17,9 +17,9 @@ configurations.all {
 
 dependencies {
     implementation project(':objectify')
-    implementation project(':yl-common:yl-common-firebase-config')
-    implementation project(':yl-common:yl-common-id-generator')
-    implementation project(':yl-common:yl-common-exception-config')
+    implementation project(':yl-common:yl-firebase-config')
+    implementation project(':yl-common:yl-id-generator')
+    implementation project(':yl-common:yl-exception-config')
 
     // App Engine
     implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
