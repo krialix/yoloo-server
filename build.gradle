@@ -28,8 +28,8 @@ subprojects {
         resolutionStrategy {
             force 'com.fasterxml.jackson.core:jackson-databind:2.9.5',
                     'org.slf4j:slf4j-api:1.8.0-beta2',
-                    'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.50',
-                    'org.jetbrains.kotlin:kotlin-reflect:1.2.50'
+                    'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.51',
+                    'org.jetbrains.kotlin:kotlin-reflect:1.2.51'
         }
     }
 

@@ -12,7 +12,7 @@ import com.yoloo.server.common.queue.vo.EventType
 import com.yoloo.server.common.queue.vo.YolooEvent
 import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.common.vo.AvatarImage
-import com.yoloo.server.common.vo.IP
+import com.yoloo.server.common.vo.Ip
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.group.entity.Group
 import com.yoloo.server.group.entity.Subscription
@@ -148,7 +148,7 @@ class CreateUserUseCase(
                     height = screen.height!!,
                     width = screen.width!!
                 ),
-                localIp = IP(device.localIp!!),
+                localIp = Ip(device.localIp!!),
                 os = Os(
                     type = Os.Type.valueOf(os.type!!.toUpperCase()),
                     version = Os.Version(os.version!!)

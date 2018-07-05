@@ -1,7 +1,7 @@
 package com.yoloo.server.user.vo
 
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.common.vo.IP
+import com.yoloo.server.common.vo.Ip
 
 @NoArg
 data class Device(
@@ -9,5 +9,5 @@ data class Device(
     var model: String,
     var screen: Screen,
     var os: Os,
-    var localIp: IP
+    var localIp: Ip
 )

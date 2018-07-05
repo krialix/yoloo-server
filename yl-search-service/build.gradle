@@ -29,12 +29,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
     implementation 'org.springframework.data:spring-data-solr:4.0.0.M3'
     implementation 'org.springframework.data:spring-data-commons:2.1.0.M3'
-    implementation 'org.springframework.cloud:spring-cloud-gcp-starter-pubsub:1.0.0.M3'
+    implementation "org.springframework.cloud:spring-cloud-gcp-starter-pubsub:$springCloudGcpVersion"
 
     implementation 'com.lmax:disruptor:3.4.2'
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
 
-    implementation('org.apache.solr:solr-core:7.3.1', {
+    implementation('org.apache.solr:solr-core:7.4.0', {
         exclude group: 'org.eclipse.jetty'
         exclude group: 'io.dropwizard.metrics', module: 'metrics-jetty9'
         exclude group: 'io.dropwizard.metrics', module: 'metrics-ganglia'
@@ -42,7 +42,7 @@ dependencies {
         exclude group: 'io.dropwizard.metrics', module: 'metrics-jvm'
         exclude group: 'info.ganglia.gmetric4j', module: 'gmetric4j'
     })
-    implementation 'org.apache.solr:solr-solrj:7.3.1'
+    //implementation 'org.apache.solr:solr-solrj:7.4.0'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

@@ -1,18 +1,18 @@
 package com.yoloo.server.common.vo.response;
 
 public class ResponsePagination {
-  private String next;
   private String prev;
+  private String next;
 
   private ResponsePagination() {}
 
-  private ResponsePagination(Builder builder) {
-    next = builder.next;
-    prev = builder.prev;
+  private ResponsePagination(String prev, String next) {
+    this.next = next;
+    this.prev = prev;
   }
 
-  public static Builder newBuilder() {
-    return new Builder();
+  public static ResponsePagination create(String prev, String next) {
+    return new ResponsePagination(prev, next);
   }
 
   public String getNext() {
@@ -21,26 +21,5 @@ public class ResponsePagination {
 
   public String getPrev() {
     return prev;
-  }
-
-  public static final class Builder {
-    private String next;
-    private String prev;
-
-    private Builder() {}
-
-    public Builder next(String val) {
-      next = val;
-      return this;
-    }
-
-    public Builder prev(String val) {
-      prev = val;
-      return this;
-    }
-
-    public ResponsePagination build() {
-      return new ResponsePagination(this);
-    }
   }
 }
