@@ -32,7 +32,7 @@ noArg {
 dependencies {
     implementation fileTree(dir: 'libs', includes: ['*.jar'])
 
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.51'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
 
     // Spring
     implementation 'org.springframework.boot:spring-boot-autoconfigure'

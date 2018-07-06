@@ -59,8 +59,8 @@ dependencies {
     implementation 'com.lmax:disruptor:3.4.2'
 
     // Kotlin
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.51'
-    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.2.51'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
 
     // Util
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
