@@ -1,4 +1,4 @@
-package com.yoloo.server.search.queue.handler;
+package com.yoloo.server.search.queue;
 
 import com.yoloo.server.common.queue.vo.EventType;
 import com.yoloo.server.common.queue.vo.YolooEvent;

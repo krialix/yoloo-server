@@ -3,6 +3,8 @@ package com.yoloo.server.notification.config;
 import com.google.appengine.api.ThreadManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.NonNullApi;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
@@ -14,7 +16,7 @@ import java.util.concurrent.*;
 public class SchedulerConfig implements SchedulingConfigurer {
 
   @Override
-  public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+  public void configureTasks(@NonNull ScheduledTaskRegistrar taskRegistrar) {
     taskRegistrar.setTaskScheduler(taskScheduler());
   }
 

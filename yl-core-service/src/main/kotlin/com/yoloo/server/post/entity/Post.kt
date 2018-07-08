@@ -19,28 +19,25 @@ data class Post(
     @Id
     var id: Long,
 
-    var type: PostType,
-
     var author: Author,
-
-    var content: PostContent,
-
-    var flags: Set<@JvmSuppressWildcards PostPermFlag> = EnumSet.noneOf(PostPermFlag::class.java),
 
     var title: PostTitle,
 
+    var content: PostContent,
+
     var group: PostGroup,
 
-    var tags: Set<@JvmSuppressWildcards PostTag>,
+    var tags: Set<String>,
+
+    var medias: List<Media>,
+
+    var flags: Set<@JvmSuppressWildcards PostPermFlag> = EnumSet.noneOf(PostPermFlag::class.java),
 
     @IgnoreSave(IfNull::class)
     var approvedCommentId: ApprovedCommentId? = null,
 
     @Index(IfNotNull::class)
     var bounty: PostBounty? = null,
-
-    @IgnoreSave(IfEmpty::class)
-    var attachments: List<@JvmSuppressWildcards PostAttachment> = emptyList(),
 
     var buddyRequest: BuddyRequest? = null,
 
@@ -55,8 +52,6 @@ data class Post(
         super.onLoad()
         @Suppress("USELESS_ELVIS")
         flags = flags ?: emptySet()
-        @Suppress("USELESS_ELVIS")
-        attachments = attachments ?: emptyList()
     }
 
     companion object {

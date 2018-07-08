@@ -1,14 +1,13 @@
 package com.yoloo.server.user.vo
 
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 
 @NoArg
 data class Profile(
     var displayName: DisplayName,
 
-    var image: AvatarImage,
+    var profileImageUrl: Url,
 
     var profileUrl: Url? = null,
 

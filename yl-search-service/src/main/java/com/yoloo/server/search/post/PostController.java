@@ -1,4 +1,4 @@
-package com.yoloo.server.search.user;
+package com.yoloo.server.search.post;
 
 import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,21 +10,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/api/search")
 @RestController
-public class SearchUserController {
+class PostController {
 
-  private final UserRepository userRepository;
+  private final PostRepository postRepository;
 
   @Autowired
-  public SearchUserController(UserRepository userRepository) {
-    this.userRepository = userRepository;
+  PostController(PostRepository postRepository) {
+    this.postRepository = postRepository;
   }
 
-  @GetMapping("/users")
-  public Iterable<User> searchUsers(@RequestParam(value = "q", required = false) String query) {
+  @GetMapping("/posts")
+  Iterable<Post> searchPosts(@RequestParam(value = "q", required = false) String query) {
     if (Strings.isNullOrEmpty(query)) {
-      return userRepository.findAll();
+      return postRepository.findAll();
     }
 
-    return userRepository.findUsersByDisplayNameContaining(query, new SolrPageRequest(0, 30));
+    String[] values = query.split(" ");
+    return postRepository.findPostsByTitleLikeOrTagsLikeOrContentLike(
+        values, values, values, new SolrPageRequest(0, 30));
   }
 }

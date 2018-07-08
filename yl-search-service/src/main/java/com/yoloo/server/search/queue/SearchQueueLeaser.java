@@ -5,7 +5,6 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.TaskHandle;
 import com.yoloo.server.common.queue.config.QueueBeanQualifier;
 import com.yoloo.server.common.queue.vo.YolooEvent;
-import com.yoloo.server.search.queue.handler.EventHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -83,6 +82,48 @@ public class SearchQueueLeaser {
       return new EventState.Data(task, objectMapper.readValue(task.getPayload(), YolooEvent.class));
     } catch (IOException e) {
       return new EventState.Error(task, e);
+    }
+  }
+
+  abstract static class EventState {
+    abstract TaskHandle getTask();
+
+    static final class Data extends EventState {
+      private final TaskHandle task;
+      private final YolooEvent event;
+
+      Data(TaskHandle task, YolooEvent event) {
+        this.task = task;
+        this.event = event;
+      }
+
+      @Override
+      TaskHandle getTask() {
+        return task;
+      }
+
+      YolooEvent getEvent() {
+        return event;
+      }
+    }
+
+    static final class Error extends EventState {
+      private final TaskHandle task;
+      private final Throwable error;
+
+      Error(TaskHandle task, Throwable error) {
+        this.task = task;
+        this.error = error;
+      }
+
+      @Override
+      TaskHandle getTask() {
+        return task;
+      }
+
+      Throwable getError() {
+        return error;
+      }
     }
   }
 }

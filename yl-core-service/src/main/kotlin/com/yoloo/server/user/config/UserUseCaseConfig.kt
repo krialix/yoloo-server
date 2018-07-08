@@ -1,5 +1,6 @@
 package com.yoloo.server.user.config
 
+import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.google.appengine.api.memcache.MemcacheService
 import com.google.firebase.auth.FirebaseAuth
 import com.yoloo.server.common.id.config.IdBeanQualifier
@@ -27,7 +28,7 @@ class UserUseCaseConfig {
     @Bean
     fun registerUserUseCase(
         @Qualifier(IdBeanQualifier.CACHED) idGenerator: LongIdGenerator,
-        memcacheService: MemcacheService,
+        memcacheService: AsyncMemcacheService,
         firebaseAuth: FirebaseAuth,
         passwordEncoder: PasswordEncoder,
         userResponseMapper: UserResponseMapper,

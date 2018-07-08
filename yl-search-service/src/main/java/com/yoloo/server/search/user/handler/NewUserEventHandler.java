@@ -1,7 +1,8 @@
-package com.yoloo.server.search.queue.handler;
+package com.yoloo.server.search.user.handler;
 
 import com.yoloo.server.common.queue.vo.EventType;
 import com.yoloo.server.common.queue.vo.YolooEvent;
+import com.yoloo.server.search.queue.EventHandler;
 import com.yoloo.server.search.user.User;
 import com.yoloo.server.search.user.UserRepository;
 

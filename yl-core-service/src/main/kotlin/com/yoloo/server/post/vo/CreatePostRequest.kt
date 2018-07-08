@@ -30,7 +30,7 @@ data class CreatePostRequest(
     val coin: Int = 0,
 
     @field:UniqueElements
-    val attachments: List<MultipartFile>?,
+    val medias: List<MultipartFile>?,
 
     @field:Valid
     val buddyInfo: BuddyInfo?

@@ -1,21 +1,11 @@
 plugins {
-    id 'com.github.ben-manes.versions' version '0.20.0' apply false
+    id 'com.github.ben-manes.versions' version '0.17.0' apply false
 }
 
 apply from: 'dependencies.gradle'
 
 group = 'com.yoloo.server'
 version = '0.0.1-SNAPSHOT'
-
-allprojects {
-    repositories {
-        jcenter()
-    }
-
-    tasks.withType(JavaCompile) {
-        options.incremental = true
-    }
-}
 
 subprojects {
     apply plugin: 'base'
@@ -33,12 +23,13 @@ subprojects {
         exclude group: 'ch.qos.logback', module: 'logback-core'
         exclude group: 'ch.qos.logback', module: 'logback-classic'
         exclude group: 'org.slf4j', module: 'jul-to-slf4j'
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
 
         resolutionStrategy {
             force 'com.fasterxml.jackson.core:jackson-databind:2.9.5',
-                    'org.slf4j:slf4j-api:1.8.0-beta2'/*,
-                    "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion",
-                    "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"*/
+                    'org.slf4j:slf4j-api:1.8.0-beta2',
+                    'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.51',
+                    'org.jetbrains.kotlin:kotlin-reflect:1.2.51'
         }
     }
 

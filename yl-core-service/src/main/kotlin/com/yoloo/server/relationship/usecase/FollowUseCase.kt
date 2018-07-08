@@ -35,7 +35,7 @@ class FollowUseCase(
         toUser!!.profile.countData.followerCount = fromUser.profile.countData.followerCount.inc()
 
         val relationship =
-            Relationship.create(fromUser.id, fromUser.profile.displayName, fromUser.profile.image, toUser.id)
+            Relationship.create(fromUser.id, fromUser.profile.displayName, fromUser.profile.profileImageUrl, toUser.id)
         relationshipFilter.insert(relationship.id)
 
         val saveResult = ofy().save().entities(fromUser, toUser, relationship)

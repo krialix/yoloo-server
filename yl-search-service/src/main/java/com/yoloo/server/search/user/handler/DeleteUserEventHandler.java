@@ -1,22 +1,23 @@
-package com.yoloo.server.search.queue.handler;
+package com.yoloo.server.search.user.handler;
 
 import com.yoloo.server.common.queue.vo.EventType;
 import com.yoloo.server.common.queue.vo.YolooEvent;
-import com.yoloo.server.search.post.PostRepository;
+import com.yoloo.server.search.queue.EventHandler;
+import com.yoloo.server.search.user.UserRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DeletePostEventHandler extends EventHandler {
-  private final PostRepository postRepository;
+public class DeleteUserEventHandler extends EventHandler {
+  private final UserRepository userRepository;
 
-  public DeletePostEventHandler(PostRepository postRepository) {
-    this.postRepository = postRepository;
+  public DeleteUserEventHandler(UserRepository userRepository) {
+    this.userRepository = userRepository;
   }
 
   @Override
   public void process(EventType eventType, List<YolooEvent> events) {
-    if (eventType == EventType.DELETE_POST) {
+    if (eventType == EventType.DELETE_USER) {
       List<String> postIds =
           events
               .stream()
@@ -24,7 +25,7 @@ public class DeletePostEventHandler extends EventHandler {
               .map(map -> (String) map.get("id"))
               .collect(Collectors.toList());
 
-      postRepository.deletePostsByIdIn(postIds);
+      userRepository.deleteUsersByIdIn(postIds);
     }
 
     processNext(eventType, events);

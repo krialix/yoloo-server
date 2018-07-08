@@ -2,7 +2,7 @@ package com.yoloo.server.group.vo
 
 import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.common.vo.AvatarImage
+import com.yoloo.server.common.vo.Url
 
 @NoArg
 data class Owner(
@@ -11,7 +11,7 @@ data class Owner(
 
     var displayName: String,
 
-    var avatar: AvatarImage,
+    var profileImageUrl: Url,
 
     var verified: Boolean
 )

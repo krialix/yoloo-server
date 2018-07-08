@@ -1,8 +1,13 @@
 package com.yoloo.server.search.queue;
 
 import com.yoloo.server.search.post.PostRepository;
-import com.yoloo.server.search.queue.handler.*;
+import com.yoloo.server.search.post.handler.DeletePostEventHandler;
+import com.yoloo.server.search.post.handler.NewPostEventHandler;
+import com.yoloo.server.search.post.handler.UpdatePostEventHandler;
 import com.yoloo.server.search.user.UserRepository;
+import com.yoloo.server.search.user.handler.DeleteUserEventHandler;
+import com.yoloo.server.search.user.handler.NewUserEventHandler;
+import com.yoloo.server.search.user.handler.UpdateUserEventHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;

@@ -1,9 +1,8 @@
 package com.yoloo.server.comment.mapper
 
-import com.yoloo.server.common.vo.attachment.SimpleAttachmentResponse
 import com.yoloo.server.comment.entity.Comment
-import com.yoloo.server.post.vo.AuthorResponse
 import com.yoloo.server.comment.vo.CommentResponse
+import com.yoloo.server.post.vo.AuthorResponse
 
 class CommentResponseMapper {
 
@@ -14,7 +13,7 @@ class CommentResponseMapper {
                 id = from.author.id,
                 self = self,
                 displayName = from.author.displayName,
-                image = SimpleAttachmentResponse(from.author.avatar.url.value)
+                profileImageUrl = from.author.profileImageUrl.value
             ),
             content = from.content.value,
             approved = from.approved,

@@ -6,7 +6,6 @@ import com.googlecode.objectify.annotation.Id
 import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.entity.BaseEntity
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.group.vo.DisplayName
 import net.cinnom.nanocuckoo.NanoCuckooFilter
@@ -25,7 +24,7 @@ data class Subscription(
 
     var displayName: DisplayName,
 
-    var avatarImage: AvatarImage
+    var profileImageUrl: Url
 ) : BaseEntity<Subscription>() {
 
     companion object {
@@ -43,7 +42,7 @@ data class Subscription(
             return Subscription(
                 id = createId(requesterId, groupId),
                 displayName = DisplayName(requesterDisplayName),
-                avatarImage = AvatarImage(Url(requesterAvatarImageUrl))
+                profileImageUrl = Url(requesterAvatarImageUrl)
             )
         }
 

@@ -8,9 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends SolrCrudRepository<User, String> {
+public
+interface UserRepository extends SolrCrudRepository<User, String> {
 
-  Page<User> findUsersByDisplayNameContaining(String query, Pageable pageable);
+  public Page<User> findUsersByDisplayNameContaining(String query, Pageable pageable);
 
-  void deleteUsersByIdIn(List<String> ids);
+  public void deleteUsersByIdIn(List<String> ids);
 }

@@ -13,13 +13,11 @@ version '0.0.1-SNAPSHOT'
 
 compileKotlin {
     kotlinOptions {
-        freeCompilerArgs = ["-Xjsr305=strict",  "-Xprogressive"]
         jvmTarget = "1.8"
     }
 }
 compileTestKotlin {
     kotlinOptions {
-        freeCompilerArgs = ["-Xjsr305=strict",  "-Xprogressive"]
         jvmTarget = "1.8"
     }
 }
@@ -59,8 +57,8 @@ dependencies {
     implementation 'com.lmax:disruptor:3.4.2'
 
     // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
     // Util
     implementation 'net.cinnom:nano-cuckoo:2.0.0'

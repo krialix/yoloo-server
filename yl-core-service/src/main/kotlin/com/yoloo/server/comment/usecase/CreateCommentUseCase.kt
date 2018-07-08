@@ -7,11 +7,10 @@ import com.yoloo.server.comment.vo.CommentResponse
 import com.yoloo.server.comment.vo.CreateCommentRequest
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.id.generator.LongIdGenerator
+import com.yoloo.server.common.queue.service.NotificationQueueService
 import com.yoloo.server.common.queue.vo.EventType
 import com.yoloo.server.common.queue.vo.YolooEvent
-import com.yoloo.server.common.queue.service.NotificationQueueService
 import com.yoloo.server.common.util.TestUtil
-import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
@@ -76,7 +75,7 @@ class CreateCommentUseCase(
             author = Author(
                 id = requesterUserId,
                 displayName = requesterDisplayName,
-                avatar = AvatarImage(Url(requesterAvatarUrl))
+                profileImageUrl = Url(requesterAvatarUrl)
             ),
             content = CommentContent(request.content!!)
         )

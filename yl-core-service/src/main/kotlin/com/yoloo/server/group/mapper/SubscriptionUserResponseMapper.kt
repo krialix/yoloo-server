@@ -9,7 +9,7 @@ class SubscriptionUserResponseMapper {
         return SubscriptionUserResponse(
             id = from.userId,
             displayName = from.displayName.value,
-            imageUrl = from.avatarImage.url.value
+            profileImageUrl = from.profileImageUrl.value
         )
     }
 }

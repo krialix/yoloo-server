@@ -2,10 +2,10 @@ package com.yoloo.server.post.usecase
 
 import com.googlecode.objectify.Key
 import com.yoloo.server.common.id.generator.LongIdGenerator
-import com.yoloo.server.common.queue.vo.EventType
-import com.yoloo.server.common.queue.vo.YolooEvent
 import com.yoloo.server.common.queue.service.NotificationQueueService
 import com.yoloo.server.common.queue.service.SearchQueueService
+import com.yoloo.server.common.queue.vo.EventType
+import com.yoloo.server.common.queue.vo.YolooEvent
 import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.group.entity.Group
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
@@ -60,54 +60,35 @@ class CreatePostUseCase(
             .addData("id", post.id.toString())
             .addData("title", post.title.value)
             .addData("content", post.content.value)
-            .addData("tags", post.tags.map { it.value })
+            .addData("tags", post.tags)
             .addData("buddyRequest", post.buddyRequest)
             .build()
 
         searchQueueService.addQueueAsync(event)
     }
 
-    private fun createPost(
-        request: CreatePostRequest,
-        user: User,
-        group: Group
-    ): Post {
+    private fun createPost(request: CreatePostRequest, user: User, group: Group): Post {
         return Post(
             id = idGenerator.generateId(),
-            type = findPostType(request),
             author = Author(
                 id = user.id,
                 displayName = user.profile.displayName.value,
-                avatar = user.profile.image
+                profileImageUrl = user.profile.profileImageUrl
             ),
             content = PostContent(request.content!!),
             title = PostTitle(request.title!!),
             group = PostGroup(group.id, group.displayName.value),
-            tags = request.tags!!.map(::PostTag).toSet(),
+            tags = request.tags!!.toSet(),
             bounty = if (request.coin == 0) null else PostBounty(request.coin),
             buddyRequest = when (request.buddyInfo) {
                 null -> null
-                else -> createBuddyRequest(request.buddyInfo)
-            }
-        )
-    }
-
-    private fun findPostType(request: CreatePostRequest): PostType {
-        if (request.buddyInfo != null) {
-            return PostType.BUDDY
-        }
-        if (request.attachments != null) {
-            return PostType.ATTACHMENT
-        }
-
-        return PostType.TEXT
-    }
-
-    private fun createBuddyRequest(buddyInfo: BuddyInfo): BuddyRequest {
-        return BuddyRequest(
-            peopleRange = Range(buddyInfo.fromPeople!!, buddyInfo.toPeople!!),
-            location = Location(buddyInfo.location!!),
-            dateRange = Range(buddyInfo.fromDate!!, buddyInfo.toDate!!)
+                else -> BuddyRequest(
+                    peopleRange = Range(request.buddyInfo.fromPeople!!, request.buddyInfo.toPeople!!),
+                    location = Location(request.buddyInfo.location!!),
+                    dateRange = Range(request.buddyInfo.fromDate!!, request.buddyInfo.toDate!!)
+                )
+            },
+            medias = emptyList() // TODO: Implement media upload
         )
     }
 }

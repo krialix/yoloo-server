@@ -11,7 +11,6 @@ import com.yoloo.server.common.queue.service.SearchQueueService
 import com.yoloo.server.common.queue.vo.EventType
 import com.yoloo.server.common.queue.vo.YolooEvent
 import com.yoloo.server.common.util.TestUtil
-import com.yoloo.server.common.vo.AvatarImage
 import com.yoloo.server.common.vo.Ip
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.group.entity.Group
@@ -78,7 +77,14 @@ class CreateUserUseCase(
 
         val subscriptions = subscribedGroups
             .asSequence()
-            .map { Subscription.create(user.id, it.id, user.profile.displayName.value, user.profile.image.url.value) }
+            .map {
+                Subscription.create(
+                    user.id,
+                    it.id,
+                    user.profile.displayName.value,
+                    user.profile.profileImageUrl.value
+                )
+            }
             .toList()
 
         val updatedUsers = followedUsers
@@ -88,7 +94,7 @@ class CreateUserUseCase(
 
         val relationships = followedUsers
             .asSequence()
-            .map { Relationship.create(user.id, user.profile.displayName, user.profile.image, it.id) }
+            .map { Relationship.create(user.id, user.profile.displayName, user.profile.profileImageUrl, it.id) }
             .toList()
 
         saveTx(user, userIdentityFilter)
@@ -131,7 +137,7 @@ class CreateUserUseCase(
             clientId = request.clientId!!,
             profile = Profile(
                 displayName = DisplayName(request.displayName!!),
-                image = AvatarImage(Url(request.photoUrl!!)),
+                profileImageUrl = Url(request.photoUrl!!),
                 gender = Gender.valueOf(request.gender!!.toUpperCase()),
                 locale = UserLocale(language = request.language!!, country = request.country!!),
                 countData = countData

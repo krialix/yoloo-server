@@ -2,7 +2,7 @@ package com.yoloo.server.post.vo
 
 import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.common.vo.AvatarImage
+import com.yoloo.server.common.vo.Url
 
 @NoArg
 data class Author(
@@ -11,5 +11,5 @@ data class Author(
 
     var displayName: String,
 
-    var avatar: AvatarImage
+    var profileImageUrl: Url
 )

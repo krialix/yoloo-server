@@ -9,7 +9,7 @@ data class UserResponse(
     val displayName: String,
     val self: Boolean,
     val following: Boolean,
-    val avatarUrl: String,
+    val profileImageUrl: String,
     val email: String,
     val about: String?,
     val website: String?,

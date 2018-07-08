@@ -23,7 +23,7 @@ class UpdatePostUseCase(private val searchQueueService: SearchQueueService) {
         ServiceExceptions.checkForbidden(self, "post.forbidden_update")
 
         request.content?.let { post.content.value = it }
-        request.tags?.map { PostTag(it) }?.toSet()?.let { post.tags = it }
+        request.tags?.toSet()?.let { post.tags = it }
 
         val saveResult = ofy().save().entity(post)
         TestUtil.saveNow(saveResult)
@@ -36,7 +36,7 @@ class UpdatePostUseCase(private val searchQueueService: SearchQueueService) {
             .addData("id", post.id.toString())
             .addData("title", post.title.value)
             .addData("content", post.content.value)
-            .addData("tags", post.tags.map { it.value })
+            .addData("tags", post.tags)
             .addData("buddyRequest", post.buddyRequest)
             .build()
 

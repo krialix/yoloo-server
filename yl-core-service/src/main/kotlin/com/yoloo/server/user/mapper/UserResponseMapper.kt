@@ -11,7 +11,7 @@ class UserResponseMapper {
             profileUrl = from.profile.profileUrl?.value,
             displayName = from.profile.displayName.value,
             about = from.profile.about?.value,
-            avatarUrl = from.profile.image.url.value,
+            profileImageUrl = from.profile.profileImageUrl.value,
             website = from.profile.websiteUrl?.value,
             locale = LocaleResponse(from.profile.locale.language, from.profile.locale.country),
             email = from.email.value,

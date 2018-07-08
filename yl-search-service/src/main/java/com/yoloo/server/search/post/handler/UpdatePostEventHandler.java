@@ -1,10 +1,11 @@
-package com.yoloo.server.search.queue.handler;
+package com.yoloo.server.search.post.handler;
 
 import com.google.common.collect.Lists;
 import com.yoloo.server.common.queue.vo.EventType;
 import com.yoloo.server.common.queue.vo.YolooEvent;
 import com.yoloo.server.search.post.Post;
 import com.yoloo.server.search.post.PostRepository;
+import com.yoloo.server.search.queue.EventHandler;
 
 import java.util.List;
 import java.util.Map;

@@ -35,7 +35,7 @@ class ListRelationshipUseCase {
                 RelationshipResponse(
                     Relationship.extractToId(it.id),
                     it.fromDisplayName.value,
-                    it.fromAvatarImage.url.value
+                    it.fromProfileImageUrl.value
                 )
             }
             .toList()
@@ -48,7 +48,7 @@ class ListRelationshipUseCase {
                 RelationshipResponse(
                     Relationship.extractFromId(it.id),
                     it.fromDisplayName.value,
-                    it.fromAvatarImage.url.value
+                    it.fromProfileImageUrl.value
                 )
             }
             .toList()

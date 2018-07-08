@@ -25,7 +25,7 @@ class Oauth2UserDetailsService(private val passwordEncoder: PasswordEncoder) : U
         return Oauth2User(
             userId = user.id,
             email = user.email.value,
-            profileImageUrl = user.profile.image.url.value,
+            profileImageUrl = user.profile.profileImageUrl.url.value,
             password = user.password?.value ?: "",
             username = user.profile.displayName.value,
             enabled = !user.disabled,

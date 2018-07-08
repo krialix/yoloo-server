@@ -6,7 +6,7 @@ import com.googlecode.objectify.annotation.Id
 import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.entity.BaseEntity
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.common.vo.AvatarImage
+import com.yoloo.server.common.vo.Url
 import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.vo.DisplayName
 import net.cinnom.nanocuckoo.NanoCuckooFilter
@@ -25,7 +25,7 @@ data class Relationship(
 
     var fromDisplayName: DisplayName,
 
-    var fromAvatarImage: AvatarImage
+    var fromProfileImageUrl: Url
 ) : BaseEntity<Relationship>() {
 
     companion object {
@@ -37,13 +37,13 @@ data class Relationship(
         fun create(
             fromId: Long,
             fromDisplayName: DisplayName,
-            fromAvatarImage: AvatarImage,
+            fromProfileImageUrl: Url,
             toId: Long
         ): Relationship {
             return Relationship(
                 id = Relationship.createId(fromId, toId),
                 fromDisplayName = fromDisplayName,
-                fromAvatarImage = fromAvatarImage
+                fromProfileImageUrl = fromProfileImageUrl
             )
         }
 

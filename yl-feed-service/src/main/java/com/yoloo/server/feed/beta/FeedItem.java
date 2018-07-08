@@ -1,5 +1,5 @@
 package com.yoloo.server.feed.beta;
 
-public class FeedItemFetcher<T> {
+public interface FeedItem<T> {
 
 }
