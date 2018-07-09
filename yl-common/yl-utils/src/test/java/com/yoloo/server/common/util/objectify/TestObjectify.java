@@ -6,18 +6,14 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.impl.ObjectifyImpl;
 
-/**
- * Adds some convenience methods.
- */
+/** Adds some convenience methods. */
 public class TestObjectify extends ObjectifyImpl<TestObjectify> {
 
   TestObjectify(ObjectifyFactory fact) {
     super(fact);
   }
 
-  /**
-   * Utility methods that puts, clears the session, and immediately gets an entity
-   */
+  /** Utility methods that puts, clears the session, and immediately gets an entity */
   public <T> T saveClearLoad(T saveMe) {
     Key<T> key = save().entity(saveMe).now();
 

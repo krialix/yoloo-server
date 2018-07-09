@@ -1,29 +1,13 @@
 package com.yoloo.server.common.util.appengine;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.json.XML.toJSONObject;
-
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalImagesServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalMemcacheServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalModulesServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.appengine.tools.development.testing.LocalTaskQueueTestConfig;
-import com.google.appengine.tools.development.testing.LocalURLFetchServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import com.google.appengine.tools.development.testing.*;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.googlecode.objectify.util.Closeable;
-import java.io.File;
-import java.time.Clock;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.annotation.Nullable;
-
 import com.yoloo.server.common.util.objectify.TestObjectifyService;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +17,19 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+
+import javax.annotation.Nullable;
+import java.io.File;
+import java.io.IOException;
+import java.time.Clock;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static com.google.common.truth.Truth.assert_;
+import static com.yoloo.server.common.util.ResourceUtils.readResourceUtf8;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.json.XML.toJSONObject;
 
 /**
  * JUnit Rule for managing the App Engine testing environment.
@@ -50,20 +47,19 @@ public final class AppEngineRule extends ExternalResource {
    The GAE testing library requires queue.xml to be a file, not a resource in a jar, so we read it
    in here and write it to a temporary file later.
   */
-  /*private static final String QUEUE_XML =
-  readResourceUtf8("WEB-INF/queue.xml");*/
+  private static final String QUEUE_XML = readResourceUtf8("WEB-INF/queue.xml");
 
-  /**
-   * A parsed version of the indexes used in the prod code.
-   */
-  /*private static final Set<String> MANUAL_INDEXES =
-  getIndexXmlStrings(readResourceUtf8("com/yoloo/server/env/default/WEB_INF/datastore-indexes.xml"));*/
+  /** A parsed version of the indexes used in the prod code. */
+  private static final Set<String> MANUAL_INDEXES =
+      getIndexXmlStrings(
+          readResourceUtf8("com/yoloo/server/env/default/WEB_INF/datastore-indexes.xml"));
+
+  private static final String LOGGING_PROPERTIES =
+      readResourceUtf8(AppEngineRule.class, "logging.properties");
 
   private LocalServiceTestHelper helper;
 
-  /**
-   * A rule-within-a-rule to provide a temporary folder for AppEngineRule's internal temp files.
-   */
+  /** A rule-within-a-rule to provide a temporary folder for AppEngineRule's internal temp files. */
   private TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   private boolean withDatastore;
@@ -82,27 +78,6 @@ public final class AppEngineRule extends ExternalResource {
 
   public static Builder builder() {
     return new Builder();
-  }
-
-  /**
-   * Read a Datastore index file, and parse the indexes into individual strings.
-   */
-  private static Set<String> getIndexXmlStrings(String indexFile) {
-    ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
-    try {
-      // To normalize the indexes, we are going to pass them through JSON and then rewrite the xml.
-      JSONObject datastoreIndexes = new JSONObject();
-      Object indexes = toJSONObject(indexFile).get("datastore-indexes");
-      if (indexes instanceof JSONObject) {
-        datastoreIndexes = (JSONObject) indexes;
-      }
-      for (JSONObject index : getJsonAsArray(datastoreIndexes.opt("datastore-index"))) {
-        builder.add(getIndexXmlString(index));
-      }
-    } catch (JSONException e) {
-      throw new RuntimeException(e);
-    }
-    return builder.build();
   }
 
   /**
@@ -125,34 +100,45 @@ public final class AppEngineRule extends ExternalResource {
     return builder.build();
   }
 
-  /**
-   * Turn a JSON representation of an index into xml.
-   */
+  /** Read a Datastore index file, and parse the indexes into individual strings. */
+  private static Set<String> getIndexXmlStrings(String indexFile) {
+    ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
+    try {
+      // To normalize the indexes, we are going to pass them through JSON and then rewrite the xml.
+      JSONObject datastoreIndexes = new JSONObject();
+      Object indexes = toJSONObject(indexFile).get("datastore-indexes");
+      if (indexes instanceof JSONObject) {
+        datastoreIndexes = (JSONObject) indexes;
+      }
+      for (JSONObject index : getJsonAsArray(datastoreIndexes.opt("datastore-index"))) {
+        builder.add(getIndexXmlString(index));
+      }
+    } catch (JSONException e) {
+      throw new RuntimeException(e);
+    }
+    return builder.build();
+  }
+
+  /** Turn a JSON representation of an index into xml. */
   private static String getIndexXmlString(JSONObject source) throws JSONException {
     StringBuilder builder = new StringBuilder();
     builder.append(
         String.format(
             "<datastore-index kind=\"%s\" ancestor=\"%s\" source=\"manual\">\n",
             source.getString("kind"), source.get("ancestor").toString()));
-    for (JSONObject property : getJsonAsArray(source.get("property"))) {
-      builder.append(
-          String.format(
-              "  <property name=\"%s\" direction=\"%s\"/>\n",
-              property.getString("name"), property.getString("direction")));
-    }
+
+    getJsonAsArray(source.get("property"))
+        .forEach(
+            property ->
+                builder.append(
+                    String.format(
+                        "  <property name=\"%s\" direction=\"%s\"/>\n",
+                        property.getString("name"), property.getString("direction"))));
+
     return builder.append("</datastore-index>").toString();
   }
 
-  /** Create some fake registrars. */
-  /*public static void loadInitialData() {
-    persistSimpleResources(
-    ImmutableList.of(
-        makeRegistrar1(), makeRegistrarContact1(), makeRegistrar2(), makeRegistrarContact2()));
-  }*/
-
-  /**
-   * Hack to make sure AppEngineRule is always wrapped in a TemporaryFolder rule.
-   */
+  /** Hack to make sure AppEngineRule is always wrapped in a TemporaryFolder rule. */
   @Override
   public Statement apply(Statement base, Description description) {
     return RuleChain.outerRule(temporaryFolder)
@@ -180,13 +166,6 @@ public final class AppEngineRule extends ExternalResource {
       // This forces app engine to write the generated indexes to a usable location.
       System.setProperty("appengine.generated.dir", temporaryFolder.getRoot().getAbsolutePath());
     }
-    if (withLocalModules) {
-      configs.add(
-          new LocalModulesServiceTestConfig()
-              .addBasicScalingModuleVersion("default", "1", 1)
-              .addBasicScalingModuleVersion("tools", "1", 1)
-              .addBasicScalingModuleVersion("backend", "1", 1));
-    }
     if (withTaskQueue) {
       File queueFile = temporaryFolder.newFile("queue.xml");
       Files.asCharSink(queueFile, UTF_8).write(taskQueueXml);
@@ -196,7 +175,7 @@ public final class AppEngineRule extends ExternalResource {
       configs.add(new LocalUserServiceTestConfig());
     }
 
-    helper = new LocalServiceTestHelper(configs.toArray(new LocalServiceTestConfig[]{}));
+    helper = new LocalServiceTestHelper(configs.toArray(new LocalServiceTestConfig[] {}));
 
     if (withUserService) {
       // Set top-level properties on LocalServiceTestConfig for user login.
@@ -217,10 +196,6 @@ public final class AppEngineRule extends ExternalResource {
       helper.setClock(() -> clock.millis());
     }
 
-    if (withLocalModules) {
-      helper.setEnvInstance("0");
-    }
-
     helper.setUp();
 
     if (withDatastore) {
@@ -232,8 +207,6 @@ public final class AppEngineRule extends ExternalResource {
       rootService = TestObjectifyService.begin();
 
       // JodaTimeTranslators.add(TestObjectifyService.fact());
-
-      // loadInitialData();
     }
 
     if (withMemcache) {
@@ -252,7 +225,7 @@ public final class AppEngineRule extends ExternalResource {
     helper = null;
 
     // Test that Datastore didn't need any indexes we don't have listed in our index file.
-    /*try {
+    try {
       Set<String> autoIndexes =
           getIndexXmlStrings(
               Files.asCharSource(
@@ -263,51 +236,37 @@ public final class AppEngineRule extends ExternalResource {
         assert_().fail("Missing indexes:\n%s", Joiner.on('\n').join(missingIndexes));
       }
     } catch (IOException e) { // This is fine; no indexes were written.
-    }*/
+    }
   }
 
-  /**
-   * Builder for {@link AppEngineRule}.
-   */
   public static class Builder {
+    private final AppEngineRule rule = new AppEngineRule();
 
-    private AppEngineRule rule = new AppEngineRule();
-
-    /**
-     * Turn on the Datastore service.
-     */
+    /** Turn on the Datastore service. */
     public Builder withDatastore() {
       rule.withDatastore = true;
       return this;
     }
 
-    /**
-     * Turn on the use of local modules.
-     */
+    /** Turn on the use of local modules. */
     public Builder withLocalModules() {
       rule.withLocalModules = true;
       return this;
     }
 
-    /**
-     * Turn on the task queue service.
-     */
+    /** Turn on the task queue service. */
     public Builder withTaskQueue() {
-      return withTaskQueue("src/main/webapp/WEB-INF/queue.xml");
+      return withTaskQueue(QUEUE_XML);
     }
 
-    /**
-     * Turn on the task queue service with a specified set of queues.
-     */
+    /** Turn on the task queue service with a specified set of queues. */
     public Builder withTaskQueue(String taskQueueXml) {
       rule.withTaskQueue = true;
       rule.taskQueueXml = taskQueueXml;
       return this;
     }
 
-    /**
-     * Turn on the URL Fetch service.
-     */
+    /** Turn on the URL Fetch service. */
     public Builder withUrlFetch() {
       rule.withUrlFetch = true;
       return this;

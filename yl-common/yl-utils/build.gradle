@@ -42,9 +42,12 @@ dependencies {
     compileOnly "com.googlecode.objectify:objectify:$objectifyVersion"
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.6'
 
+    api 'com.google.guava:guava:25.1-jre'
+
     // Test
     testCompile "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
     testCompile "com.googlecode.objectify:objectify:$objectifyVersion"
+    testCompile 'com.google.truth:truth:0.41'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20180130'
     testImplementation "com.google.appengine:appengine-testing:$appengineVersion"
