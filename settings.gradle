@@ -12,6 +12,7 @@ include 'yl-core-service'
 include 'yl-search-service'
 include 'yl-notification-service'
 include 'yl-feed-service'
+include 'pubsub-emulator'
 //include 'yl-oauth2-resource-server'
 
 project(':objectify').projectDir = "$rootDir/objectify" as File
@@ -26,3 +27,4 @@ project(':yl-core-service').projectDir = "$rootDir/yl-core-service" as File
 project(':yl-search-service').projectDir = "$rootDir/yl-search-service" as File
 project(':yl-notification-service').projectDir = "$rootDir/yl-notification-service" as File
 project(':yl-feed-service').projectDir = "$rootDir/yl-feed-service" as File
+project(':pubsub-emulator').projectDir = "$rootDir/pubsub-emulator" as File

@@ -1,8 +1,8 @@
-package com.yoloo.server.notification.api;
+package com.yoloo.server.pubsub.emulator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yoloo.server.notification.payload.NotificationPayload;
+import com.yoloo.server.pubsub.emulator.payload.NotificationPayload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.cloud.gcp.pubsub.PubSubAdmin;
@@ -26,15 +26,19 @@ public class PubSubController {
     this.mapper = mapper;
   }
 
+  /* TOPICS */
+
   @PostMapping("/topics")
   public void createTopic(@RequestBody CreateTopicRequest request) {
-    pubSubAdmin.createTopic(request.topicName);
+    pubSubAdmin.createTopic(request.getTopicName());
   }
 
   @DeleteMapping("/topics/{topic}")
   public void deleteTopic(@PathVariable("topic") String topicName) {
     pubSubAdmin.deleteTopic(topicName);
   }
+
+  /* SUBSCRIPTION */
 
   @PostMapping("/subscriptions")
   public void createSubscription(@RequestBody CreateSubscriptionRequest request) {
@@ -44,14 +48,6 @@ public class PubSubController {
   @DeleteMapping("/subscriptions/{subscription}")
   public void deleteSubscription(@PathVariable("subscription") String subscriptionName) {
     pubSubAdmin.deleteSubscription(subscriptionName);
-  }
-
-  @PostMapping("/topics/{topic}/publish")
-  public void publish(
-      @PathVariable("topic") String topicName, @RequestBody NotificationPayload payload)
-      throws JsonProcessingException {
-    String json = mapper.writeValueAsString(payload);
-    pubSubTemplate.publish(topicName, json, null);
   }
 
   @PostMapping("/subscriptions/{subscription}/subscribe")
@@ -66,16 +62,13 @@ public class PubSubController {
         });
   }
 
-  static class CreateTopicRequest {
-    public String topicName;
+  /* PUBLISH */
 
-    public CreateTopicRequest() {}
-  }
-
-  static class CreateSubscriptionRequest {
-    public String topicName;
-    public String subscriptionName;
-
-    public CreateSubscriptionRequest() {}
+  @PostMapping("/topics/{topic}/publish")
+  public void publish(
+      @PathVariable("topic") String topicName, @RequestBody NotificationPayload payload)
+      throws JsonProcessingException {
+    String json = mapper.writeValueAsString(payload);
+    pubSubTemplate.publish(topicName, json, null);
   }
 }
