@@ -6,7 +6,7 @@ import com.googlecode.objectify.annotation.Id
 import com.yoloo.server.comment.vo.CommentContent
 import com.yoloo.server.common.entity.BaseEntity
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.post.vo.Author
+import com.yoloo.server.common.vo.Author
 import com.yoloo.server.post.vo.PostId
 
 @NoArg

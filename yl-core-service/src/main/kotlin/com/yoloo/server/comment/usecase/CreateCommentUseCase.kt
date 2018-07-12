@@ -14,7 +14,7 @@ import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.vo.Author
+import com.yoloo.server.common.vo.Author
 import com.yoloo.server.post.vo.PostId
 import com.yoloo.server.post.vo.PostPermFlag
 import com.yoloo.server.user.entity.User

@@ -12,7 +12,7 @@ targetCompatibility = 1.8
 
 dependencies {
     compileOnly "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
-    compileOnly "com.googlecode.objectify:objectify:$objectifyVersion"
+    api "com.googlecode.objectify:objectify:$objectifyVersion"
     compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
     compileOnly 'org.springframework.boot:spring-boot-autoconfigure'
 
