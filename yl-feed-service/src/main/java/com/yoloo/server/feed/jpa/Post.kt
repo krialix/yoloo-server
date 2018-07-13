@@ -17,7 +17,7 @@ class Post(
     @Id
     var id: Long,
 
-    @ManyToOne
+    @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "author_id")
     var author: Author,
 
@@ -27,7 +27,7 @@ class Post(
     @Column(nullable = false)
     var content: String,
 
-    @ManyToOne
+    @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "post_group_id")
     var group: Group,
 
