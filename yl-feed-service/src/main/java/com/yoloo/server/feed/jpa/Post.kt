@@ -36,11 +36,11 @@ class Post(
     var tags: Set<String>,
 
     @Convert(converter = MediaCollectionConverter::class)
-    @Column(nullable = false)
+    @Column
     var medias: List<@JvmSuppressWildcards Media>,
 
     @Convert(converter = PostPermFlagCollectionConverter::class)
-    @Column(nullable = false)
+    @Column
     var flags: Set<@JvmSuppressWildcards PostPermFlag> = EnumSet.noneOf(PostPermFlag::class.java),
 
     @Column

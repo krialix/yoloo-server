@@ -15,8 +15,11 @@ class PostPermFlagCollectionConverter: AttributeConverter<Set<PostPermFlag>, Str
     }
 
     override fun convertToEntityAttribute(dbData: String?): Set<PostPermFlag> {
+        if (dbData.isNullOrBlank()) {
+            return EnumSet.noneOf(PostPermFlag::class.java)
+        }
+
         return objectMapper.readValue(dbData, object : TypeReference<Set<PostPermFlag>>() {})
-            ?: EnumSet.noneOf(PostPermFlag::class.java)
     }
 
     companion object {

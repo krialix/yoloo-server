@@ -6,14 +6,18 @@ import javax.persistence.AttributeConverter
 import javax.persistence.Converter
 
 @Converter
-class TagCollectionConverter : AttributeConverter<List<String>, String> {
+class TagCollectionConverter : AttributeConverter<Set<String>, String> {
 
-    override fun convertToDatabaseColumn(attribute: List<String>?): String {
+    override fun convertToDatabaseColumn(attribute: Set<String>?): String {
         return objectMapper.writeValueAsString(attribute)
     }
 
-    override fun convertToEntityAttribute(dbData: String?): List<String> {
-        return objectMapper.readValue(dbData, object : TypeReference<List<String>>() {})
+    override fun convertToEntityAttribute(dbData: String?): Set<String> {
+        if (dbData.isNullOrBlank()) {
+            return emptySet()
+        }
+
+        return objectMapper.readValue(dbData, object : TypeReference<Set<String>>() {})
     }
 
     companion object {

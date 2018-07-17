@@ -14,6 +14,10 @@ class MediaCollectionConverter : AttributeConverter<List<Media>, String> {
     }
 
     override fun convertToEntityAttribute(dbData: String?): List<Media> {
+        if (dbData.isNullOrBlank()) {
+            return emptyList()
+        }
+
         return objectMapper.readValue(dbData, object : TypeReference<List<Media>>() {})
     }
 
