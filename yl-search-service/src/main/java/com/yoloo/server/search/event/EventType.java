@@ -1,0 +1,19 @@
+package com.yoloo.server.search.event;
+
+public enum EventType {
+  NEW_POST,
+  UPDATE_POST,
+  DELETE_POST,
+
+  NEW_BUDDY_REQUEST,
+  UPDATE_BUDDY_REQUEST,
+  DELETE_BUDDY_REQUEST,
+
+  NEW_USER,
+  UPDATE_USER,
+  DELETE_USER,
+  FOLLOW_USER,
+
+  NEW_COMMENT,
+  APPROVE_COMMENT
+}

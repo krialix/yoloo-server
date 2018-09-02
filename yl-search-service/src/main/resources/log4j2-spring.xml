@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration monitorInterval="30">
-    <Appenders>
-        <Console name="Console-Appender" target="SYSTEM_OUT" follow="true">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%level] [%t] - %c{1.} : %m%n%ex"/>
-        </Console>
-    </Appenders>
+  <Appenders>
+    <Console name="Console-Appender" target="SYSTEM_OUT" follow="true">
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%level] [%t] - %c{1.} : %m%n%ex"/>
+    </Console>
+  </Appenders>
 
-    <Loggers>
-        <!--<Logger name="com.yoloo.server" level="debug" additivity="false">
-            <AppenderRef ref="Console-Appender"/>
-        </Logger>-->
+  <Loggers>
+    <!--<Logger name="com.yoloo.server" level="debug" additivity="false">
+        <AppenderRef ref="Console-Appender"/>
+    </Logger>-->
 
-        <AsyncRoot level="info">
-            <AppenderRef ref="Console-Appender"/>
-        </AsyncRoot>
-    </Loggers>
+    <AsyncRoot level="info">
+      <AppenderRef ref="Console-Appender"/>
+    </AsyncRoot>
+  </Loggers>
 </Configuration>

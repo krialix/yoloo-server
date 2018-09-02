@@ -1,15 +1,30 @@
-plugins {
-    id 'java-library'
-    id 'org.springframework.boot' version '2.0.3.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.5.RELEASE'
-    id 'war'
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
 }
+
+apply plugin: 'java-library'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'war'
 
 group 'com.yoloo.server'
 version '0.0.1-SNAPSHOT'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+repositories {
+    jcenter()
+    maven { url "https://repo.spring.io/snapshot" }
+    maven { url "https://repo.spring.io/milestone" }
+}
 
 configurations.all {
     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
@@ -23,18 +38,20 @@ configurations.all {
 dependencies {
     implementation project(':yl-common:yl-utils')
     implementation project(':yl-common:yl-exception-config')
-    implementation project(':yl-common:yl-queue-api')
 
-    implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
-    compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
+    implementation "com.google.appengine:appengine-api-1.0-sdk:${appengineVersion}"
+    compileOnly "javax.servlet:javax.servlet-api:${javaxServletVersion}"
 
     // Spring Boot
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
-    implementation 'org.springframework.data:spring-data-solr:4.0.0.M3'
-    implementation 'org.springframework.data:spring-data-commons:2.1.0.M3'
-    implementation "org.springframework.cloud:spring-cloud-gcp-starter-pubsub:$springCloudGcpVersion"
+
+    // Spring Data
+    implementation 'org.springframework.data:spring-data-solr'
+
+    // Spring Cloud
+    implementation 'org.springframework.cloud:spring-cloud-gcp-starter-pubsub'
 
     implementation 'com.lmax:disruptor:3.4.2'
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
@@ -47,7 +64,13 @@ dependencies {
         exclude group: 'io.dropwizard.metrics', module: 'metrics-jvm'
         exclude group: 'info.ganglia.gmetric4j', module: 'gmetric4j'
     })
-    //implementation 'org.apache.solr:solr-solrj:7.4.0'
 
     testImplementation 'junit:junit:4.12'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-gcp-dependencies:${springCloudGcpVersion}"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }

@@ -42,7 +42,7 @@ public class PubSubController {
 
   @PostMapping("/subscriptions")
   public void createSubscription(@RequestBody CreateSubscriptionRequest request) {
-    pubSubAdmin.createSubscription(request.subscriptionName, request.topicName);
+    pubSubAdmin.createSubscription(request.getSubscriptionName(), request.getTopicName());
   }
 
   @DeleteMapping("/subscriptions/{subscription}")
@@ -55,9 +55,7 @@ public class PubSubController {
     pubSubTemplate.subscribe(
         subscription,
         (message, consumer) -> {
-          LOGGER.info(
-              "Message received from $subscription subscription. {}",
-              message.getData().toStringUtf8());
+          LOGGER.info("Message received from subscription. {}", message.getData().toStringUtf8());
           consumer.ack();
         });
   }
@@ -70,5 +68,34 @@ public class PubSubController {
       throws JsonProcessingException {
     String json = mapper.writeValueAsString(payload);
     pubSubTemplate.publish(topicName, json, null);
+  }
+
+  static class CreateTopicRequest {
+    private String topicName;
+
+    CreateTopicRequest() {}
+
+    String getTopicName() {
+      return topicName;
+    }
+
+    void setTopicName(String topicName) {
+      this.topicName = topicName;
+    }
+  }
+
+  static class CreateSubscriptionRequest {
+    private String topicName;
+    private String subscriptionName;
+
+    CreateSubscriptionRequest() {}
+
+    String getTopicName() {
+      return topicName;
+    }
+
+    String getSubscriptionName() {
+      return subscriptionName;
+    }
   }
 }

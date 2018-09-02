@@ -1,10 +1,8 @@
 package com.yoloo.server.notification.pubsub;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutureCallback;
 import com.google.api.core.ApiFutures;
-import com.google.firebase.database.utilities.Pair;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.pubsub.v1.PubsubMessage;
@@ -26,7 +24,6 @@ import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +38,6 @@ public class NotificationPubSubManager {
   private static final long DUPLICATE_FILTER_CAPACITY = 100_000L;
 
   private final PubSubTemplate pubSubTemplate;
-  private final ObjectMapper mapper;
   private final MessageProvider messageProvider;
   private final FirebaseMessaging firebaseMessaging;
   private final List<Notification> notifications;
@@ -50,11 +46,9 @@ public class NotificationPubSubManager {
   @Autowired
   public NotificationPubSubManager(
       PubSubTemplate pubSubTemplate,
-      ObjectMapper mapper,
       FirebaseMessaging firebaseMessaging,
       @Qualifier(IdBeanQualifier.CACHED) LongIdGenerator idGenerator) {
     this.pubSubTemplate = pubSubTemplate;
-    this.mapper = mapper;
     this.firebaseMessaging = firebaseMessaging;
     this.messageProvider = buildProviders(idGenerator);
     this.notifications = new ArrayList<>();
@@ -81,27 +75,19 @@ public class NotificationPubSubManager {
     LOGGER.info("pullPubSubEvents() is running!");
 
     pubSubTemplate
-        .pull("notification-service", 100, true, null)
+        .pullAndAck("notification-service", 100, true)
         .stream()
-        .map(this::mapToPubSubState)
-        .peek(state -> LOGGER.info("Processing state {}", state))
+        .filter(message -> !isDuplicate(message.getMessageId()))
+        .map(this::mapToPayload)
+        .map(messageProvider::check)
         .forEach(
-            state -> {
-              if (state instanceof PubSubState.Data) {
-                PubSubState.Data data = (PubSubState.Data) state;
-                if (isDuplicate(data.getMessageId())) {
-                  LOGGER.info("Duplicate message found: {}", data.getMessageId());
-                  return;
+            pair -> {
+              if (pair != null) {
+                if (pair.getSecond() != null) {
+                  notifications.add(pair.getSecond());
                 }
 
-                if (data.getNotification() != null) {
-                  notifications.add(data.getNotification());
-                }
-
-                sendMessageAsync(data.getMessage());
-              } else if (state instanceof PubSubState.Error) {
-                PubSubState.Error error = (PubSubState.Error) state;
-                LOGGER.error("An error occurred", error.getThrowable());
+                sendMessageAsync(pair.getFirst());
               }
             });
 
@@ -145,17 +131,9 @@ public class NotificationPubSubManager {
         });
   }
 
-  private PubSubState mapToPubSubState(PubsubMessage message) {
-    try {
-      NotificationPayload payload =
-          mapper.readValue(message.getData().toByteArray(), NotificationPayload.class);
-      Pair<Message, Notification> pair = messageProvider.check(payload);
-      if (pair == null) {
-        return new PubSubState.Empty();
-      }
-      return new PubSubState.Data(message.getMessageId(), pair.getFirst(), pair.getSecond());
-    } catch (IOException e) {
-      return new PubSubState.Error(e);
-    }
+  private NotificationPayload mapToPayload(PubsubMessage message) {
+    return pubSubTemplate
+        .getMessageConverter()
+        .fromPubSubMessage(message, NotificationPayload.class);
   }
 }

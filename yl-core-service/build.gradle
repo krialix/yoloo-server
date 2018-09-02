@@ -1,10 +1,10 @@
 plugins {
     id 'java-library'
-    id 'org.jetbrains.kotlin.jvm' version '1.2.51'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.51'
-    id 'org.jetbrains.kotlin.plugin.noarg' version '1.2.51'
-    id 'org.springframework.boot' version '2.0.3.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.5.RELEASE'
+    id 'org.jetbrains.kotlin.jvm' version '1.2.61'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.2.61'
+    id 'org.jetbrains.kotlin.plugin.noarg' version '1.2.61'
+    id 'org.springframework.boot' version '2.0.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.6.RELEASE'
     id 'war'
 }
 
@@ -45,7 +45,6 @@ dependencies {
     implementation project(':yl-common:yl-exception-config')
     implementation project(':yl-common:yl-id-generator')
     implementation project(':yl-common:yl-auth-config')
-    implementation project(':yl-common:yl-queue-api')
 
     // App Engine
     implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
@@ -55,7 +54,7 @@ dependencies {
     //implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
-    implementation "org.springframework.cloud:spring-cloud-gcp-starter-pubsub:$springCloudGcpVersion"
+    implementation 'org.springframework.cloud:spring-cloud-gcp-starter-pubsub'
     compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
 
     implementation 'com.lmax:disruptor:3.4.2'
@@ -75,4 +74,11 @@ dependencies {
     testImplementation "com.google.appengine:appengine-api-stubs:$appengineVersion"
     testImplementation "com.google.appengine:appengine-testing:$appengineVersion"
     testImplementation "com.google.appengine:appengine-tools-sdk:$appengineVersion"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-gcp-dependencies:${springCloudGcpVersion}"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }

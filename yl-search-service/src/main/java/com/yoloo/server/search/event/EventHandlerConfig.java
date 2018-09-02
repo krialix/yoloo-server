@@ -1,4 +1,4 @@
-package com.yoloo.server.search.queue;
+package com.yoloo.server.search.event;
 
 import com.yoloo.server.search.post.PostRepository;
 import com.yoloo.server.search.post.handler.DeletePostEventHandler;

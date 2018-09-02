@@ -3,7 +3,7 @@ package com.yoloo.server.search.solr;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yoloo.server.search.post.Post;
 import com.yoloo.server.search.post.PostRepository;
-import com.yoloo.server.search.post.PostUtil;
+import com.yoloo.server.search.post.JsonUtil;
 import org.apache.solr.client.solrj.SolrClient;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -43,17 +43,5 @@ public class SolrConfig {
   @Bean
   public SolrTemplate solrTemplate(SolrClient client) {
     return new SolrTemplate(client);
-  }
-
-  /*@Profile("dev")
-  @Bean*/
-  public CommandLineRunner runner(PostRepository postRepository, ObjectMapper mapper) {
-    return args -> {
-      postRepository.deleteAll();
-
-      File file = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "posts.json");
-      List<Post> posts = PostUtil.extractPosts(mapper, file);
-      postRepository.saveAll(posts);
-    };
   }
 }

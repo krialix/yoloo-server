@@ -1,11 +1,11 @@
 package com.yoloo.server.search.post.handler;
 
 import com.google.common.collect.Lists;
-import com.yoloo.server.common.queue.vo.EventType;
-import com.yoloo.server.common.queue.vo.YolooEvent;
+import com.yoloo.server.search.event.EventHandler;
+import com.yoloo.server.search.event.EventType;
+import com.yoloo.server.search.event.Event;
 import com.yoloo.server.search.post.Post;
 import com.yoloo.server.search.post.PostRepository;
-import com.yoloo.server.search.queue.EventHandler;
 
 import java.util.List;
 import java.util.Map;
@@ -28,35 +28,36 @@ public class UpdatePostEventHandler extends EventHandler {
   }
 
   @Override
-  public void process(EventType eventType, List<YolooEvent> events) {
-    if (eventType == EventType.UPDATE_POST) {
-      Map<String, Post> posts =
-          events
-              .stream()
-              .map(YolooEvent::getPayload)
-              .map(map -> (String) map.get("id"))
-              .collect(
-                  Collectors.collectingAndThen(
-                      Collectors.toList(),
-                      ids ->
-                          Lists.newArrayList(postRepository.findAllById(ids))
-                              .stream()
-                              .collect(Collectors.toMap(Post::getId, post -> post))));
+  protected boolean matches(EventType eventType) {
+    return eventType == EventType.UPDATE_POST;
+  }
 
-      List<Post> updatedPosts =
-          events
-              .stream()
-              .map(YolooEvent::getPayload)
-              .map(
-                  map -> {
-                    String id = (String) map.get("id");
-                    return posts.computeIfPresent(id, (s, post) -> updatePost(post, map));
-                  })
-              .collect(Collectors.toList());
+  @Override
+  protected void process(List<Event> events) {
+    Map<String, Post> posts =
+        events
+            .stream()
+            .map(Event::getPayload)
+            .map(map -> (String) map.get("id"))
+            .collect(
+                Collectors.collectingAndThen(
+                    Collectors.toList(),
+                    ids ->
+                        Lists.newArrayList(postRepository.findAllById(ids))
+                            .stream()
+                            .collect(Collectors.toMap(Post::getId, post -> post))));
 
-      postRepository.saveAll(updatedPosts);
-    }
+    List<Post> updatedPosts =
+        events
+            .stream()
+            .map(Event::getPayload)
+            .map(
+                map -> {
+                  String id = (String) map.get("id");
+                  return posts.computeIfPresent(id, (s, post) -> updatePost(post, map));
+                })
+            .collect(Collectors.toList());
 
-    processNext(eventType, events);
+    postRepository.saveAll(updatedPosts);
   }
 }

@@ -1,10 +1,10 @@
 package com.yoloo.server.search.post.handler;
 
-import com.yoloo.server.common.queue.vo.EventType;
-import com.yoloo.server.common.queue.vo.YolooEvent;
+import com.yoloo.server.search.event.Event;
 import com.yoloo.server.search.post.Post;
 import com.yoloo.server.search.post.PostRepository;
-import com.yoloo.server.search.queue.EventHandler;
+import com.yoloo.server.search.event.EventHandler;
+import com.yoloo.server.search.event.EventType;
 
 import java.util.List;
 import java.util.Map;
@@ -28,18 +28,19 @@ public class NewPostEventHandler extends EventHandler {
   }
 
   @Override
-  public void process(EventType eventType, List<YolooEvent> events) {
-    if (eventType == EventType.NEW_POST) {
-      List<Post> posts =
-          events
-              .stream()
-              .map(YolooEvent::getPayload)
-              .map(NewPostEventHandler::createPost)
-              .collect(Collectors.toList());
+  protected boolean matches(EventType eventType) {
+    return eventType == EventType.NEW_POST;
+  }
 
-      postRepository.saveAll(posts);
-    }
+  @Override
+  protected void process(List<Event> events) {
+    List<Post> posts =
+        events
+            .stream()
+            .map(Event::getPayload)
+            .map(NewPostEventHandler::createPost)
+            .collect(Collectors.toList());
 
-    processNext(eventType, events);
+    postRepository.saveAll(posts);
   }
 }

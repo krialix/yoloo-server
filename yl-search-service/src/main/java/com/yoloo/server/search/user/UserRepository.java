@@ -2,6 +2,7 @@ package com.yoloo.server.search.user;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.solr.repository.Query;
 import org.springframework.data.solr.repository.SolrCrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,8 @@ import java.util.List;
 public
 interface UserRepository extends SolrCrudRepository<User, String> {
 
-  public Page<User> findUsersByDisplayNameContaining(String query, Pageable pageable);
+  @Query("displayName:*?0*")
+  Page<User> findUsersByDisplayName(String query, Pageable pageable);
 
-  public void deleteUsersByIdIn(List<String> ids);
+  void deleteUsersByIdIn(List<String> ids);
 }
