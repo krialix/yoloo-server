@@ -15,6 +15,7 @@ import javax.persistence.*
 @Table
 class Post(
     @Id
+    @Column(name = "post_id")
     var id: Long,
 
     @ManyToOne(cascade = [CascadeType.ALL])
@@ -28,7 +29,7 @@ class Post(
     var content: String,
 
     @ManyToOne(cascade = [CascadeType.ALL])
-    @JoinColumn(name = "post_group_id")
+    @JoinColumn(name = "group_id")
     var group: Group,
 
     @Convert(converter = TagCollectionConverter::class)
@@ -50,8 +51,5 @@ class Post(
     var bounty: Int = 0,
 
     @Column(nullable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(),
-
-    @Column
-    var deletedAt: LocalDateTime? = null
+    var createdAt: LocalDateTime = LocalDateTime.now()
 )

@@ -8,6 +8,7 @@ import javax.persistence.*
 @Table
 class Author(
     @Id
+    @Column(name = "author_id")
     var id: Long,
 
     @Column(nullable = false)

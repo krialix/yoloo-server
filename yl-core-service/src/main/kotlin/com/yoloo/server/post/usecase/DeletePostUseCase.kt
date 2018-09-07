@@ -1,14 +1,13 @@
 package com.yoloo.server.post.usecase
 
 import com.yoloo.server.common.exception.exception.ServiceExceptions
-import com.yoloo.server.common.queue.service.SearchQueueService
-import com.yoloo.server.common.queue.vo.EventType
-import com.yoloo.server.common.queue.vo.YolooEvent
 import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
 import com.yoloo.server.post.entity.Post
+import org.springframework.stereotype.Service
 
-class DeletePostUseCase(private val searchQueueService: SearchQueueService) {
+@Service
+class DeletePostUseCase {
 
     fun execute(requesterId: Long, postId: Long) {
         val post = ofy().load().type(Post::class.java).id(postId).now()
@@ -26,10 +25,10 @@ class DeletePostUseCase(private val searchQueueService: SearchQueueService) {
     }
 
     private fun addToSearchQueue(post: Post) {
-        val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.DELETE_POST))
+        /*val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.DELETE_POST))
             .addData("id", post.id.toString())
             .build()
 
-        searchQueueService.addQueueAsync(event)
+        searchQueueService.addQueueAsync(event)*/
     }
 }

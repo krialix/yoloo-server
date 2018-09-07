@@ -17,26 +17,12 @@ data class User(
 
     var clientId: String,
 
-    //var provider: Provider,
-
     @Index
     var email: Email,
 
-    //var emailVerified: Boolean = false,
-
     var accountVerified: Boolean = false,
 
-    //var expired: Boolean = false,
-
-    //var credentialsExpired: Boolean = false,
-
-    //var locked: Boolean = false,
-
-    //var disabled: Boolean = false,
-
     var roles: Set<@JvmSuppressWildcards Role>,
-
-    //var lastSignInTime: LocalDateTime? = null,
 
     var fcmToken: String,
 

@@ -6,10 +6,12 @@ import com.google.api.gax.rpc.TransportChannelProvider
 import io.grpc.ManagedChannelBuilder
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cache.annotation.EnableCaching
 import org.springframework.cloud.gcp.autoconfigure.pubsub.GcpPubSubProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Profile
 
+@EnableCaching
 @SpringBootApplication
 class CoreApplication {
 

@@ -8,6 +8,7 @@ import javax.persistence.*
 @Table(name = "post_group")
 class Group(
     @Id
+    @Column(name = "group_id")
     var id: Long,
 
     @Column(nullable = false)

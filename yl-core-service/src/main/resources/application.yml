@@ -3,10 +3,6 @@ spring:
     active: dev
   messages:
     basename: i18n/messages
-server:
-  compression:
-    enabled: true
-    mime-types: application/json
 firebase:
   service-account-key-name: yolooapp-dev-firebase-adminsdk.json
   database-url: https://yolooapp-dev.firebaseio.com

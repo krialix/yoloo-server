@@ -9,8 +9,10 @@ import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.PostResponse
 import com.yoloo.server.vote.entity.Vote
 import net.cinnom.nanocuckoo.NanoCuckooFilter
+import org.springframework.stereotype.Service
 
-class GetPostUseCase(
+@Service
+class GetPostByIdUseCase(
     private val postResponseMapper: PostResponseMapper,
     private val memcacheService: MemcacheService
 ) {
@@ -35,11 +37,6 @@ class GetPostUseCase(
     }
 
     private fun getCache(): Map<String, *> {
-        return memcacheService.getAll(
-            listOf(
-                Vote.KEY_FILTER_VOTE,
-                Bookmark.KEY_FILTER_BOOKMARK
-            )
-        ) as Map<String, *>
+        return memcacheService.getAll(listOf(Vote.KEY_FILTER_VOTE, Bookmark.KEY_FILTER_BOOKMARK)) as Map<String, *>
     }
 }

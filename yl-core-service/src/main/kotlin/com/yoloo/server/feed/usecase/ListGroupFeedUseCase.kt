@@ -1,24 +1,30 @@
-package com.yoloo.server.post.usecase
+package com.yoloo.server.feed.usecase
 
 import com.google.appengine.api.datastore.Cursor
 import com.google.appengine.api.datastore.QueryResultIterator
 import com.google.appengine.api.memcache.MemcacheService
+import com.yoloo.server.bookmark.entity.Bookmark
 import com.yoloo.server.common.vo.CollectionResponse
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
-import com.yoloo.server.bookmark.entity.Bookmark
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.vote.entity.Vote
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.PostResponse
+import com.yoloo.server.vote.entity.Vote
 import net.cinnom.nanocuckoo.NanoCuckooFilter
+import org.springframework.stereotype.Service
 
-class ListBountyFeedUseCase(
+@Service
+class ListGroupFeedUseCase(
     private val postResponseMapper: PostResponseMapper,
     private val memcacheService: MemcacheService
 ) {
 
-    fun execute(requesterId: Long, cursor: String?): CollectionResponse<PostResponse> {
-        val queryResultIterator = buildQueryResultIterator(cursor)
+    fun execute(
+        requesterId: Long,
+        groupId: Long,
+        cursor: String?
+    ): CollectionResponse<PostResponse> {
+        val queryResultIterator = buildQueryResultIterator(groupId, cursor)
 
         if (!queryResultIterator.hasNext()) {
             return CollectionResponse.builder<PostResponse>().data(emptyList()).build()
@@ -44,11 +50,14 @@ class ListBountyFeedUseCase(
         )
     }
 
-    private fun buildQueryResultIterator(cursor: String?): QueryResultIterator<Post> {
+    private fun buildQueryResultIterator(
+        groupId: Long,
+        cursor: String?
+    ): QueryResultIterator<Post> {
         var query = ofy()
             .load()
             .type(Post::class.java)
-            .filter("${Post.INDEX_BOUNTY} !=", null)
+            .filter(Post.INDEX_GROUP_ID, groupId)
             .orderKey(true)
 
         cursor?.let { query = query.startAt(Cursor.fromWebSafeString(it)) }

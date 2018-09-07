@@ -1,10 +1,10 @@
-package com.yoloo.server.post.api
+package com.yoloo.server.feed.api
 
 import com.yoloo.server.auth.AuthUtil
 import com.yoloo.server.common.vo.CollectionResponse
-import com.yoloo.server.post.usecase.ListAnonymousMainFeedUseCase
-import com.yoloo.server.post.usecase.ListBountyFeedUseCase
-import com.yoloo.server.post.usecase.ListGroupFeedUseCase
+import com.yoloo.server.feed.usecase.ListAnonymousMainFeedUseCase
+import com.yoloo.server.feed.usecase.ListBountyFeedUseCase
+import com.yoloo.server.feed.usecase.ListGroupFeedUseCase
 import com.yoloo.server.post.vo.PostResponse
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize

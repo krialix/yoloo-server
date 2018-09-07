@@ -2,7 +2,9 @@ package com.yoloo.server.post.mapper
 
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.vo.*
+import org.springframework.stereotype.Component
 
+@Component
 class PostResponseMapper {
 
     fun apply(from: Post, self: Boolean, voted: Boolean, bookmarked: Boolean): PostResponse {

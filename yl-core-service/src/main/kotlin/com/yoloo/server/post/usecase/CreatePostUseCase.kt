@@ -2,10 +2,6 @@ package com.yoloo.server.post.usecase
 
 import com.googlecode.objectify.Key
 import com.yoloo.server.common.id.generator.LongIdGenerator
-import com.yoloo.server.common.queue.service.NotificationQueueService
-import com.yoloo.server.common.queue.service.SearchQueueService
-import com.yoloo.server.common.queue.vo.EventType
-import com.yoloo.server.common.queue.vo.YolooEvent
 import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.common.vo.Author
 import com.yoloo.server.group.entity.Group
@@ -14,12 +10,12 @@ import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.*
 import com.yoloo.server.user.entity.User
+import org.springframework.stereotype.Service
 
+@Service
 class CreatePostUseCase(
     private val idGenerator: LongIdGenerator,
-    private val postResponseMapper: PostResponseMapper,
-    private val searchQueueService: SearchQueueService,
-    private val notificationQueueService: NotificationQueueService
+    private val postResponseMapper: PostResponseMapper
 ) {
 
     fun execute(requesterId: Long, request: CreatePostRequest): PostResponse {
@@ -45,7 +41,7 @@ class CreatePostUseCase(
     }
 
     private fun addToNotificationQueue(post: Post, topicName: String) {
-        val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_POST))
+        /*val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_POST))
             .addData("id", post.id.toString())
             .addData("title", post.title.value)
             .addData("content", post.content.value)
@@ -53,11 +49,11 @@ class CreatePostUseCase(
             .addData("topic", topicName)
             .build()
 
-        notificationQueueService.addQueueAsync(event)
+        notificationQueueService.addQueueAsync(event)*/
     }
 
     private fun addToSearchQueue(post: Post) {
-        val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_POST))
+        /*val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_POST))
             .addData("id", post.id.toString())
             .addData("title", post.title.value)
             .addData("content", post.content.value)
@@ -65,7 +61,7 @@ class CreatePostUseCase(
             .addData("buddyRequest", post.buddyRequest)
             .build()
 
-        searchQueueService.addQueueAsync(event)
+        searchQueueService.addQueueAsync(event)*/
     }
 
     private fun createPost(request: CreatePostRequest, user: User, group: Group): Post {

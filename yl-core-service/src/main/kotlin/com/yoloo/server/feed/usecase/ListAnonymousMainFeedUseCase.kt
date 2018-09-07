@@ -1,4 +1,4 @@
-package com.yoloo.server.post.usecase
+package com.yoloo.server.feed.usecase
 
 import com.yoloo.server.common.vo.CollectionResponse
 import com.yoloo.server.objectify.ObjectifyProxy.ofy
@@ -6,7 +6,9 @@ import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.util.CircularFifoBuffer
 import com.yoloo.server.post.vo.PostResponse
+import org.springframework.stereotype.Service
 
+@Service
 class ListAnonymousMainFeedUseCase(
     private val anonymousFeedHolder: CircularFifoBuffer,
     private val postResponseMapper: PostResponseMapper
