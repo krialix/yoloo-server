@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.yoloo.server.common.queue.config.QueueAutoConfiguration,\
+  com.yoloo.server.common.queue.config.QueueServiceAutoConfiguration

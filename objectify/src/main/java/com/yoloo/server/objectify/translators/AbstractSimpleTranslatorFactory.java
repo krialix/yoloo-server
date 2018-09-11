@@ -10,9 +10,7 @@ import com.googlecode.objectify.impl.translate.ValueTranslator;
 import com.googlecode.objectify.impl.translate.ValueTranslatorFactory;
 import com.yoloo.server.objectify.util.TypeUtils;
 
-/**
- * Common boilerplate for translator factories.
- */
+/** Common boilerplate for translator factories. */
 public abstract class AbstractSimpleTranslatorFactory<P, D> extends ValueTranslatorFactory<P, D> {
 
   public AbstractSimpleTranslatorFactory(Class<P> clazz) {
@@ -23,8 +21,7 @@ public abstract class AbstractSimpleTranslatorFactory<P, D> extends ValueTransla
   protected ValueTranslator<P, D> createValueTranslator(
       TypeKey<P> tk, CreateContext ctx, Path path) {
     return new ValueTranslator<P, D>(
-        new TypeUtils.TypeInstantiator<D>(getClass()) {
-        }.getExactType()) {
+        new TypeUtils.TypeInstantiator<D>(getClass()) {}.getExactType()) {
 
       SimpleTranslator<P, D> simpleTranslator = createTranslator();
 
@@ -43,9 +40,7 @@ public abstract class AbstractSimpleTranslatorFactory<P, D> extends ValueTransla
 
   protected abstract SimpleTranslator<P, D> createTranslator();
 
-  /**
-   * Translator with reduced boilerplate.
-   */
+  /** Translator with reduced boilerplate. */
   protected interface SimpleTranslator<P, D> {
 
     P loadValue(D datastoreValue);
