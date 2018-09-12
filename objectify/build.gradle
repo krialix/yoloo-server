@@ -26,7 +26,8 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compileOnly 'org.springframework.boot:spring-boot-autoconfigure'
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+    api 'org.springframework.data:spring-data-commons'
     compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
 
     compileOnly "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
