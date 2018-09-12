@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * Objectify repository for loading entities.
  */
 @NoRepositoryBean
-public interface AsyncLoadRepository<E> extends ObjectifyAware, EntityManager<E>, Repository {
+interface AsyncLoadRepository<E> extends ObjectifyAware, EntityManager<E>, Repository {
   /**
    * Get the entity with the given key.
    *
@@ -44,7 +44,7 @@ public interface AsyncLoadRepository<E> extends ObjectifyAware, EntityManager<E>
   }
 
   @Nonnull
-  default Map<Key<E>, E> findByKeysAsync(Collection<Key<E>> keys) {
+  default Map<Key<E>, E> findByKeysAsync(Iterable<Key<E>> keys) {
     return ofy().load().keys(keys);
   }
 

@@ -18,7 +18,7 @@ import java.util.function.Supplier;
  * optionally wait for the operation to complete (i.e. treat the operation as synchronous) if required.
  */
 @NoRepositoryBean
-public interface AsyncSaveRepository extends ObjectifyAware, Repository {
+interface AsyncSaveRepository extends ObjectifyAware, Repository {
 
   /**
    * Put an entity asynchronously asynchronously.

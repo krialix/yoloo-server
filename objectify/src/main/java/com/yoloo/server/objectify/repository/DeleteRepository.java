@@ -9,7 +9,7 @@ import java.util.Collection;
  * Objectify repository for deleting entities.
  */
 @NoRepositoryBean
-public interface DeleteRepository extends AsyncDeleteRepository {
+interface DeleteRepository extends AsyncDeleteRepository {
   /**
    * Delete the given entity.
    *

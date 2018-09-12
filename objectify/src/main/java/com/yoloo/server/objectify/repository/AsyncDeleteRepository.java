@@ -16,7 +16,7 @@ import java.util.Collection;
  * optionally wait for the operation to complete (i.e. treat the operation as synchronous) if required.
  */
 @NoRepositoryBean
-public interface AsyncDeleteRepository extends ObjectifyAware, Repository {
+interface AsyncDeleteRepository extends ObjectifyAware, Repository {
   /**
    * Delete the given entity asynchronously.
    *

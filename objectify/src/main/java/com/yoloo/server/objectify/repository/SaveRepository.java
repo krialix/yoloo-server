@@ -13,7 +13,7 @@ import java.util.Map;
  * Extends {@link AsyncSaveRepository}, providing synchronous methods to save and load entities using Objectify.
  */
 @NoRepositoryBean
-public interface SaveRepository extends AsyncSaveRepository {
+interface SaveRepository extends AsyncSaveRepository {
   /**
    * Save the given entity.
    *

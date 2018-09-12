@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * Objectify repository for loading entities.
  */
 @NoRepositoryBean
-public interface LoadRepository<E> extends ObjectifyAware, EntityManager<E>, Repository {
+interface LoadRepository<E> extends ObjectifyAware, EntityManager<E>, Repository {
   /**
    * List all entities.
    * This will load all entities into memory, so should only be used where the number of entities is constrained.
