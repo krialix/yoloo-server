@@ -2,7 +2,7 @@ package com.yoloo.server.bookmark.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.yoloo.server.bookmark.entity.Bookmark
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger

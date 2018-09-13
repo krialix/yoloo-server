@@ -5,7 +5,7 @@ import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.queue.service.SearchQueueService
 import com.yoloo.server.common.queue.vo.EventType
 import com.yoloo.server.common.queue.vo.YolooEvent
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.vo.Email
 import com.yoloo.server.user.vo.PatchUserRequest

@@ -6,7 +6,7 @@ import com.yoloo.server.common.vo.CollectionResponse
 import com.yoloo.server.group.entity.Subscription
 import com.yoloo.server.group.mapper.SubscriptionUserResponseMapper
 import com.yoloo.server.group.vo.SubscriptionUserResponse
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 
 class ListSubscriptionsUseCase(private val subscriptionUserResponseMapper: SubscriptionUserResponseMapper) {
 

@@ -39,7 +39,7 @@ configurations.all {
 }
 
 dependencies {
-    implementation project(':objectify')
+    implementation project(':objectify-autoconfiguration')
     implementation project(':yl-common:yl-utils')
     implementation project(':yl-common:yl-exception-config')
     implementation project(':yl-common:yl-id-generator')

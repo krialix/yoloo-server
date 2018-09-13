@@ -7,7 +7,7 @@ import com.yoloo.server.common.queue.service.NotificationQueueService
 import com.yoloo.server.common.queue.vo.EventType
 import com.yoloo.server.common.queue.vo.YolooEvent
 import com.yoloo.server.common.util.TestUtil
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.relationship.entity.Relationship
 import com.yoloo.server.user.entity.User
 import net.cinnom.nanocuckoo.NanoCuckooFilter

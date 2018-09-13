@@ -15,7 +15,7 @@ import com.yoloo.server.common.vo.Ip
 import com.yoloo.server.common.vo.Url
 import com.yoloo.server.group.entity.Group
 import com.yoloo.server.group.entity.Subscription
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.relationship.entity.Relationship
 import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.mapper.UserResponseMapper

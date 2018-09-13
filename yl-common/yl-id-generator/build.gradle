@@ -1,8 +1,17 @@
-plugins {
-    id 'java-library'
-    id 'org.springframework.boot' version '2.0.4.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.6.RELEASE'
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "https://repo.spring.io/milestone" }
+        maven { url 'https://jitpack.io/' }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
+
+apply plugin: 'java-library'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 group 'com.yoloo.server'
 version '0.0.1-SNAPSHOT'
@@ -15,5 +24,6 @@ dependencies {
     implementation 'com.yoloo.tools:uid-generator:1.0.0'
     implementation 'com.fasterxml.uuid:java-uuid-generator:3.1.5'
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }

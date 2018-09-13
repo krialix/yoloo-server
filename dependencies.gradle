@@ -3,7 +3,7 @@ ext {
     appengineVersion = '1.9.64'
     javaxServletVersion = '3.1.0'
     kotlinVersion = '1.2.61'
-    springBootVersion = '2.1.0.M2'
+    springBootVersion = '2.1.0.M3'
     firebaseAdminVersion = '6.2.0'
     springCloudGcpVersion = '1.0.0.RELEASE'
     springCloudVersion = 'Finchley.BUILD-SNAPSHOT'

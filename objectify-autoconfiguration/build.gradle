@@ -1,0 +1,44 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "https://repo.spring.io/milestone" }
+        maven { url 'https://jitpack.io/' }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java-library'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group 'com.yoloo.server'
+version '0.0.1-SNAPSHOT'
+
+repositories {
+    jcenter()
+    maven { url "https://repo.spring.io/milestone" }
+    maven { url 'https://jitpack.io/' }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+    api 'org.springframework.data:spring-data-commons'
+
+    compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
+    compileOnly 'net.cinnom:nano-cuckoo:2.0.0'
+
+    implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
+    implementation 'com.github.takemikami:objectify-appengine-memcacheclient:0.0.1'
+    api "com.googlecode.objectify:objectify:6.0.1"
+
+    //implementation 'org.apache.commons:commons-lang3:3.8'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+}

@@ -6,7 +6,7 @@ import com.google.appengine.api.memcache.MemcacheService
 import com.googlecode.objectify.Key
 import com.yoloo.server.bookmark.entity.Bookmark
 import com.yoloo.server.common.vo.CollectionResponse
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.PostResponse

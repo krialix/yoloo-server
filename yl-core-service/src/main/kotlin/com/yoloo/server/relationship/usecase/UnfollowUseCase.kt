@@ -2,7 +2,7 @@ package com.yoloo.server.relationship.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.yoloo.server.common.util.AppengineEnv
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.exception.exception.ServiceExceptions.checkNotFound
 import com.yoloo.server.relationship.entity.Relationship

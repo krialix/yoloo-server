@@ -1,7 +1,7 @@
 package com.yoloo.server.user.usecase
 
 import com.google.appengine.api.memcache.MemcacheService
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.relationship.entity.Relationship
 import com.yoloo.server.user.entity.User

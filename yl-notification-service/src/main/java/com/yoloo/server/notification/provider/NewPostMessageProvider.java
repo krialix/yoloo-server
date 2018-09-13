@@ -9,23 +9,24 @@ import com.yoloo.server.notification.payload.NotificationPayload;
 public class NewPostMessageProvider extends MessageProvider {
 
   @Override
-  public Pair<Message, Notification> check(NotificationPayload payload) {
-    if (payload.getType().equals("TYPE_NEW_POST")) {
-      NewPostBody body = (NewPostBody) payload.getBody();
+  protected boolean matches(String type) {
+    return type.equals("TYPE_NEW_POST");
+  }
 
-      Message message =
-          Message.builder()
-              .setTopic(body.getTopic())
-              .putData("FCM_KEY_TYPE", "TYPE_NEW_POST")
-              .putData("FCM_KEY_POST_ID", body.getPostId())
-              .putData("FCM_KEY_POST_TITLE", body.getPostTitle())
-              .putData("FCM_KEY_POST_BOUNTY", body.getBounty())
-              .putData("FCM_KEY_GROUP_ID", body.getGroupId())
-              .build();
+  @Override
+  protected Pair<Message, Notification> processInternal(NotificationPayload payload) {
+    NewPostBody body = (NewPostBody) payload.getBody();
 
-      return new Pair<>(message, null);
-    }
+    Message message =
+        Message.builder()
+            .setTopic(body.getTopic())
+            .putData("FCM_KEY_TYPE", "TYPE_NEW_POST")
+            .putData("FCM_KEY_POST_ID", body.getPostId())
+            .putData("FCM_KEY_POST_TITLE", body.getPostTitle())
+            .putData("FCM_KEY_POST_BOUNTY", body.getBounty())
+            .putData("FCM_KEY_GROUP_ID", body.getGroupId())
+            .build();
 
-    return checkNext(payload);
+    return new Pair<>(message, null);
   }
 }

@@ -27,10 +27,4 @@ public class IdGeneratorAutoConfiguration {
   public LongIdGenerator snowflakeIdGenerator() {
     return new SnowflakeIdGenerator();
   }
-
-  @Lazy
-  @Bean(IdBeanQualifier.INSTAGRAM)
-  public LongIdGenerator instagramIdGenerator() {
-    return new InstagramIdGenerator();
-  }
 }

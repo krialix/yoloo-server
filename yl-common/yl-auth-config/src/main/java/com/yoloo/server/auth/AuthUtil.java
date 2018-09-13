@@ -6,7 +6,7 @@ public class AuthUtil {
 
   private AuthUtil() {}
 
-  public static YolooUser from(Authentication authentication) {
-    return (YolooUser) authentication.getDetails();
+  public static AuthenticatedUser from(Authentication authentication) {
+    return (AuthenticatedUser) authentication.getDetails();
   }
 }

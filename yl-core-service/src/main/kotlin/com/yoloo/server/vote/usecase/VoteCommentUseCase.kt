@@ -4,7 +4,7 @@ import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.yoloo.server.comment.entity.Comment
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.util.TestUtil
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.vote.entity.Vote
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 

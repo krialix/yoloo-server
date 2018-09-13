@@ -1,6 +1,6 @@
 rootProject.name = 'yoloo-server'
 
-include 'objectify'
+include 'objectify-autoconfiguration'
 include 'yl-common:yl-utils'
 include 'yl-common:yl-exception-config'
 include 'yl-common:yl-id-generator'
@@ -12,7 +12,7 @@ include 'yl-notification-service'
 include 'yl-feed-service'
 include 'pubsub-emulator'
 
-project(':objectify').projectDir = "$rootDir/objectify" as File
+project(':objectify-autoconfiguration').projectDir = "$rootDir/objectify-autoconfiguration" as File
 project(':yl-common:yl-utils').projectDir = "$rootDir/yl-common/yl-utils" as File
 project(':yl-common:yl-exception-config').projectDir = "$rootDir/yl-common/yl-exception-config" as File
 project(':yl-common:yl-id-generator').projectDir = "$rootDir/yl-common/yl-id-generator" as File

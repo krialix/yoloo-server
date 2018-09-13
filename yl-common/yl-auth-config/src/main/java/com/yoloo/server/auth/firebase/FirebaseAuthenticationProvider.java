@@ -3,7 +3,7 @@ package com.yoloo.server.auth.firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import com.yoloo.server.auth.YolooUser;
+import com.yoloo.server.auth.AuthenticatedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,7 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class FirebaseAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FirebaseAuthenticationProvider.class);
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(FirebaseAuthenticationProvider.class);
 
   private final FirebaseAuth firebaseAuth;
 
@@ -41,7 +42,7 @@ public class FirebaseAuthenticationProvider extends AbstractUserDetailsAuthentic
     try {
       FirebaseToken token = firebaseAuth.verifyIdToken(authenticationToken.getIdToken(), true);
       LOGGER.info("FirebaseToken: {}", token);
-      return YolooUser.fromToken(token);
+      return AuthenticatedUser.fromToken(token);
     } catch (FirebaseAuthException e) {
       throw new UsernameNotFoundException(e.getMessage());
     }

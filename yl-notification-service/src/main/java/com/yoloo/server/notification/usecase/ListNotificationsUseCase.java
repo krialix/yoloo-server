@@ -1,20 +1,22 @@
 package com.yoloo.server.notification.usecase;
 
-import com.google.appengine.api.datastore.Cursor;
-import com.google.appengine.api.datastore.QueryResultIterator;
+import com.google.cloud.datastore.Cursor;
+import com.google.cloud.datastore.QueryResults;
 import com.googlecode.objectify.cmd.Query;
 import com.yoloo.server.notification.entity.Notification;
 import com.yoloo.server.notification.mapper.NotificationResponseMapper;
 import com.yoloo.server.notification.vo.NotificationCollectionResponse;
 import com.yoloo.server.notification.vo.NotificationResponse;
+import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static com.yoloo.server.objectify.ObjectifyProxy.ofy;
+import static com.googlecode.objectify.ObjectifyService.ofy;
 
+@Service
 public class ListNotificationsUseCase {
 
   private final NotificationResponseMapper mapper;
@@ -24,13 +26,13 @@ public class ListNotificationsUseCase {
   }
 
   public NotificationCollectionResponse execute(long userId, String cursor) {
-    QueryResultIterator<Notification> queryResultIterator = getQueryResultIterator(userId, cursor);
+    QueryResults<Notification> queryResults = getQueryResultIterator(userId, cursor);
 
-    if (!queryResultIterator.hasNext()) {
+    if (!queryResults.hasNext()) {
       return NotificationCollectionResponse.builder().data(Collections.emptyList()).build();
     }
 
-    Iterable<Notification> iterable = () -> queryResultIterator;
+    Iterable<Notification> iterable = () -> queryResults;
 
     List<NotificationResponse> responses =
         StreamSupport.stream(iterable.spliterator(), false)
@@ -40,11 +42,11 @@ public class ListNotificationsUseCase {
     return NotificationCollectionResponse.builder()
         .data(responses)
         .prevPageToken(cursor)
-        .nextPageToken(queryResultIterator.getCursor().toWebSafeString())
+        .nextPageToken(queryResults.getCursorAfter().toUrlSafe())
         .build();
   }
 
-  private QueryResultIterator<Notification> getQueryResultIterator(long userId, String cursor) {
+  private QueryResults<Notification> getQueryResultIterator(long userId, String cursor) {
     Query<Notification> query =
         ofy()
             .load()
@@ -53,7 +55,7 @@ public class ListNotificationsUseCase {
             .orderKey(true);
 
     if (cursor != null) {
-      query = query.startAt(Cursor.fromWebSafeString(cursor));
+      query = query.startAt(Cursor.fromUrlSafe(cursor));
     }
 
     query = query.limit(50);

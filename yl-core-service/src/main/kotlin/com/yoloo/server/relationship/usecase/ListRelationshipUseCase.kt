@@ -3,7 +3,7 @@ package com.yoloo.server.relationship.usecase
 import com.google.appengine.api.datastore.Cursor
 import com.google.appengine.api.datastore.QueryResultIterator
 import com.yoloo.server.common.vo.CollectionResponse
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.relationship.entity.Relationship
 import com.yoloo.server.user.vo.RelationshipResponse
 

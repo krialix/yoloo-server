@@ -1,7 +1,7 @@
 package com.yoloo.server.feed.usecase
 
 import com.yoloo.server.common.vo.CollectionResponse
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.util.CircularFifoBuffer

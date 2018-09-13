@@ -2,7 +2,9 @@ package com.yoloo.server.notification.mapper;
 
 import com.yoloo.server.notification.entity.Notification;
 import com.yoloo.server.notification.vo.NotificationResponse;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 public class NotificationResponseMapper {
 
   public NotificationResponse apply(Notification from) {

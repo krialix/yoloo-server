@@ -1,8 +1,17 @@
-plugins {
-    id 'java-library'
-    id 'org.springframework.boot' version '2.0.4.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.6.RELEASE'
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "https://repo.spring.io/milestone" }
+        maven { url 'https://jitpack.io/' }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
+
+apply plugin: 'java-library'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 group 'com.yoloo.server'
 version '0.0.1-SNAPSHOT'
@@ -13,22 +22,12 @@ targetCompatibility = 1.8
 dependencies {
     implementation 'commons-io:commons-io:2.6'
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
+
     api "com.google.firebase:firebase-admin:$firebaseAdminVersion"
 
     compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }
-
-// https://stackoverflow.com/a/50472004/3154765
-/*task copyConfigurationMetadata(type: Copy) {
-    from(compileJava) {
-        include 'META-INF/spring-configuration-metadata.json'
-    }
-    into 'out/production/classes'
-}
-compileJava {
-    dependsOn processResources
-    finalizedBy copyConfigurationMetadata
-}*/

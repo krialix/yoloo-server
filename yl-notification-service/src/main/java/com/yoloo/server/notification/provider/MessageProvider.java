@@ -18,13 +18,23 @@ public abstract class MessageProvider {
     return this;
   }
 
-  public abstract Pair<Message, Notification> check(NotificationPayload payload);
+  protected abstract boolean matches(String type);
 
-  protected Pair<Message, Notification> checkNext(NotificationPayload payload) {
+  public Pair<Message, Notification> process(NotificationPayload payload) {
+    if (matches(payload.getType())) {
+      return processInternal(payload);
+    }
+
+    return processNext(payload);
+  }
+
+  protected abstract Pair<Message, Notification> processInternal(NotificationPayload payload);
+
+  protected Pair<Message, Notification> processNext(NotificationPayload payload) {
     if (next == null) {
       return null;
     }
     LOGGER.info("Processing next message provider: {}", next.getClass().getSimpleName());
-    return next.check(payload);
+    return next.process(payload);
   }
 }

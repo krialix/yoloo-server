@@ -5,7 +5,7 @@ import com.yoloo.server.group.entity.Group
 import com.yoloo.server.group.entity.Subscription
 import com.yoloo.server.group.mapper.GroupResponseMapper
 import com.yoloo.server.group.vo.GroupResponse
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 

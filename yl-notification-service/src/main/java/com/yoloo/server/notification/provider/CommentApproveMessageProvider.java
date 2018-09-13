@@ -16,33 +16,34 @@ public class CommentApproveMessageProvider extends MessageProvider {
   }
 
   @Override
-  public Pair<Message, Notification> check(NotificationPayload payload) {
-    if (payload.getType().equals("TYPE_APPROVE")) {
-      ApproveBody body = (ApproveBody) payload.getBody();
+  protected boolean matches(String type) {
+    return type.equals("TYPE_APPROVE");
+  }
 
-      Message message =
-          Message.builder()
-              .setToken(body.getToken())
-              .putData("FCM_KEY_TYPE", "TYPE_APPROVE")
-              .putData("FCM_KEY_POST_ID", body.getPostId())
-              .putData("FCM_KEY_COMMENT_CONTENT", body.getTrimmedCommentContent())
-              .build();
+  @Override
+  protected Pair<Message, Notification> processInternal(NotificationPayload payload) {
+    ApproveBody body = (ApproveBody) payload.getBody();
 
-      Notification notification =
-          Notification.newBuilder()
-              .id(idGenerator.generateId())
-              .type(Notification.EntityType.COMMENT_APPROVE)
-              .actor(
-                  Notification.Actor.newBuilder().id(Long.parseLong(body.getPostOwnerId())).build())
-              .receiver(
-                  Notification.Receiver.newBuilder()
-                      .id(Long.parseLong(body.getCommentOwnerId()))
-                      .build())
-              .build();
+    Message message =
+        Message.builder()
+            .setToken(body.getToken())
+            .putData("FCM_KEY_TYPE", "TYPE_APPROVE")
+            .putData("FCM_KEY_POST_ID", body.getPostId())
+            .putData("FCM_KEY_COMMENT_CONTENT", body.getTrimmedCommentContent())
+            .build();
 
-      return new Pair<>(message, notification);
-    }
+    Notification notification =
+        Notification.newBuilder()
+            .id(idGenerator.generateId())
+            .type(Notification.EntityType.COMMENT_APPROVE)
+            .actor(
+                Notification.Actor.newBuilder().id(Long.parseLong(body.getPostOwnerId())).build())
+            .receiver(
+                Notification.Receiver.newBuilder()
+                    .id(Long.parseLong(body.getCommentOwnerId()))
+                    .build())
+            .build();
 
-    return checkNext(payload);
+    return new Pair<>(message, notification);
   }
 }

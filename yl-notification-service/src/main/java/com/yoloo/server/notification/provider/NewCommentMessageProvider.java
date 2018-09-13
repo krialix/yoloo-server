@@ -9,21 +9,22 @@ import com.yoloo.server.notification.payload.NotificationPayload;
 public class NewCommentMessageProvider extends MessageProvider {
 
   @Override
-  public Pair<Message, Notification> check(NotificationPayload payload) {
-    if (payload.getType().equals("TYPE_NEW_COMMENT")) {
-      NewCommentBody body = (NewCommentBody) payload.getBody();
+  protected boolean matches(String type) {
+    return type.equals("TYPE_NEW_COMMENT");
+  }
 
-      Message message =
-          Message.builder()
-              .setToken(body.getToken())
-              .putData("FCM_KEY_TYPE", "TYPE_NEW_COMMENT")
-              .putData("FCM_KEY_POST_ID", body.getPostId())
-              .putData("FCM_KEY_COMMENT_CONTENT", body.getTrimmedCommentContent())
-              .build();
+  @Override
+  protected Pair<Message, Notification> processInternal(NotificationPayload payload) {
+    NewCommentBody body = (NewCommentBody) payload.getBody();
 
-      return new Pair<>(message, null);
-    }
+    Message message =
+        Message.builder()
+            .setToken(body.getToken())
+            .putData("FCM_KEY_TYPE", "TYPE_NEW_COMMENT")
+            .putData("FCM_KEY_POST_ID", body.getPostId())
+            .putData("FCM_KEY_COMMENT_CONTENT", body.getTrimmedCommentContent())
+            .build();
 
-    return checkNext(payload);
+    return new Pair<>(message, null);
   }
 }

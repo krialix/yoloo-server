@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Nonnull;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +44,9 @@ public class FirebaseFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(
-      HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+      @Nonnull HttpServletRequest request,
+      @Nonnull HttpServletResponse response,
+      @Nonnull FilterChain chain)
       throws ServletException, IOException {
     String idToken = request.getHeader(TOKEN_HEADER);
 
@@ -90,31 +93,4 @@ public class FirebaseFilter extends OncePerRequestFilter {
 
     SecurityContextHolder.getContext().setAuthentication(authResult);
   }
-
-  /*@Override
-  public Authentication attemptAuthentication(
-      HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-    String idToken = TokenUtil.extractTokenFromRequest(request);
-    LOGGER.info(TokenUtil.TOKEN_HEADER + ": {}", idToken);
-
-    FirebaseAuthenticationToken authenticationToken =
-        FirebaseAuthenticationToken.fromFirebaseIdToken(idToken);
-
-    return getAuthenticationManager().authenticate(authenticationToken);
-  }
-
-  @Override
-  protected void successfulAuthentication(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      FilterChain chain,
-      Authentication authResult)
-      throws IOException, ServletException {
-    super.successfulAuthentication(request, response, chain, authResult);
-    LOGGER.info("successfulAuthentication() continue on chain");
-
-    // As this authentication is in HTTP header, after success we need to continue the request
-    // normally and return the response as if the resource was not secured at all
-    chain.doFilter(request, response);
-  }*/
 }

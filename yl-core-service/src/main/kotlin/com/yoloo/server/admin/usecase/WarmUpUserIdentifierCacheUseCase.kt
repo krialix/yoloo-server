@@ -1,7 +1,7 @@
 package com.yoloo.server.admin.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.user.entity.User
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.apache.logging.log4j.LogManager

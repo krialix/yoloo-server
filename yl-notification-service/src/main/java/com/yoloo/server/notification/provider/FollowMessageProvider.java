@@ -16,38 +16,39 @@ public class FollowMessageProvider extends MessageProvider {
   }
 
   @Override
-  public Pair<Message, Notification> check(NotificationPayload payload) {
-    if (payload.getType().equals("TYPE_FOLLOW")) {
-      FollowBody body = (FollowBody) payload.getBody();
+  protected boolean matches(String type) {
+    return type.equals("TYPE_FOLLOW");
+  }
 
-      Message message =
-          Message.builder()
-              .setToken(body.getToken())
-              .putData("FCM_KEY_TYPE", "TYPE_FOLLOW")
-              .putData("FCM_KEY_FOLLOWER_ID", body.getFollowerId())
-              .putData("FCM_KEY_FOLLOWER_NAME", body.getFollowerName())
-              .putData("FCM_KEY_FOLLOWER_IMAGE", body.getFollowerImage())
-              .build();
+  @Override
+  protected Pair<Message, Notification> processInternal(NotificationPayload payload) {
+    FollowBody body = (FollowBody) payload.getBody();
 
-      Notification notification =
-          Notification.newBuilder()
-              .id(idGenerator.generateId())
-              .type(Notification.EntityType.FOLLOW)
-              .actor(
-                  Notification.Actor.newBuilder()
-                      .id(Long.parseLong(body.getFollowerId()))
-                      .displayName(body.getFollowerName())
-                      .avatarUrl(body.getFollowerImage())
-                      .build())
-              .receiver(
-                  Notification.Receiver.newBuilder()
-                      .id(Long.parseLong(body.getFollowingId()))
-                      .build())
-              .build();
+    Message message =
+        Message.builder()
+            .setToken(body.getToken())
+            .putData("FCM_KEY_TYPE", "TYPE_FOLLOW")
+            .putData("FCM_KEY_FOLLOWER_ID", body.getFollowerId())
+            .putData("FCM_KEY_FOLLOWER_NAME", body.getFollowerName())
+            .putData("FCM_KEY_FOLLOWER_IMAGE", body.getFollowerImage())
+            .build();
 
-      return new Pair<>(message, notification);
-    }
+    Notification notification =
+        Notification.newBuilder()
+            .id(idGenerator.generateId())
+            .type(Notification.EntityType.FOLLOW)
+            .actor(
+                Notification.Actor.newBuilder()
+                    .id(Long.parseLong(body.getFollowerId()))
+                    .displayName(body.getFollowerName())
+                    .avatarUrl(body.getFollowerImage())
+                    .build())
+            .receiver(
+                Notification.Receiver.newBuilder()
+                    .id(Long.parseLong(body.getFollowingId()))
+                    .build())
+            .build();
 
-    return checkNext(payload);
+    return new Pair<>(message, notification);
   }
 }

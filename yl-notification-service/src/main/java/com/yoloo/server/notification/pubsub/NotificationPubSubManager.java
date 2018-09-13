@@ -6,15 +6,13 @@ import com.google.api.core.ApiFutures;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.pubsub.v1.PubsubMessage;
-import com.googlecode.objectify.Key;
-import com.googlecode.objectify.Result;
+import com.googlecode.objectify.ObjectifyService;
 import com.yoloo.server.common.id.config.IdBeanQualifier;
 import com.yoloo.server.common.id.generator.LongIdGenerator;
 import com.yoloo.server.notification.entity.Notification;
 import com.yoloo.server.notification.payload.NotificationPayload;
 import com.yoloo.server.notification.provider.*;
 import com.yoloo.server.notification.util.AppengineEnv;
-import com.yoloo.server.objectify.ObjectifyProxy;
 import net.cinnom.nanocuckoo.NanoCuckooFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,9 +24,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import static com.yoloo.server.objectify.ObjectifyProxy.ofy;
+import static com.googlecode.objectify.ObjectifyService.ofy;
 
 @Component
 public class NotificationPubSubManager {
@@ -52,11 +49,7 @@ public class NotificationPubSubManager {
     this.firebaseMessaging = firebaseMessaging;
     this.messageProvider = buildProviders(idGenerator);
     this.notifications = new ArrayList<>();
-    this.duplicateFilter = buildDuplicateFilter();
-  }
-
-  private static NanoCuckooFilter buildDuplicateFilter() {
-    return new NanoCuckooFilter.Builder(DUPLICATE_FILTER_CAPACITY).build();
+    this.duplicateFilter = new NanoCuckooFilter.Builder(DUPLICATE_FILTER_CAPACITY).build();
   }
 
   private static MessageProvider buildProviders(LongIdGenerator idGenerator) {
@@ -75,11 +68,11 @@ public class NotificationPubSubManager {
     LOGGER.info("pullPubSubEvents() is running!");
 
     pubSubTemplate
-        .pullAndAck("notification-service", 100, true)
+        .pullAndAck("notification-service", 500, true)
         .stream()
         .filter(message -> !isDuplicate(message.getMessageId()))
         .map(this::mapToPayload)
-        .map(messageProvider::check)
+        .map(messageProvider::process)
         .forEach(
             pair -> {
               if (pair != null) {
@@ -96,15 +89,10 @@ public class NotificationPubSubManager {
 
   private void saveNotifications(List<Notification> notifications) {
     if (!notifications.isEmpty()) {
-      ObjectifyProxy.run(
+      ObjectifyService.run(
           () -> {
-            Result<Map<Key<Notification>, Notification>> saveResult =
-                ofy().save().entities(notifications);
-            if (AppengineEnv.isTest()) {
-              saveResult.now();
-            }
-
-            notifications.clear();
+            ofy().save().entities(notifications);
+            return null;
           });
     }
   }

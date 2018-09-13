@@ -8,7 +8,7 @@ import com.yoloo.server.comment.mapper.CommentResponseMapper
 import com.yoloo.server.comment.vo.CommentCollectionResponse
 import com.yoloo.server.comment.vo.CommentResponse
 import com.yoloo.server.common.exception.exception.ServiceExceptions
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.vote.entity.Vote
 import net.cinnom.nanocuckoo.NanoCuckooFilter

@@ -5,7 +5,7 @@ import com.googlecode.objectify.Key
 import com.yoloo.server.comment.entity.Comment
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.util.TestUtil
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.user.entity.User
 import com.yoloo.server.vote.entity.Vote

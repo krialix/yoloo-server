@@ -12,7 +12,7 @@ import com.yoloo.server.common.queue.vo.EventType
 import com.yoloo.server.common.queue.vo.YolooEvent
 import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.common.vo.Url
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.common.vo.Author
 import com.yoloo.server.post.vo.PostId

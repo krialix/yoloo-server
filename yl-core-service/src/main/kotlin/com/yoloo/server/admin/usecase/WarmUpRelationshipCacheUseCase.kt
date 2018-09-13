@@ -1,7 +1,7 @@
 package com.yoloo.server.admin.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
-import com.yoloo.server.objectify.ObjectifyProxy.ofy
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.relationship.entity.Relationship
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 
@@ -13,7 +13,7 @@ class WarmUpRelationshipCacheUseCase(private val memcacheService: AsyncMemcacheS
             .type(Relationship::class.java)
             .keys()
             .iterable()
-            .let {
+            .let { it ->
                 val filter = NanoCuckooFilter.Builder(RELATIONSHIP_FILTER_CAPACITY).build()
                 it.forEach { filter.insert(it.name) }
 
