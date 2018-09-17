@@ -59,6 +59,8 @@ data class Post(
         const val INDEX_GROUP_ID = "group.id"
         const val INDEX_BOUNTY = "bounty"
 
+        const val ERROR_POST_NOT_FOUND = "post.not_found"
+
         const val CACHE_TTL = 7200
 
         fun createKey(postId: Long): Key<Post> {

@@ -25,10 +25,13 @@ data class Bookmark(
     companion object {
         const val KEY_FILTER_BOOKMARK = "FILTER_BOOKMARK"
 
+        const val ERROR_BOOKMARK_NOT_FOUND = "bookmark.not_found"
+        const val ERROR_BOOKMARK_CONFLICT = "bookmark.conflict"
+
         const val INDEX_USER_ID = "userId"
         const val INDEX_POST_ID = "postId"
 
-        fun create(userId: Long, postId: Long) : Bookmark {
+        fun create(userId: Long, postId: Long): Bookmark {
             return Bookmark(
                 createId(
                     userId,
@@ -42,10 +45,7 @@ data class Bookmark(
         }
 
         fun createKey(userId: Long, postId: Long): Key<Bookmark> {
-            return Key.create(
-                Bookmark::class.java,
-                createId(userId, postId)
-            )
+            return Key.create(Bookmark::class.java, createId(userId, postId))
         }
 
         fun isBookmarked(filter: NanoCuckooFilter, requesterId: Long, postId: Long): Boolean {
