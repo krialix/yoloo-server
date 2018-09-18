@@ -1,11 +1,10 @@
 package com.yoloo.server.post.usecase
 
 import com.googlecode.objectify.Key
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.id.generator.LongIdGenerator
-import com.yoloo.server.common.util.TestUtil
 import com.yoloo.server.common.vo.Author
 import com.yoloo.server.group.entity.Group
-import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.*
@@ -31,8 +30,7 @@ class CreatePostUseCase(
 
         val post = createPost(request, user, group)
 
-        val saveResult = ofy().save().entities(post, group)
-        TestUtil.saveNow(saveResult)
+        ofy().save().entities(post, group)
 
         addToSearchQueue(post)
         addToNotificationQueue(post, group.topicName)

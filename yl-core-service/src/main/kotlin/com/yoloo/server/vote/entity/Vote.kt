@@ -5,6 +5,7 @@ import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id
 import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.util.NoArg
+import com.yoloo.server.common.vo.Keyable
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 
 @Entity
@@ -18,32 +19,23 @@ data class Vote(
 
     @Index
     var votableId: Long = extractVotableId(id)
-) {
+) : Keyable<Vote> {
 
     companion object {
         const val INDEX_VOTABLE_ID = "votableId"
 
         const val KEY_FILTER_VOTE = "FILTER_VOTE"
 
-        fun create(userId: Long, votableId: Long, identifier: String): Vote {
-            return Vote(
-                createId(
-                    userId,
-                    votableId,
-                    identifier
-                )
-            )
+        fun create(userId: Long, votableId: Long): Vote {
+            return Vote(createId(userId, votableId))
         }
 
-        fun createId(userId: Long, votableId: Long, identifier: String): String {
-            return "$userId:$votableId:$identifier"
+        fun createId(userId: Long, votableId: Long): String {
+            return "$userId:$votableId"
         }
 
-        fun createKey(userId: Long, votableId: Long, identifier: String): Key<Vote> {
-            return Key.create(
-                Vote::class.java,
-                createId(userId, votableId, identifier)
-            )
+        fun createKey(userId: Long, votableId: Long): Key<Vote> {
+            return Key.create(Vote::class.java, createId(userId, votableId))
         }
 
         private fun extractUserId(id: String): Long {
@@ -57,16 +49,9 @@ data class Vote(
         fun isVoted(
             filter: NanoCuckooFilter,
             requesterId: Long,
-            postId: Long,
-            identifier: String
+            postId: Long
         ): Boolean {
-            return filter.contains(
-                createId(
-                    requesterId,
-                    postId,
-                    identifier
-                )
-            )
+            return filter.contains(createId(requesterId, postId))
         }
     }
 }

@@ -1,10 +1,8 @@
 package com.yoloo.server.post.api
 
 import com.yoloo.server.auth.AuthUtil
-import com.yoloo.server.post.usecase.CreatePostUseCase
-import com.yoloo.server.post.usecase.DeletePostUseCase
-import com.yoloo.server.post.usecase.GetPostByIdUseCase
-import com.yoloo.server.post.usecase.UpdatePostUseCase
+import com.yoloo.server.common.vo.CollectionResponse
+import com.yoloo.server.post.usecase.*
 import com.yoloo.server.post.vo.CreatePostRequest
 import com.yoloo.server.post.vo.PostResponse
 import com.yoloo.server.post.vo.UpdatePostRequest
@@ -16,7 +14,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RequestMapping(
-    "/api/posts",
+    "/api",
     produces = [MediaType.APPLICATION_JSON_UTF8_VALUE]
 )
 @RestController
@@ -24,11 +22,15 @@ class PostController(
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val createPostUseCase: CreatePostUseCase,
     private val updatePostUseCase: UpdatePostUseCase,
-    private val deletePostUseCase: DeletePostUseCase
+    private val deletePostUseCase: DeletePostUseCase,
+    private val refreshBookmarkCacheUseCase: RefreshBookmarkCacheUseCase,
+    private val bookmarkPostUseCase: BookmarkPostUseCase,
+    private val unbookmarkPostUseCase: UnbookmarkPostUseCase,
+    private val listBookmarkedFeedUseCase: ListBookmarkedFeedUseCase
 ) {
 
     @PreAuthorize("hasAuthority('MEMBER')")
-    @GetMapping("/{postId}")
+    @GetMapping("/posts/{postId}")
     fun getPost(authentication: Authentication, @PathVariable("postId") postId: Long): PostResponse {
         val user = AuthUtil.from(authentication)
 
@@ -45,7 +47,7 @@ class PostController(
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
-    @PatchMapping("/{postId}")
+    @PatchMapping("/posts/{postId}")
     fun updatePost(
         authentication: Authentication,
         @PathVariable("postId") postId: Long,
@@ -58,10 +60,46 @@ class PostController(
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("/posts/{postId}")
     fun deletePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
         val user = AuthUtil.from(authentication)
 
         deletePostUseCase.execute(user.userId, postId)
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/bookmarks/cache/refresh")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun refreshCache() {
+        refreshBookmarkCacheUseCase.execute()
+    }
+
+    @PreAuthorize("hasAuthority('MEMBER')")
+    @PostMapping("/posts/{postId}/bookmarks")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun bookmarkPost(authentication: Authentication, @PathVariable("postId") postId: Long) {
+        val user = AuthUtil.from(authentication)
+
+        bookmarkPostUseCase.execute(user.userId, postId)
+    }
+
+    @PreAuthorize("hasAuthority('MEMBER')")
+    @DeleteMapping("/posts/{postId}/bookmarks")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun unbookmarkPost(authentication: Authentication, @PathVariable("postId") postId: Long) {
+        val user = AuthUtil.from(authentication)
+
+        unbookmarkPostUseCase.execute(user.userId, postId)
+    }
+
+    @PreAuthorize("hasAuthority('MEMBER')")
+    @GetMapping("/users/bookmarks")
+    fun listBookmarkedPosts(
+        authentication: Authentication,
+        @RequestParam(value = "cursor", required = false) cursor: String?
+    ): CollectionResponse<PostResponse> {
+        val user = AuthUtil.from(authentication)
+
+        return listBookmarkedFeedUseCase.execute(user.userId, cursor)
     }
 }

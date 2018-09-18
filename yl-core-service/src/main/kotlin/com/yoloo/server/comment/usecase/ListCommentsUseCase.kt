@@ -115,6 +115,6 @@ class ListCommentsUseCase(
         requesterId: Long,
         comment: Comment
     ): Boolean {
-        return voteFilter.contains(Vote.createId(requesterId, comment.id, "p"))
+        return voteFilter.contains(Vote.createId(requesterId, comment.id))
     }
 }

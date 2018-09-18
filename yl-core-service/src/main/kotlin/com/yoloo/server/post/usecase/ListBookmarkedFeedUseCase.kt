@@ -1,57 +1,59 @@
-package com.yoloo.server.bookmark.usecase
+package com.yoloo.server.post.usecase
 
-import com.google.appengine.api.datastore.Cursor
-import com.google.appengine.api.datastore.QueryResultIterator
 import com.google.appengine.api.memcache.MemcacheService
+import com.google.cloud.datastore.Cursor
+import com.google.cloud.datastore.QueryResults
 import com.googlecode.objectify.Key
-import com.yoloo.server.bookmark.entity.Bookmark
-import com.yoloo.server.common.vo.CollectionResponse
 import com.googlecode.objectify.ObjectifyService.ofy
+import com.yoloo.server.common.vo.CollectionResponse
+import com.yoloo.server.post.entity.Bookmark
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.PostResponse
 import com.yoloo.server.vote.entity.Vote
 import net.cinnom.nanocuckoo.NanoCuckooFilter
+import org.springframework.stereotype.Service
 
+@Service
 class ListBookmarkedFeedUseCase(
     private val postResponseMapper: PostResponseMapper,
     private val memcacheService: MemcacheService
 ) {
 
     fun execute(requesterId: Long, cursor: String?): CollectionResponse<PostResponse> {
-        val queryResultIterator = buildQueryResultIterator(requesterId, cursor)
+        val queryResults = buildQueryResultIterator(requesterId, cursor)
 
-        if (!queryResultIterator.hasNext()) {
+        if (!queryResults.hasNext()) {
             return CollectionResponse.builder<PostResponse>().data(emptyList()).build()
         }
 
         val voteFilter = memcacheService.get(Vote.KEY_FILTER_VOTE) as NanoCuckooFilter
 
-        return buildCollectionResponse(queryResultIterator, requesterId, voteFilter, cursor)
+        return buildCollectionResponse(queryResults, requesterId, voteFilter, cursor)
     }
 
     private fun buildQueryResultIterator(
         requesterId: Long,
         cursor: String?
-    ): QueryResultIterator<Key<Bookmark>> {
+    ): QueryResults<Key<Bookmark>> {
         var query = ofy()
             .load()
             .type(Bookmark::class.java)
             .filter(Bookmark.INDEX_USER_ID, requesterId)
 
-        cursor?.let { query = query.startAt(Cursor.fromWebSafeString(it)) }
+        cursor?.let { query = query.startAt(Cursor.fromUrlSafe(cursor)) }
         query = query.limit(50)
 
         return query.keys().iterator()
     }
 
     private fun buildCollectionResponse(
-        queryResultIterator: QueryResultIterator<Key<Bookmark>>,
+        queryResults: QueryResults<Key<Bookmark>>,
         requesterId: Long,
         voteFilter: NanoCuckooFilter,
         cursor: String?
     ): CollectionResponse<PostResponse> {
-        return queryResultIterator
+        return queryResults
             .asSequence()
             .map { Bookmark.getPostKey(it) }
             .toList()
@@ -62,7 +64,7 @@ class ListBookmarkedFeedUseCase(
                 CollectionResponse.builder<PostResponse>()
                     .data(it)
                     .prevPageToken(cursor)
-                    .nextPageToken(queryResultIterator.cursor.toWebSafeString())
+                    .nextPageToken(queryResults.cursorAfter.toUrlSafe())
                     .build()
             }
     }
@@ -75,7 +77,7 @@ class ListBookmarkedFeedUseCase(
         return postResponseMapper.apply(
             post,
             isSelf(requesterId, post),
-            Vote.isVoted(voteFilter, requesterId, post.id, "p"),
+            Vote.isVoted(voteFilter, requesterId, post.id),
             true
         )
     }

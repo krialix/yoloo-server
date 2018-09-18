@@ -1,25 +1,24 @@
 package com.yoloo.server.post.usecase
 
-import com.yoloo.server.common.exception.exception.ServiceExceptions
-import com.yoloo.server.common.util.TestUtil
 import com.googlecode.objectify.ObjectifyService.ofy
+import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.post.entity.Post
+import com.yoloo.server.post.util.PostErrors
 import org.springframework.stereotype.Service
 
 @Service
 class DeletePostUseCase {
 
     fun execute(requesterId: Long, postId: Long) {
-        val post = ofy().load().type(Post::class.java).id(postId).now()
+        val post = ofy().load().key(Post.createKey(postId)).now()
 
-        ServiceExceptions.checkNotFound(post != null, "post.not_found")
-        ServiceExceptions.checkNotFound(!post.auditData.isDeleted, "post.not_found")
-        ServiceExceptions.checkForbidden(post.author.id == requesterId, "post.forbidden")
+        ServiceExceptions.checkNotFound(post != null, PostErrors.ERROR_POST_NOT_FOUND)
+        ServiceExceptions.checkNotFound(!post.auditData.isDeleted, PostErrors.ERROR_POST_NOT_FOUND)
+        ServiceExceptions.checkForbidden(post.author.id == requesterId, PostErrors.ERROR_POST_FORBIDDEN)
 
         post.markAsDeleted()
 
-        val saveResult = ofy().save().entity(post)
-        TestUtil.saveNow(saveResult)
+        ofy().save().entity(post)
 
         addToSearchQueue(post)
     }

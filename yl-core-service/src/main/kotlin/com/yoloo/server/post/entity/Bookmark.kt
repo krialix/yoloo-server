@@ -1,4 +1,4 @@
-package com.yoloo.server.bookmark.entity
+package com.yoloo.server.post.entity
 
 import com.googlecode.objectify.Key
 import com.googlecode.objectify.annotation.Entity
@@ -6,7 +6,6 @@ import com.googlecode.objectify.annotation.Id
 import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.entity.BaseEntity
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.post.entity.Post
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 
 @NoArg
@@ -25,19 +24,11 @@ data class Bookmark(
     companion object {
         const val KEY_FILTER_BOOKMARK = "FILTER_BOOKMARK"
 
-        const val ERROR_BOOKMARK_NOT_FOUND = "bookmark.not_found"
-        const val ERROR_BOOKMARK_CONFLICT = "bookmark.conflict"
-
         const val INDEX_USER_ID = "userId"
         const val INDEX_POST_ID = "postId"
 
         fun create(userId: Long, postId: Long): Bookmark {
-            return Bookmark(
-                createId(
-                    userId,
-                    postId
-                )
-            )
+            return Bookmark(createId(userId, postId))
         }
 
         fun createId(userId: Long, postId: Long): String {

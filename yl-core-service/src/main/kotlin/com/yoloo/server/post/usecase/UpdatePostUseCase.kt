@@ -1,9 +1,10 @@
 package com.yoloo.server.post.usecase
 
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.util.TestUtil
-import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.post.entity.Post
+import com.yoloo.server.post.util.PostErrors
 import com.yoloo.server.post.vo.UpdatePostRequest
 import org.springframework.stereotype.Service
 
@@ -11,14 +12,14 @@ import org.springframework.stereotype.Service
 class UpdatePostUseCase {
 
     fun execute(requesterId: Long, postId: Long, request: UpdatePostRequest) {
-        val post = ofy().load().type(Post::class.java).id(postId).now()
+        val post = ofy().load().key(Post.createKey(postId)).now()
 
-        ServiceExceptions.checkNotFound(post != null, "post.not_found")
-        ServiceExceptions.checkNotFound(!post.auditData.isDeleted, "post.not_found")
+        ServiceExceptions.checkNotFound(post != null, PostErrors.ERROR_POST_NOT_FOUND)
+        ServiceExceptions.checkNotFound(!post.auditData.isDeleted, PostErrors.ERROR_POST_NOT_FOUND)
 
         val self = requesterId == post.author.id
 
-        ServiceExceptions.checkForbidden(self, "post.forbidden_update")
+        ServiceExceptions.checkForbidden(self, PostErrors.ERROR_POST_FORBIDDEN)
 
         request.content?.let { post.content.value = it }
         request.tags?.toSet()?.let { post.tags = it }

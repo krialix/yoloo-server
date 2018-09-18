@@ -10,6 +10,7 @@ import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.Author
 import com.yoloo.server.common.vo.Media
 import com.yoloo.server.post.vo.*
+import com.yoloo.server.vote.entity.Votable
 import java.time.LocalDateTime
 import java.util.*
 
@@ -43,10 +44,22 @@ data class Post(
     var buddyRequest: BuddyRequest? = null,
 
     var countData: PostCountData = PostCountData()
-) : BaseEntity<Post>() {
+) : BaseEntity<Post>(), Votable {
+
+    override fun vote() {
+        countData.voteCount++
+    }
+
+    override fun unvote() {
+        countData.voteCount--
+    }
+
+    override fun isVotingAllowed(): Boolean {
+        return !flags.contains(PostPermFlag.DISABLE_VOTING)
+    }
 
     fun markAsDeleted() {
-        this.auditData.deletedAt = LocalDateTime.now()
+        auditData.deletedAt = LocalDateTime.now()
     }
 
     override fun onLoad() {
@@ -59,10 +72,9 @@ data class Post(
         const val INDEX_GROUP_ID = "group.id"
         const val INDEX_BOUNTY = "bounty"
 
-        const val ERROR_POST_NOT_FOUND = "post.not_found"
+        const val CACHE_TTL = 7200 //ms
 
-        const val CACHE_TTL = 7200
-
+        @JvmStatic
         fun createKey(postId: Long): Key<Post> {
             return Key.create(Post::class.java, postId)
         }

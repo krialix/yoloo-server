@@ -1,10 +1,10 @@
 package com.yoloo.server.vote.api
 
 import com.yoloo.server.auth.AuthUtil
-import com.yoloo.server.vote.usecase.UnvoteCommentUseCase
-import com.yoloo.server.vote.usecase.UnvotePostUseCase
-import com.yoloo.server.vote.usecase.VoteCommentUseCase
-import com.yoloo.server.vote.usecase.VotePostUseCase
+import com.yoloo.server.comment.entity.Comment
+import com.yoloo.server.post.entity.Post
+import com.yoloo.server.vote.usecase.UnvoteUseCase
+import com.yoloo.server.vote.usecase.VoteUseCase
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @PreAuthorize("hasAuthority('MEMBER')")
 class VoteController(
-    private val votePostUseCase: VotePostUseCase,
-    private val unvotePostUseCase: UnvotePostUseCase,
-    private val voteCommentUseCase: VoteCommentUseCase,
-    private val unvoteCommentUseCase: UnvoteCommentUseCase
+    private val voteUseCase: VoteUseCase,
+    private val unvoteUseCase: UnvoteUseCase
 ) {
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -29,7 +27,7 @@ class VoteController(
     fun votePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
         val user = AuthUtil.from(authentication)
 
-        votePostUseCase.execute(user.userId, postId)
+        voteUseCase.execute(user.userId, postId, Post::class.java)
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -37,7 +35,7 @@ class VoteController(
     fun unvotePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
         val user = AuthUtil.from(authentication)
 
-        unvotePostUseCase.execute(user.userId, postId)
+        unvoteUseCase.execute(user.userId, postId, Post::class.java)
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -49,7 +47,7 @@ class VoteController(
     ) {
         val user = AuthUtil.from(authentication)
 
-        voteCommentUseCase.execute(user.userId, commentId)
+        voteUseCase.execute(user.userId, commentId, Comment::class.java)
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -61,6 +59,6 @@ class VoteController(
     ) {
         val user = AuthUtil.from(authentication)
 
-        unvoteCommentUseCase.execute(user.userId, commentId)
+        unvoteUseCase.execute(user.userId, commentId, Comment::class.java)
     }
 }
