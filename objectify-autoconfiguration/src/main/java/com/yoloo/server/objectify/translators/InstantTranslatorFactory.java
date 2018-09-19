@@ -1,4 +1,4 @@
-package com.yoloo.server.objectify;
+package com.yoloo.server.objectify.translators;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.TimestampValue;

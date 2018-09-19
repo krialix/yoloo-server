@@ -22,23 +22,34 @@ repositories {
     maven { url 'https://jitpack.io/' }
 }
 
+test {
+    useJUnitPlatform()
+}
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
     api 'org.springframework.boot:spring-boot-autoconfigure'
     api 'org.springframework.data:spring-data-commons'
+    api "com.googlecode.objectify:objectify:6.0.1"
+
+    compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
     compileOnly 'net.cinnom:nano-cuckoo:2.0.0'
 
     implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
     implementation 'com.github.takemikami:objectify-appengine-memcacheclient:0.0.1'
-    api "com.googlecode.objectify:objectify:6.0.1"
 
-    //implementation 'org.apache.commons:commons-lang3:3.8'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'com.google.guava:guava:26.0-jre'
 
+    // testing
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testImplementation 'org.json:json:20180130'
+    testImplementation "com.google.appengine:appengine-testing:$appengineVersion"
+    testImplementation 'com.google.truth:truth:0.42'
 }

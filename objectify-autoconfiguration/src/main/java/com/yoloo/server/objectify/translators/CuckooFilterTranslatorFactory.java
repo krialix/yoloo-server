@@ -1,4 +1,4 @@
-package com.yoloo.server.objectify;
+package com.yoloo.server.objectify.translators;
 
 import com.google.cloud.datastore.Blob;
 import com.google.cloud.datastore.BlobValue;
