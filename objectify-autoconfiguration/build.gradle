@@ -22,10 +22,6 @@ repositories {
     maven { url 'https://jitpack.io/' }
 }
 
-test {
-    useJUnitPlatform()
-}
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -47,9 +43,11 @@ dependencies {
     implementation 'com.google.guava:guava:26.0-jre'
 
     // testing
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-    testImplementation 'org.json:json:20180130'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${jUnit5Version}"
+    testImplementation "org.junit.vintage:junit-vintage-engine:${jUnit5Version}"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:${jUnit5Version}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${jUnit5Version}"
+
     testImplementation "com.google.appengine:appengine-testing:$appengineVersion"
     testImplementation 'com.google.truth:truth:0.42'
 }

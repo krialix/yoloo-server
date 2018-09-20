@@ -1,4 +1,4 @@
-package com.yoloo.server.objectify;
+package com.yoloo.server.objectify.util;
 
 import com.google.cloud.datastore.*;
 import com.google.common.collect.ImmutableList;
@@ -13,32 +13,32 @@ import java.util.concurrent.Future;
 
 import static java.util.Collections.synchronizedList;
 
-class RequestCapturingAsyncDatastoreImpl implements AsyncDatastore {
+public class RequestCapturingAsyncDatastore implements AsyncDatastore {
 
-  private static List<List<Key>> reads = synchronizedList(new ArrayList<>());
+  private static final List<List<Key>> READS = synchronizedList(new ArrayList<>());
 
   // Each outer lists represents Datastore operations, with inner lists representing the keys or
   // entities involved in that operation. We use static lists because we care about overall calls to
   // Datastore, not calls via a specific instance of the service.
-  private static List<List<Key>> deletes = synchronizedList(new ArrayList<>());
-  private static List<List<FullEntity<?>>> puts = synchronizedList(new ArrayList<>());
+  private static final List<List<Key>> DELETES = synchronizedList(new ArrayList<>());
+  private static final List<List<FullEntity<?>>> PUTS = synchronizedList(new ArrayList<>());
 
   private final AsyncDatastore delegate;
 
-  RequestCapturingAsyncDatastoreImpl(AsyncDatastore delegate) {
+  public RequestCapturingAsyncDatastore(AsyncDatastore delegate) {
     this.delegate = delegate;
   }
 
   public static List<List<Key>> getReads() {
-    return reads;
+    return READS;
   }
 
   public static List<List<Key>> getDeletes() {
-    return deletes;
+    return DELETES;
   }
 
   public static List<List<FullEntity<?>>> getPuts() {
-    return puts;
+    return PUTS;
   }
 
   @Override
@@ -48,7 +48,7 @@ class RequestCapturingAsyncDatastoreImpl implements AsyncDatastore {
 
   @Override
   public Future<Map<Key, Entity>> get(Collection<Key> keys, ReadOption... options) {
-    reads.add(ImmutableList.copyOf(keys));
+    READS.add(ImmutableList.copyOf(keys));
     return delegate.get(keys, options);
   }
 
@@ -59,13 +59,13 @@ class RequestCapturingAsyncDatastoreImpl implements AsyncDatastore {
 
   @Override
   public Future<Void> delete(Iterable<Key> keys) {
-    deletes.add(ImmutableList.copyOf(keys));
+    DELETES.add(ImmutableList.copyOf(keys));
     return delegate.delete(keys);
   }
 
   @Override
   public Future<List<Key>> put(Iterable<? extends FullEntity<?>> entities) {
-    puts.add(ImmutableList.copyOf(entities));
+    PUTS.add(ImmutableList.copyOf(entities));
     return delegate.put(entities);
   }
 }

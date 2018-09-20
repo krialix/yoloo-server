@@ -17,7 +17,7 @@ public class LocalMemcacheExtension implements BeforeAllCallback, BeforeEachCall
   public LocalMemcacheExtension() {}
 
   /** Get the helper created in beforeAll; it should be global so there will one per test run */
-  public static MemcachedClient getClient(final ExtensionContext context) {
+  static MemcachedClient getClient(final ExtensionContext context) {
     return context
         .getRoot()
         .getStore(ExtensionContext.Namespace.GLOBAL)

@@ -7,4 +7,5 @@ ext {
     firebaseAdminVersion = '6.2.0'
     springCloudGcpVersion = '1.0.0.RELEASE'
     springCloudVersion = 'Finchley.BUILD-SNAPSHOT'
+    jUnit5Version = '5.3.1'
 }

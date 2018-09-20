@@ -1,14 +1,11 @@
 package com.yoloo.server.objectify;
 
 import com.github.takemikami.objectify.appengine.AppEngineMemcacheClientService;
-import com.google.cloud.datastore.Datastore;
-import com.google.cloud.datastore.DatastoreOptions;
 import com.google.common.collect.ImmutableList;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyFilter;
 import com.googlecode.objectify.ObjectifyService;
-import com.googlecode.objectify.impl.AsyncDatastore;
 import com.googlecode.objectify.impl.translate.opt.joda.JodaMoneyTranslators;
 import com.yoloo.server.objectify.translators.DefaultTranslators;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +30,11 @@ import java.util.List;
 @Configuration
 @ConditionalOnClass(Objectify.class)
 public class ObjectifyAutoConfiguration {
-
   private final List<ObjectifyConfigurer> configurers;
-  private final ObjectifyYamlProperties properties;
 
   @Autowired
-  public ObjectifyAutoConfiguration(
-      List<ObjectifyConfigurer> configurers, ObjectifyYamlProperties properties) {
+  public ObjectifyAutoConfiguration(List<ObjectifyConfigurer> configurers) {
     this.configurers = ImmutableList.copyOf(configurers);
-    this.properties = properties;
   }
 
   private static void registerTranslators(
@@ -77,44 +70,23 @@ public class ObjectifyAutoConfiguration {
 
   @Bean
   public ServletListenerRegistrationBean<ObjectifyListener> listenerRegistrationBean() {
-    ServletListenerRegistrationBean<ObjectifyListener> bean =
-        new ServletListenerRegistrationBean<>();
-    bean.setListener(new ObjectifyListener(properties));
-
-    ObjectifyFactory factory = ObjectifyService.factory();
-    registerTranslators(factory, configurers);
-    registerEntities(factory, configurers);
-
-    return bean;
+    return new ServletListenerRegistrationBean<>(new ObjectifyListener(configurers));
   }
 
   static class ObjectifyListener implements ServletContextListener {
+    private final List<ObjectifyConfigurer> configurers;
 
-    private final ObjectifyYamlProperties properties;
-
-    ObjectifyListener(ObjectifyYamlProperties properties) {
-      this.properties = properties;
+    ObjectifyListener(List<ObjectifyConfigurer> configurers) {
+      this.configurers = configurers;
     }
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-      final Datastore datastoreService = DatastoreOptions.getDefaultInstance().getService();
-      final AppEngineMemcacheClientService memcacheClientService =
-          new AppEngineMemcacheClientService();
-
-      ObjectifyFactory factory =
-          new ObjectifyFactory(datastoreService, memcacheClientService) {
-            @Override
-            public AsyncDatastore asyncDatastore() {
-              AsyncDatastore asyncDatastore = super.asyncDatastore();
-
-              return properties.getEnableDatabaseRequestTracking()
-                  ? new RequestCapturingAsyncDatastoreImpl(asyncDatastore)
-                  : asyncDatastore;
-            }
-          };
-
+      ObjectifyFactory factory = new ObjectifyFactory(new AppEngineMemcacheClientService());
       ObjectifyService.init(factory);
+
+      registerTranslators(factory, configurers);
+      registerEntities(factory, configurers);
     }
 
     @Override
