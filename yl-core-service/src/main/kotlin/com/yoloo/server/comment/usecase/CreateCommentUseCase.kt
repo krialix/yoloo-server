@@ -1,5 +1,6 @@
 package com.yoloo.server.comment.usecase
 
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.comment.entity.Comment
 import com.yoloo.server.comment.mapper.CommentResponseMapper
 import com.yoloo.server.comment.vo.CommentContent
@@ -7,30 +8,27 @@ import com.yoloo.server.comment.vo.CommentResponse
 import com.yoloo.server.comment.vo.CreateCommentRequest
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.id.generator.LongIdGenerator
-import com.yoloo.server.common.queue.service.NotificationQueueService
-import com.yoloo.server.common.queue.vo.EventType
-import com.yoloo.server.common.queue.vo.YolooEvent
-import com.yoloo.server.common.util.TestUtil
-import com.yoloo.server.common.vo.Url
-import com.googlecode.objectify.ObjectifyService.ofy
-import com.yoloo.server.post.entity.Post
 import com.yoloo.server.common.vo.Author
+import com.yoloo.server.common.vo.Url
+import com.yoloo.server.post.entity.Post
+import com.yoloo.server.post.util.PostErrors
 import com.yoloo.server.post.vo.PostId
 import com.yoloo.server.post.vo.PostPermFlag
 import com.yoloo.server.user.entity.User
+import org.springframework.stereotype.Service
 
+@Service
 class CreateCommentUseCase(
-    private val idGenerator: LongIdGenerator,
-    private val commentResponseMapper: CommentResponseMapper,
-    private val notificationQueueService: NotificationQueueService
+        private val idGenerator: LongIdGenerator,
+        private val commentResponseMapper: CommentResponseMapper
 ) {
 
     fun execute(
-        requesterUserId: Long,
-        requesterDisplayName: String,
-        requesterAvatarUrl: String,
-        postId: Long,
-        request: CreateCommentRequest
+            requesterUserId: Long,
+            requesterDisplayName: String,
+            requesterAvatarUrl: String,
+            postId: Long,
+            request: CreateCommentRequest
     ): CommentResponse {
         val userKey = User.createKey(requesterUserId)
         val postKey = Post.createKey(postId)
@@ -40,11 +38,11 @@ class CreateCommentUseCase(
         val user = map[userKey] as User
         val post = map[postKey] as Post?
 
-        ServiceExceptions.checkNotFound(post != null, "post.not_found")
-        ServiceExceptions.checkNotFound(!post!!.auditData.isDeleted, "post.not_found")
+        ServiceExceptions.checkNotFound(post != null, PostErrors.ERROR_POST_NOT_FOUND)
+        ServiceExceptions.checkNotFound(!post!!.auditData.isDeleted, PostErrors.ERROR_POST_NOT_FOUND)
         ServiceExceptions.checkForbidden(
-            !post.flags.contains(PostPermFlag.DISABLE_COMMENTING),
-            "post.forbidden_commenting"
+                !post.flags.contains(PostPermFlag.DISABLE_COMMENTING),
+                "post.forbidden_commenting"
         )
 
         val postUser = ofy().load().type(User::class.java).id(post.author.id).now()
@@ -54,8 +52,7 @@ class CreateCommentUseCase(
         post.countData.commentCount = post.countData.commentCount.inc()
         user.profile.countData.commentCount = user.profile.countData.commentCount.inc()
 
-        val saveResult = ofy().save().entities(comment, post, user)
-        TestUtil.saveNow(saveResult)
+        ofy().save().entities(comment, post, user)
 
         addToNotificationQueue(comment, postUser.fcmToken)
 
@@ -63,32 +60,32 @@ class CreateCommentUseCase(
     }
 
     private fun createComment(
-        post: Post,
-        requesterUserId: Long,
-        requesterDisplayName: String,
-        requesterAvatarUrl: String,
-        request: CreateCommentRequest
+            post: Post,
+            requesterUserId: Long,
+            requesterDisplayName: String,
+            requesterAvatarUrl: String,
+            request: CreateCommentRequest
     ): Comment {
         return Comment(
-            id = idGenerator.generateId(),
-            postId = PostId(post.id, post.author.id),
-            author = Author(
-                id = requesterUserId,
-                displayName = requesterDisplayName,
-                profileImageUrl = Url(requesterAvatarUrl)
-            ),
-            content = CommentContent(request.content!!)
+                id = idGenerator.generateId(),
+                postId = PostId(post.id, post.author.id),
+                author = Author(
+                        id = requesterUserId,
+                        displayName = requesterDisplayName,
+                        profileImageUrl = Url(requesterAvatarUrl)
+                ),
+                content = CommentContent(request.content!!)
         )
     }
 
     private fun addToNotificationQueue(comment: Comment, postAuthorFcmToken: String) {
-        val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_COMMENT))
+        /*val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_COMMENT))
             .addData("id", comment.id.toString())
             .addData("commentAuthorDisplayName", comment.author.displayName)
             .addData("postId", comment.postId.value.toString())
             .addData("postAuthorFcmToken", postAuthorFcmToken)
             .build()
 
-        notificationQueueService.addQueueAsync(event)
+        notificationQueueService.addQueueAsync(event)*/
     }
 }

@@ -1,22 +1,18 @@
 package com.yoloo.server.comment.usecase
 
-import com.googlecode.objectify.Key
-import com.yoloo.server.comment.entity.Comment
-import com.yoloo.server.comment.vo.ApprovedCommentId
-import com.yoloo.server.common.exception.exception.ServiceExceptions
-import com.yoloo.server.common.queue.vo.EventType
-import com.yoloo.server.common.queue.vo.YolooEvent
-import com.yoloo.server.common.queue.service.NotificationQueueService
-import com.yoloo.server.common.util.TestUtil
 import com.googlecode.objectify.ObjectifyService.ofy
+import com.yoloo.server.comment.entity.Comment
+import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.user.entity.User
+import org.springframework.stereotype.Service
 
-class ApproveCommentUseCase(private val notificationQueueService: NotificationQueueService) {
+@Service
+class ApproveCommentUseCase {
 
     fun execute(requesterId: Long, postId: Long, commentId: Long) {
-        val postKey = Key.create(Post::class.java, postId)
-        val commentKey = Key.create(Comment::class.java, commentId)
+        val postKey = Post.createKey(postId)
+        val commentKey = Comment.createKey(commentId)
 
         val map = ofy().load().keys(postKey, commentKey) as Map<*, *>
 
@@ -29,22 +25,21 @@ class ApproveCommentUseCase(private val notificationQueueService: NotificationQu
 
         val commentUser = ofy().load().type(User::class.java).id(comment.author.id).now()
 
-        comment.approved = true
-        post.approvedCommentId = ApprovedCommentId(commentId)
+        comment.approve()
+        post.approve(commentId)
 
-        val saveResult = ofy().save().entities(post, comment)
-        TestUtil.saveNow(saveResult)
+        ofy().save().entities(post, comment)
 
         addToNotificationQueue(comment, commentUser.fcmToken)
     }
 
     private fun addToNotificationQueue(comment: Comment, commentAuthorFcmToken: String) {
-        val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_COMMENT))
+        /*val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_COMMENT))
             .addData("id", comment.id.toString())
             .addData("postId", comment.postId.value.toString())
             .addData("commentAuthorFcmToken", commentAuthorFcmToken)
             .build()
 
-        notificationQueueService.addQueueAsync(event)
+        notificationQueueService.addQueueAsync(event)*/
     }
 }

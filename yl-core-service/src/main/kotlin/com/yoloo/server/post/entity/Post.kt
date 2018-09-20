@@ -10,7 +10,7 @@ import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.Author
 import com.yoloo.server.common.vo.Media
 import com.yoloo.server.post.vo.*
-import com.yoloo.server.vote.entity.Votable
+import com.yoloo.server.vote.vo.Votable
 import java.time.LocalDateTime
 import java.util.*
 
@@ -60,6 +60,10 @@ data class Post(
 
     fun markAsDeleted() {
         auditData.deletedAt = LocalDateTime.now()
+    }
+
+    fun approve(commentId: Long) {
+        approvedCommentId = ApprovedCommentId(commentId)
     }
 
     override fun onLoad() {

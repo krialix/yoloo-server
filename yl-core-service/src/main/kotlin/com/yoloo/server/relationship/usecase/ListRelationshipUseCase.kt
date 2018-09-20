@@ -6,7 +6,9 @@ import com.yoloo.server.common.vo.CollectionResponse
 import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.relationship.entity.Relationship
 import com.yoloo.server.user.vo.RelationshipResponse
+import org.springframework.stereotype.Service
 
+@Service
 class ListRelationshipUseCase {
 
     fun execute(

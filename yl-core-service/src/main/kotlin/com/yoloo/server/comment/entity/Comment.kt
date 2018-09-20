@@ -8,7 +8,7 @@ import com.yoloo.server.common.entity.BaseEntity
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.Author
 import com.yoloo.server.post.vo.PostId
-import com.yoloo.server.vote.entity.Votable
+import com.yoloo.server.vote.vo.Votable
 
 @NoArg
 @Entity
@@ -33,6 +33,10 @@ data class Comment(
 
     override fun unvote() {
         voteCount--
+    }
+
+    fun approve() {
+        approved = true
     }
 
     companion object {

@@ -1,4 +1,4 @@
-package com.yoloo.server.vote.entity
+package com.yoloo.server.vote.vo
 
 interface Votable {
     fun vote()

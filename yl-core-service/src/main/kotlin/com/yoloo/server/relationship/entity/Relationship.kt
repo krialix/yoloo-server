@@ -7,6 +7,7 @@ import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.entity.BaseEntity
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.Url
+import com.yoloo.server.relationship.vo.Relationable
 import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.vo.DisplayName
 import net.cinnom.nanocuckoo.NanoCuckooFilter
@@ -14,18 +15,18 @@ import net.cinnom.nanocuckoo.NanoCuckooFilter
 @NoArg
 @Entity
 data class Relationship(
-    @Id
-    var id: String,
+        @Id
+        var id: String,
 
-    @Index
-    var fromId: Long = extractFromId(id),
+        @Index
+        var fromId: Long = extractFromId(id),
 
-    @Index
-    var toId: Long = extractToId(id),
+        @Index
+        var toId: Long = extractToId(id),
 
-    var fromDisplayName: DisplayName,
+        var fromDisplayName: DisplayName,
 
-    var fromProfileImageUrl: Url
+        var fromProfileImageUrl: Url
 ) : BaseEntity<Relationship>() {
 
     companion object {
@@ -34,16 +35,11 @@ data class Relationship(
         const val INDEX_FROM_ID = "fromId"
         const val INDEX_TO_ID = "toId"
 
-        fun create(
-            fromId: Long,
-            fromDisplayName: DisplayName,
-            fromProfileImageUrl: Url,
-            toId: Long
-        ): Relationship {
+        fun create(from: Relationable, to: Relationable): Relationship {
             return Relationship(
-                id = Relationship.createId(fromId, toId),
-                fromDisplayName = fromDisplayName,
-                fromProfileImageUrl = fromProfileImageUrl
+                    id = Relationship.createId(from.getRelationableId(), to.getRelationableId()),
+                    fromDisplayName = from.getRelationableDisplayName(),
+                    fromProfileImageUrl = from.getRelationableProfileImageUrl()
             )
         }
 
@@ -52,10 +48,7 @@ data class Relationship(
         }
 
         fun createKey(fromId: Long, toId: Long): Key<Relationship> {
-            return Key.create(
-                Relationship::class.java,
-                createId(fromId, toId)
-            )
+            return Key.create(Relationship::class.java, createId(fromId, toId))
         }
 
         fun isFollowing(filter: NanoCuckooFilter, fromId: Long, toId: Long): Boolean {

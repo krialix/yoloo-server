@@ -5,7 +5,7 @@ import com.googlecode.objectify.Key
 import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.post.util.PostErrors
-import com.yoloo.server.vote.entity.Votable
+import com.yoloo.server.vote.vo.Votable
 import com.yoloo.server.vote.entity.Vote
 import com.yoloo.server.vote.util.VoteErrors
 import net.cinnom.nanocuckoo.NanoCuckooFilter
@@ -21,7 +21,7 @@ class VoteUseCase(private val memcacheService: AsyncMemcacheService) {
         ServiceExceptions.checkForbidden(votable.isVotingAllowed(), VoteErrors.ERROR_VOTE_FORBIDDEN)
 
         val voteFilter = memcacheService.get(Vote.KEY_FILTER_VOTE).get() as NanoCuckooFilter
-        val voted = Vote.isVoted(voteFilter, requesterId, votableId)
+        val voted = isVoted(voteFilter, requesterId, votableId)
 
         ServiceExceptions.checkConflict(!voted, VoteErrors.ERROR_VOTE_CONFLICT)
 
@@ -33,5 +33,9 @@ class VoteUseCase(private val memcacheService: AsyncMemcacheService) {
         votable.vote()
 
         ofy().save().entities(votable, vote)
+    }
+
+    private fun isVoted(filter: NanoCuckooFilter, requesterId: Long, votableId: Long): Boolean {
+        return filter.contains(Vote.createId(requesterId, votableId))
     }
 }

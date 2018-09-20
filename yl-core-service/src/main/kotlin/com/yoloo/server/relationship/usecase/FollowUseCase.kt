@@ -1,63 +1,51 @@
 package com.yoloo.server.relationship.usecase
 
 import com.google.appengine.api.memcache.AsyncMemcacheService
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.exception.exception.ServiceExceptions.checkConflict
-import com.yoloo.server.common.queue.service.NotificationQueueService
-import com.yoloo.server.common.queue.vo.EventType
-import com.yoloo.server.common.queue.vo.YolooEvent
-import com.yoloo.server.common.util.TestUtil
-import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.relationship.entity.Relationship
 import com.yoloo.server.user.entity.User
 import net.cinnom.nanocuckoo.NanoCuckooFilter
+import org.springframework.stereotype.Service
 
-class FollowUseCase(
-    private val memcacheService: AsyncMemcacheService,
-    private val notificationQueueService: NotificationQueueService
-) {
+@Service
+class FollowUseCase(private val memcacheService: AsyncMemcacheService) {
 
-    fun execute(requesterId: Long, userId: Long) {
-        val map = ofy().load().type(User::class.java).ids(requesterId, userId)
-        val fromUser = map[requesterId]
-        val toUser = map[userId]
+    fun execute(fromId: Long, toId: Long) {
+        val map = ofy().load().type(User::class.java).ids(fromId, toId)
+        val fromUser = map[fromId]
+        val toUser = map[toId]
 
         ServiceExceptions.checkNotFound(toUser != null, "user.not_found")
 
-        val relationshipFilter = getRelationshipFilter()
+        val relationshipFilter = memcacheService.get(Relationship.KEY_FILTER_RELATIONSHIP).get() as NanoCuckooFilter
 
-        checkConflict(
-            !Relationship.isFollowing(relationshipFilter, requesterId, userId),
-            "relationship.conflict"
-        )
+        checkConflict(!isFollowing(relationshipFilter, fromId, toId), "relationship.conflict")
 
-        fromUser!!.profile.countData.followingCount = fromUser.profile.countData.followingCount.inc()
-        toUser!!.profile.countData.followerCount = fromUser.profile.countData.followerCount.inc()
+        fromUser!!.follow(toUser!!)
 
-        val relationship =
-            Relationship.create(fromUser.id, fromUser.profile.displayName, fromUser.profile.profileImageUrl, toUser.id)
+        val relationship = Relationship.create(fromUser, toUser)
         relationshipFilter.insert(relationship.id)
 
-        val saveResult = ofy().save().entities(fromUser, toUser, relationship)
-        val putFuture = memcacheService.put(Relationship.KEY_FILTER_RELATIONSHIP, relationshipFilter)
+        ofy().save().entities(fromUser, toUser, relationship)
 
-        TestUtil.saveNow(saveResult)
-        TestUtil.saveNow(putFuture)
+        memcacheService.put(Relationship.KEY_FILTER_RELATIONSHIP, relationshipFilter)
 
         addToNotificationQueue(toUser.fcmToken, fromUser)
     }
 
-    private fun getRelationshipFilter(): NanoCuckooFilter {
-        return memcacheService.get(Relationship.KEY_FILTER_RELATIONSHIP).get() as NanoCuckooFilter
+    private fun addToNotificationQueue(toUserFcmToken: String, fromUser: User) {
+        /*val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.FOLLOW_USER))
+                .addData("fromUserId", fromUser.id.toString())
+                .addData("fromUserDisplayName", fromUser.profile.displayName.value)
+                .addData("toUserFcmToken", toUserFcmToken)
+                .build()
+
+        notificationQueueService.addQueueAsync(event)*/
     }
 
-    private fun addToNotificationQueue(toUserFcmToken: String, fromUser: User) {
-        val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.FOLLOW_USER))
-            .addData("fromUserId", fromUser.id.toString())
-            .addData("fromUserDisplayName", fromUser.profile.displayName.value)
-            .addData("toUserFcmToken", toUserFcmToken)
-            .build()
-
-        notificationQueueService.addQueueAsync(event)
+    private fun isFollowing(filter: NanoCuckooFilter, fromId: Long, toId: Long): Boolean {
+        return filter.contains(Relationship.createId(fromId, toId))
     }
 }

@@ -5,7 +5,7 @@ import com.googlecode.objectify.Key
 import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.comment.util.CommentErrors
 import com.yoloo.server.common.exception.exception.ServiceExceptions
-import com.yoloo.server.vote.entity.Votable
+import com.yoloo.server.vote.vo.Votable
 import com.yoloo.server.vote.entity.Vote
 import com.yoloo.server.vote.util.VoteErrors
 import net.cinnom.nanocuckoo.NanoCuckooFilter
