@@ -1,0 +1,30 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "https://repo.spring.io/milestone" }
+        maven { url 'https://jitpack.io/' }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java-library'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group 'com.yoloo.server'
+version '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'com.yoloo.tools:uid-generator:1.0.0'
+    implementation 'com.fasterxml.uuid:java-uuid-generator:3.1.5'
+
+    // testing
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${jUnit5Version}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${jUnit5Version}"
+}

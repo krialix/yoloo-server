@@ -1,25 +1,27 @@
 rootProject.name = 'yoloo-server'
 
-include 'objectify-autoconfiguration'
-include 'yl-common:yl-utils'
-include 'yl-common:yl-exception-config'
-include 'yl-common:yl-id-generator'
-include 'yl-common:yl-firebase-config'
-include 'yl-common:yl-auth-config'
-include 'yl-core-service'
-include 'yl-search-service'
-include 'yl-notification-service'
-include 'yl-feed-service'
-include 'pubsub-emulator'
+include 'utils'
+include 'yoloo.spring.rest.exception'
+include 'yoloo.spring.rest.auth.firebase'
+include 'yoloo.spring.autoconfiguration.objectify'
+include 'yoloo.spring.autoconfiguration.idGenerator'
+include 'yoloo.spring.autoconfiguration.firebase'
+include 'yoloo.spring.autoconfiguration.appengine'
+include 'yoloo.service.core-service'
+include 'yoloo.service.search-service'
+include 'yoloo.service.notification-service'
+include 'yoloo.service.feed-service'
+include 'yoloo.tools.pubsub-emulator'
 
-project(':objectify-autoconfiguration').projectDir = "$rootDir/objectify-autoconfiguration" as File
-project(':yl-common:yl-utils').projectDir = "$rootDir/yl-common/yl-utils" as File
-project(':yl-common:yl-exception-config').projectDir = "$rootDir/yl-common/yl-exception-config" as File
-project(':yl-common:yl-id-generator').projectDir = "$rootDir/yl-common/yl-id-generator" as File
-project(':yl-common:yl-firebase-config').projectDir = "$rootDir/yl-common/yl-firebase-config" as File
-project(':yl-common:yl-auth-config').projectDir = "$rootDir/yl-common/yl-auth-config" as File
-project(':yl-core-service').projectDir = "$rootDir/yl-core-service" as File
-project(':yl-search-service').projectDir = "$rootDir/yl-search-service" as File
-project(':yl-notification-service').projectDir = "$rootDir/yl-notification-service" as File
-project(':yl-feed-service').projectDir = "$rootDir/yl-feed-service" as File
-project(':pubsub-emulator').projectDir = "$rootDir/pubsub-emulator" as File
+project(':utils').projectDir = "$rootDir/common/utils" as File
+project(':yoloo.spring.rest.exception').projectDir = "$rootDir/spring/rest/exception" as File
+project(':yoloo.spring.rest.auth.firebase').projectDir = "$rootDir/spring/rest/auth/firebase" as File
+project(':yoloo.spring.autoconfiguration.objectify').projectDir = "$rootDir/spring/autoconfiguration/objectify" as File
+project(':yoloo.spring.autoconfiguration.idGenerator').projectDir = "$rootDir/spring/autoconfiguration/id-generator" as File
+project(':yoloo.spring.autoconfiguration.firebase').projectDir = "$rootDir/spring/autoconfiguration/firebase" as File
+project(':yoloo.spring.autoconfiguration.appengine').projectDir = "$rootDir/spring/autoconfiguration/appengine" as File
+project(':yoloo.service.core-service').projectDir = "$rootDir/services/core-service" as File
+project(':yoloo.service.search-service').projectDir = "$rootDir/services/search-service" as File
+project(':yoloo.service.notification-service').projectDir = "$rootDir/services/notification-service" as File
+project(':yoloo.service.feed-service').projectDir = "$rootDir/yl-feed-service" as File
+project(':yoloo.tools.pubsub-emulator').projectDir = "$rootDir/tools/pubsub-emulator" as File

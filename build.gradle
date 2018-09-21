@@ -1,5 +1,6 @@
 plugins {
-    id 'com.github.ben-manes.versions' version '0.20.0' apply false
+    id 'com.github.ben-manes.versions' version '0.20.0'
+    id 'base'
 }
 
 apply from: 'dependencies.gradle'
@@ -7,10 +8,13 @@ apply from: 'dependencies.gradle'
 group = 'com.yoloo.server'
 version = '0.0.1-SNAPSHOT'
 
-subprojects {
-    apply plugin: 'base'
-    apply plugin: 'com.github.ben-manes.versions'
+allprojects {
+    clean {
+        delete 'out'
+    }
+}
 
+subprojects {
     repositories {
         jcenter()
         maven { url "https://krialix.github.io/maven-artifactory/" }
@@ -18,16 +22,12 @@ subprojects {
         maven { url "https://repo.spring.io/snapshot" }
     }
 
-    configurations.all {
+    /*configurations.all {
         resolutionStrategy {
             force 'com.fasterxml.jackson.core:jackson-databind:2.9.6',
                     'org.slf4j:slf4j-api:1.8.0-beta2',
                     'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.61',
                     'org.jetbrains.kotlin:kotlin-reflect:1.2.61'
         }
-    }
-
-    clean {
-        delete 'out'
-    }
+    }*/
 }
