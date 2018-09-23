@@ -9,7 +9,7 @@ import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.Author
 import com.yoloo.server.entity.Approvable
 import com.yoloo.server.entity.Keyable
-import com.yoloo.server.entity.Votable
+import com.yoloo.server.entity.Likeable
 import com.yoloo.server.post.vo.PostId
 import java.time.Instant
 
@@ -26,19 +26,10 @@ data class Comment(
 
     var content: CommentContent,
 
-    var voteCount: Int = 0,
-
     var approved: Boolean = false,
 
     var createdAt: Instant = Instant.now()
-) : Keyable<Comment>, Votable, Approvable {
-    override fun vote() {
-        voteCount++
-    }
-
-    override fun unvote() {
-        voteCount--
-    }
+) : Keyable<Comment>, Likeable, Approvable {
 
     override fun isVotingAllowed(): Boolean {
         return true

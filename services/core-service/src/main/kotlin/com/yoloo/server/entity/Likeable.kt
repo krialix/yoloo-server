@@ -1,6 +1,6 @@
 package com.yoloo.server.entity
 
-interface Votable {
+interface Likeable {
     fun vote()
 
     fun unvote()

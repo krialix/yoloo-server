@@ -7,7 +7,7 @@ import com.yoloo.server.post.usecase.*
 import com.yoloo.server.post.vo.CreatePostRequest
 import com.yoloo.server.post.vo.PostResponse
 import com.yoloo.server.post.vo.UpdatePostRequest
-import com.yoloo.server.vote.service.VoteService
+import com.yoloo.server.like.service.LikeService
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -29,7 +29,7 @@ class PostController(
     private val bookmarkPostUseCase: BookmarkPostUseCase,
     private val unbookmarkPostUseCase: UnbookmarkPostUseCase,
     private val listBookmarkedFeedUseCase: ListBookmarkedFeedUseCase,
-    private val voteService: VoteService
+    private val likeService: LikeService
 ) {
 
     @PreAuthorize("hasAuthority('MEMBER')")
@@ -107,18 +107,18 @@ class PostController(
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/posts/{postId}/votes")
-    fun votePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
+    @PostMapping("/posts/{postId}/likes")
+    fun likePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
         val user = AuthUtil.from(authentication)
 
-        voteService.vote(user.userId, postId, Post::class.java)
+        likeService.like(user.userId, postId, Post::class.java)
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/posts/{postId}/votes")
-    fun unvotePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
+    @DeleteMapping("/posts/{postId}/likes")
+    fun dislikePost(authentication: Authentication, @PathVariable("postId") postId: Long) {
         val user = AuthUtil.from(authentication)
 
-        voteService.unvote(user.userId, postId, Post::class.java)
+        likeService.dislike(user.userId, postId, Post::class.java)
     }
 }

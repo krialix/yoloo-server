@@ -6,7 +6,7 @@ import com.yoloo.server.comment.usecase.*
 import com.yoloo.server.comment.vo.CommentCollectionResponse
 import com.yoloo.server.comment.vo.CommentResponse
 import com.yoloo.server.comment.vo.CreateCommentRequest
-import com.yoloo.server.vote.service.VoteService
+import com.yoloo.server.like.service.LikeService
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -25,7 +25,7 @@ class CommentController(
     private val disapproveCommentUseCase: DisapproveCommentUseCase,
     private val deleteCommentUseCase: DeleteCommentUseCase,
     private val listCommentsUseCase: ListCommentsUseCase,
-    private val voteService: VoteService
+    private val likeService: LikeService
 ) {
 
     @PreAuthorize("hasAnyRole('MEMBER')")
@@ -101,7 +101,7 @@ class CommentController(
     ) {
         val user = AuthUtil.from(authentication)
 
-        voteService.vote(user.userId, commentId, Comment::class.java)
+        likeService.like(user.userId, commentId, Comment::class.java)
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -113,6 +113,6 @@ class CommentController(
     ) {
         val user = AuthUtil.from(authentication)
 
-        voteService.unvote(user.userId, commentId, Comment::class.java)
+        likeService.dislike(user.userId, commentId, Comment::class.java)
     }
 }

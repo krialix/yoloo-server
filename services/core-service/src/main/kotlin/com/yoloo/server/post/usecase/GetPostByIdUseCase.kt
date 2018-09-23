@@ -8,7 +8,7 @@ import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.util.PostErrors
 import com.yoloo.server.post.vo.PostResponse
-import com.yoloo.server.vote.entity.Vote
+import com.yoloo.server.like.entity.Like
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.stereotype.Service
 
@@ -25,12 +25,12 @@ class GetPostByIdUseCase(
         ServiceExceptions.checkNotFound(!post.auditData.isDeleted, PostErrors.ERROR_POST_NOT_FOUND)
 
         val cacheMap =
-            memcacheService.getAll(listOf(Vote.KEY_FILTER_VOTE, Bookmark.KEY_FILTER_BOOKMARK)) as Map<String, *>
+            memcacheService.getAll(listOf(Like.KEY_FILTER_VOTE, Bookmark.KEY_FILTER_BOOKMARK)) as Map<String, *>
 
         val self = requesterId == post.author.id
 
-        val voteFilter = cacheMap[Vote.KEY_FILTER_VOTE] as NanoCuckooFilter
-        val voted = Vote.isVoted(voteFilter, requesterId, postId)
+        val voteFilter = cacheMap[Like.KEY_FILTER_VOTE] as NanoCuckooFilter
+        val voted = Like.isVoted(voteFilter, requesterId, postId)
 
         val bookmarkFilter = cacheMap[Bookmark.KEY_FILTER_BOOKMARK] as NanoCuckooFilter
         val bookmarked = Bookmark.isBookmarked(bookmarkFilter, requesterId, postId)

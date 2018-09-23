@@ -11,7 +11,7 @@ import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.Author
 import com.yoloo.server.common.vo.Media
 import com.yoloo.server.entity.BaseEntity
-import com.yoloo.server.entity.Votable
+import com.yoloo.server.entity.Likeable
 import com.yoloo.server.post.vo.*
 import java.time.Instant
 import java.util.*
@@ -46,17 +46,9 @@ data class Post(
     var buddyRequest: BuddyRequest? = null,
 
     var countData: PostCountData = PostCountData()
-) : BaseEntity<Post>(), Votable, Commentable, SoftDelete {
+) : BaseEntity<Post>(), Likeable, Commentable, SoftDelete {
     override fun isSoftDeleted(): Boolean {
         return auditData.isDeleted
-    }
-
-    override fun vote() {
-        countData.voteCount++
-    }
-
-    override fun unvote() {
-        countData.voteCount--
     }
 
     override fun isVotingAllowed(): Boolean {

@@ -39,10 +39,10 @@ configurations.all {
 }
 
 dependencies {
-    implementation project(':yoloo.common.spring.autoconfiguration.objectify')
-    implementation project(':yl-common:yl-utils')
-    implementation project(':yl-common:yl-exception-config')
-    implementation project(':yoloo.common.spring.autoconfiguration.idGenerator')
+    implementation project(':yoloo.spring.autoconfiguration.objectify')
+    implementation project(':yoloo.spring.autoconfiguration.idGenerator')
+    implementation project(':utils')
+    implementation project(':yoloo.spring.rest.exception')
 
     // App Engine
     implementation "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"

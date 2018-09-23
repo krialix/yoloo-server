@@ -23,5 +23,5 @@ project(':yoloo.spring.autoconfiguration.appengine').projectDir = "$rootDir/spri
 project(':yoloo.service.core-service').projectDir = "$rootDir/services/core-service" as File
 project(':yoloo.service.search-service').projectDir = "$rootDir/services/search-service" as File
 project(':yoloo.service.notification-service').projectDir = "$rootDir/services/notification-service" as File
-project(':yoloo.service.feed-service').projectDir = "$rootDir/yl-feed-service" as File
+project(':yoloo.service.feed-service').projectDir = "$rootDir/services/feed-service" as File
 project(':yoloo.tools.pubsub-emulator').projectDir = "$rootDir/tools/pubsub-emulator" as File

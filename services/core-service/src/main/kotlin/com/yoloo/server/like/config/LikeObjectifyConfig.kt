@@ -1,13 +1,13 @@
-package com.yoloo.server.vote.config
+package com.yoloo.server.like.config
 
 import com.yoloo.server.objectify.ObjectifyConfigurer
-import com.yoloo.server.vote.entity.Vote
+import com.yoloo.server.like.entity.Like
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class VoteObjectifyConfig : ObjectifyConfigurer {
+class LikeObjectifyConfig : ObjectifyConfigurer {
 
     override fun registerEntities(): List<Class<*>> {
-        return listOf(Vote::class.java)
+        return listOf(Like::class.java)
     }
 }

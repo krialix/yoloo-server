@@ -10,7 +10,7 @@ import com.yoloo.server.post.entity.Bookmark
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.vo.PostResponse
-import com.yoloo.server.vote.entity.Vote
+import com.yoloo.server.like.entity.Like
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.stereotype.Service
 
@@ -27,7 +27,7 @@ class ListBookmarkedFeedUseCase(
             return CollectionResponse.builder<PostResponse>().data(emptyList()).build()
         }
 
-        val voteFilter = memcacheService.get(Vote.KEY_FILTER_VOTE) as NanoCuckooFilter
+        val voteFilter = memcacheService.get(Like.KEY_FILTER_VOTE) as NanoCuckooFilter
 
         return buildCollectionResponse(queryResults, requesterId, voteFilter, cursor)
     }
@@ -77,7 +77,7 @@ class ListBookmarkedFeedUseCase(
         return postResponseMapper.apply(
             post,
             isSelf(requesterId, post),
-            Vote.isVoted(voteFilter, requesterId, post.id),
+            Like.isVoted(voteFilter, requesterId, post.id),
             true
         )
     }

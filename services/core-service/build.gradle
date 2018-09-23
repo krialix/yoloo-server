@@ -70,7 +70,6 @@ dependencies {
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
 
     // Testing
-    // testing
     testImplementation "org.junit.jupiter:junit-jupiter-api:${jUnit5Version}"
     testImplementation "org.junit.vintage:junit-vintage-engine:${jUnit5Version}"
     testImplementation "org.junit.jupiter:junit-jupiter-params:${jUnit5Version}"
@@ -80,11 +79,10 @@ dependencies {
     testImplementation 'com.google.truth:truth:0.42'
     
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
-    testImplementation 'com.google.truth:truth:0.41'
-    testImplementation "com.google.appengine:appengine-api-stubs:$appengineVersion"
-    testImplementation "com.google.appengine:appengine-testing:$appengineVersion"
-    testImplementation "com.google.appengine:appengine-tools-sdk:$appengineVersion"
+    //testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+    //testImplementation "com.google.appengine:appengine-api-stubs:$appengineVersion"
+    //testImplementation "com.google.appengine:appengine-testing:$appengineVersion"
+    //testImplementation "com.google.appengine:appengine-tools-sdk:$appengineVersion"
 }
 
 dependencyManagement {

@@ -10,7 +10,7 @@ import com.yoloo.server.comment.vo.CommentCollectionResponse
 import com.yoloo.server.comment.vo.CommentResponse
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.vote.entity.Vote
+import com.yoloo.server.like.entity.Like
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.stereotype.Service
 
@@ -46,7 +46,7 @@ class ListCommentsUseCase(
     }
 
     private fun getVoteFilter(): NanoCuckooFilter {
-        return memcacheService.get(Vote.KEY_FILTER_VOTE) as NanoCuckooFilter
+        return memcacheService.get(Like.KEY_FILTER_VOTE) as NanoCuckooFilter
     }
 
     private fun buildCommentCollectionResponse(
@@ -117,6 +117,6 @@ class ListCommentsUseCase(
         requesterId: Long,
         comment: Comment
     ): Boolean {
-        return voteFilter.contains(Vote.createId(requesterId, comment.id))
+        return voteFilter.contains(Like.createId(requesterId, comment.id))
     }
 }
