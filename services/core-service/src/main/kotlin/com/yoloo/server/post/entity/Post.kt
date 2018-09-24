@@ -4,8 +4,8 @@ import com.googlecode.objectify.Key
 import com.googlecode.objectify.annotation.*
 import com.googlecode.objectify.condition.IfNotNull
 import com.googlecode.objectify.condition.IfNull
-import com.yoloo.server.comment.vo.ApprovedCommentId
-import com.yoloo.server.comment.vo.Commentable
+import com.yoloo.server.post.vo.ApprovedCommentId
+import com.yoloo.server.post.vo.Commentable
 import com.yoloo.server.common.SoftDelete
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.Author

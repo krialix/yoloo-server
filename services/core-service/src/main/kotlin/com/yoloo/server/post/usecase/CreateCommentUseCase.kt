@@ -1,16 +1,16 @@
-package com.yoloo.server.comment.usecase
+package com.yoloo.server.post.usecase
 
 import com.googlecode.objectify.ObjectifyService.ofy
-import com.yoloo.server.comment.entity.Comment
-import com.yoloo.server.comment.mapper.CommentResponseMapper
-import com.yoloo.server.comment.vo.CommentContent
-import com.yoloo.server.comment.vo.CommentResponse
-import com.yoloo.server.comment.vo.CreateCommentRequest
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.common.vo.Author
 import com.yoloo.server.common.vo.Url
+import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Post
+import com.yoloo.server.post.mapper.CommentResponseMapper
 import com.yoloo.server.post.util.PostErrors
+import com.yoloo.server.post.vo.CommentContent
+import com.yoloo.server.post.vo.CommentResponse
+import com.yoloo.server.post.vo.CreateCommentRequest
 import com.yoloo.server.post.vo.PostId
 import com.yoloo.server.user.entity.User
 import com.yoloo.spring.autoconfiguration.id.generator.IdFactory.LongIdGenerator

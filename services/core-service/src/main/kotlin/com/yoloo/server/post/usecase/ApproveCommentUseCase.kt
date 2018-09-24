@@ -1,7 +1,7 @@
-package com.yoloo.server.comment.usecase
+package com.yoloo.server.post.usecase
 
 import com.googlecode.objectify.ObjectifyService.ofy
-import com.yoloo.server.comment.entity.Comment
+import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.user.entity.User

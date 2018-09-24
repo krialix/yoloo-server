@@ -1,4 +1,4 @@
-package com.yoloo.server.comment.vo;
+package com.yoloo.server.post.vo;
 
 import java.util.Collection;
 

@@ -3,7 +3,7 @@ package com.yoloo.server.like.service
 import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.googlecode.objectify.Key
 import com.googlecode.objectify.ObjectifyService.ofy
-import com.yoloo.server.common.exception.exception.ServiceExceptions
+import com.yoloo.server.common.exception.exception.ServiceExceptions.*
 import com.yoloo.server.counter.CounterService
 import com.yoloo.server.entity.EntityHelper
 import com.yoloo.server.entity.Likeable
@@ -16,23 +16,23 @@ import org.springframework.stereotype.Service
 
 @Service
 class LikeServiceImpl(
-        private val memcacheService: AsyncMemcacheService,
-        private val counterService: CounterService
+    private val memcacheService: AsyncMemcacheService,
+    private val counterService: CounterService
 ) : LikeService {
 
     override fun like(userId: Long, likeableId: Long, type: Class<out Likeable>) {
         val entityFilter = getEntityFilter()
 
-        ServiceExceptions.checkNotFound(entityFilter.contains(userId), UserErrors.ERROR_USER_NOT_FOUND)
-        ServiceExceptions.checkNotFound(entityFilter.contains(likeableId), PostErrors.ERROR_POST_NOT_FOUND)
+        checkNotFound(entityFilter.contains(userId), UserErrors.ERROR_USER_NOT_FOUND)
+        checkNotFound(entityFilter.contains(likeableId), PostErrors.ERROR_POST_NOT_FOUND)
 
         val like = Like.create(userId, likeableId)
 
-        ServiceExceptions.checkConflict(!entityFilter.contains(like.id), LikeErrors.CONFLICT)
+        checkConflict(!entityFilter.contains(like.id), LikeErrors.CONFLICT)
 
         val votable = ofy().load().key(Key.create(type, likeableId)).now()
 
-        ServiceExceptions.checkForbidden(votable.isVotingAllowed(), LikeErrors.FORBIDDEN)
+        checkForbidden(votable.isVotingAllowed(), LikeErrors.FORBIDDEN)
 
         entityFilter.insert(like.id)
 
@@ -44,12 +44,12 @@ class LikeServiceImpl(
     override fun dislike(userId: Long, likeableId: Long, type: Class<out Likeable>) {
         val entityFilter = getEntityFilter()
 
-        ServiceExceptions.checkNotFound(entityFilter.contains(userId), UserErrors.ERROR_USER_NOT_FOUND)
-        ServiceExceptions.checkNotFound(entityFilter.contains(likeableId), PostErrors.ERROR_POST_NOT_FOUND)
+        checkNotFound(entityFilter.contains(userId), UserErrors.ERROR_USER_NOT_FOUND)
+        checkNotFound(entityFilter.contains(likeableId), PostErrors.ERROR_POST_NOT_FOUND)
 
         val likeKey = Like.createKey(userId, likeableId)
 
-        ServiceExceptions.checkNotFound(entityFilter.contains(likeKey.name), LikeErrors.CONFLICT)
+        checkNotFound(entityFilter.contains(likeKey.name), LikeErrors.CONFLICT)
 
         updateEntityFilter(entityFilter)
         ofy().delete().key(likeKey)

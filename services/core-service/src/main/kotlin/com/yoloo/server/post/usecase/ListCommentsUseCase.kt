@@ -1,13 +1,13 @@
-package com.yoloo.server.comment.usecase
+package com.yoloo.server.post.usecase
 
 import com.google.appengine.api.memcache.MemcacheService
 import com.google.cloud.datastore.Cursor
 import com.google.cloud.datastore.QueryResults
 import com.googlecode.objectify.ObjectifyService.ofy
-import com.yoloo.server.comment.entity.Comment
-import com.yoloo.server.comment.mapper.CommentResponseMapper
-import com.yoloo.server.comment.vo.CommentCollectionResponse
-import com.yoloo.server.comment.vo.CommentResponse
+import com.yoloo.server.post.entity.Comment
+import com.yoloo.server.post.mapper.CommentResponseMapper
+import com.yoloo.server.post.vo.CommentCollectionResponse
+import com.yoloo.server.post.vo.CommentResponse
 import com.yoloo.server.common.exception.exception.ServiceExceptions
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.like.entity.Like

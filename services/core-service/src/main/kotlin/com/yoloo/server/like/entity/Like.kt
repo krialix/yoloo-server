@@ -13,17 +13,17 @@ import java.util.regex.Pattern
 @Entity
 @NoArg
 data class Like(
-        @Id
-        var id: String,
+    @Id
+    var id: String,
 
-        @Index
-        var userId: Long = extractUserId(id),
+    @Index
+    var userId: Long = extractUserId(id),
 
-        @Index
-        var likeableId: Long = extractLikeableId(id),
+    @Index
+    var likeableId: Long = extractLikeableId(id),
 
-        @Index
-        var createdAt: Instant = Instant.now()
+    @Index
+    var createdAt: Instant = Instant.now()
 ) : Keyable<Like> {
 
     companion object {
@@ -56,9 +56,9 @@ data class Like(
         }
 
         fun isVoted(
-                filter: NanoCuckooFilter,
-                requesterId: Long,
-                postId: Long
+            filter: NanoCuckooFilter,
+            requesterId: Long,
+            postId: Long
         ): Boolean {
             return filter.contains(createId(requesterId, postId))
         }
