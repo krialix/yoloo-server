@@ -1,32 +1,55 @@
 package com.yoloo.server.post.mapper
 
+import com.arcticicestudio.icecore.hashids.Hashids
+import com.yoloo.server.mapper.ResponseMapper
+import com.yoloo.server.mapper.ResponseParams
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.vo.*
 import org.springframework.stereotype.Component
 
 @Component
-class PostResponseMapper {
+class PostResponseMapper(
+    private val hashIds: Hashids,
+    private val authorResponseMapper: AuthorResponseMapper
+) : ResponseMapper<Post, PostResponse, PostResponseMapper.Params> {
 
-    fun apply(from: Post, self: Boolean, voted: Boolean, bookmarked: Boolean): PostResponse {
+    override fun apply(t: Post, u: Params): PostResponse {
         return PostResponse(
-            id = from.id,
-            author = AuthorResponse(
-                id = from.author.id,
-                displayName = from.author.displayName,
-                profileImageUrl = from.author.profileImageUrl.value,
-                self = self
-            ),
-            title = from.title.value,
-            content = from.content.value,
-            group = PostGroupResponse(from.group.id, from.group.displayName),
-            tags = from.tags.toList(),
-            approvedCommentId = from.approvedCommentId?.value,
-            bounty = from.bounty?.value ?: 0,
-            count = PostCountResponse(from.countData.voteCount, from.countData.commentCount),
-            voted = voted,
-            bookmarked = bookmarked,
-            createdAt = from.auditData.createdAt,
-            medias = from.medias.map { MediaResponse(it.type.name, it.url.value) }
+            id = hashIds.encode(t.id, t.author.id),
+            author = authorResponse2(),
+            title = t.title.value,
+            content = t.content.value,
+            group = PostGroupResponse(hashIds.encode(t.group.id), t.group.displayName),
+            tags = t.tags.toList(),
+            approvedCommentId = t.approvedCommentId?.let { hashIds.encode(it.value) },
+            bounty = t.bounty?.value ?: 0,
+            count = PostCountResponse(t.countData.voteCount, t.countData.commentCount),
+            liked = u.liked,
+            bookmarked = u.bookmarked,
+            createdAt = t.auditData.createdAt,
+            medias = t.medias.map { MediaResponse(it.type.name, it.url.value) }
         )
     }
+
+    private fun authorResponse2(): AuthorResponse2 {
+        return object : AuthorResponse2 {
+            override fun getId(): String {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun isSelf(): Boolean {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun getDisplayName(): String {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun getProfileImageUrl(): String {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        }
+    }
+
+    data class Params(val self: Boolean, val liked: Boolean, val bookmarked: Boolean) : ResponseParams
 }

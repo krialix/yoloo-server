@@ -1,5 +1,6 @@
 package com.yoloo.server.feed.entity
 
+import com.google.cloud.datastore.BaseEntity
 import com.googlecode.objectify.Key
 import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id

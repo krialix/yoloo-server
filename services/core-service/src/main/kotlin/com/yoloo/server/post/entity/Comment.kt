@@ -4,12 +4,12 @@ import com.googlecode.objectify.Key
 import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id
 import com.googlecode.objectify.annotation.Index
-import com.yoloo.server.post.vo.CommentContent
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.Author
 import com.yoloo.server.entity.Approvable
 import com.yoloo.server.entity.Keyable
 import com.yoloo.server.entity.Likeable
+import com.yoloo.server.post.vo.CommentContent
 import com.yoloo.server.post.vo.PostId
 import java.time.Instant
 
@@ -30,6 +30,13 @@ data class Comment(
 
     var createdAt: Instant = Instant.now()
 ) : Keyable<Comment>, Likeable, Approvable {
+    override fun vote() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun unvote() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     override fun isVotingAllowed(): Boolean {
         return true

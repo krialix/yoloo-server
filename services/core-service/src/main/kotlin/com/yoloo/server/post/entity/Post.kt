@@ -4,8 +4,6 @@ import com.googlecode.objectify.Key
 import com.googlecode.objectify.annotation.*
 import com.googlecode.objectify.condition.IfNotNull
 import com.googlecode.objectify.condition.IfNull
-import com.yoloo.server.post.vo.ApprovedCommentId
-import com.yoloo.server.post.vo.Commentable
 import com.yoloo.server.common.SoftDelete
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.Author
@@ -43,10 +41,17 @@ data class Post(
     @Index(IfNotNull::class)
     var bounty: PostBounty? = null,
 
-    var buddyRequest: BuddyRequest? = null,
-
     var countData: PostCountData = PostCountData()
 ) : BaseEntity<Post>(), Likeable, Commentable, SoftDelete {
+
+    override fun vote() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun unvote() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun isSoftDeleted(): Boolean {
         return auditData.isDeleted
     }
@@ -85,7 +90,7 @@ data class Post(
         const val INDEX_GROUP_ID = "group.id"
         const val INDEX_BOUNTY = "bounty"
 
-        const val CACHE_TTL = 7200 //ms
+        const val CACHE_TTL = 7200 // ms
 
         @JvmStatic
         fun createKey(postId: Long): Key<Post> {

@@ -37,7 +37,7 @@ class PostController(
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/posts/{postId}")
-    fun getPost(authentication: Authentication, @PathVariable("postId") postId: Long): PostResponse {
+    fun getPost(authentication: Authentication, @PathVariable("postId") postId: String): PostResponse {
         val user = AuthUtil.from(authentication)
 
         return getPostByIdUseCase.execute(user.userId, postId)
@@ -154,7 +154,7 @@ class PostController(
     ) {
         val user = AuthUtil.from(authentication)
 
-        approveCommentUseCase.execute(user.userId, postId, commentId)
+        approveCommentUseCase.execute(ApproveCommentUseCase.Input(user.userId, postId, commentId))
     }
 
     @PreAuthorize("hasAnyRole('MEMBER')")
@@ -183,7 +183,7 @@ class PostController(
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/comments/{commentId}/votes")
+    @PostMapping("/comments/{commentId}/likes")
     fun voteComment(
         authentication: Authentication,
         @PathVariable("postId") postId: Long,
@@ -195,7 +195,7 @@ class PostController(
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/comments/{commentId}/votes")
+    @DeleteMapping("/comments/{commentId}/likes")
     fun unvoteComment(
         authentication: Authentication,
         @PathVariable("postId") postId: Long,

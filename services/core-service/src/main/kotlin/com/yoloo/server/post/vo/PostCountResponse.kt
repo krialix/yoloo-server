@@ -1,3 +1,3 @@
 package com.yoloo.server.post.vo
 
-data class PostCountResponse(val votes: Int, val comments: Int)
+data class PostCountResponse(val likes: Int, val comments: Int)

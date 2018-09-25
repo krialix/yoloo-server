@@ -1,0 +1,4 @@
+hashids:
+  alphabet: abcdefghijklmnopqrstuvwxyz1234567890
+  salt: eW9sb28=
+  min-length: 12
