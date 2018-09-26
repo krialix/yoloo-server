@@ -22,7 +22,7 @@ class BookmarkPostUseCase(private val memcacheService: AsyncMemcacheService) {
         val post = map[postKey] as Post?
         val bookmark = map[bookmarkKey] as Bookmark?
 
-        ServiceExceptions.checkNotFound(post != null, PostErrors.ERROR_POST_NOT_FOUND)
+        ServiceExceptions.checkNotFound(post != null, PostErrors.NOT_FOUND)
         ServiceExceptions.checkConflict(bookmark == null, BookmarkErrors.ERROR_BOOKMARK_CONFLICT)
 
         updateMemcache(bookmarkKey)

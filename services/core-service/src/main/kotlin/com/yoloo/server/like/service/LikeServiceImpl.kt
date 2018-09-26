@@ -23,8 +23,8 @@ class LikeServiceImpl(
     override fun like(userId: Long, likeableId: Long, type: Class<out Likeable>) {
         val entityFilter = getEntityFilter()
 
-        checkNotFound(entityFilter.contains(userId), UserErrors.ERROR_USER_NOT_FOUND)
-        checkNotFound(entityFilter.contains(likeableId), PostErrors.ERROR_POST_NOT_FOUND)
+        checkNotFound(entityFilter.contains(userId), UserErrors.NOT_FOUND)
+        checkNotFound(entityFilter.contains(likeableId), PostErrors.NOT_FOUND)
 
         val like = Like.create(userId, likeableId)
 
@@ -44,8 +44,8 @@ class LikeServiceImpl(
     override fun dislike(userId: Long, likeableId: Long, type: Class<out Likeable>) {
         val entityFilter = getEntityFilter()
 
-        checkNotFound(entityFilter.contains(userId), UserErrors.ERROR_USER_NOT_FOUND)
-        checkNotFound(entityFilter.contains(likeableId), PostErrors.ERROR_POST_NOT_FOUND)
+        checkNotFound(entityFilter.contains(userId), UserErrors.NOT_FOUND)
+        checkNotFound(entityFilter.contains(likeableId), PostErrors.NOT_FOUND)
 
         val likeKey = Like.createKey(userId, likeableId)
 

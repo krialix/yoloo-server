@@ -37,7 +37,7 @@ class CreateCommentUseCase(
         val user = map[userKey] as User
         val post = map[postKey] as Post?
 
-        ServiceExceptions.checkNotFound(post != null && !post.isSoftDeleted, PostErrors.ERROR_POST_NOT_FOUND)
+        ServiceExceptions.checkNotFound(post != null && !post.isSoftDeleted, PostErrors.NOT_FOUND)
         ServiceExceptions.checkForbidden(
             post!!.isCommentingAllowed(), "post.forbidden_commenting"
         )

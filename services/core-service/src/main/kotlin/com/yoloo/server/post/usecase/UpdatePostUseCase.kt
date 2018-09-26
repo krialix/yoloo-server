@@ -13,12 +13,12 @@ class UpdatePostUseCase {
     fun execute(requesterId: Long, postId: Long, request: UpdatePostRequest) {
         val post = ofy().load().key(Post.createKey(postId)).now()
 
-        ServiceExceptions.checkNotFound(post != null, PostErrors.ERROR_POST_NOT_FOUND)
-        ServiceExceptions.checkNotFound(!post.auditData.isDeleted, PostErrors.ERROR_POST_NOT_FOUND)
+        ServiceExceptions.checkNotFound(post != null, PostErrors.NOT_FOUND)
+        ServiceExceptions.checkNotFound(!post.auditData.isDeleted, PostErrors.NOT_FOUND)
 
         val self = requesterId == post.author.id
 
-        ServiceExceptions.checkForbidden(self, PostErrors.ERROR_POST_FORBIDDEN)
+        ServiceExceptions.checkForbidden(self, PostErrors.FORBIDDEN)
 
         request.content?.let { post.content.value = it }
         request.tags?.toSet()?.let { post.tags = it }

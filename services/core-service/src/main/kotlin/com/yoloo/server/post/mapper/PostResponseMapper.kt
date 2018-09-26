@@ -31,25 +31,5 @@ class PostResponseMapper(
         )
     }
 
-    private fun authorResponse2(): AuthorResponse2 {
-        return object : AuthorResponse2 {
-            override fun getId(): String {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun isSelf(): Boolean {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun getDisplayName(): String {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun getProfileImageUrl(): String {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-        }
-    }
-
     data class Params(val self: Boolean, val liked: Boolean, val bookmarked: Boolean) : ResponseParams
 }

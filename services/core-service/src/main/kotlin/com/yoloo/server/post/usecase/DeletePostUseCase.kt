@@ -12,9 +12,9 @@ class DeletePostUseCase {
     fun execute(requesterId: Long, postId: Long) {
         val post = ofy().load().key(Post.createKey(postId)).now()
 
-        ServiceExceptions.checkNotFound(post != null, PostErrors.ERROR_POST_NOT_FOUND)
-        ServiceExceptions.checkNotFound(!post.auditData.isDeleted, PostErrors.ERROR_POST_NOT_FOUND)
-        ServiceExceptions.checkForbidden(post.author.id == requesterId, PostErrors.ERROR_POST_FORBIDDEN)
+        ServiceExceptions.checkNotFound(post != null, PostErrors.NOT_FOUND)
+        ServiceExceptions.checkNotFound(!post.auditData.isDeleted, PostErrors.NOT_FOUND)
+        ServiceExceptions.checkForbidden(post.author.id == requesterId, PostErrors.FORBIDDEN)
 
         post.markAsDeleted()
 

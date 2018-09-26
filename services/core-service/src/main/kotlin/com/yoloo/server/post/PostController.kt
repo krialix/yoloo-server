@@ -26,7 +26,7 @@ class PostController(
     private val deletePostUseCase: DeletePostUseCase,
     private val bookmarkPostUseCase: BookmarkPostUseCase,
     private val unbookmarkPostUseCase: UnbookmarkPostUseCase,
-    private val listBookmarkedFeedUseCase: ListBookmarkedFeedUseCase,
+    private val listBookmarkedPostsUseCase: ListBookmarkedPostsUseCase,
     private val likeService: LikeService,
     private val createCommentUseCase: CreateCommentUseCase,
     private val approveCommentUseCase: ApproveCommentUseCase,
@@ -99,7 +99,7 @@ class PostController(
     ): CollectionResponse<PostResponse> {
         val user = AuthUtil.from(authentication)
 
-        return listBookmarkedFeedUseCase.execute(user.userId, cursor)
+        return listBookmarkedPostsUseCase.execute(user.userId, cursor)
     }
 
     @ResponseStatus(HttpStatus.CREATED)

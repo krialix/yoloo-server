@@ -1,8 +1,10 @@
 package com.yoloo.server.post.vo;
 
+import com.yoloo.server.usecase.UseCase;
+
 import java.util.Collection;
 
-public class CommentCollectionResponse {
+public class CommentCollectionResponse implements UseCase.Output {
 
   private CommentResponse approvedComment;
   private String nextPageToken;

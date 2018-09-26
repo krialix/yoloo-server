@@ -75,14 +75,6 @@ class CreatePostUseCase(
             group = PostGroup(group.id, group.displayName.value),
             tags = request.tags!!.toSet(),
             bounty = if (request.coin == 0) null else PostBounty(request.coin),
-            buddyRequest = when (request.buddyInfo) {
-                null -> null
-                else -> BuddyRequest(
-                    peopleRange = Range(request.buddyInfo.fromPeople!!, request.buddyInfo.toPeople!!),
-                    location = Location(request.buddyInfo.location!!),
-                    dateRange = Range(request.buddyInfo.fromDate!!, request.buddyInfo.toDate!!)
-                )
-            },
             medias = emptyList() // TODO: Implement media upload
         )
     }

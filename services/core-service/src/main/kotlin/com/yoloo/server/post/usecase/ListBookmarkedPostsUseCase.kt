@@ -15,7 +15,7 @@ import net.cinnom.nanocuckoo.NanoCuckooFilter
 import org.springframework.stereotype.Service
 
 @Service
-class ListBookmarkedFeedUseCase(
+class ListBookmarkedPostsUseCase(
     private val postResponseMapper: PostResponseMapper,
     private val memcacheService: MemcacheService
 ) {

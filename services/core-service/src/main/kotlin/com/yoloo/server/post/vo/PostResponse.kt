@@ -7,7 +7,7 @@ import java.time.Instant
 @NoArg
 data class PostResponse(
     val id: String,
-    val author: AuthorResponse2,
+    val author: AuthorResponse,
     val title: String,
     val content: String,
     val group: PostGroupResponse,

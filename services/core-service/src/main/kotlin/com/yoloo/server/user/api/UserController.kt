@@ -44,10 +44,10 @@ class UserController(
 
     @PreAuthorize("hasAnyRole('MEMBER')")
     @GetMapping("/{userId}")
-    fun getUser(authentication: Authentication, @PathVariable("userId") userId: Long): UserResponse {
+    fun getUser(authentication: Authentication, @PathVariable("userId") userId: String): UserResponse {
         val user = AuthUtil.from(authentication)
 
-        return getUserUseCase.execute(user.userId, userId)
+        return getUserUseCase.execute(GetUserUseCase.Input(user.userId.toString(), userId))
     }
 
     @PreAuthorize("hasAnyAuthority('MEMBER')")

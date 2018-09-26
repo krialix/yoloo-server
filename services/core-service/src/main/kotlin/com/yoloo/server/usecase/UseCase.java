@@ -19,9 +19,7 @@ public interface UseCase<I extends UseCase.Input, O extends UseCase.Output> {
    * Represents the input of an {@link UseCase}. Every requests to an {@link UseCase} must have a
    * request id, so that we can trace back every actions of the request.
    */
-  interface Input {
-    String getRequestId();
-  }
+  interface Input {}
 
   interface Output {}
 }
