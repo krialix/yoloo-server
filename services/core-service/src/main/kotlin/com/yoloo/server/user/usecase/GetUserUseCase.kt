@@ -3,7 +3,7 @@ package com.yoloo.server.user.usecase
 import com.arcticicestudio.icecore.hashids.Hashids
 import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.exception.exception.ServiceExceptions.checkNotFound
-import com.yoloo.server.entity.EntityCacheService
+import com.yoloo.server.entity.service.EntityCacheService
 import com.yoloo.server.relationship.entity.Relationship
 import com.yoloo.server.usecase.AbstractUseCase
 import com.yoloo.server.usecase.UseCase

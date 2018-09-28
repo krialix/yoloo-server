@@ -11,4 +11,9 @@ data class Author(
     var displayName: String,
 
     var profileImageUrl: Url
-)
+) {
+
+    fun isSelf(userId: Long): Boolean {
+        return id == userId
+    }
+}

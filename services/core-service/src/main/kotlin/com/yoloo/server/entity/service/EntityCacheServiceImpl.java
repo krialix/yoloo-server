@@ -1,4 +1,4 @@
-package com.yoloo.server.entity;
+package com.yoloo.server.entity.service;
 
 import com.google.appengine.api.memcache.AsyncMemcacheService;
 import org.slf4j.Logger;

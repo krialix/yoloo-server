@@ -1,22 +1,25 @@
 package com.yoloo.server.post.mapper
 
 import com.arcticicestudio.icecore.hashids.Hashids
-import com.yoloo.server.mapper.ResponseMapper
+import com.yoloo.server.mapper.ResponseMapperWithParams
 import com.yoloo.server.mapper.ResponseParams
 import com.yoloo.server.post.entity.Post
-import com.yoloo.server.post.vo.*
+import com.yoloo.server.post.vo.MediaResponse
+import com.yoloo.server.post.vo.PostCountResponse
+import com.yoloo.server.post.vo.PostGroupResponse
+import com.yoloo.server.post.vo.PostResponse
 import org.springframework.stereotype.Component
 
 @Component
 class PostResponseMapper(
     private val hashIds: Hashids,
     private val authorResponseMapper: AuthorResponseMapper
-) : ResponseMapper<Post, PostResponse, PostResponseMapper.Params> {
+) : ResponseMapperWithParams<Post, PostResponse, PostResponseMapper.Params> {
 
     override fun apply(t: Post, u: Params): PostResponse {
         return PostResponse(
             id = hashIds.encode(t.id, t.author.id),
-            author = authorResponse2(),
+            author = authorResponseMapper.apply(t.author, AuthorResponseMapper.Params(u.self)),
             title = t.title.value,
             content = t.content.value,
             group = PostGroupResponse(hashIds.encode(t.group.id), t.group.displayName),

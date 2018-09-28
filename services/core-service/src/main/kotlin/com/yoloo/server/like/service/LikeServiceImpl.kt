@@ -4,8 +4,8 @@ import com.google.appengine.api.memcache.AsyncMemcacheService
 import com.googlecode.objectify.Key
 import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.exception.exception.ServiceExceptions.*
-import com.yoloo.server.counter.CounterService
-import com.yoloo.server.entity.EntityHelper
+import com.yoloo.spring.autoconfiguration.appengine.services.counter.CounterService
+import com.yoloo.server.entity.service.EntityHelper
 import com.yoloo.server.entity.Likeable
 import com.yoloo.server.like.entity.Like
 import com.yoloo.server.like.exception.LikeErrors

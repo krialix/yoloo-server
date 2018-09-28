@@ -1,9 +1,10 @@
-package com.yoloo.server.entity
+package com.yoloo.server.entity.service
 
 import com.googlecode.objectify.Key
 import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id
 import com.yoloo.server.common.util.NoArg
+import com.yoloo.server.entity.Keyable
 import net.cinnom.nanocuckoo.NanoCuckooFilter
 
 @NoArg
@@ -13,6 +14,10 @@ data class EntityCache(
 
     private var cuckooFilter: NanoCuckooFilter = NanoCuckooFilter.Builder(1_000_000L).build()
 ) : Keyable<EntityCache> {
+
+    fun add(key: Long) {
+        cuckooFilter.insert(key.toString())
+    }
 
     fun add(key: String) {
         cuckooFilter.insert(key)
@@ -44,7 +49,10 @@ data class EntityCache(
 
         @JvmStatic
         fun createKey(): Key<EntityCache> {
-            return Key.create(EntityCache::class.java, createId())
+            return Key.create(
+                EntityCache::class.java,
+                createId()
+            )
         }
     }
 }

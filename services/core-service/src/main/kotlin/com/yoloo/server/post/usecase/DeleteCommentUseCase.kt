@@ -1,52 +1,60 @@
 package com.yoloo.server.post.usecase
 
+import com.arcticicestudio.icecore.hashids.Hashids
 import com.google.common.collect.ImmutableList
 import com.googlecode.objectify.Key
 import com.googlecode.objectify.ObjectifyService.ofy
-import com.yoloo.server.post.entity.Comment
-import com.yoloo.server.common.exception.exception.ServiceExceptions
-import com.yoloo.server.post.entity.Post
-import com.yoloo.server.user.entity.User
+import com.yoloo.server.common.exception.exception.ServiceExceptions.checkForbidden
+import com.yoloo.server.common.exception.exception.ServiceExceptions.checkNotFound
+import com.yoloo.server.entity.service.EntityCacheService
 import com.yoloo.server.like.entity.Like
+import com.yoloo.server.post.entity.Comment
+import com.yoloo.server.post.util.CommentErrors
+import com.yoloo.server.usecase.AbstractUseCase
+import com.yoloo.server.usecase.UseCase
+import com.yoloo.spring.autoconfiguration.appengine.services.counter.CounterService
 import org.springframework.stereotype.Service
 
 @Service
-class DeleteCommentUseCase {
+class DeleteCommentUseCase(
+    private val entityCacheService: EntityCacheService,
+    private val counterService: CounterService,
+    private val hashids: Hashids
+) : AbstractUseCase<DeleteCommentUseCase.Input, UseCase.Output.Void>() {
 
-    fun execute(requesterId: Long, postId: Long, commentId: Long) {
-        val postKey = Post.createKey(postId)
+    override fun onExecute(input: Input): UseCase.Output.Void {
+        val commentHashId = hashids.decode(input.commentId)
+
+        val commentId = commentHashId[0]
+        val commentAuthorId = commentHashId[1]
+
+        val entityCache = entityCacheService.get()
+
+        checkNotFound(entityCache.contains(commentId), CommentErrors.NOT_FOUND)
+        checkForbidden(commentAuthorId == input.requesterId, CommentErrors.FORBIDDEN)
+
         val commentKey = Comment.createKey(commentId)
-        val userKey = User.createKey(requesterId)
 
-        val map = ofy().load().keys(postKey, commentKey, userKey) as Map<*, *>
+        val comment = ofy().load().key(commentKey).now()
 
-        val post = map[postKey] as Post?
-        val comment = map[commentKey] as Comment?
-        val user = map[userKey] as User
+        checkForbidden(!comment.approved, CommentErrors.FORBIDDEN_APPROVED)
 
-        ServiceExceptions.checkNotFound(comment != null, "comment.not_found")
-        ServiceExceptions.checkForbidden(
-            comment!!.author.id == requesterId,
-            "comment.forbidden_delete"
-        )
-        ServiceExceptions.checkForbidden(!comment.approved, "comment.forbidden_delete_approved")
-
-        post!!.countData.commentCount = post.countData.commentCount.dec()
-        user.profile.countData.commentCount = user.profile.countData.commentCount.dec()
-
-        val voteKeys = getVoteKeysForComment(commentId)
+        val likeKeys = getLikeKeysForComment(commentId)
 
         val pendingDeleteKeys = ImmutableList.builder<Key<*>>()
             .add(comment.key)
-            .addAll(voteKeys)
+            .addAll(likeKeys)
             .build()
 
-        ofy().delete().keys(pendingDeleteKeys)
-        ofy().save().entities(post, user)
+        ofy().defer().delete().keys(pendingDeleteKeys)
+
+        counterService.decrement("POST_COMMENT:${comment.postId.value}", "USER_COMMENT:${comment.author.id}")
+
+        return UseCase.Output.Void.getInstance()
     }
 
     // TODO Batch deletion of like keys at the end of the day
-    private fun getVoteKeysForComment(commentId: Long): List<Key<Like>> {
+    private fun getLikeKeysForComment(commentId: Long): List<Key<Like>> {
         return ofy()
             .load()
             .type(Like::class.java)
@@ -54,4 +62,6 @@ class DeleteCommentUseCase {
             .keys()
             .list()
     }
+
+    data class Input(val requesterId: Long, val postId: String, val commentId: String) : UseCase.Input
 }

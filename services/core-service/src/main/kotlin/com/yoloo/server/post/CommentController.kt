@@ -38,7 +38,7 @@ class CommentController(
     ): CommentResponse {
         val user = AuthUtil.from(authentication)
 
-        return createCommentUseCase.execute(user.userId, user.username, user.picture, postId, request)
+        return createCommentUseCase.execute(CreateCommentUseCase.Input(user.userId, postId, request))
     }
 
     @PreAuthorize("hasAnyRole('MEMBER')")
@@ -46,24 +46,24 @@ class CommentController(
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteComment(
         authentication: Authentication,
-        @PathVariable("postId") postId: Long,
-        @PathVariable("commentId") commentId: Long
+        @PathVariable("postId") postId: String,
+        @PathVariable("commentId") commentId: String
     ) {
         val user = AuthUtil.from(authentication)
 
-        deleteCommentUseCase.execute(user.userId, postId, commentId)
+        deleteCommentUseCase.execute(DeleteCommentUseCase.Input(user.userId, postId, commentId))
     }
 
     @PreAuthorize("hasAnyRole('MEMBER')")
     @GetMapping("/{postId}/comments")
     fun listComments(
         authentication: Authentication,
-        @PathVariable("postId") postId: Long,
+        @PathVariable("postId") postId: String,
         @RequestParam(value = "cursor", required = false) cursor: String?
     ): CommentCollectionResponse {
         val user = AuthUtil.from(authentication)
 
-        return listCommentsUseCase.execute(user.userId, postId, cursor)
+        return listCommentsUseCase.execute(ListCommentsUseCase.Input(user.userId, postId, cursor))
     }
 
     @PreAuthorize("hasAnyRole('MEMBER')")

@@ -1,4 +1,4 @@
-package com.yoloo.server.entity;
+package com.yoloo.server.entity.service;
 
 public interface EntityCacheService {
 

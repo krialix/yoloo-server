@@ -3,7 +3,7 @@ package com.yoloo.server.post.usecase
 import com.arcticicestudio.icecore.hashids.Hashids
 import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.exception.exception.ServiceExceptions.checkNotFound
-import com.yoloo.server.entity.EntityCacheService
+import com.yoloo.server.entity.service.EntityCacheService
 import com.yoloo.server.like.entity.Like
 import com.yoloo.server.post.entity.Bookmark
 import com.yoloo.server.post.entity.Post
@@ -32,9 +32,8 @@ class GetPostByIdUseCase(
         checkNotFound(entityCache.contains(userId), UserErrors.NOT_FOUND)
 
         val post = ofy().load().key(Post.createKey(postId)).now()
-        checkNotFound(!post.isSoftDeleted, PostErrors.NOT_FOUND)
 
-        val self = userId == post.author.id
+        val self = post.author.isSelf(userId)
         val bookmarked = entityCache.contains(Bookmark.createId(userId, postId))
         val liked = entityCache.contains(Like.createId(userId, postId))
 

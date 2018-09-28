@@ -21,5 +21,15 @@ public interface UseCase<I extends UseCase.Input, O extends UseCase.Output> {
    */
   interface Input {}
 
-  interface Output {}
+  interface Output {
+
+    class Void implements Output {
+
+      static final Void VOID = new Void();
+
+      public static Void getInstance() {
+        return VOID;
+      }
+    }
+  }
 }

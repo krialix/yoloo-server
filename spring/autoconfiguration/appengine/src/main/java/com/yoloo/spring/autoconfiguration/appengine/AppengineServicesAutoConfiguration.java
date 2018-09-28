@@ -7,6 +7,10 @@ import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
+import com.yoloo.spring.autoconfiguration.appengine.services.counter.CounterService;
+import com.yoloo.spring.autoconfiguration.appengine.services.counter.CounterServiceImpl;
+import com.yoloo.spring.autoconfiguration.appengine.services.notification.NotificationService;
+import com.yoloo.spring.autoconfiguration.appengine.services.notification.NotificationServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -36,5 +40,17 @@ public class AppengineServicesAutoConfiguration {
   @Bean
   public AsyncMemcacheService asyncMemcacheService() {
     return MemcacheServiceFactory.getAsyncMemcacheService();
+  }
+
+  @Lazy
+  @Bean
+  public NotificationService notificationService() {
+    return new NotificationServiceImpl();
+  }
+
+  @Lazy
+  @Bean
+  public CounterService counterService() {
+    return new CounterServiceImpl();
   }
 }
