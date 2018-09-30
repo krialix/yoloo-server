@@ -2,8 +2,7 @@ package com.yoloo.server.post.usecase
 
 import com.arcticicestudio.icecore.hashids.Hashids
 import com.googlecode.objectify.ObjectifyService.ofy
-import com.yoloo.server.common.exception.exception.ServiceExceptions.checkForbidden
-import com.yoloo.server.common.exception.exception.ServiceExceptions.checkNotFound
+import com.yoloo.server.common.Exceptions.checkException
 import com.yoloo.server.common.vo.Author
 import com.yoloo.server.entity.service.EntityCacheService
 import com.yoloo.server.post.entity.Comment
@@ -22,6 +21,7 @@ import com.yoloo.spring.autoconfiguration.appengine.services.notification.Notifi
 import com.yoloo.spring.autoconfiguration.appengine.services.notification.Payload
 import com.yoloo.spring.autoconfiguration.id.generator.IdFactory.LongIdGenerator
 import org.springframework.stereotype.Service
+import org.zalando.problem.Status
 
 @Service
 class CreateCommentUseCase(
@@ -40,7 +40,7 @@ class CreateCommentUseCase(
 
         val entityCache = entityCacheService.get()
 
-        checkNotFound(entityCache.contains(postId), PostErrors.NOT_FOUND)
+        checkException(entityCache.contains(postId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
 
         val postKey = Post.createKey(postId)
         val postAuthorKey = User.createKey(postAuthorId)
@@ -52,7 +52,7 @@ class CreateCommentUseCase(
         val post = map[postKey] as Post
         val postAuthor = map[postAuthorKey] as User
 
-        checkForbidden(post.isCommentingAllowed(), PostErrors.FORBIDDEN_COMMENTING)
+        checkException(post.isCommentingAllowed(), Status.FORBIDDEN, PostErrors.FORBIDDEN_COMMENTING)
 
         val comment = createComment(post, user, input.request)
 

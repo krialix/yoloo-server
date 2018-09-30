@@ -26,10 +26,8 @@ data class Comment(
 
     var content: CommentContent,
 
-    var approved: Boolean = false,
-
     var createdAt: Instant = Instant.now()
-) : Keyable<Comment>, Likeable, Approvable {
+) : Keyable<Comment>, Likeable {
     override fun vote() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -39,18 +37,6 @@ data class Comment(
     }
 
     override fun isVotingAllowed(): Boolean {
-        return true
-    }
-
-    override fun approve() {
-        approved = true
-    }
-
-    override fun disapprove() {
-        approved = false
-    }
-
-    override fun isApprovingAllowed(): Boolean {
         return true
     }
 

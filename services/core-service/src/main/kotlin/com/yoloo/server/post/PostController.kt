@@ -27,12 +27,7 @@ class PostController(
     private val bookmarkPostUseCase: BookmarkPostUseCase,
     private val unbookmarkPostUseCase: UnbookmarkPostUseCase,
     private val listBookmarkedPostsUseCase: ListBookmarkedPostsUseCase,
-    private val likeService: LikeService,
-    private val createCommentUseCase: CreateCommentUseCase,
-    private val approveCommentUseCase: ApproveCommentUseCase,
-    private val disapproveCommentUseCase: DisapproveCommentUseCase,
-    private val deleteCommentUseCase: DeleteCommentUseCase,
-    private val listCommentsUseCase: ListCommentsUseCase
+    private val likeService: LikeService
 ) {
 
     @PreAuthorize("hasAuthority('MEMBER')")
@@ -116,93 +111,5 @@ class PostController(
         val user = AuthUtil.from(authentication)
 
         likeService.dislike(user.userId, postId, Post::class.java)
-    }
-
-    @PreAuthorize("hasAnyRole('MEMBER')")
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    fun createComment(
-        authentication: Authentication,
-        @PathVariable("postId") postId: Long,
-        @RequestBody @Valid request: CreateCommentRequest
-    ): CommentResponse {
-        val user = AuthUtil.from(authentication)
-
-        return createCommentUseCase.execute(user.userId, user.username, user.picture, postId, request)
-    }
-
-    @PreAuthorize("hasAnyRole('MEMBER')")
-    @DeleteMapping("/{commentId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteComment(
-        authentication: Authentication,
-        @PathVariable("postId") postId: Long,
-        @PathVariable("commentId") commentId: Long
-    ) {
-        val user = AuthUtil.from(authentication)
-
-        deleteCommentUseCase.execute(user.userId, postId, commentId)
-    }
-
-    @PreAuthorize("hasAnyRole('MEMBER')")
-    @PatchMapping("/{commentId}/approve")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun approveComment(
-        authentication: Authentication,
-        @PathVariable("postId") postId: Long,
-        @PathVariable("commentId") commentId: Long
-    ) {
-        val user = AuthUtil.from(authentication)
-
-        approveCommentUseCase.execute(ApproveCommentUseCase.Input(user.userId, postId, commentId))
-    }
-
-    @PreAuthorize("hasAnyRole('MEMBER')")
-    @DeleteMapping("/{commentId}/approve")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun disapproveComment(
-        authentication: Authentication,
-        @PathVariable("postId") postId: Long,
-        @PathVariable("commentId") commentId: Long
-    ) {
-        val user = AuthUtil.from(authentication)
-
-        disapproveCommentUseCase.execute(user.userId, postId, commentId)
-    }
-
-    @PreAuthorize("hasAnyRole('MEMBER')")
-    @GetMapping
-    fun listComments(
-        authentication: Authentication,
-        @PathVariable("postId") postId: Long,
-        @RequestParam(value = "cursor", required = false) cursor: String?
-    ): CommentCollectionResponse {
-        val user = AuthUtil.from(authentication)
-
-        return listCommentsUseCase.execute(user.userId, postId, cursor)
-    }
-
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/comments/{commentId}/likes")
-    fun voteComment(
-        authentication: Authentication,
-        @PathVariable("postId") postId: Long,
-        @PathVariable("commentId") commentId: Long
-    ) {
-        val user = AuthUtil.from(authentication)
-
-        likeService.like(user.userId, commentId, Comment::class.java)
-    }
-
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/comments/{commentId}/likes")
-    fun unvoteComment(
-        authentication: Authentication,
-        @PathVariable("postId") postId: Long,
-        @PathVariable("commentId") commentId: Long
-    ) {
-        val user = AuthUtil.from(authentication)
-
-        likeService.dislike(user.userId, commentId, Comment::class.java)
     }
 }

@@ -2,7 +2,7 @@ package com.yoloo.server.post.usecase
 
 import com.arcticicestudio.icecore.hashids.Hashids
 import com.googlecode.objectify.ObjectifyService.ofy
-import com.yoloo.server.common.exception.exception.ServiceExceptions.checkNotFound
+import com.yoloo.server.common.Exceptions.checkException
 import com.yoloo.server.entity.service.EntityCacheService
 import com.yoloo.server.like.entity.Like
 import com.yoloo.server.post.entity.Bookmark
@@ -14,6 +14,7 @@ import com.yoloo.server.usecase.AbstractUseCase
 import com.yoloo.server.usecase.UseCase
 import com.yoloo.server.user.exception.UserErrors
 import org.springframework.stereotype.Service
+import org.zalando.problem.Status
 
 @Service
 class GetPostByIdUseCase(
@@ -28,8 +29,8 @@ class GetPostByIdUseCase(
 
         val entityCache = entityCacheService.get()
 
-        checkNotFound(entityCache.contains(postId), PostErrors.NOT_FOUND)
-        checkNotFound(entityCache.contains(userId), UserErrors.NOT_FOUND)
+        checkException(entityCache.contains(postId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
+        checkException(entityCache.contains(userId), Status.NOT_FOUND, UserErrors.NOT_FOUND)
 
         val post = ofy().load().key(Post.createKey(postId)).now()
 

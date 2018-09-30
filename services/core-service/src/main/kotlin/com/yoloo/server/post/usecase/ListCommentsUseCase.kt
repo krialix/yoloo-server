@@ -34,7 +34,6 @@ class ListCommentsUseCase(
         checkNotFound(entityCache.contains(postId), PostErrors.NOT_FOUND)
 
         val post = ofy().load().key(Post.createKey(postId)).now()
-        checkNotFound(!post.isSoftDeleted, PostErrors.NOT_FOUND)
 
         val queryResults = queryResults(postId, input.cursor)
 
@@ -54,7 +53,7 @@ class ListCommentsUseCase(
 
         val commentsResponse = queryResults
             .asSequence()
-            .filter { !it.approved }
+            .filter { it.id != post.approvedCommentId?.value }
             .map {
                 commentResponseMapper.apply(
                     it,

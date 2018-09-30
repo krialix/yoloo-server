@@ -2,7 +2,7 @@ ext {
     objectifyVersion = '5.1.22'
     appengineVersion = '1.9.65'
     javaxServletVersion = '3.1.0'
-    kotlinVersion = '1.2.70'
+    kotlinVersion = '1.2.71'
     springBootVersion = '2.1.0.M4'
     firebaseAdminVersion = '6.2.0'
     springCloudGcpVersion = '1.0.0.RELEASE'

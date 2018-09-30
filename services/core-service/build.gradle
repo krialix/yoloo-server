@@ -68,6 +68,7 @@ dependencies {
     // Util
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+    implementation 'org.zalando:problem-spring-web:0.24.0-RC.0'
 
     // Testing
     testImplementation "org.junit.jupiter:junit-jupiter-api:${jUnit5Version}"
