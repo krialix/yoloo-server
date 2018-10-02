@@ -24,10 +24,10 @@ class Oauth2UserDetailsService(private val passwordEncoder: PasswordEncoder) : U
 
         return Oauth2User(
             userId = user.id,
-            email = user.email.value,
-            profileImageUrl = user.profile.profileImageUrl.url.value,
-            password = user.password?.value ?: "",
-            username = user.profile.displayName.value,
+            email = user.email.email,
+            profileImageUrl = user.profile.profileImageUrl.url.email,
+            password = user.password?.email ?: "",
+            username = user.profile.displayName.email,
             enabled = !user.disabled,
             accountNonExpired = !user.expired,
             credentialsNonExpired = !user.credentialsExpired,

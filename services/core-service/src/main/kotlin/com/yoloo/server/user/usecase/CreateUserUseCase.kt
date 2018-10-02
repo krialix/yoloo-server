@@ -146,7 +146,7 @@ class CreateUserUseCase(
                     height = screen.height!!,
                     width = screen.width!!
                 ),
-                localIp = Ip(device.localIp!!),
+                ip = Ip(device.localIp!!),
                 os = Os(
                     type = Os.Type.valueOf(os.type!!.toUpperCase()),
                     version = Os.Version(os.version!!)
@@ -168,7 +168,7 @@ class CreateUserUseCase(
         filter: NanoCuckooFilter
     ) {
         ofy().transact {
-            saveEmailFilter(filter, user.email.value)
+            saveEmailFilter(filter, user.email.email)
 
             addToSearchQueue(user)
 
@@ -191,7 +191,7 @@ class CreateUserUseCase(
     private fun addToSearchQueue(user: User) {
         /*val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_USER))
             .addData("id", user.id.toString())
-            .addData("displayName", user.profile.displayName.value)
+            .addData("displayName", user.profile.displayName.email)
             .build()
 
         searchQueueService.addQueueAsync(event)*/
@@ -200,7 +200,7 @@ class CreateUserUseCase(
     private fun addToNotificationQueue(user: User) {
         /*val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_USER))
             .addData("id", user.id.toString())
-            .addData("displayName", user.profile.displayName.value)
+            .addData("displayName", user.profile.displayName.email)
             .build()
 
         searchQueueService.addQueueAsync(event)*/

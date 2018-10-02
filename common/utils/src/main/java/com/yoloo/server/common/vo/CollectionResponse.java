@@ -8,8 +8,7 @@ public class CollectionResponse<T> {
   private String prevPageToken;
   private Collection<T> data;
 
-  private CollectionResponse() {
-  }
+  private CollectionResponse() {}
 
   private CollectionResponse(Builder<T> builder) {
     this.nextPageToken = builder.nextPageToken;
@@ -53,8 +52,7 @@ public class CollectionResponse<T> {
     private String prevPageToken;
     private Collection<T> data;
 
-    private Builder() {
-    }
+    private Builder() {}
 
     public Builder<T> nextPageToken(String nextPageToken) {
       this.nextPageToken = nextPageToken;

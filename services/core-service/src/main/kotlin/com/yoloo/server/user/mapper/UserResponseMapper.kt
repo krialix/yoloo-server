@@ -14,7 +14,7 @@ class UserResponseMapper {
             profileImageUrl = from.profile.profileImageUrl.value,
             website = from.profile.websiteUrl?.value,
             locale = LocaleResponse(from.profile.locale.language, from.profile.locale.country),
-            email = from.email.value,
+            email = from.email.email,
             count = UserCountResponse(
                 from.profile.countData.postCount,
                 from.profile.countData.followerCount,

@@ -50,7 +50,7 @@ class UpdateUserUseCase(
     private fun addToSearchQueue(user: User) {
         /*val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.UPDATE_USER))
             .addData("id", user.id.toString())
-            .addData("displayName", user.profile.displayName.value)
+            .addData("displayName", user.profile.displayName.email)
             .build()
 
         searchQueueService.addQueueAsync(event)*/

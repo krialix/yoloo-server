@@ -32,7 +32,7 @@ class LikeServiceImpl(
 
         val votable = ofy().load().key(Key.create(type, likeableId)).now()
 
-        checkForbidden(votable.isVotingAllowed(), LikeErrors.FORBIDDEN)
+        checkForbidden(votable.isLikingAllowed(), LikeErrors.FORBIDDEN)
 
         entityFilter.insert(like.id)
 

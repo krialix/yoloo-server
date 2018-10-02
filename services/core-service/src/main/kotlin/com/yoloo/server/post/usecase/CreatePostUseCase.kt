@@ -41,8 +41,8 @@ class CreatePostUseCase(
     private fun addToNotificationQueue(post: Post, topicName: String) {
         /*val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_POST))
             .addData("id", post.id.toString())
-            .addData("title", post.title.value)
-            .addData("content", post.content.value)
+            .addData("title", post.title.email)
+            .addData("content", post.content.email)
             .addData("authorDisplayName", post.author.displayName)
             .addData("topic", topicName)
             .build()
@@ -53,8 +53,8 @@ class CreatePostUseCase(
     private fun addToSearchQueue(post: Post) {
         /*val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_POST))
             .addData("id", post.id.toString())
-            .addData("title", post.title.value)
-            .addData("content", post.content.value)
+            .addData("title", post.title.email)
+            .addData("content", post.content.email)
             .addData("tags", post.tags)
             .addData("buddyRequest", post.buddyRequest)
             .build()

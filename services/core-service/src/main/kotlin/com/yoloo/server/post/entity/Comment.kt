@@ -6,9 +6,9 @@ import com.googlecode.objectify.annotation.Id
 import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.Author
-import com.yoloo.server.entity.Approvable
 import com.yoloo.server.entity.Keyable
 import com.yoloo.server.entity.Likeable
+import com.yoloo.server.entity.Rankable
 import com.yoloo.server.post.vo.CommentContent
 import com.yoloo.server.post.vo.PostId
 import java.time.Instant
@@ -22,27 +22,32 @@ data class Comment(
     @Index
     var postId: PostId,
 
+    @Index
+    private var rank: Double,
+
     var author: Author,
 
     var content: CommentContent,
 
     var createdAt: Instant = Instant.now()
-) : Keyable<Comment>, Likeable {
-    override fun vote() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+) : Keyable<Comment>, Likeable, Rankable {
+
+    override fun getRank(): Double {
+        return rank
     }
 
-    override fun unvote() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun setRank(rank: Double) {
+        this.rank = rank
     }
 
-    override fun isVotingAllowed(): Boolean {
+    override fun isLikingAllowed(): Boolean {
         return true
     }
 
     companion object {
-        const val INDEX_POST_ID = "postId.value"
+        const val INDEX_POST_ID = "postId"
         const val INDEX_AUTHOR_ID = "author.id"
+        const val INDEX_RANK = "author.rank"
 
         fun createKey(commentId: Long): Key<Comment> {
             return Key.create(Comment::class.java, commentId)

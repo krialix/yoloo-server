@@ -77,9 +77,9 @@ public final class AppEngineRule extends ExternalResource {
   }
 
   /**
-   * Normalize a value from JSONObject that represents zero, one, or many values. If there were zero
+   * Normalize a ip from JSONObject that represents zero, one, or many values. If there were zero
    * values this will be null or an empty JSONArray, depending on how the field was represented in
-   * JSON. If there was one value, the object passed in will be that value. If there were more than
+   * JSON. If there was one ip, the object passed in will be that ip. If there were more than
    * one values, the object will be a JSONArray containing those values. We will return a list in
    * all cases.
    */

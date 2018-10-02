@@ -9,7 +9,7 @@ import java.util.Objects;
  * @param <I> is the {@link UseCase} input type.
  * @param <O> is the {@link UseCase} produced result type.
  */
-public abstract class AbstractUseCase<I extends UseCase.Input, O extends UseCase.Output> implements UseCase<I, O> {
+public abstract class AbstractUseCase<I extends UseCase.Input, O> implements UseCase<I, O> {
   /**
    * Executes the {@link UseCase} logic, and guarantees that input, success callback and errors
    * handler are valid and not-null.

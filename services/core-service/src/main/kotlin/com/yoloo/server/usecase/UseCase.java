@@ -7,7 +7,7 @@ package com.yoloo.server.usecase;
  * @param <O> is the {@link UseCase} output type, e.g. the result produced by the use-case.
  */
 @FunctionalInterface
-public interface UseCase<I extends UseCase.Input, O extends UseCase.Output> {
+public interface UseCase<I extends UseCase.Input, O> {
   /**
    * Executes the {@link UseCase} logic.
    *

@@ -1,41 +1,43 @@
 package com.yoloo.server.user.entity
 
 import com.googlecode.objectify.Key
-import com.googlecode.objectify.annotation.Cache
-import com.googlecode.objectify.annotation.Entity
-import com.googlecode.objectify.annotation.Id
-import com.googlecode.objectify.annotation.Index
-import com.yoloo.server.entity.BaseEntity
+import com.googlecode.objectify.annotation.*
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.Url
+import com.yoloo.server.entity.Keyable
 import com.yoloo.server.entity.Relationable
 import com.yoloo.server.user.vo.*
+import java.time.Instant
 
-@Cache(expirationSeconds = User.CACHE_EXPIRATION_TIME)
+@Cache(expirationSeconds = User.CACHE_TTL)
 @NoArg
 @Entity
 data class User(
-        @Id var id: Long,
+    @Id var id: Long,
 
-        var clientId: String,
+    var hashId: String,
 
-        @Index
-        var email: Email,
+    @Index
+    var email: Email,
 
-        var accountVerified: Boolean = false,
+    var accountVerified: Boolean = false,
 
-        var roles: Set<@JvmSuppressWildcards Role>,
+    var roles: Set<@JvmSuppressWildcards Role>,
 
-        var fcmToken: String,
+    var fcmToken: String,
 
-        var profile: Profile,
+    var profile: Profile,
 
-        var subscribedGroups: List<UserGroup>,
+    var subscribedGroups: List<UserGroup>,
 
-        var appInfo: AppInfo,
+    var appInfo: AppInfo,
 
-        var device: Device
-) : BaseEntity<User>(), Relationable {
+    var device: Device,
+
+    var createdAt: Instant = Instant.now(),
+
+    var deletedAt: Instant? = null
+) : Keyable<User>, Relationable {
 
     override fun getRelationableId(): Long {
         return id
@@ -50,23 +52,19 @@ data class User(
     }
 
     override fun incFollowerCount() {
-        profile.countData.followerCount++
     }
 
     override fun incFollowingCount() {
-        profile.countData.followingCount++
     }
 
     override fun decFollowerCount() {
-        profile.countData.followerCount--
     }
 
     override fun decFollowingCount() {
-        profile.countData.followingCount--
     }
 
-    override fun onLoad() {
-        super.onLoad()
+    @OnLoad
+    fun onLoad() {
         @Suppress("USELESS_ELVIS")
         profile.spokenLanguages = profile.spokenLanguages ?: emptyList()
         @Suppress("USELESS_ELVIS")
@@ -74,11 +72,11 @@ data class User(
     }
 
     companion object {
-        const val CACHE_EXPIRATION_TIME = 7200
+        const val CACHE_TTL = 7200
 
         const val KEY_FILTER_USER_IDENTIFIER = "FILTER_IDENTIFIER"
 
-        const val INDEX_EMAIL = "email.value"
+        const val INDEX_EMAIL = "email.email"
 
         fun createKey(userId: Long): Key<User> {
             return Key.create(User::class.java, userId)

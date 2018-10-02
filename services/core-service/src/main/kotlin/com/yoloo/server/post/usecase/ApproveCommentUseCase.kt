@@ -56,7 +56,7 @@ class ApproveCommentUseCase(
     private fun addToNotificationQueue(comment: Comment, commentAuthorFcmToken: String) {
         /*val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_COMMENT))
             .addData("id", comment.id.toString())
-            .addData("postId", comment.postId.value.toString())
+            .addData("postId", comment.postId.email.toString())
             .addData("commentAuthorFcmToken", commentAuthorFcmToken)
             .build()
 

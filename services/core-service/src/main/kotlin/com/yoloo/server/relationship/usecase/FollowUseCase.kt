@@ -38,7 +38,7 @@ class FollowUseCase(private val memcacheService: AsyncMemcacheService) {
     private fun addToNotificationQueue(toUserFcmToken: String, fromUser: User) {
         /*val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.FOLLOW_USER))
                 .addData("fromUserId", fromUser.id.toString())
-                .addData("fromUserDisplayName", fromUser.profile.displayName.value)
+                .addData("fromUserDisplayName", fromUser.profile.displayName.email)
                 .addData("toUserFcmToken", toUserFcmToken)
                 .build()
 

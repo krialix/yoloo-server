@@ -2,13 +2,11 @@ package com.yoloo.server.post.usecase
 
 import com.arcticicestudio.icecore.hashids.Hashids
 import com.googlecode.objectify.ObjectifyService.ofy
-import com.yoloo.server.common.Exceptions.checkException
 import com.yoloo.server.common.vo.Author
 import com.yoloo.server.entity.service.EntityCacheService
 import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.CommentResponseMapper
-import com.yoloo.server.post.util.PostErrors
 import com.yoloo.server.post.vo.CommentContent
 import com.yoloo.server.post.vo.CommentResponse
 import com.yoloo.server.post.vo.CreateCommentRequest
@@ -21,7 +19,6 @@ import com.yoloo.spring.autoconfiguration.appengine.services.notification.Notifi
 import com.yoloo.spring.autoconfiguration.appengine.services.notification.Payload
 import com.yoloo.spring.autoconfiguration.id.generator.IdFactory.LongIdGenerator
 import org.springframework.stereotype.Service
-import org.zalando.problem.Status
 
 @Service
 class CreateCommentUseCase(
@@ -40,7 +37,7 @@ class CreateCommentUseCase(
 
         val entityCache = entityCacheService.get()
 
-        checkException(entityCache.contains(postId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
+        //checkException(entityCache.contains(postId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
 
         val postKey = Post.createKey(postId)
         val postAuthorKey = User.createKey(postAuthorId)
@@ -52,7 +49,7 @@ class CreateCommentUseCase(
         val post = map[postKey] as Post
         val postAuthor = map[postAuthorKey] as User
 
-        checkException(post.isCommentingAllowed(), Status.FORBIDDEN, PostErrors.FORBIDDEN_COMMENTING)
+        //checkException(post.isCommentingAllowed(), Status.FORBIDDEN, PostErrors.FORBIDDEN_COMMENTING)
 
         val comment = createComment(post, user, input.request)
 
@@ -67,7 +64,7 @@ class CreateCommentUseCase(
             Payload.newBuilder("NEW_COMMENT")
                 .addData("id", comment.id.toString())
                 .addData("commentAuthorDisplayName", comment.author.displayName)
-                .addData("postId", comment.postId.value.toString())
+                .addData("postId", comment.postId.value)
                 .addData("postAuthorFcmToken", postAuthor.fcmToken)
                 .build()
         )
@@ -82,7 +79,7 @@ class CreateCommentUseCase(
     ): Comment {
         return Comment(
             id = idGenerator.generateId(),
-            postId = PostId(post.id, post.author.id),
+            postId = PostId(post.id),
             author = Author(
                 id = user.id,
                 displayName = user.profile.displayName.value,

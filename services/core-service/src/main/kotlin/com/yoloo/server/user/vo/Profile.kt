@@ -19,7 +19,5 @@ data class Profile(
 
     var about: About? = null,
 
-    var locale: UserLocale,
-
-    var countData: UserCountData = UserCountData()
+    var locale: UserLocale
 )

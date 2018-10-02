@@ -39,33 +39,21 @@ data class Post(
     var approvedCommentId: ApprovedCommentId? = null,
 
     @Index(IfNotNull::class)
-    var bounty: PostBounty? = null,
-
-    var countData: PostCountData = PostCountData()
+    var bounty: PostBounty? = null
 ) : BaseEntity<Post>(), Likeable, Commentable, SoftDelete {
-
-    override fun vote() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun unvote() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
     override fun isSoftDeleted(): Boolean {
         return auditData.isDeleted
     }
 
-    override fun isVotingAllowed(): Boolean {
+    override fun isLikingAllowed(): Boolean {
         return !flags.contains(PostPermFlag.DISABLE_VOTING)
     }
 
     override fun incCommentCount() {
-        countData.commentCount++
     }
 
     override fun decCommentCount() {
-        countData.commentCount--
     }
 
     override fun isCommentingAllowed(): Boolean {

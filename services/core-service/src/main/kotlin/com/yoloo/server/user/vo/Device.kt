@@ -9,5 +9,5 @@ data class Device(
     var model: String,
     var screen: Screen,
     var os: Os,
-    var localIp: Ip
+    var ip: Ip
 )

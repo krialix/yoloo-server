@@ -31,8 +31,8 @@ class UpdatePostUseCase {
     private fun addToSearchQueue(post: Post) {
         /*val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.UPDATE_POST))
             .addData("id", post.id.toString())
-            .addData("title", post.title.value)
-            .addData("content", post.content.value)
+            .addData("title", post.title.email)
+            .addData("content", post.content.email)
             .addData("tags", post.tags)
             .addData("buddyRequest", post.buddyRequest)
             .build()
