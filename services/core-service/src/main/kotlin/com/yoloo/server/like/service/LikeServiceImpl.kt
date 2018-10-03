@@ -1,65 +1,69 @@
 package com.yoloo.server.like.service
 
-import com.google.appengine.api.memcache.AsyncMemcacheService
-import com.googlecode.objectify.Key
-import com.googlecode.objectify.ObjectifyService.ofy
-import com.yoloo.server.common.exception.exception.ServiceExceptions.*
-import com.yoloo.spring.autoconfiguration.appengine.services.counter.CounterService
-import com.yoloo.server.entity.service.EntityHelper
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.appengine.api.taskqueue.Queue
+import com.google.appengine.api.taskqueue.TaskOptions
+import com.yoloo.server.common.Exceptions.checkException
 import com.yoloo.server.entity.Likeable
+import com.yoloo.server.entity.service.EntityCacheService
 import com.yoloo.server.like.entity.Like
 import com.yoloo.server.like.exception.LikeErrors
 import com.yoloo.server.post.util.PostErrors
+import com.yoloo.server.queue.QueueNames
+import com.yoloo.server.queue.QueuePayload
 import com.yoloo.server.user.exception.UserErrors
-import net.cinnom.nanocuckoo.NanoCuckooFilter
+import com.yoloo.spring.autoconfiguration.appengine.services.counter.CounterService
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
+import org.zalando.problem.Status
 
 @Service
 class LikeServiceImpl(
-    private val memcacheService: AsyncMemcacheService,
-    private val counterService: CounterService
+    private val entityCacheService: EntityCacheService,
+    private val counterService: CounterService,
+    @Qualifier(QueueNames.BATCH_SAVE_PULL_QUEUE) private val batchSavePullQueue: Queue,
+    private val objectMapper: ObjectMapper
 ) : LikeService {
 
     override fun like(userId: Long, likeableId: Long, type: Class<out Likeable>) {
-        val entityFilter = getEntityFilter()
+        val entityCache = entityCacheService.get()
 
-        checkNotFound(entityFilter.contains(userId), UserErrors.NOT_FOUND)
-        checkNotFound(entityFilter.contains(likeableId), PostErrors.NOT_FOUND)
+        checkException(entityCache.contains(userId), Status.NOT_FOUND, UserErrors.NOT_FOUND)
+        checkException(entityCache.contains(likeableId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
 
         val like = Like.create(userId, likeableId)
 
-        checkConflict(!entityFilter.contains(like.id), LikeErrors.CONFLICT)
+        checkException(!entityCache.contains(like.id), Status.CONFLICT, LikeErrors.CONFLICT)
 
-        val votable = ofy().load().key(Key.create(type, likeableId)).now()
+        counterService.increment("LIKE:$likeableId")
 
-        checkForbidden(votable.isLikingAllowed(), LikeErrors.FORBIDDEN)
+        entityCache.add(like.id)
+        entityCacheService.saveAsync(entityCache)
 
-        entityFilter.insert(like.id)
-
-        updateEntityFilter(entityFilter)
-
-        counterService.increment("likes:$likeableId")
+        addToQueue(QueuePayload.newBuilder().save().payload(QueuePayload.Save(like)).build())
     }
 
     override fun dislike(userId: Long, likeableId: Long, type: Class<out Likeable>) {
-        val entityFilter = getEntityFilter()
+        val entityCache = entityCacheService.get()
 
-        checkNotFound(entityFilter.contains(userId), UserErrors.NOT_FOUND)
-        checkNotFound(entityFilter.contains(likeableId), PostErrors.NOT_FOUND)
+        checkException(entityCache.contains(userId), Status.NOT_FOUND, UserErrors.NOT_FOUND)
+        checkException(entityCache.contains(likeableId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
 
         val likeKey = Like.createKey(userId, likeableId)
 
-        checkNotFound(entityFilter.contains(likeKey.name), LikeErrors.CONFLICT)
+        checkException(entityCache.contains(likeKey.name), Status.CONFLICT, LikeErrors.CONFLICT)
 
-        updateEntityFilter(entityFilter)
-        ofy().delete().key(likeKey)
+        counterService.decrement("LIKE:$likeableId")
 
-        counterService.decrement("likes:$likeableId")
+        entityCache.delete(likeKey.name)
+        entityCacheService.saveAsync(entityCache)
+
+        addToQueue(QueuePayload.newBuilder().save().payload(QueuePayload.Delete(likeKey.toUrlSafe())).build())
     }
 
-    private fun updateEntityFilter(entityFilter: NanoCuckooFilter) {
-        memcacheService.put(EntityHelper.KEY_FILTER_ENTITY, entityFilter)
+    private fun addToQueue(payload: QueuePayload) {
+        val json = objectMapper.writeValueAsString(payload)
+        val taskOptions = TaskOptions.Builder.withPayload(json)
+        batchSavePullQueue.addAsync(taskOptions)
     }
-
-    private fun getEntityFilter() = memcacheService.get(EntityHelper.KEY_FILTER_ENTITY).get() as NanoCuckooFilter
 }

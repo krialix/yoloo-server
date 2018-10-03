@@ -7,29 +7,11 @@ package com.yoloo.server.usecase;
  * @param <O> is the {@link UseCase} output type, e.g. the result produced by the use-case.
  */
 @FunctionalInterface
-public interface UseCase<I extends UseCase.Input, O> {
+public interface UseCase<I, O> {
   /**
    * Executes the {@link UseCase} logic.
    *
    * @param input is the {@link UseCase} input.
    */
   O execute(I input);
-
-  /**
-   * Represents the input of an {@link UseCase}. Every requests to an {@link UseCase} must have a
-   * request id, so that we can trace back every actions of the request.
-   */
-  interface Input {}
-
-  interface Output {
-
-    class Void implements Output {
-
-      static final Void VOID = new Void();
-
-      public static Void getInstance() {
-        return VOID;
-      }
-    }
-  }
 }

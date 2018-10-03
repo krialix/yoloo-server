@@ -1,7 +1,6 @@
 package com.yoloo.server.post.vo
 
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.usecase.UseCase
 import java.time.Instant
 
 @NoArg
@@ -19,4 +18,4 @@ data class PostResponse(
     val bookmarked: Boolean,
     val createdAt: Instant,
     val medias: List<MediaResponse>
-) : UseCase.Output
+)

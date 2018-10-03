@@ -11,7 +11,6 @@ import com.yoloo.server.post.mapper.PostResponseMapper
 import com.yoloo.server.post.util.PostErrors
 import com.yoloo.server.post.vo.PostResponse
 import com.yoloo.server.usecase.AbstractUseCase
-import com.yoloo.server.usecase.UseCase
 import com.yoloo.server.user.exception.UserErrors
 import org.springframework.stereotype.Service
 import org.zalando.problem.Status
@@ -25,21 +24,20 @@ class GetPostByIdUseCase(
 
     override fun onExecute(input: Input): PostResponse {
         val postId = hashIds.decode(input.postId)[0]
-        val userId = hashIds.decode(input.requesterId)[0]
 
         val entityCache = entityCacheService.get()
 
         checkException(entityCache.contains(postId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
-        checkException(entityCache.contains(userId), Status.NOT_FOUND, UserErrors.NOT_FOUND)
+        checkException(entityCache.contains(input.requesterId), Status.NOT_FOUND, UserErrors.NOT_FOUND)
 
         val post = ofy().load().key(Post.createKey(postId)).now()
 
-        val self = post.author.isSelf(userId)
-        val bookmarked = entityCache.contains(Bookmark.createId(userId, postId))
-        val liked = entityCache.contains(Like.createId(userId, postId))
+        val self = post.author.isSelf(input.requesterId)
+        val bookmarked = entityCache.contains(Bookmark.createId(input.requesterId, postId))
+        val liked = entityCache.contains(Like.createId(input.requesterId, postId))
 
         return postResponseMapper.apply(post, PostResponseMapper.Params(self, liked, bookmarked))
     }
 
-    data class Input(val requesterId: String, val postId: String) : UseCase.Input
+    data class Input(val requesterId: Long, val postId: String)
 }

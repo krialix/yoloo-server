@@ -10,7 +10,6 @@ import com.yoloo.server.post.mapper.CommentResponseMapper
 import com.yoloo.server.post.vo.CommentContent
 import com.yoloo.server.post.vo.CommentResponse
 import com.yoloo.server.post.vo.CreateCommentRequest
-import com.yoloo.server.post.vo.PostId
 import com.yoloo.server.usecase.AbstractUseCase
 import com.yoloo.server.usecase.UseCase
 import com.yoloo.server.user.entity.User
@@ -49,8 +48,6 @@ class CreateCommentUseCase(
         val post = map[postKey] as Post
         val postAuthor = map[postAuthorKey] as User
 
-        //checkException(post.isCommentingAllowed(), Status.FORBIDDEN, PostErrors.FORBIDDEN_COMMENTING)
-
         val comment = createComment(post, user, input.request)
 
         ofy().defer().save().entity(comment)
@@ -64,12 +61,12 @@ class CreateCommentUseCase(
             Payload.newBuilder("NEW_COMMENT")
                 .addData("id", comment.id.toString())
                 .addData("commentAuthorDisplayName", comment.author.displayName)
-                .addData("postId", comment.postId.value)
+                .addData("postId", comment.postId.toString())
                 .addData("postAuthorFcmToken", postAuthor.fcmToken)
                 .build()
         )
 
-        return commentResponseMapper.apply(comment, CommentResponseMapper.Params(true, false))
+        return commentResponseMapper.apply(comment)
     }
 
     private fun createComment(
@@ -79,7 +76,7 @@ class CreateCommentUseCase(
     ): Comment {
         return Comment(
             id = idGenerator.generateId(),
-            postId = PostId(post.id),
+            postId = post.id,
             author = Author(
                 id = user.id,
                 displayName = user.profile.displayName.value,
@@ -89,5 +86,5 @@ class CreateCommentUseCase(
         )
     }
 
-    data class Input(val requesterUserId: Long, val postId: String, val request: CreateCommentRequest) : UseCase.Input
+    data class Input(val requesterUserId: Long, val postId: String, val request: CreateCommentRequest)
 }

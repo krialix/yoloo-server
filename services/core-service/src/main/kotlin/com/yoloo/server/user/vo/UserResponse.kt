@@ -1,7 +1,6 @@
 package com.yoloo.server.user.vo
 
 import com.yoloo.server.common.util.NoArg
-import com.yoloo.server.usecase.UseCase
 
 @NoArg
 data class UserResponse(
@@ -18,4 +17,4 @@ data class UserResponse(
     val locale: LocaleResponse,
     val subscribedGroups: List<UserGroupResponse>,
     val spokenLanguages: List<LanguageResponse>
-) : UseCase.Output
+)

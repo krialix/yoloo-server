@@ -1,12 +1,12 @@
-package com.yoloo.server.post
+package com.yoloo.server.post.api
 
 import com.yoloo.server.auth.AuthUtil
-import com.yoloo.server.common.vo.CollectionResponse
 import com.yoloo.server.like.service.LikeService
-import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.usecase.*
-import com.yoloo.server.post.vo.*
+import com.yoloo.server.post.vo.CreatePostRequest
+import com.yoloo.server.post.vo.PostResponse
+import com.yoloo.server.post.vo.UpdatePostRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -19,24 +19,14 @@ import javax.validation.Valid
     produces = [MediaType.APPLICATION_JSON_UTF8_VALUE]
 )
 @RestController
-class PostController(
-    private val getPostByIdUseCase: GetPostByIdUseCase,
+class PostCommandController(
     private val createPostUseCase: CreatePostUseCase,
     private val updatePostUseCase: UpdatePostUseCase,
     private val deletePostUseCase: DeletePostUseCase,
     private val bookmarkPostUseCase: BookmarkPostUseCase,
     private val unbookmarkPostUseCase: UnbookmarkPostUseCase,
-    private val listBookmarkedPostsUseCase: ListBookmarkedPostsUseCase,
     private val likeService: LikeService
 ) {
-
-    @PreAuthorize("hasAuthority('MEMBER')")
-    @GetMapping("/posts/{postId}")
-    fun getPost(authentication: Authentication, @PathVariable("postId") postId: String): PostResponse {
-        val user = AuthUtil.from(authentication)
-
-        return getPostByIdUseCase.execute(user.userId, postId)
-    }
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping
@@ -84,17 +74,6 @@ class PostController(
         val user = AuthUtil.from(authentication)
 
         unbookmarkPostUseCase.execute(user.userId, postId)
-    }
-
-    @PreAuthorize("hasAuthority('MEMBER')")
-    @GetMapping("/users/bookmarks")
-    fun listBookmarkedPosts(
-        authentication: Authentication,
-        @RequestParam(value = "cursor", required = false) cursor: String?
-    ): CollectionResponse<PostResponse> {
-        val user = AuthUtil.from(authentication)
-
-        return listBookmarkedPostsUseCase.execute(user.userId, cursor)
     }
 
     @ResponseStatus(HttpStatus.CREATED)

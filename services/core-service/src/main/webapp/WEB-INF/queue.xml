@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <queue-entries>
   <queue>
-    <name>post-queue</name>
-    <rate>100/s</rate>
-    <bucket-size>40</bucket-size>
+    <name>batch-save-pull-queue</name>
+    <mode>pull</mode>
   </queue>
 </queue-entries>

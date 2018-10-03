@@ -3,6 +3,7 @@ package com.yoloo.server.post.entity
 import com.googlecode.objectify.Key
 import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id
+import com.googlecode.objectify.annotation.Ignore
 import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.Author
@@ -10,7 +11,6 @@ import com.yoloo.server.entity.Keyable
 import com.yoloo.server.entity.Likeable
 import com.yoloo.server.entity.Rankable
 import com.yoloo.server.post.vo.CommentContent
-import com.yoloo.server.post.vo.PostId
 import java.time.Instant
 
 @NoArg
@@ -20,7 +20,7 @@ data class Comment(
     var id: Long,
 
     @Index
-    var postId: PostId,
+    var postId: Long,
 
     @Index
     private var rank: Double,
@@ -29,7 +29,16 @@ data class Comment(
 
     var content: CommentContent,
 
-    var createdAt: Instant = Instant.now()
+    var createdAt: Instant = Instant.now(),
+
+    @Ignore
+    var likes: Int = 0,
+
+    @Ignore
+    var liked: Boolean = false,
+
+    @Ignore
+    var approved: Boolean = false
 ) : Keyable<Comment>, Likeable, Rankable {
 
     override fun getRank(): Double {

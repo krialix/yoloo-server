@@ -3,28 +3,28 @@ package com.yoloo.server.post.usecase
 import com.arcticicestudio.icecore.hashids.Hashids
 import com.google.cloud.datastore.QueryResults
 import com.googlecode.objectify.ObjectifyService.ofy
-import com.yoloo.server.common.Exceptions
+import com.yoloo.server.common.Exceptions.checkException
 import com.yoloo.server.common.applyCursor
-import com.yoloo.server.common.exception.exception.ServiceExceptions.checkNotFound
 import com.yoloo.server.common.vo.CollectionResponse
 import com.yoloo.server.entity.service.EntityCache
 import com.yoloo.server.entity.service.EntityCacheService
 import com.yoloo.server.like.entity.Like
 import com.yoloo.server.post.entity.Comment
-import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.CommentResponseMapper
 import com.yoloo.server.post.util.PostErrors
 import com.yoloo.server.post.vo.CommentResponse
 import com.yoloo.server.usecase.AbstractUseCase
-import com.yoloo.server.usecase.UseCase
 import com.yoloo.server.user.exception.UserErrors
+import com.yoloo.spring.autoconfiguration.appengine.services.counter.CounterService
 import org.springframework.stereotype.Service
+import org.zalando.problem.Status
 
 @Service
 class ListCommentsUseCase(
     private val hashids: Hashids,
     private val entityCacheService: EntityCacheService,
-    private val commentResponseMapper: CommentResponseMapper
+    private val commentResponseMapper: CommentResponseMapper,
+    private val counterService: CounterService
 ) : AbstractUseCase<ListCommentsUseCase.Input, CollectionResponse<CommentResponse>>() {
 
     override fun onExecute(input: Input): CollectionResponse<CommentResponse> {
@@ -32,10 +32,8 @@ class ListCommentsUseCase(
 
         val entityCache = entityCacheService.get()
 
-        Exceptions.checkException(entityCache.contains(input.requesterId),  UserErrors.NOT_FOUND)
-        checkNotFound(entityCache.contains(postId), PostErrors.NOT_FOUND)
-
-        val post = ofy().load().key(Post.createKey(postId)).now()
+        checkException(entityCache.contains(input.requesterId), Status.NOT_FOUND, UserErrors.NOT_FOUND)
+        checkException(entityCache.contains(postId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
 
         val queryResults = queryResults(postId, input.cursor)
 
@@ -45,16 +43,14 @@ class ListCommentsUseCase(
 
         return queryResults
             .asSequence()
-            .filter { it.id != post.approvedCommentId?.value }
             .map {
-                commentResponseMapper.apply(
-                    it,
-                    CommentResponseMapper.Params(
-                        it.author.isSelf(input.requesterId),
-                        isLiked(entityCache, input.requesterId, it.id)
-                    )
-                )
+                it.apply {
+                    liked = isLiked(entityCache, input.requesterId, id)
+                    approved = isApproved(entityCache, id)
+                    likes = 0
+                }
             }
+            .map(commentResponseMapper::apply)
             .toList()
             .let {
                 CollectionResponse.builder<CommentResponse>()
@@ -80,5 +76,9 @@ class ListCommentsUseCase(
         return entityCache.contains(Like.createId(requesterId, commentId))
     }
 
-    data class Input(val requesterId: Long, val postId: String, val cursor: String?) : UseCase.Input
+    private fun isApproved(entityCache: EntityCache, commentId: Long): Boolean {
+        return entityCache.contains("APPROVED:$commentId")
+    }
+
+    data class Input(val requesterId: Long, val postId: String, val cursor: String?)
 }

@@ -63,5 +63,5 @@ class ApproveCommentUseCase(
         notificationQueueService.addQueueAsync(event)*/
     }
 
-    data class Input(val requesterId: Long, val postId: Long, val commentId: Long) : UseCase.Input
+    data class Input(val requesterId: Long, val postId: Long, val commentId: Long)
 }

@@ -1,10 +1,12 @@
-package com.yoloo.server.post
+package com.yoloo.server.post.api
 
 import com.yoloo.server.auth.AuthUtil
 import com.yoloo.server.like.service.LikeService
 import com.yoloo.server.post.entity.Comment
-import com.yoloo.server.post.usecase.*
-import com.yoloo.server.post.vo.CommentCollectionResponse
+import com.yoloo.server.post.usecase.ApproveCommentUseCase
+import com.yoloo.server.post.usecase.CreateCommentUseCase
+import com.yoloo.server.post.usecase.DeleteCommentUseCase
+import com.yoloo.server.post.usecase.DisapproveCommentUseCase
 import com.yoloo.server.post.vo.CommentResponse
 import com.yoloo.server.post.vo.CreateCommentRequest
 import org.springframework.http.HttpStatus
@@ -19,13 +21,12 @@ import javax.validation.Valid
     produces = [MediaType.APPLICATION_JSON_UTF8_VALUE]
 )
 @RestController
-class CommentController(
+class CommentCommandController(
     private val likeService: LikeService,
     private val createCommentUseCase: CreateCommentUseCase,
     private val approveCommentUseCase: ApproveCommentUseCase,
     private val disapproveCommentUseCase: DisapproveCommentUseCase,
-    private val deleteCommentUseCase: DeleteCommentUseCase,
-    private val listCommentsUseCase: ListCommentsUseCase
+    private val deleteCommentUseCase: DeleteCommentUseCase
 ) {
 
     @PreAuthorize("hasAnyRole('MEMBER')")
@@ -52,18 +53,6 @@ class CommentController(
         val user = AuthUtil.from(authentication)
 
         deleteCommentUseCase.execute(DeleteCommentUseCase.Input(user.userId, postId, commentId))
-    }
-
-    @PreAuthorize("hasAnyRole('MEMBER')")
-    @GetMapping("/{postId}/comments")
-    fun listComments(
-        authentication: Authentication,
-        @PathVariable("postId") postId: String,
-        @RequestParam(value = "cursor", required = false) cursor: String?
-    ): CommentCollectionResponse {
-        val user = AuthUtil.from(authentication)
-
-        return listCommentsUseCase.execute(ListCommentsUseCase.Input(user.userId, postId, cursor))
     }
 
     @PreAuthorize("hasAnyRole('MEMBER')")

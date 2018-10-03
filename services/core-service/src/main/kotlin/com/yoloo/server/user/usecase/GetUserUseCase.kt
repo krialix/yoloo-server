@@ -35,5 +35,5 @@ class GetUserUseCase(
         return userResponseMapper.apply(user, self, following)
     }
 
-    data class Input(val requesterId: String, val targetId: String) : UseCase.Input
+    data class Input(val requesterId: String, val targetId: String)
 }

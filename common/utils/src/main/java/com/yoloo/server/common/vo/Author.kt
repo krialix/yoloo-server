@@ -1,5 +1,6 @@
 package com.yoloo.server.common.vo
 
+import com.googlecode.objectify.annotation.Ignore
 import com.googlecode.objectify.annotation.Index
 import com.yoloo.server.common.util.NoArg
 
@@ -10,7 +11,10 @@ data class Author(
 
     var displayName: String,
 
-    var profileImageUrl: Url
+    var profileImageUrl: Url,
+
+    @Ignore
+    var self: Boolean = false
 ) {
 
     fun isSelf(userId: Long): Boolean {
