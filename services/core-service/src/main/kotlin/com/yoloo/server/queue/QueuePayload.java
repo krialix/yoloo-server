@@ -31,12 +31,12 @@ public final class QueuePayload {
       include = JsonTypeInfo.As.EXTERNAL_PROPERTY,
       property = "type")
   @JsonSubTypes({
-    @JsonSubTypes.Type(value = Save.class, name = Payload.SAVE_TYPE),
-    @JsonSubTypes.Type(value = Delete.class, name = Payload.DELETE_TYPE)
+    @JsonSubTypes.Type(value = Save.class, name = Payload.TYPE_SAVE),
+    @JsonSubTypes.Type(value = Delete.class, name = Payload.TYPE_DELETE)
   })
   interface Payload {
-    String SAVE_TYPE = "save";
-    String DELETE_TYPE = "delete";
+    String TYPE_SAVE = "save";
+    String TYPE_DELETE = "delete";
   }
 
   public static class Save implements Payload {
@@ -55,6 +55,10 @@ public final class QueuePayload {
   public static class Delete implements Payload {
     private final String urlSafeString;
 
+    public String getUrlSafeString() {
+      return urlSafeString;
+    }
+
     @JsonCreator
     public Delete(String urlSafeString) {
       this.urlSafeString = urlSafeString;
@@ -68,12 +72,12 @@ public final class QueuePayload {
     private Builder() {}
 
     public Builder save() {
-      this.type = Payload.SAVE_TYPE;
+      this.type = Payload.TYPE_SAVE;
       return this;
     }
 
     public Builder delete() {
-      this.type = Payload.DELETE_TYPE;
+      this.type = Payload.TYPE_DELETE;
       return this;
     }
 

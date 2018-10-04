@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList
 import com.googlecode.objectify.Key
 import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.Exceptions.checkException
-import com.yoloo.server.entity.service.EntityCacheService
+import com.yoloo.server.filter.FilterService
 import com.yoloo.server.like.entity.Like
 import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.util.CommentErrors
@@ -16,7 +16,7 @@ import org.zalando.problem.Status
 
 @Service
 class DeleteCommentUseCase(
-    private val entityCacheService: EntityCacheService,
+    private val filterService: FilterService,
     private val counterService: CounterService,
     private val hashids: Hashids
 ) : AbstractUseCase<DeleteCommentUseCase.Input, Unit>() {
@@ -28,7 +28,7 @@ class DeleteCommentUseCase(
         val commentAuthorId = commentHashId[1]
         val commentPostId = commentHashId[2]
 
-        val entityCache = entityCacheService.get()
+        val entityCache = filterService.get()
 
         checkException(entityCache.contains(commentId), Status.NOT_FOUND, CommentErrors.NOT_FOUND)
         checkException(commentAuthorId == input.requesterId, Status.FORBIDDEN, CommentErrors.FORBIDDEN)

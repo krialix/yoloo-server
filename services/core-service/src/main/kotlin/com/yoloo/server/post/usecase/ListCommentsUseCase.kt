@@ -6,8 +6,8 @@ import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.Exceptions.checkException
 import com.yoloo.server.common.applyCursor
 import com.yoloo.server.common.vo.CollectionResponse
-import com.yoloo.server.entity.service.EntityCache
-import com.yoloo.server.entity.service.EntityCacheService
+import com.yoloo.server.filter.EntityFilter
+import com.yoloo.server.filter.FilterService
 import com.yoloo.server.like.entity.Like
 import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.mapper.CommentResponseMapper
@@ -22,7 +22,7 @@ import org.zalando.problem.Status
 @Service
 class ListCommentsUseCase(
     private val hashids: Hashids,
-    private val entityCacheService: EntityCacheService,
+    private val filterService: FilterService,
     private val commentResponseMapper: CommentResponseMapper,
     private val counterService: CounterService
 ) : AbstractUseCase<ListCommentsUseCase.Input, CollectionResponse<CommentResponse>>() {
@@ -30,7 +30,7 @@ class ListCommentsUseCase(
     override fun onExecute(input: Input): CollectionResponse<CommentResponse> {
         val postId = hashids.decode(input.postId)[0]
 
-        val entityCache = entityCacheService.get()
+        val entityCache = filterService.get()
 
         checkException(entityCache.contains(input.requesterId), Status.NOT_FOUND, UserErrors.NOT_FOUND)
         checkException(entityCache.contains(postId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
@@ -72,12 +72,12 @@ class ListCommentsUseCase(
             .iterator()
     }
 
-    private fun isLiked(entityCache: EntityCache, requesterId: Long, commentId: Long): Boolean {
-        return entityCache.contains(Like.createId(requesterId, commentId))
+    private fun isLiked(entityFilter: EntityFilter, requesterId: Long, commentId: Long): Boolean {
+        return entityFilter.contains(Like.createId(requesterId, commentId))
     }
 
-    private fun isApproved(entityCache: EntityCache, commentId: Long): Boolean {
-        return entityCache.contains("APPROVED:$commentId")
+    private fun isApproved(entityFilter: EntityFilter, commentId: Long): Boolean {
+        return entityFilter.contains("APPROVED:$commentId")
     }
 
     data class Input(val requesterId: Long, val postId: String, val cursor: String?)

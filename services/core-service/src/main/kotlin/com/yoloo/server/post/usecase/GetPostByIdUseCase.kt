@@ -3,7 +3,7 @@ package com.yoloo.server.post.usecase
 import com.arcticicestudio.icecore.hashids.Hashids
 import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.Exceptions.checkException
-import com.yoloo.server.entity.service.EntityCacheService
+import com.yoloo.server.filter.FilterService
 import com.yoloo.server.like.entity.Like
 import com.yoloo.server.post.entity.Bookmark
 import com.yoloo.server.post.entity.Post
@@ -19,13 +19,13 @@ import org.zalando.problem.Status
 class GetPostByIdUseCase(
     private val hashIds: Hashids,
     private val postResponseMapper: PostResponseMapper,
-    private val entityCacheService: EntityCacheService
+    private val filterService: FilterService
 ) : AbstractUseCase<GetPostByIdUseCase.Input, PostResponse>() {
 
     override fun onExecute(input: Input): PostResponse {
         val postId = hashIds.decode(input.postId)[0]
 
-        val entityCache = entityCacheService.get()
+        val entityCache = filterService.get()
 
         checkException(entityCache.contains(postId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
         checkException(entityCache.contains(input.requesterId), Status.NOT_FOUND, UserErrors.NOT_FOUND)

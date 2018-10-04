@@ -3,9 +3,11 @@ package com.yoloo.server.like.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.appengine.api.taskqueue.Queue
 import com.google.appengine.api.taskqueue.TaskOptions
+import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.Exceptions.checkException
 import com.yoloo.server.entity.Likeable
-import com.yoloo.server.entity.service.EntityCacheService
+import com.yoloo.server.filter.Filter
+import com.yoloo.server.filter.FilterService
 import com.yoloo.server.like.entity.Like
 import com.yoloo.server.like.exception.LikeErrors
 import com.yoloo.server.post.util.PostErrors
@@ -19,14 +21,14 @@ import org.zalando.problem.Status
 
 @Service
 class LikeServiceImpl(
-    private val entityCacheService: EntityCacheService,
+    private val filterService: FilterService,
     private val counterService: CounterService,
     @Qualifier(QueueNames.BATCH_SAVE_PULL_QUEUE) private val batchSavePullQueue: Queue,
     private val objectMapper: ObjectMapper
 ) : LikeService {
 
     override fun like(userId: Long, likeableId: Long, type: Class<out Likeable>) {
-        val entityCache = entityCacheService.get()
+        val entityCache = filterService.get()
 
         checkException(entityCache.contains(userId), Status.NOT_FOUND, UserErrors.NOT_FOUND)
         checkException(entityCache.contains(likeableId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
@@ -38,13 +40,15 @@ class LikeServiceImpl(
         counterService.increment("LIKE:$likeableId")
 
         entityCache.add(like.id)
-        entityCacheService.saveAsync(entityCache)
+        filterService.saveAsync(entityCache)
+
+        ofy().load().type(Filter::class.java).filter().star
 
         addToQueue(QueuePayload.newBuilder().save().payload(QueuePayload.Save(like)).build())
     }
 
     override fun dislike(userId: Long, likeableId: Long, type: Class<out Likeable>) {
-        val entityCache = entityCacheService.get()
+        val entityCache = filterService.get()
 
         checkException(entityCache.contains(userId), Status.NOT_FOUND, UserErrors.NOT_FOUND)
         checkException(entityCache.contains(likeableId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
@@ -56,7 +60,7 @@ class LikeServiceImpl(
         counterService.decrement("LIKE:$likeableId")
 
         entityCache.delete(likeKey.name)
-        entityCacheService.saveAsync(entityCache)
+        filterService.saveAsync(entityCache)
 
         addToQueue(QueuePayload.newBuilder().save().payload(QueuePayload.Delete(likeKey.toUrlSafe())).build())
     }

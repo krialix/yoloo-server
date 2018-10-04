@@ -3,7 +3,7 @@ package com.yoloo.server.post.usecase
 import com.arcticicestudio.icecore.hashids.Hashids
 import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.vo.Author
-import com.yoloo.server.entity.service.EntityCacheService
+import com.yoloo.server.filter.FilterService
 import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.entity.Post
 import com.yoloo.server.post.mapper.CommentResponseMapper
@@ -11,7 +11,6 @@ import com.yoloo.server.post.vo.CommentContent
 import com.yoloo.server.post.vo.CommentResponse
 import com.yoloo.server.post.vo.CreateCommentRequest
 import com.yoloo.server.usecase.AbstractUseCase
-import com.yoloo.server.usecase.UseCase
 import com.yoloo.server.user.entity.User
 import com.yoloo.spring.autoconfiguration.appengine.services.counter.CounterService
 import com.yoloo.spring.autoconfiguration.appengine.services.notification.NotificationService
@@ -22,7 +21,7 @@ import org.springframework.stereotype.Service
 @Service
 class CreateCommentUseCase(
     private val hashIds: Hashids,
-    private val entityCacheService: EntityCacheService,
+    private val filterService: FilterService,
     private val counterService: CounterService,
     private val notificationService: NotificationService,
     private val idGenerator: LongIdGenerator,
@@ -34,7 +33,7 @@ class CreateCommentUseCase(
         val postId = hashedPostId[0]
         val postAuthorId = hashedPostId[1]
 
-        val entityCache = entityCacheService.get()
+        val entityCache = filterService.get()
 
         //checkException(entityCache.contains(postId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
 
@@ -53,7 +52,7 @@ class CreateCommentUseCase(
         ofy().defer().save().entity(comment)
 
         entityCache.add(comment.id)
-        entityCacheService.saveAsync(entityCache)
+        filterService.saveAsync(entityCache)
 
         counterService.increment("POST_COMMENT:${post.id}", "USER_COMMENT:${user.id}")
 
