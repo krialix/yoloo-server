@@ -1,3 +1,23 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        jcenter()
+        maven { url "https://repo.spring.io/milestone" }
+        maven { url "http://dl.bintray.com/kotlin/kotlin-eap" }
+    }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "org.springframework.boot") {
+                useModule("org.springframework.boot:spring-boot-gradle-plugin:${requested.version}")
+            }
+            /*if (requested.id.id == "org.jetbrains.kotlin.jvm") {
+                println requested.version
+                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
+            }*/
+        }
+    }
+}
+
 rootProject.name = 'yoloo-server'
 
 include 'utils'

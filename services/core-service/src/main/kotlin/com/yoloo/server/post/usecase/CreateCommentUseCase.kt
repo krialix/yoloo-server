@@ -33,7 +33,7 @@ class CreateCommentUseCase(
         val postId = hashedPostId[0]
         val postAuthorId = hashedPostId[1]
 
-        val entityCache = filterService.get()
+        val entityCache = filterService.getAll()
 
         //checkException(entityCache.contains(postId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
 

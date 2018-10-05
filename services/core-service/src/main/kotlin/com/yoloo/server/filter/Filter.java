@@ -1,5 +1,8 @@
 package com.yoloo.server.filter;
 
+import com.googlecode.objectify.Key;
+
 public interface Filter {
-  String filterId();
+
+  Key<?> toFilterKey();
 }

@@ -6,7 +6,7 @@ import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.Exceptions.checkException
 import com.yoloo.server.common.applyCursor
 import com.yoloo.server.common.vo.CollectionResponse
-import com.yoloo.server.filter.EntityFilter
+import com.yoloo.server.filter.EntityIdFilter
 import com.yoloo.server.filter.FilterService
 import com.yoloo.server.like.entity.Like
 import com.yoloo.server.post.entity.Comment
@@ -30,7 +30,7 @@ class ListCommentsUseCase(
     override fun onExecute(input: Input): CollectionResponse<CommentResponse> {
         val postId = hashids.decode(input.postId)[0]
 
-        val entityCache = filterService.get()
+        val entityCache = filterService.getAll()
 
         checkException(entityCache.contains(input.requesterId), Status.NOT_FOUND, UserErrors.NOT_FOUND)
         checkException(entityCache.contains(postId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
@@ -72,12 +72,12 @@ class ListCommentsUseCase(
             .iterator()
     }
 
-    private fun isLiked(entityFilter: EntityFilter, requesterId: Long, commentId: Long): Boolean {
-        return entityFilter.contains(Like.createId(requesterId, commentId))
+    private fun isLiked(entityIdFilter: EntityIdFilter, requesterId: Long, commentId: Long): Boolean {
+        return entityIdFilter.contains(Like.createId(requesterId, commentId))
     }
 
-    private fun isApproved(entityFilter: EntityFilter, commentId: Long): Boolean {
-        return entityFilter.contains("APPROVED:$commentId")
+    private fun isApproved(entityIdFilter: EntityIdFilter, commentId: Long): Boolean {
+        return entityIdFilter.contains("APPROVED:$commentId")
     }
 
     data class Input(val requesterId: Long, val postId: String, val cursor: String?)

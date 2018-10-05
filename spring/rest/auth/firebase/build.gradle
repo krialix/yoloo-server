@@ -1,17 +1,8 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url "https://repo.spring.io/milestone" }
-        maven { url 'https://jitpack.io/' }
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' version '2.1.0.M4'
+    id 'io.spring.dependency-management' version '1.0.6.RELEASE'
 }
-
-apply plugin: 'java-library'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
 
 group 'com.yoloo.server'
 version '0.0.1-SNAPSHOT'
@@ -26,6 +17,6 @@ dependencies {
     api 'org.springframework.boot:spring-boot-starter-security'
     compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$jUnit5Version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jUnit5Version"
 }

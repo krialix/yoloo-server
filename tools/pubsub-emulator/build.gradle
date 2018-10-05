@@ -1,27 +1,14 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url "https://repo.spring.io/milestone" }
-    }
-    dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-    }
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' version '2.1.0.M4'
+    id 'io.spring.dependency-management' version '1.0.6.RELEASE'
 }
-
-apply plugin: 'java-library'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
 
 group = 'com.yoloo.server'
 version = '0.0.1-SNAPSHOT'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-repositories {
-    jcenter()
-    maven { url "https://repo.spring.io/milestone" }
-}
 
 dependencies {
     // Spring Boot

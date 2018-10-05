@@ -7,9 +7,13 @@ import java.util.Map;
 
 public interface FilterService {
 
-  <T extends Filter> Map<Key<T>, Object> get(@Nonnull Key<T>... keys);
+  default <T extends Filter> T get(@Nonnull Key<T> key) {
+    //noinspection unchecked
+    return getAll(key).get(key);
+  }
 
-  void save(Filter filter);
+  @SuppressWarnings("unchecked")
+  <T extends Filter> Map<Key<T>, T> getAll(@Nonnull Key<T>... keys);
 
   void saveAsync(Filter... filters);
 }

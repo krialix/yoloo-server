@@ -1,27 +1,16 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url "https://repo.spring.io/milestone" }
-    }
-    dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
-        classpath "org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}"
-        classpath "org.jetbrains.kotlin:kotlin-noarg:${kotlinVersion}"
-    }
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.3.0-rc-146'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.3.0-rc-146'
+    id 'org.jetbrains.kotlin.plugin.noarg' version '1.3.0-rc-146'
+    id 'org.jetbrains.kotlin.plugin.allopen' version '1.3.0-rc-146'
+    id 'org.springframework.boot' version '2.1.0.M4'
+    id 'war'
 }
-
-apply plugin: 'kotlin'
-apply plugin: 'kotlin-spring'
-apply plugin: 'kotlin-noarg'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'war'
 
 group 'com.yoloo.server'
 version '0.0.1-SNAPSHOT'
 
-compileKotlin {
+/*compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -30,19 +19,14 @@ compileTestKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-}
-
-repositories {
-    jcenter()
-    maven { url "https://repo.spring.io/milestone" }
-}
+}*/
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-noArg {
+/*noArg {
     annotation("com.yoloo.server.common.util.NoArg")
-}
+}*/
 
 configurations.all {
     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
@@ -67,22 +51,23 @@ dependencies {
     compileOnly "javax.servlet:javax.servlet-api:$javaxServletVersion"
 
     // Spring Boot
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
-    implementation 'org.springframework.cloud:spring-cloud-gcp-starter-pubsub'
-    compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-log4j2:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-cache:$springBootVersion"
+    compileOnly "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
+
+    implementation 'org.springframework.cloud:spring-cloud-gcp-pubsub:1.0.0.RELEASE'
 
     implementation 'com.lmax:disruptor:3.4.2'
 
     // Kotlin
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
 
     // Util
     implementation 'net.cinnom:nano-cuckoo:2.0.0'
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
     implementation 'org.zalando:problem-spring-web:0.24.0-RC.0'
     implementation 'com.graphql-java:java-dataloader:2.1.1'
 
@@ -95,16 +80,16 @@ dependencies {
     testImplementation "com.google.appengine:appengine-testing:$appengineVersion"
     testImplementation 'com.google.truth:truth:0.42'
     
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     //testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
     //testImplementation "com.google.appengine:appengine-api-stubs:$appengineVersion"
     //testImplementation "com.google.appengine:appengine-testing:$appengineVersion"
     //testImplementation "com.google.appengine:appengine-tools-sdk:$appengineVersion"
 }
 
-dependencyManagement {
+/*dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-gcp-dependencies:${springCloudGcpVersion}"
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
-}
+}*/

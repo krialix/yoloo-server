@@ -21,7 +21,7 @@ class GetUserUseCase(
         val requesterId = hashids.decode(input.requesterId)[0]
         val targetId = hashids.decode(input.targetId)[0]
 
-        val entityCache = filterService.get()
+        val entityCache = filterService.getAll()
 
         checkNotFound(entityCache.contains(requesterId), UserErrors.NOT_FOUND)
         checkNotFound(entityCache.contains(targetId), UserErrors.NOT_FOUND)

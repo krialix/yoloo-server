@@ -28,7 +28,7 @@ class LikeServiceImpl(
 ) : LikeService {
 
     override fun like(userId: Long, likeableId: Long, type: Class<out Likeable>) {
-        val entityCache = filterService.get()
+        val entityCache = filterService.getAll()
 
         checkException(entityCache.contains(userId), Status.NOT_FOUND, UserErrors.NOT_FOUND)
         checkException(entityCache.contains(likeableId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
@@ -48,7 +48,7 @@ class LikeServiceImpl(
     }
 
     override fun dislike(userId: Long, likeableId: Long, type: Class<out Likeable>) {
-        val entityCache = filterService.get()
+        val entityCache = filterService.getAll()
 
         checkException(entityCache.contains(userId), Status.NOT_FOUND, UserErrors.NOT_FOUND)
         checkException(entityCache.contains(likeableId), Status.NOT_FOUND, PostErrors.NOT_FOUND)

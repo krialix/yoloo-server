@@ -25,7 +25,7 @@ class GetPostByIdUseCase(
     override fun onExecute(input: Input): PostResponse {
         val postId = hashIds.decode(input.postId)[0]
 
-        val entityCache = filterService.get()
+        val entityCache = filterService.getAll()
 
         checkException(entityCache.contains(postId), Status.NOT_FOUND, PostErrors.NOT_FOUND)
         checkException(entityCache.contains(input.requesterId), Status.NOT_FOUND, UserErrors.NOT_FOUND)

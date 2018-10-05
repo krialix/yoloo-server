@@ -20,14 +20,23 @@ subprojects {
         maven { url "https://krialix.github.io/maven-artifactory/" }
         maven { url "https://repo.spring.io/milestone" }
         maven { url "https://repo.spring.io/snapshot" }
+        maven { url "http://dl.bintray.com/kotlin/kotlin-eap" }
     }
 
-    /*configurations.all {
-        resolutionStrategy {
-            force 'com.fasterxml.jackson.core:jackson-databind:2.9.6',
-                    'org.slf4j:slf4j-api:1.8.0-beta2',
-                    'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.61',
-                    'org.jetbrains.kotlin:kotlin-reflect:1.2.61'
+    if (project.plugins.hasPlugin('org.jetbrains.kotlin.jvm')) {
+        compileKotlin {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
         }
-    }*/
+        compileTestKotlin {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+
+        noArg {
+            annotation("com.yoloo.server.common.util.NoArg")
+        }
+    }
 }

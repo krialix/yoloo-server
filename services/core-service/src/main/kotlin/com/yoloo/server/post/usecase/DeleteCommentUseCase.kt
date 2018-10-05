@@ -28,7 +28,7 @@ class DeleteCommentUseCase(
         val commentAuthorId = commentHashId[1]
         val commentPostId = commentHashId[2]
 
-        val entityCache = filterService.get()
+        val entityCache = filterService.getAll()
 
         checkException(entityCache.contains(commentId), Status.NOT_FOUND, CommentErrors.NOT_FOUND)
         checkException(commentAuthorId == input.requesterId, Status.FORBIDDEN, CommentErrors.FORBIDDEN)

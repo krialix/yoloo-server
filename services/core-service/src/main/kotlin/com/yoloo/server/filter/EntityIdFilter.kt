@@ -9,14 +9,14 @@ import net.cinnom.nanocuckoo.NanoCuckooFilter
 
 @NoArg
 @Entity
-data class EntityFilter(
+data class EntityIdFilter(
     @Id var id: String = ENTITY_ID,
 
     private var cuckooFilter: NanoCuckooFilter = NanoCuckooFilter.Builder(1_000_000L).build()
-) : Keyable<EntityFilter>, Filter {
+) : Keyable<EntityIdFilter>, Filter {
 
-    override fun filterId(): String {
-        return id
+    override fun toFilterKey(): Key<*> {
+        return createKey()
     }
 
     fun add(key: Long) {
@@ -42,8 +42,8 @@ data class EntityFilter(
     companion object {
         const val ENTITY_ID = "filter:entity"
 
-        fun create(): EntityFilter {
-            return EntityFilter()
+        fun create(): EntityIdFilter {
+            return EntityIdFilter()
         }
 
         @JvmStatic
@@ -52,8 +52,8 @@ data class EntityFilter(
         }
 
         @JvmStatic
-        fun createKey(): Key<EntityFilter> {
-            return Key.create(EntityFilter::class.java, createId())
+        fun createKey(): Key<EntityIdFilter> {
+            return Key.create(EntityIdFilter::class.java, createId())
         }
     }
 }

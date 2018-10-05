@@ -15,8 +15,8 @@ data class PermissionFilter(
     private var cuckooFilter: NanoCuckooFilter = NanoCuckooFilter.Builder(500_000L).build()
 ) : Keyable<PermissionFilter>, Filter {
 
-    override fun filterId(): String {
-        return id
+    override fun toFilterKey(): Key<*> {
+        return createKey()
     }
 
     fun add(key: Long) {
