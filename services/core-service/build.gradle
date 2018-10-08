@@ -60,6 +60,7 @@ dependencies {
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
     implementation 'org.zalando:problem-spring-web:0.24.0-RC.0'
     implementation 'com.graphql-java:java-dataloader:2.1.1'
+    implementation 'com.rainerhahnekamp:sneakythrow:1.1.0'
 
     // Testing
     testImplementation "org.junit.jupiter:junit-jupiter-api:${jUnit5Version}"

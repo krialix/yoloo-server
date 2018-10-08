@@ -12,7 +12,7 @@ import com.yoloo.server.post.vo.CommentResponse
 import com.yoloo.server.post.vo.CreateCommentRequest
 import com.yoloo.server.usecase.AbstractUseCase
 import com.yoloo.server.user.entity.User
-import com.yoloo.spring.autoconfiguration.appengine.services.counter.CounterService
+import com.yoloo.server.counter.CounterService
 import com.yoloo.spring.autoconfiguration.appengine.services.notification.NotificationService
 import com.yoloo.spring.autoconfiguration.appengine.services.notification.Payload
 import com.yoloo.spring.autoconfiguration.id.generator.IdFactory.LongIdGenerator

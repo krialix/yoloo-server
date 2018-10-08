@@ -10,7 +10,7 @@ import com.yoloo.server.like.entity.Like
 import com.yoloo.server.post.entity.Comment
 import com.yoloo.server.post.util.CommentErrors
 import com.yoloo.server.usecase.AbstractUseCase
-import com.yoloo.spring.autoconfiguration.appengine.services.counter.CounterService
+import com.yoloo.server.counter.CounterService
 import org.springframework.stereotype.Service
 import org.zalando.problem.Status
 

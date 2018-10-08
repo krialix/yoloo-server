@@ -15,7 +15,7 @@ import com.yoloo.server.post.util.PostErrors
 import com.yoloo.server.post.vo.CommentResponse
 import com.yoloo.server.usecase.AbstractUseCase
 import com.yoloo.server.user.exception.UserErrors
-import com.yoloo.spring.autoconfiguration.appengine.services.counter.CounterService
+import com.yoloo.server.counter.CounterService
 import org.springframework.stereotype.Service
 import org.zalando.problem.Status
 

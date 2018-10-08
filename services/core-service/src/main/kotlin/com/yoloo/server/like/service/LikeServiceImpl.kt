@@ -5,6 +5,7 @@ import com.google.appengine.api.taskqueue.Queue
 import com.google.appengine.api.taskqueue.TaskOptions
 import com.googlecode.objectify.ObjectifyService.ofy
 import com.yoloo.server.common.Exceptions.checkException
+import com.yoloo.server.counter.CounterService
 import com.yoloo.server.entity.Likeable
 import com.yoloo.server.filter.Filter
 import com.yoloo.server.filter.FilterService
@@ -14,7 +15,6 @@ import com.yoloo.server.post.util.PostErrors
 import com.yoloo.server.queue.QueueNames
 import com.yoloo.server.queue.QueuePayload
 import com.yoloo.server.user.exception.UserErrors
-import com.yoloo.spring.autoconfiguration.appengine.services.counter.CounterService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.zalando.problem.Status
@@ -44,7 +44,7 @@ class LikeServiceImpl(
 
         ofy().load().type(Filter::class.java).filter().star
 
-        addToQueue(QueuePayload.newBuilder().save().payload(QueuePayload.Save(like)).build())
+        addToQueue(QueuePayload.save(like))
     }
 
     override fun dislike(userId: Long, likeableId: Long, type: Class<out Likeable>) {
@@ -62,12 +62,11 @@ class LikeServiceImpl(
         entityCache.delete(likeKey.name)
         filterService.saveAsync(entityCache)
 
-        addToQueue(QueuePayload.newBuilder().save().payload(QueuePayload.Delete(likeKey.toUrlSafe())).build())
+        addToQueue(QueuePayload.delete(likeKey.toUrlSafe()))
     }
 
     private fun addToQueue(payload: QueuePayload) {
         val json = objectMapper.writeValueAsString(payload)
-        val taskOptions = TaskOptions.Builder.withPayload(json)
-        batchSavePullQueue.addAsync(taskOptions)
+        batchSavePullQueue.addAsync(TaskOptions.Builder.withTag("default").payload(json))
     }
 }

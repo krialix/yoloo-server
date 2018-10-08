@@ -4,9 +4,9 @@ import com.googlecode.objectify.Key
 import com.googlecode.objectify.annotation.Entity
 import com.googlecode.objectify.annotation.Id
 import com.googlecode.objectify.annotation.Index
-import com.yoloo.server.entity.BaseEntity
 import com.yoloo.server.common.util.NoArg
 import com.yoloo.server.common.vo.Url
+import com.yoloo.server.entity.BaseEntity
 import com.yoloo.server.entity.Relationable
 import com.yoloo.server.user.entity.User
 import com.yoloo.server.user.vo.DisplayName
@@ -15,18 +15,18 @@ import net.cinnom.nanocuckoo.NanoCuckooFilter
 @NoArg
 @Entity
 data class Relationship(
-        @Id
-        var id: String,
+    @Id
+    var id: String,
 
-        @Index
-        var fromId: Long = extractFromId(id),
+    @Index
+    var fromId: Long = extractFromId(id),
 
-        @Index
-        var toId: Long = extractToId(id),
+    @Index
+    var toId: Long = extractToId(id),
 
-        var fromDisplayName: DisplayName,
+    var fromDisplayName: DisplayName,
 
-        var fromProfileImageUrl: Url
+    var fromProfileImageUrl: Url
 ) : BaseEntity<Relationship>() {
 
     companion object {
@@ -37,9 +37,9 @@ data class Relationship(
 
         fun create(from: Relationable, to: Relationable): Relationship {
             return Relationship(
-                    id = Relationship.createId(from.getRelationableId(), to.getRelationableId()),
-                    fromDisplayName = from.getRelationableDisplayName(),
-                    fromProfileImageUrl = from.getRelationableProfileImageUrl()
+                id = Relationship.createId(from.getRelationableId(), to.getRelationableId()),
+                fromDisplayName = from.getRelationableDisplayName(),
+                fromProfileImageUrl = from.getRelationableProfileImageUrl()
             )
         }
 
