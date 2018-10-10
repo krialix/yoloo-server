@@ -8,6 +8,7 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
@@ -20,20 +21,20 @@ import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static java.util.stream.Collectors.*;
 
 @Component
-public class DefaultBatchSaveDeleteQueueLeaser implements Runnable {
+public class BatchSaveDeleteQueueLeaser {
 
   private final Queue batchSaveDeletePullQueue;
   private final ObjectMapper objectMapper;
 
   @Autowired
-  public DefaultBatchSaveDeleteQueueLeaser(
+  public BatchSaveDeleteQueueLeaser(
       @Qualifier(QueueNames.BATCH_SAVE_PULL_QUEUE) Queue batchSaveDeletePullQueue,
       ObjectMapper objectMapper) {
     this.batchSaveDeletePullQueue = batchSaveDeletePullQueue;
     this.objectMapper = objectMapper;
   }
 
-  @Override
+  @Scheduled(cron = "0 */5 * * *")
   public void run() {
     List<TaskHandle> tasks =
         batchSaveDeletePullQueue.leaseTasksByTag(

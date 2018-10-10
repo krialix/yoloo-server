@@ -25,20 +25,17 @@ class CreatePostUseCase(
         val user = map[userKey] as User
         val group = map[groupKey] as Group
 
-        group.countData.postCount = group.countData.postCount.inc()
-        user.profile.countData.postCount = user.profile.countData.postCount.inc()
-
         val post = createPost(request, user, group)
 
         ofy().save().entities(post, group)
 
         addToSearchQueue(post)
-        addToNotificationQueue(post, group.topicName)
+        addToNotificationQueue(post)
 
         return postResponseMapper.apply(post, true, false, false)
     }
 
-    private fun addToNotificationQueue(post: Post, topicName: String) {
+    private fun addToNotificationQueue(post: Post) {
         /*val event = YolooEvent.newBuilder(YolooEvent.Metadata.of(EventType.NEW_POST))
             .addData("id", post.id.toString())
             .addData("title", post.title.email)
@@ -56,7 +53,6 @@ class CreatePostUseCase(
             .addData("title", post.title.email)
             .addData("content", post.content.email)
             .addData("tags", post.tags)
-            .addData("buddyRequest", post.buddyRequest)
             .build()
 
         searchQueueService.addQueueAsync(event)*/

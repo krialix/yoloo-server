@@ -6,8 +6,6 @@ import java.util.Map;
 
 /**
  * A service that can be used to increment, decrement and reset a named counter value.
- *
- * @author Dave Syer
  */
 public interface CounterService {
 

@@ -28,7 +28,7 @@ public final class QueuePayload {
     return payload;
   }
 
-  enum Type {
+  public enum Type {
     SAVE,
     DELETE
   }
